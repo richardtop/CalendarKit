@@ -18,20 +18,29 @@ class ScrollContainerView: UIScrollView {
     if fabs(distanceFromCenter) > (contentWidth / 3) {
       contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
 
-      //TODO: refactor maybe ? i.e. shiftRight // ShiftLeft
       if distanceFromCenter > 0 {
-        let element = reusableViews.removeFirst()
-        reusableViews.append(element)
-        reusableViews = Array(reusableViews)
+        reusableViews.shiftRight()
       } else {
-        let element = reusableViews.removeLast()
-        reusableViews.insert(element, atIndex: 0)
-        reusableViews = Array(reusableViews)
+        reusableViews.shiftLeft()
       }
 
       for (index, subview) in reusableViews.enumerate() {
         subview.frame.origin.x = bounds.width * CGFloat(index)
       }
     }
+  }
+}
+
+extension Array {
+  mutating func shiftLeft() {
+    let element = removeFirst()
+    insert(element, atIndex: 0)
+    self = Array(self)
+  }
+
+  mutating func shiftRight() {
+    let element = removeFirst()
+    append(element)
+    self = Array(self)
   }
 }
