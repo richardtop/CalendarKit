@@ -1,13 +1,13 @@
 import UIKit
 import DateTools
 
-protocol WeekdaysViewDelegate: class {
+protocol DaySelectorDelegate: class {
   func shouldMoveToDate(date: NSDate)
 }
 
-class WeekdaysView: UIView {
+class DaySelector: UIView {
 
-  weak var delegate: WeekdaysViewDelegate?
+  weak var delegate: DaySelectorDelegate?
 
   //TODO: change to support Work-week only (5 days instead of 7)
   var daysInWeek = 7

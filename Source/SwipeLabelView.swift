@@ -1,6 +1,6 @@
 import UIKit
 
-class LabelView: UIView {
+class SwipeLabelView: UIView {
 
   var date = NSDate() {
     willSet(newDate) {

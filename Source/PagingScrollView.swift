@@ -1,6 +1,6 @@
 import UIKit
 
-class ScrollContainerView: UIScrollView {
+class PagingScrollView: UIScrollView {
 
   var reusableViews = [UIView]()
 
