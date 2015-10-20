@@ -4,12 +4,12 @@ class TimelineView: UIView {
 
   var date = NSDate()
 
-  var hourColor = UIColor.grayColor()
-  var timeColor = UIColor.blackColor()
-  var lineColor = UIColor.grayColor()
+  var hourColor = UIColor.lightGrayColor()
+  var timeColor = UIColor.lightGrayColor()
+  var lineColor = UIColor.lightGrayColor()
 
   var timeFont: UIFont {
-    return UIFont.systemFontOfSize(fontSize)
+    return UIFont.systemFontOfSize(fontSize, weight: 0.2)
   }
 
   var verticalDiff: CGFloat = 45
@@ -47,6 +47,7 @@ class TimelineView: UIView {
     contentScaleFactor = 1
     layer.contentsScale = 1
     contentMode = UIViewContentMode.Redraw
+    backgroundColor = .whiteColor()
   }
 
   override func drawRect(rect: CGRect) {
@@ -67,7 +68,6 @@ class TimelineView: UIView {
 
     for (i, time) in times.enumerate() {
       let iFloat = CGFloat(i)
-
       let context = UIGraphicsGetCurrentContext()
       CGContextSetInterpolationQuality(context, .None)
       CGContextSaveGState(context)
@@ -89,7 +89,11 @@ class TimelineView: UIView {
       let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
       style.lineBreakMode = .ByWordWrapping
       style.alignment = .Right
-      timeString.drawInRect(timeRect, withAttributes: [NSParagraphStyleAttributeName : style])
+
+      let attributes = [NSParagraphStyleAttributeName: style,
+        NSForegroundColorAttributeName: timeColor,
+        NSFontAttributeName: timeFont]
+      timeString.drawInRect(timeRect, withAttributes: attributes)
     }
   }
 
