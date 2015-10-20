@@ -23,7 +23,6 @@ class ScrollContainerView: UIScrollView {
       } else {
         reusableViews.shiftLeft()
       }
-
       for (index, subview) in reusableViews.enumerate() {
         subview.frame.origin.x = bounds.width * CGFloat(index)
       }
