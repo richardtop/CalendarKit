@@ -4,6 +4,16 @@ class PagingScrollView: UIScrollView {
 
   var reusableViews = [UIView]()
 
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    pagingEnabled = true
+  }
+
+  required init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    pagingEnabled = true
+  }
+
   override func layoutSubviews() {
     super.layoutSubviews()
     recenterIfNecessary()
