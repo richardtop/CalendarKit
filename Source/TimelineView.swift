@@ -9,7 +9,7 @@ class TimelineView: UIView {
   var lineColor = UIColor.lightGrayColor()
 
   var timeFont: UIFont {
-    return UIFont.systemFontOfSize(fontSize, weight: 0.2)
+    return UIFont.boldSystemFontOfSize(fontSize)
   }
 
   var verticalDiff: CGFloat = 45
