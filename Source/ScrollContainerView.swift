@@ -32,14 +32,10 @@ class ScrollContainerView: UIScrollView {
 
 extension Array {
   mutating func shiftLeft() {
-    let element = removeFirst()
-    insert(element, atIndex: 0)
-    self = Array(self)
+    insert(removeFirst(), atIndex: 0)
   }
 
   mutating func shiftRight() {
-    let element = removeFirst()
-    append(element)
-    self = Array(self)
+    append(removeFirst())
   }
 }
