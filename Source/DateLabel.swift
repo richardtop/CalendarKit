@@ -15,7 +15,7 @@ class DateLabel: UILabel {
   var today: Bool = false
   var selected: Bool = false {
     didSet {
-      animateThisView()
+      animate()
     }
   }
 
@@ -66,7 +66,7 @@ class DateLabel: UILabel {
     tag = today ? 1 : 0
   }
 
-  func animateThisView(){
+  func animate(){
     UIView.transitionWithView(self, duration: 0.3,
       options: .TransitionCrossDissolve,
       animations: { _ in
