@@ -53,16 +53,16 @@ class TimelineView: UIView {
   override func drawRect(rect: CGRect) {
     super.drawRect(rect)
 
-    var discount = -1
+    var hourToRemoveIndex = -1
 
     if isToday {
       let today = NSDate()
       let minute = today.minute()
 
       if minute > 39 {
-        discount = today.hour() + 1
+        hourToRemoveIndex = today.hour() + 1
       } else if minute < 21 {
-        discount = today.hour()
+        hourToRemoveIndex = today.hour()
       }
     }
 
@@ -89,7 +89,7 @@ class TimelineView: UIView {
       CGContextStrokePath(context)
       CGContextRestoreGState(context)
 
-      if i == discount { continue }
+      if i == hourToRemoveIndex { continue }
 
       let timeRect = CGRectMake(2.0, iFloat * verticalDiff + verticalInset - 7, leftInset - 2.0 - 6, fontSize + 2.0)
       let timeString = NSString(string: time)
