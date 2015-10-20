@@ -2,6 +2,7 @@ import UIKit
 
 class DaySymbolsView: UIView {
   var daysInWeek = 7
+
   var labels = [UILabel]()
 
   override init(frame: CGRect) {

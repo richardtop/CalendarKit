@@ -2,6 +2,9 @@ import UIKit
 
 class DayView: UIView {
 
+  var headerHeight: CGFloat = 88
+
+  let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView()
 
   override init(frame: CGRect) {
@@ -12,6 +15,7 @@ class DayView: UIView {
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
+    addSubview(dayHeaderView)
   }
 
   func configure() {
@@ -41,6 +45,13 @@ class DayView: UIView {
   }
 
   override func layoutSubviews() {
-    timelinePager.frame = bounds
+var rect = bounds
+    rect.size.height = headerHeight
+
+    dayHeaderView.frame = rect
+
+
+
+//    timelinePager.frame = bounds
   }
 }
