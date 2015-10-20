@@ -49,7 +49,6 @@ class TimelineView: UIView {
     contentMode = UIViewContentMode.Redraw
   }
 
-
   override func drawRect(rect: CGRect) {
     super.drawRect(rect)
 
@@ -65,7 +64,6 @@ class TimelineView: UIView {
         discount = today.hour()
       }
     }
-
 
     for (i, time) in times.enumerate() {
       let iFloat = CGFloat(i)
