@@ -1,6 +1,6 @@
 import UIKit
 
-class TimelineBackgroundView: UIView {
+class TimelineView: UIView {
 
   var date = NSDate()
 
