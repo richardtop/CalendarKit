@@ -32,7 +32,8 @@ class WeekdaysView: UIView {
       dateLabels.append(label)
       addSubview(label)
 
-      let recognizer = UITapGestureRecognizer(target: self, action: "dateLabelDidTap:")
+      let recognizer = UITapGestureRecognizer(target: self,
+        action: "dateLabelDidTap:")
       label.addGestureRecognizer(recognizer)
     }
     configure()

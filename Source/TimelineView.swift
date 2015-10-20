@@ -66,7 +66,9 @@ class TimelineView: UIView {
       }
     }
 
-    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
+    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy()
+      as! NSMutableParagraphStyle
+
     style.lineBreakMode = .ByWordWrapping
     style.alignment = .Right
     let attributes = [NSParagraphStyleAttributeName: style,
@@ -91,7 +93,9 @@ class TimelineView: UIView {
 
       if i == hourToRemoveIndex { continue }
 
-      let timeRect = CGRectMake(2.0, iFloat * verticalDiff + verticalInset - 7, leftInset - 2.0 - 6, fontSize + 2.0)
+      let timeRect = CGRect(x: 2, y: iFloat * verticalDiff + verticalInset - 7,
+        width: leftInset - 8, height: fontSize + 2)
+
       let timeString = NSString(string: time)
 
       timeString.drawInRect(timeRect, withAttributes: attributes)

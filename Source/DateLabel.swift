@@ -53,15 +53,15 @@ class DateLabel: UILabel {
   }
 
   func updateState() {
-    if self.selected {
-      self.font = UIFont.boldSystemFontOfSize(self.fontSize)
-      self.textColor = self.activeTextColor
-      self.backgroundColor = self.today ? self.todayBackgroundColor : self.selectedBackgroundColor
+    if selected {
+      font = UIFont.boldSystemFontOfSize(fontSize)
+      textColor = activeTextColor
+      backgroundColor = today ? todayBackgroundColor : selectedBackgroundColor
     } else {
-      let clr = self.weekend ? self.weekendTextColor : self.inactiveTextColor
-      self.font = UIFont.systemFontOfSize(self.fontSize)
-      self.textColor = self.today ? self.activeTextColor : clr
-      self.backgroundColor = self.today ? self.todayBackgroundColor : self.inactiveBackgroundColor
+      let clr = weekend ? weekendTextColor : inactiveTextColor
+      font = UIFont.systemFontOfSize(fontSize)
+      textColor = today ? activeTextColor : clr
+      backgroundColor = today ? todayBackgroundColor : inactiveBackgroundColor
     }
     tag = today ? 1 : 0
   }
