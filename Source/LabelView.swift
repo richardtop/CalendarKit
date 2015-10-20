@@ -1,5 +1,4 @@
 import UIKit
-import DateTools
 
 class LabelView: UIView {
 
