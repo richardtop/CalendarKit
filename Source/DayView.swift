@@ -15,16 +15,15 @@ class DayView: UIView {
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
-    addSubview(dayHeaderView)
   }
 
   func configure() {
     configureTimelinePager()
+    addSubview(dayHeaderView)
   }
 
   func configureTimelinePager() {
     for _ in 0...2 {
-      print("asd")
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
 
