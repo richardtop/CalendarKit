@@ -66,6 +66,13 @@ class TimelineView: UIView {
       }
     }
 
+    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
+    style.lineBreakMode = .ByWordWrapping
+    style.alignment = .Right
+    let attributes = [NSParagraphStyleAttributeName: style,
+      NSForegroundColorAttributeName: timeColor,
+      NSFontAttributeName: timeFont]
+
     for (i, time) in times.enumerate() {
       let iFloat = CGFloat(i)
       let context = UIGraphicsGetCurrentContext()
@@ -86,13 +93,7 @@ class TimelineView: UIView {
 
       let timeRect = CGRectMake(2.0, iFloat * verticalDiff + verticalInset - 7, leftInset - 2.0 - 6, fontSize + 2.0)
       let timeString = NSString(string: time)
-      let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
-      style.lineBreakMode = .ByWordWrapping
-      style.alignment = .Right
 
-      let attributes = [NSParagraphStyleAttributeName: style,
-        NSForegroundColorAttributeName: timeColor,
-        NSFontAttributeName: timeFont]
       timeString.drawInRect(timeRect, withAttributes: attributes)
     }
   }
