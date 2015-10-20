@@ -1,11 +1,13 @@
 import UIKit
 
-class DayViewController: UIViewController {
+public class DayViewController: UIViewController {
 
-    override func viewDidLoad() {
+
+
+    override public func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+      view.backgroundColor = UIColor.redColor()
     }
 
 }
