@@ -61,11 +61,9 @@ class DayHeaderView: UIView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-
     daySymbolsView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .UnderCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 0, otherSize: swipeLabelViewHeight)
-    pagingScrollView.recenterIfNecessary()
   }
 }
 
