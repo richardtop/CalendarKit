@@ -27,37 +27,24 @@ class DayHeaderView: UIView {
 
   func configure() {
     [daySymbolsView, pagingScrollView, swipeLabelView]
-      .forEach { addSubview($0) }
+      .forEach {
+        addSubview($0)
+        $0.backgroundColor = .whiteColor()
+    }
 
-    daySymbolsView.backgroundColor = UIColor.blueColor()
-    pagingScrollView.backgroundColor = UIColor.grayColor()
-    swipeLabelView.backgroundColor = UIColor.greenColor()
-    swipeLabelView.date = NSDate()
     swipeLabelView.layoutSubviews()
-
-
     configurePages()
   }
 
-
-
   func configurePages() {
-    var screenSize = bounds.size
-    screenSize.height = 50.0
-
     for _ in 0...2 {
       let daySelector = DaySelector()
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
       daySelector.delegate = self
     }
-
-    screenSize.width = 375 * 3
-    screenSize.height = 50.0
-    pagingScrollView.contentSize = screenSize
-
+    pagingScrollView.contentSize = CGSize(width: 375 * 3, height: 0)
   }
-
 
   override func layoutSubviews() {
     super.layoutSubviews()

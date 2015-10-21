@@ -57,7 +57,6 @@ class DaySelector: UIView {
       let frame = CGRect(x: minX + (dateLabelWidth + per) * CGFloat(i), y: 0,
         width: dateLabelWidth, height: dateLabelWidth)
       label.frame = frame
-
     }
   }
 

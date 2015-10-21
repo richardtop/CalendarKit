@@ -1,5 +1,4 @@
 import UIKit
-import Neon
 
 public class DayViewController: UIViewController {
 

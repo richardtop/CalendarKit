@@ -11,18 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
   func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
-
-
     let vc = DayViewController()
-    vc.view.backgroundColor = UIColor.redColor()
-
     window?.rootViewController = vc
-    vc.view.layoutSubviews()
     window?.makeKeyAndVisible()
-
-
     return true
   }
-
 }
 

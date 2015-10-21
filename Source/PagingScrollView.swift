@@ -26,6 +26,7 @@ class PagingScrollView: UIScrollView {
   override func layoutSubviews() {
     super.layoutSubviews()
     recenterIfNecessary()
+    realignViews()
   }
 
   func recenterIfNecessary() {
@@ -36,17 +37,19 @@ class PagingScrollView: UIScrollView {
     let distanceFromCenter = contentOffset.x - centerOffsetX
 
     if fabs(distanceFromCenter) > (contentWidth / 3) {
-      contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
-
       if distanceFromCenter > 0 {
         reusableViews.shiftRight()
       } else {
         reusableViews.shiftLeft()
       }
-      for (index, subview) in reusableViews.enumerate() {
-        subview.frame.origin.x = bounds.width * CGFloat(index)
-        subview.frame.size = bounds.size
-      }
+      contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
+    }
+  }
+
+  func realignViews() {
+    for (index, subview) in reusableViews.enumerate() {
+      subview.frame.origin.x = bounds.width * CGFloat(index)
+      subview.frame.size = bounds.size
     }
   }
 }

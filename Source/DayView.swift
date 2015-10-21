@@ -28,7 +28,8 @@ class DayView: UIView {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
 
-      let verticalScrollView = UIScrollView(frame: bounds)
+      let verticalScrollView = TimelineContainer()
+      verticalScrollView.timeline = timeline
       verticalScrollView.addSubview(timeline)
       verticalScrollView.contentSize = timeline.frame.size
 
@@ -36,9 +37,9 @@ class DayView: UIView {
       timelinePager.reusableViews.append(verticalScrollView)
     }
 
-    let contentWidth = CGFloat(timelinePager.reusableViews.count) * bounds.width
-    let contentHeight = timelinePager.reusableViews.first!.bounds.height
-    let size = CGSize(width: contentWidth, height: contentHeight)
+    let contentWidth = CGFloat(timelinePager.reusableViews.count) * 375
+
+    let size = CGSize(width: contentWidth, height: 0)
     timelinePager.contentSize = size
 
     addSubview(timelinePager)
@@ -46,8 +47,6 @@ class DayView: UIView {
 
   override func layoutSubviews() {
     dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 20, otherSize: headerHeight)
-    dayHeaderView.clipsToBounds = true
-
     timelinePager.alignAndFill(align: .UnderCentered, relativeTo: dayHeaderView, padding: 0)
   }
 }
