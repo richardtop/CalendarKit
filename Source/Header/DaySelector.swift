@@ -12,17 +12,25 @@ class DaySelector: UIView {
 
   //TODO: change to support Work-week only (5 days instead of 7)
   var daysInWeek = 7
-  var startDate = NSDate()
+  var startDate: NSDate!
   var dateLabelWidth: CGFloat = 35
 
   var dateLabels = [DateLabel]()
 
+  init(startDate: NSDate) {
+    self.startDate = startDate
+    super.init(frame: CGRect.zero)
+    initializeViews()
+  }
+
   override init(frame: CGRect) {
+    startDate = NSDate()
     super.init(frame: frame)
     initializeViews()
   }
 
   required init?(coder aDecoder: NSCoder) {
+    startDate = NSDate()
     super.init(coder: aDecoder)
     initializeViews()
   }
