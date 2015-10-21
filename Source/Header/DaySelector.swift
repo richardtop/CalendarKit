@@ -62,7 +62,6 @@ class DaySelector: UIView {
 
   func dateLabelDidTap(sender: UITapGestureRecognizer) {
     if let label = sender.view as? DateLabel {
-      print(label.date)
       delegate?.dateSelectorDidSelectDate(label.date)
       dateLabels.filter {$0.selected == true}
         .first?.selected = false
