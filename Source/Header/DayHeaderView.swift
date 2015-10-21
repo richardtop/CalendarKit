@@ -1,6 +1,10 @@
 import UIKit
 import Neon
 
+protocol DayHeaderViewDelegate: class {
+
+}
+
 class DayHeaderView: UIView {
 
   var daySymbolsViewHeight: CGFloat = 17
@@ -25,7 +29,6 @@ class DayHeaderView: UIView {
     [daySymbolsView, pagingScrollView, swipeLabelView]
       .forEach { addSubview($0) }
 
-
     daySymbolsView.backgroundColor = UIColor.blueColor()
     pagingScrollView.backgroundColor = UIColor.grayColor()
     swipeLabelView.backgroundColor = UIColor.greenColor()
@@ -46,15 +49,13 @@ class DayHeaderView: UIView {
       let daySelector = DaySelector()
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
-//      daySelector.delegate = self
+      daySelector.delegate = self
     }
 
     screenSize.width = 375 * 3
     screenSize.height = 50.0
     pagingScrollView.contentSize = screenSize
-    pagingScrollView.pagingEnabled = true
-    pagingScrollView.recenterIfNecessary()
-//    print(screenSize)
+
   }
 
 
@@ -64,5 +65,12 @@ class DayHeaderView: UIView {
     daySymbolsView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .UnderCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 0, otherSize: swipeLabelViewHeight)
+    pagingScrollView.recenterIfNecessary()
+  }
+}
+
+extension DayHeaderView: DaySelectorDelegate {
+  func dateSelectorDidSelectDate(date: NSDate) {
+    swipeLabelView.date = date
   }
 }
