@@ -25,6 +25,7 @@ class PagingScrollView: UIScrollView {
   }
 
   func recenterIfNecessary() {
+    if reusableViews.isEmpty { return }
     let contentWidth = contentSize.width
     let centerOffsetX = (contentWidth - bounds.size.width) / 2
 
