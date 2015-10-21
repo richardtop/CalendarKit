@@ -49,11 +49,12 @@ class DayHeaderView: UIView {
       pagingScrollView.addSubview(daySelector)
       daySelector.delegate = self
     }
-    pagingScrollView.contentSize = CGSize(width: 375 * 3, height: 0)
   }
 
   override func layoutSubviews() {
     super.layoutSubviews()
+    pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
+
     daySymbolsView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .UnderCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 0, otherSize: swipeLabelViewHeight)
