@@ -1,4 +1,5 @@
 import UIKit
+import Neon
 import DateTools
 
 protocol DaySelectorDelegate: class {
@@ -46,17 +47,19 @@ class DaySelector: UIView {
   }
 
   override func layoutSubviews() {
+
+    print(frame.size)
+
     let dateLabelsCount = CGFloat(dateLabels.count)
-
-    var per = bounds.width - dateLabelWidth * dateLabelsCount
+    var per = frame.size.width - dateLabelWidth * dateLabelsCount
     per /= dateLabelsCount
-
     let minX = per / 2
     //TODO refactor swifty math by applying extension ?
     for (i, label) in dateLabels.enumerate() {
       let frame = CGRect(x: minX + (dateLabelWidth + per) * CGFloat(i), y: center.y - dateLabelWidth / 2,
         width: dateLabelWidth, height: dateLabelWidth)
       label.frame = frame
+
     }
   }
 

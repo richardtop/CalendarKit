@@ -32,6 +32,7 @@ class SwipeLabelView: UIView {
       labels.append(label)
       addSubview(label)
     }
+    date = NSDate()
   }
 
   func animate(forward: Bool) {
