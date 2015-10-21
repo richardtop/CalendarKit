@@ -3,6 +3,8 @@ import UIKit
 class DaySymbolsView: UIView {
   var daysInWeek = 7
 
+  var calendar = NSCalendar.autoupdatingCurrentCalendar()
+
   var labels = [UILabel]()
 
   override init(frame: CGRect) {
@@ -27,10 +29,11 @@ class DaySymbolsView: UIView {
   }
 
   func configure() {
-
-    let daySymbols = NSCalendar.currentCalendar()
-      .shortWeekdaySymbols
+    var daySymbols = calendar.shortWeekdaySymbols
       .map { String($0.characters.first!)}
+
+    // Adjust for first weekday
+    daySymbols.shift(calendar.firstWeekday - 1)
 
     for (index, label) in labels.enumerate() {
       label.text = daySymbols[index]
