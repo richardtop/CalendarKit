@@ -1,11 +1,14 @@
 import UIKit
 import Neon
+import DateTools
 
 protocol DayHeaderViewDelegate: class {
 
 }
 
 class DayHeaderView: UIView {
+
+  var calendar = NSCalendar.autoupdatingCurrentCalendar()
 
   var daySymbolsViewHeight: CGFloat = 17
   var pagingScrollViewHeight: CGFloat = 50
@@ -25,13 +28,16 @@ class DayHeaderView: UIView {
     configure()
   }
 
+  func dateOnlyFromDate(date: NSDate) -> NSDate {
+    return NSDate(year: date.year(), month: date.month(), day: date.day())
+  }
+
   func configure() {
     [daySymbolsView, pagingScrollView, swipeLabelView]
       .forEach {
         addSubview($0)
         $0.backgroundColor = .whiteColor()
     }
-
     swipeLabelView.layoutSubviews()
     configurePages()
   }
