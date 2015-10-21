@@ -37,10 +37,11 @@ class PagingScrollView: UIScrollView {
     let distanceFromCenter = contentOffset.x - centerOffsetX
 
     if fabs(distanceFromCenter) > (contentWidth / 3) {
+
       if distanceFromCenter > 0 {
-        reusableViews.shiftRight()
+        reusableViews.shift(1)
       } else {
-        reusableViews.shiftLeft()
+        reusableViews.shift(-1)
       }
       contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
     }

@@ -1,23 +1,7 @@
-import Foundation
-
 extension Array {
-  mutating func shiftLeft() {
-    insert(removeFirst(), atIndex: 0)
-  }
-
-  mutating func shiftRight() {
-    append(removeFirst())
-  }
-
-  // TODO: refactor this function while keeping the interface the same
-  mutating func shift(index: Int) {
-    if index == 0 {return}
-    for _ in 1...abs(index) {
-      if index > 0 {
-        shiftRight()
-      } else {
-        shiftLeft()
-      }
-    }
+  mutating func shift(var amount: Int) {
+    guard -count...count ~= amount else { return }
+    if amount < 0 { amount += count }
+    self = Array(self[amount ..< count] + self[0 ..< amount])
   }
 }

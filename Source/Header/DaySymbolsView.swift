@@ -32,7 +32,6 @@ class DaySymbolsView: UIView {
     var daySymbols = calendar.shortWeekdaySymbols
       .map { String($0.characters.first!)}
 
-    // Adjust for first weekday
     daySymbols.shift(calendar.firstWeekday - 1)
 
     for (index, label) in labels.enumerate() {
