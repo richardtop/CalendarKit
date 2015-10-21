@@ -41,6 +41,7 @@ class PagingScrollView: UIScrollView {
       }
       for (index, subview) in reusableViews.enumerate() {
         subview.frame.origin.x = bounds.width * CGFloat(index)
+        subview.frame.size = bounds.size
       }
     }
   }

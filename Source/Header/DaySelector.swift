@@ -54,9 +54,10 @@ class DaySelector: UIView {
     var per = frame.size.width - dateLabelWidth * dateLabelsCount
     per /= dateLabelsCount
     let minX = per / 2
+
     //TODO refactor swifty math by applying extension ?
     for (i, label) in dateLabels.enumerate() {
-      let frame = CGRect(x: minX + (dateLabelWidth + per) * CGFloat(i), y: center.y - dateLabelWidth / 2,
+      let frame = CGRect(x: minX + (dateLabelWidth + per) * CGFloat(i), y: 0,
         width: dateLabelWidth, height: dateLabelWidth)
       label.frame = frame
 
