@@ -1,4 +1,5 @@
 import UIKit
+import Neon
 
 class DayView: UIView {
 
@@ -44,13 +45,9 @@ class DayView: UIView {
   }
 
   override func layoutSubviews() {
-var rect = bounds
-    rect.size.height = headerHeight
+    dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 20, otherSize: headerHeight)
+    dayHeaderView.clipsToBounds = true
 
-    dayHeaderView.frame = rect
-
-
-
-//    timelinePager.frame = bounds
+    timelinePager.alignAndFill(align: .UnderCentered, relativeTo: dayHeaderView, padding: 0)
   }
 }
