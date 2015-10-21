@@ -1,5 +1,9 @@
 import UIKit
 
+protocol Reusable: class {
+  func prepareForReuse()
+}
+
 class PagingScrollView: UIScrollView {
 
   var reusableViews = [UIView]()
