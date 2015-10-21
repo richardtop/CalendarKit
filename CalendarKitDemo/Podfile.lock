@@ -4,11 +4,11 @@ PODS:
   - DateTools (1.7.0)
 
 DEPENDENCIES:
-  - CalendarKit (from `../../`)
+  - CalendarKit (from `../`)
 
 EXTERNAL SOURCES:
   CalendarKit:
-    :path: "../../"
+    :path: "../"
 
 SPEC CHECKSUMS:
   CalendarKit: a60fa2951a046da71d4478d90f4e8d54bbf965e6

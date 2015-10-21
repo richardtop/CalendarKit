@@ -14,9 +14,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     let vc = DayViewController()
-
+    vc.view.backgroundColor = UIColor.redColor()
 
     window?.rootViewController = vc
+    vc.view.layoutSubviews()
     window?.makeKeyAndVisible()
 
 
