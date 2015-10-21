@@ -6,12 +6,17 @@ class PagingScrollView: UIScrollView {
 
   override init(frame: CGRect) {
     super.init(frame: frame)
-    pagingEnabled = true
+    configure()
   }
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
+    configure()
+  }
+
+  func configure() {
     pagingEnabled = true
+    directionalLockEnabled = true
   }
 
   override func layoutSubviews() {
