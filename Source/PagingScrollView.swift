@@ -9,7 +9,13 @@ class PagingScrollView: UIScrollView {
 
   weak var viewDelegate: PagingScrollViewDelegate?
 
-  var currentPage = 0
+  var currentPage: CGFloat {
+    get {
+      let width = bounds.width
+      let centerOffsetX = contentOffset.x + width / 2
+      return centerOffsetX / width
+    }
+  }
 
   var reusableViews = [UIView]()
 
@@ -66,10 +72,7 @@ extension PagingScrollView: UIScrollViewDelegate {
   func scrollViewDidScroll(scrollView: UIScrollView) {
     let pageWidth = scrollView.frame.size.width;
     let fractionalPage = scrollView.contentOffset.x / pageWidth;
-    let page = lround(Double(fractionalPage));
-    if currentPage != page {
-      // TODO: better solution for page sync
-      currentPage = page;
+
     }
   }
-}
+
