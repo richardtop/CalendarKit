@@ -23,7 +23,6 @@ class DateLabel: UILabel {
   var weekendTextColor = UIColor.grayColor()
   var inactiveTextColor = UIColor.blackColor()
 
-  var todayColor = UIColor.redColor()
   var selectedBackgroundColor = UIColor.blackColor()
   var inactiveBackgroundColor = UIColor.clearColor()
 
@@ -48,11 +47,11 @@ class DateLabel: UILabel {
     if selected {
       font = UIFont.boldSystemFontOfSize(fontSize)
       textColor = activeTextColor
-      backgroundColor = today ? todayColor : selectedBackgroundColor
+      backgroundColor = today ? tintColor : selectedBackgroundColor
     } else {
       let clr = date.isWeekend() ? weekendTextColor : inactiveTextColor
       font = UIFont.systemFontOfSize(fontSize)
-      textColor = today ? todayColor : clr
+      textColor = today ? tintColor : clr
       backgroundColor = inactiveBackgroundColor
     }
   }
@@ -67,5 +66,8 @@ class DateLabel: UILabel {
 
   override func layoutSubviews() {
     layer.cornerRadius = bounds.height / 2
+  }
+  override func tintColorDidChange() {
+    updateState()
   }
 }
