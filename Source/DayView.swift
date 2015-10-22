@@ -60,3 +60,7 @@ extension DayView: PagingScrollViewDelegate {
 
   }
 }
+
+extension DayView: DayHeaderViewDelegate {
+  func dateHeaderDateChanged(newDate: NSDate) {}
+}
