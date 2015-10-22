@@ -20,6 +20,7 @@ class DayView: UIView {
 
   func configure() {
     configureTimelinePager()
+    dayHeaderView.delegate = self
     addSubview(dayHeaderView)
   }
 

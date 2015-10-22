@@ -1,11 +1,12 @@
 import UIKit
 
-
 protocol DayHeaderViewDelegate: class {
-
+  func dateHeaderDateChanged(newDate: NSDate)
 }
 
 class DayHeaderView: UIView {
+
+  weak var delegate: DayHeaderViewDelegate?
 
   var calendar = NSCalendar.autoupdatingCurrentCalendar()
 
@@ -35,11 +36,10 @@ class DayHeaderView: UIView {
     [daySymbolsView, pagingScrollView, swipeLabelView]
       .forEach {
         addSubview($0)
-        $0.backgroundColor = .whiteColor()
     }
-    swipeLabelView.layoutSubviews()
     configurePages()
     pagingScrollView.viewDelegate = self
+    backgroundColor = UIColor(white: 247/255, alpha: 1)
   }
 
   func configurePages() {
@@ -51,7 +51,8 @@ class DayHeaderView: UIView {
       daySelector.startDate = beginningOfWeek(date)
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
-      pagingScrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
+      //TODO: Refactor default scroll offset
+      pagingScrollView.contentOffset = CGPoint(x: UIScreen.mainScreen().bounds.width, y: 0)
       daySelector.delegate = self
     }
   }
@@ -69,6 +70,7 @@ class DayHeaderView: UIView {
 extension DayHeaderView: DaySelectorDelegate {
   func dateSelectorDidSelectDate(date: NSDate) {
     swipeLabelView.date = date
+    delegate?.dateHeaderDateChanged(date)
   }
 
   func beginningOfWeek(date: NSDate) -> NSDate {
