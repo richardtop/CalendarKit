@@ -9,6 +9,8 @@ class PagingScrollView: UIScrollView {
 
   weak var viewDelegate: PagingScrollViewDelegate?
 
+  var currentPage = 0
+
   var reusableViews = [UIView]()
 
   override init(frame: CGRect) {
@@ -24,6 +26,7 @@ class PagingScrollView: UIScrollView {
   func configure() {
     pagingEnabled = true
     directionalLockEnabled = true
+    delegate = self
   }
 
   override func layoutSubviews() {
@@ -55,6 +58,18 @@ class PagingScrollView: UIScrollView {
     for (index, subview) in reusableViews.enumerate() {
       subview.frame.origin.x = bounds.width * CGFloat(index)
       subview.frame.size = bounds.size
+    }
+  }
+}
+
+extension PagingScrollView: UIScrollViewDelegate {
+  func scrollViewDidScroll(scrollView: UIScrollView) {
+    let pageWidth = scrollView.frame.size.width;
+    let fractionalPage = scrollView.contentOffset.x / pageWidth;
+    let page = lround(Double(fractionalPage));
+    if currentPage != page {
+      // TODO: better solution for page sync
+      currentPage = page;
     }
   }
 }
