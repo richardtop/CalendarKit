@@ -10,8 +10,8 @@ class DayHeaderView: UIView {
 
   var calendar = NSCalendar.autoupdatingCurrentCalendar()
 
-  var daySymbolsViewHeight: CGFloat = 17
-  var pagingScrollViewHeight: CGFloat = 50
+  var daySymbolsViewHeight: CGFloat = 20
+  var pagingScrollViewHeight: CGFloat = 40
   var swipeLabelViewHeight: CGFloat = 20
 
   let daySymbolsView = DaySymbolsView()
@@ -62,7 +62,7 @@ class DayHeaderView: UIView {
 
     daySymbolsView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .UnderCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
-    swipeLabelView.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 0, otherSize: swipeLabelViewHeight)
+    swipeLabelView.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)
   }
 }
 

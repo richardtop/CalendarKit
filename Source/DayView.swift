@@ -46,7 +46,7 @@ class DayView: UIView {
     let size = CGSize(width: contentWidth, height: 0)
     timelinePager.contentSize = size
 
-    dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 20, otherSize: headerHeight)
+    dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: headerHeight)
     timelinePager.alignAndFill(align: .UnderCentered, relativeTo: dayHeaderView, padding: 0)
   }
 }
