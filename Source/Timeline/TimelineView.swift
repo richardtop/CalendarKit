@@ -15,12 +15,23 @@ class TimelineView: UIView {
   var verticalDiff: CGFloat = 45
   var verticalInset: CGFloat = 10
   var leftInset: CGFloat = 53
+
+  var fullHeight: CGFloat {
+    return verticalInset * 2 + verticalDiff * 24
+  }
+
   var fontSize: CGFloat = 11
 
   var is24hClock = true {
     didSet {
       setNeedsDisplay()
     }
+  }
+
+  init() {
+    super.init(frame: CGRect.zero)
+    frame.size.height = fullHeight
+    configure()
   }
 
   var times: [String] {

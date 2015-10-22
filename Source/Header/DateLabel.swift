@@ -7,21 +7,13 @@ class DateLabel: UILabel {
   var date: NSDate! {
     didSet {
       text = String(date.day())
+      updateState()
     }
   }
 
-  //TODO: refactor TODAY to computed property
-
-  var today: Bool = false
   var selected: Bool = false {
     didSet {
       animate()
-    }
-  }
-
-  var weekend: Bool = false {
-    didSet {
-      updateState()
     }
   }
 
@@ -31,7 +23,6 @@ class DateLabel: UILabel {
   var weekendTextColor = UIColor.grayColor()
   var inactiveTextColor = UIColor.blackColor()
 
-  var todayBackgroundColor = UIColor.redColor()
   var selectedBackgroundColor = UIColor.blackColor()
   var inactiveBackgroundColor = UIColor.clearColor()
 
@@ -49,21 +40,20 @@ class DateLabel: UILabel {
     userInteractionEnabled = true
     textAlignment = .Center
     clipsToBounds = true
-    updateState()
   }
 
   func updateState() {
+    let today = date.isToday()
     if selected {
       font = UIFont.boldSystemFontOfSize(fontSize)
       textColor = activeTextColor
-      backgroundColor = today ? todayBackgroundColor : selectedBackgroundColor
+      backgroundColor = today ? tintColor : selectedBackgroundColor
     } else {
-      let clr = weekend ? weekendTextColor : inactiveTextColor
+      let notTodayColor = date.isWeekend() ? weekendTextColor : inactiveTextColor
       font = UIFont.systemFontOfSize(fontSize)
-      textColor = today ? activeTextColor : clr
-      backgroundColor = today ? todayBackgroundColor : inactiveBackgroundColor
+      textColor = today ? tintColor : notTodayColor
+      backgroundColor = inactiveBackgroundColor
     }
-    tag = today ? 1 : 0
   }
 
   func animate(){
@@ -76,5 +66,8 @@ class DateLabel: UILabel {
 
   override func layoutSubviews() {
     layer.cornerRadius = bounds.height / 2
+  }
+  override func tintColorDidChange() {
+    updateState()
   }
 }

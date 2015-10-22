@@ -22,7 +22,6 @@ struct Generator {
     for i in 1...11 {
       let string = String(i)
       numbers.append(string)
-      print(string)
     }
 
     var am = numbers.map { $0 + " AM" }
