@@ -52,6 +52,7 @@ class DayHeaderView: UIView {
       daySelector.startDate = beginningOfWeek(date)
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
+      pagingScrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
       daySelector.delegate = self
     }
   }
