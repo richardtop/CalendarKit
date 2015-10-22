@@ -11,8 +11,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.backgroundColor = UIColor.whiteColor()
     window?.makeKeyAndVisible()
 
-    let vc = DayViewController()
-    let navigationController = UINavigationController(rootViewController: vc)
+    let dayViewController = DayViewController()
+    let navigationController = UINavigationController(rootViewController: dayViewController)
     window?.rootViewController = navigationController
 
     return true

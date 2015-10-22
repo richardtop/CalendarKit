@@ -49,9 +49,9 @@ class DateLabel: UILabel {
       textColor = activeTextColor
       backgroundColor = today ? tintColor : selectedBackgroundColor
     } else {
-      let clr = date.isWeekend() ? weekendTextColor : inactiveTextColor
+      let notTodayColor = date.isWeekend() ? weekendTextColor : inactiveTextColor
       font = UIFont.systemFontOfSize(fontSize)
-      textColor = today ? tintColor : clr
+      textColor = today ? tintColor : notTodayColor
       backgroundColor = inactiveBackgroundColor
     }
   }
