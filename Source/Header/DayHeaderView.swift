@@ -43,8 +43,13 @@ class DayHeaderView: UIView {
   }
 
   func configurePages() {
-    for _ in 0...2 {
+    for i in 0...2 {
       let daySelector = DaySelector()
+      let offset = i - 1
+      let date = NSDate().dateByAddingWeeks(offset)
+
+      daySelector.startDate = beginningOfWeek(date)
+      daySelector.configure()
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
       daySelector.delegate = self
@@ -64,5 +69,13 @@ class DayHeaderView: UIView {
 extension DayHeaderView: DaySelectorDelegate {
   func dateSelectorDidSelectDate(date: NSDate) {
     swipeLabelView.date = date
+  }
+
+  func beginningOfWeek(date: NSDate) -> NSDate {
+    let components = calendar.components([.Year, .Month, .Day, .TimeZone, .Weekday], fromDate: date)
+    let offset = components.weekday - calendar.firstWeekday
+    components.day = components.day - offset
+
+    return calendar.dateFromComponents(components)!
   }
 }
