@@ -12,7 +12,11 @@ class DaySelector: UIView {
 
   //TODO: change to support Work-week only (5 days instead of 7)
   var daysInWeek = 7
-  var startDate: NSDate!
+  var startDate: NSDate! {
+    didSet {
+      configure()
+    }
+  }
   var dateLabelWidth: CGFloat = 35
 
   var dateLabels = [DateLabel]()
@@ -21,6 +25,7 @@ class DaySelector: UIView {
     self.startDate = startDate
     super.init(frame: CGRect.zero)
     initializeViews()
+    configure()
   }
 
   override init(frame: CGRect) {
@@ -45,7 +50,6 @@ class DaySelector: UIView {
         action: "dateLabelDidTap:")
       label.addGestureRecognizer(recognizer)
     }
-    configure()
   }
 
   func configure() {
