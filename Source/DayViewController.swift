@@ -8,6 +8,7 @@ public class DayViewController: UIViewController {
     super.viewDidLoad()
     self.edgesForExtendedLayout = UIRectEdge.None
     view.addSubview(dayView)
+    view.tintColor = UIColor.redColor()
   }
 
   public override func viewDidLayoutSubviews() {
