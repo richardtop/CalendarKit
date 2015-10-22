@@ -6,6 +6,7 @@ public class DayViewController: UIViewController {
 
   override public func viewDidLoad() {
     super.viewDidLoad()
+    self.edgesForExtendedLayout = UIRectEdge.None
     view.addSubview(dayView)
   }
 
