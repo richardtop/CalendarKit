@@ -33,8 +33,7 @@ class DayHeaderView: UIView {
   }
 
   func configure() {
-    [daySymbolsView, pagingScrollView, swipeLabelView]
-      .forEach {
+    [daySymbolsView, pagingScrollView, swipeLabelView].forEach {
         addSubview($0)
     }
     configurePages()

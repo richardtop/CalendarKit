@@ -36,8 +36,7 @@ class DaySymbolsView: UIView {
     let weekendMask = [true] + [Bool](count: 5, repeatedValue: false) + [true]
     var weekDays = Array(Zip2Sequence(daySymbols, weekendMask))
 
-    let offset = calendar.firstWeekday - 1
-    weekDays.shift(offset)
+    weekDays.shift(calendar.firstWeekday - 1)
 
     for (index, label) in labels.enumerate() {
       label.text = weekDays[index].0
