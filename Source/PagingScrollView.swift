@@ -1,10 +1,13 @@
 import UIKit
 
-protocol Reusable: class {
-  func prepareForReuse()
+protocol PagingScrollViewDelegate: class {
+  func viewRequiresUpdate(view: UIView, viewBefore: UIView)
+  func viewRequiresUpdate(view: UIView, viewAfter: UIView)
 }
 
 class PagingScrollView: UIScrollView {
+
+  weak var viewDelegate: PagingScrollViewDelegate?
 
   var reusableViews = [UIView]()
 
@@ -37,11 +40,12 @@ class PagingScrollView: UIScrollView {
     let distanceFromCenter = contentOffset.x - centerOffsetX
 
     if fabs(distanceFromCenter) > (contentWidth / 3) {
-
       if distanceFromCenter > 0 {
         reusableViews.shift(1)
+        viewDelegate?.viewRequiresUpdate(reusableViews[2], viewBefore: reusableViews[1])
       } else {
         reusableViews.shift(-1)
+        viewDelegate?.viewRequiresUpdate(reusableViews[0], viewAfter: reusableViews[1])
       }
       contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
     }

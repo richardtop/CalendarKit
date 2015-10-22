@@ -24,7 +24,7 @@ class DayView: UIView {
   }
 
   func configureTimelinePager() {
-    for _ in 0...2 {
+    for i in 0...2 {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
 
@@ -37,6 +37,7 @@ class DayView: UIView {
       timelinePager.reusableViews.append(verticalScrollView)
     }
     addSubview(timelinePager)
+    timelinePager.viewDelegate = self
   }
 
   override func layoutSubviews() {
@@ -46,5 +47,15 @@ class DayView: UIView {
 
     dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 20, otherSize: headerHeight)
     timelinePager.alignAndFill(align: .UnderCentered, relativeTo: dayHeaderView, padding: 0)
+  }
+}
+
+extension DayView: PagingScrollViewDelegate {
+  func viewRequiresUpdate(view: UIView, viewBefore: UIView) {
+
+  }
+
+  func viewRequiresUpdate(view: UIView, viewAfter: UIView) {
+
   }
 }
