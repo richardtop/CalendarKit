@@ -7,6 +7,8 @@ class DaySymbolsView: UIView {
 
   var labels = [UILabel]()
 
+  var weekendColor = UIColor.lightGrayColor()
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     initializeViews()
@@ -29,13 +31,17 @@ class DaySymbolsView: UIView {
   }
 
   func configure() {
-    var daySymbols = calendar.shortWeekdaySymbols
+    let daySymbols = calendar.shortWeekdaySymbols
       .map { String($0.characters.first!)}
+    let weekendMask = [true] + [Bool](count: 5, repeatedValue: false) + [true]
+    var weekDays = Array(Zip2Sequence(daySymbols, weekendMask))
 
-    daySymbols.shift(calendar.firstWeekday - 1)
+    let offset = calendar.firstWeekday - 1
+    weekDays.shift(offset)
 
     for (index, label) in labels.enumerate() {
-      label.text = daySymbols[index]
+      label.text = weekDays[index].0
+      label.textColor = weekDays[index].1 ? weekendColor : .blackColor()
     }
   }
 
