@@ -6,6 +6,14 @@ protocol PagingScrollViewDelegate: class {
   func scrollviewDidScrollToView(view: UIView)
 }
 
+protocol ReusableView: class {
+  func prepareForReuse()
+}
+
+extension UIView: ReusableView {
+  func prepareForReuse() {}
+}
+
 class PagingScrollView: UIScrollView {
 
   weak var viewDelegate: PagingScrollViewDelegate?
