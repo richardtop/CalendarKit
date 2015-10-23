@@ -24,8 +24,11 @@ class DaySelector: UIView {
         .first?.selected = false
       let label = dateLabels[selectedIndex]
       label.selected = true
-      delegate?.dateSelectorDidSelectDate(label.date, index: selectedIndex)
     }
+  }
+
+  var selectedDate: NSDate? {
+    return dateLabels.filter{$0.selected == true}.first?.date
   }
 
   var dateLabelWidth: CGFloat = 35
