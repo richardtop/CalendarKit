@@ -3,7 +3,7 @@ import Neon
 import DateTools
 
 protocol DaySelectorDelegate: class {
-  func dateSelectorDidSelectDate(date: NSDate)
+  func dateSelectorDidSelectDate(date: NSDate, index: Int)
 }
 
 class DaySelector: UIView {
@@ -17,6 +17,17 @@ class DaySelector: UIView {
       configure()
     }
   }
+
+  var selectedIndex = -1 {
+    didSet {
+      dateLabels.filter {$0.selected == true}
+        .first?.selected = false
+      let label = dateLabels[selectedIndex]
+      label.selected = true
+      delegate?.dateSelectorDidSelectDate(label.date, index: selectedIndex)
+    }
+  }
+
   var dateLabelWidth: CGFloat = 35
 
   var dateLabels = [DateLabel]()
@@ -58,6 +69,10 @@ class DaySelector: UIView {
     }
   }
 
+  override func prepareForReuse() {
+    dateLabels.forEach {$0.selected = false}
+  }
+
   override func layoutSubviews() {
     let dateLabelsCount = CGFloat(dateLabels.count)
     var per = frame.size.width - dateLabelWidth * dateLabelsCount
@@ -74,7 +89,8 @@ class DaySelector: UIView {
 
   func dateLabelDidTap(sender: UITapGestureRecognizer) {
     if let label = sender.view as? DateLabel {
-      delegate?.dateSelectorDidSelectDate(label.date)
+      selectedIndex = dateLabels.indexOf(label)!
+      delegate?.dateSelectorDidSelectDate(label.date, index: selectedIndex)
       dateLabels.filter {$0.selected == true}
         .first?.selected = false
       label.selected = true

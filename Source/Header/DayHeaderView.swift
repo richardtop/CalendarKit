@@ -10,6 +10,8 @@ class DayHeaderView: UIView {
 
   var calendar = NSCalendar.autoupdatingCurrentCalendar()
 
+  var currentIndex = -1
+
   var daySymbolsViewHeight: CGFloat = 20
   var pagingScrollViewHeight: CGFloat = 40
   var swipeLabelViewHeight: CGFloat = 20
@@ -67,7 +69,8 @@ class DayHeaderView: UIView {
 }
 
 extension DayHeaderView: DaySelectorDelegate {
-  func dateSelectorDidSelectDate(date: NSDate) {
+  func dateSelectorDidSelectDate(date: NSDate, index: Int) {
+    currentIndex = index
     swipeLabelView.date = date
     delegate?.dateHeaderDateChanged(date)
   }
@@ -96,6 +99,6 @@ extension DayHeaderView: PagingScrollViewDelegate {
 
   func scrollviewDidScrollToView(view: UIView) {
     let activeView = view as! DaySelector
-    print(activeView.startDate)
+    activeView.selectedIndex = currentIndex
   }
 }
