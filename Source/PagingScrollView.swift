@@ -69,10 +69,12 @@ class PagingScrollView: UIScrollView {
       if distanceFromCenter > 0 {
         reusableViews.shift(1)
         accumulator++
+        reusableViews[2].prepareForReuse()
         viewDelegate?.viewRequiresUpdate(reusableViews[2], viewBefore: reusableViews[1])
       } else {
         reusableViews.shift(-1)
         accumulator--
+        reusableViews[0].prepareForReuse()
         viewDelegate?.viewRequiresUpdate(reusableViews[0], viewAfter: reusableViews[1])
       }
       contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
@@ -91,6 +93,7 @@ extension PagingScrollView: UIScrollViewDelegate {
   func checkForPageChange() {
     if currentIndex != previousPage {
       viewDelegate?.scrollviewDidScrollToView(reusableViews[Int(currentScrollViewPage)])
+      reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
       previousPage = currentIndex
     }
   }
