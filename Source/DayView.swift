@@ -59,6 +59,10 @@ extension DayView: PagingScrollViewDelegate {
   func viewRequiresUpdate(view: UIView, viewAfter: UIView) {
 
   }
+
+  func scrollviewDidScrollToView(view: UIView) {
+    
+  }
 }
 
 extension DayView: DayHeaderViewDelegate {

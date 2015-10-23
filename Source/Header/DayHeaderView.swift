@@ -93,4 +93,9 @@ extension DayHeaderView: PagingScrollViewDelegate {
     let newStartDate = viewToUpdate.startDate.dateByAddingWeeks(-3)
     viewToUpdate.startDate = newStartDate
   }
+
+  func scrollviewDidScrollToView(view: UIView) {
+    let activeView = view as! DaySelector
+    print(activeView.startDate)
+  }
 }
