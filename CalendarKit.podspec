@@ -12,4 +12,5 @@ Pod::Spec.new do |s|
   s.source_files = 'Source/**/*'
   s.dependency 'DateTools'
   s.dependency 'Neon'
+  s.dependency 'DynamicColor'
 end
