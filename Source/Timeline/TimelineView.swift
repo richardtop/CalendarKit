@@ -2,7 +2,15 @@ import UIKit
 
 class TimelineView: UIView {
 
-  var date = NSDate()
+  var date = NSDate() {
+    didSet {
+      label.text = String(date.day())
+    }
+  }
+
+  //IFDEF DEBUG
+
+  lazy var label = UILabel()
 
   var hourColor = UIColor.lightGrayColor()
   var timeColor = UIColor.lightGrayColor()
@@ -59,6 +67,7 @@ class TimelineView: UIView {
     layer.contentsScale = 1
     contentMode = UIViewContentMode.Redraw
     backgroundColor = .whiteColor()
+    addSubview(label)
   }
 
   override func drawRect(rect: CGRect) {
@@ -111,6 +120,11 @@ class TimelineView: UIView {
 
       timeString.drawInRect(timeRect, withAttributes: attributes)
     }
+  }
+
+  override func layoutSubviews() {
+    label.sizeToFit()
+    label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50))
   }
 
   // MARK: - Helpers
