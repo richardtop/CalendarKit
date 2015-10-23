@@ -101,5 +101,7 @@ extension DayHeaderView: PagingScrollViewDelegate {
     let activeView = view as! DaySelector
     activeView.selectedIndex = currentIndex
     swipeLabelView.date = activeView.selectedDate!
+    delegate?.dateHeaderDateChanged(activeView.selectedDate!
+    )
   }
 }
