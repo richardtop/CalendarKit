@@ -68,19 +68,27 @@ class PagingScrollView: UIScrollView {
     let distanceFromCenter = contentOffset.x - centerOffsetX
 
     if fabs(distanceFromCenter) > (contentWidth / 3) {
-      if distanceFromCenter > 0 {
-        reusableViews.shift(1)
-        accumulator++
-        reusableViews[2].prepareForReuse()
-        viewDelegate?.viewRequiresUpdate(reusableViews[2], viewBefore: reusableViews[1])
-      } else {
-        reusableViews.shift(-1)
-        accumulator--
-        reusableViews[0].prepareForReuse()
-        viewDelegate?.viewRequiresUpdate(reusableViews[0], viewAfter: reusableViews[1])
-      }
-      contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
+      recenter()
     }
+  }
+
+  func recenter() {
+    let contentWidth = contentSize.width
+    let centerOffsetX = (contentWidth - bounds.size.width) / 2
+    let distanceFromCenter = contentOffset.x - centerOffsetX
+
+    if distanceFromCenter > 0 {
+      reusableViews.shift(1)
+      accumulator++
+      reusableViews[2].prepareForReuse()
+      viewDelegate?.viewRequiresUpdate(reusableViews[2], viewBefore: reusableViews[1])
+    } else {
+      reusableViews.shift(-1)
+      accumulator--
+      reusableViews[0].prepareForReuse()
+      viewDelegate?.viewRequiresUpdate(reusableViews[0], viewAfter: reusableViews[1])
+    }
+    contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
   }
 
   func realignViews() {
@@ -88,6 +96,14 @@ class PagingScrollView: UIScrollView {
       subview.frame.origin.x = bounds.width * CGFloat(index)
       subview.frame.size = bounds.size
     }
+  }
+
+  func scrollForward() {
+    setContentOffset(CGPoint(x: frame.width * 2, y: 0), animated: true)
+  }
+
+  func scrollBackward() {
+    setContentOffset(CGPoint.zero, animated: true)
   }
 }
 
@@ -98,6 +114,8 @@ extension PagingScrollView: UIScrollViewDelegate {
       reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
       previousPage = currentIndex
     }
+
+    recenter()
   }
 
   func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
