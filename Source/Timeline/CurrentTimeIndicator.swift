@@ -43,8 +43,10 @@ class CurrentTimeIndicator: UIView {
   }
 
   override func layoutSubviews() {
-    timeLabel.frame.origin = CGPoint(x: 2, y: 0)
-    line.frame = CGRect(x: leftInset - 5, y: 5, width: bounds.width, height: 1)
+    //TODO: Maybe there is a cleaner way to achieve desired effect
+    timeLabel.frame.origin = CGPoint(x: 4, y: 0)
+    timeLabel.center.y = bounds.height / 2
+    line.frame = CGRect(x: leftInset - 5, y: bounds.height / 2, width: bounds.width, height: 1)
 
     circle.frame = CGRect(x: leftInset + 1, y: 0, width: 6, height: 6)
     circle.center.y = line.center.y
