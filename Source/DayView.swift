@@ -67,6 +67,7 @@ extension DayView: PagingScrollViewDelegate {
   func scrollviewDidScrollToView(view: UIView) {
     let timeline = (view as! TimelineContainer).timeline
     currentDate = timeline.date
+    dayHeaderView.selectDate(currentDate)
   }
 }
 

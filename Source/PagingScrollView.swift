@@ -114,7 +114,6 @@ extension PagingScrollView: UIScrollViewDelegate {
       reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
       previousPage = currentIndex
     }
-
     recenter()
   }
 
