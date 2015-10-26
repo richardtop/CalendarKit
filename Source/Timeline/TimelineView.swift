@@ -22,7 +22,7 @@ class TimelineView: UIView {
     }
   }
 
-  private var _testEventViews = [EventView]()
+  private var _eventHolder = [EventView]()
 
   //IFDEF DEBUG
 
@@ -162,12 +162,12 @@ class TimelineView: UIView {
 
     let day = DTTimePeriod(size: .Day, startingAt:date)
 
-    eventViews = eventViews.filter {$0.datePeriod.overlapsWith(day)}
+    _eventHolder = eventViews.filter {$0.datePeriod.overlapsWith(day)}
       .sort {$0.datePeriod.StartDate.isEarlierThan($1.datePeriod.StartDate)}
 
     var parentArray = [[EventView]]()
 
-    for event in eventViews {
+    for event in _eventHolder {
       if parentArray.isEmpty {
         parentArray.append([event])
         continue
@@ -183,17 +183,6 @@ class TimelineView: UIView {
         parentArray.append([event])
       }
     }
-
-
-
-    /*
-    for (index, event) in _testEventViews.enumerate() {
-    let startY = dateToY(event.datePeriod.StartDate)
-    let endY = dateToY(event.datePeriod.EndDate)
-    print(event.datePeriod.StartDate)
-    event.frame = CGRect(x: leftInset + CGFloat(index) * horizontalEventInset, y: startY, width: bounds.width - leftInset, height: endY - startY)
-    }
-    */
 
     let calendarWidth = bounds.width - leftInset
 
@@ -213,6 +202,20 @@ class TimelineView: UIView {
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
     }
+
+    for (index, event) in _eventHolder.enumerate() {
+      if event == _eventHolder.first! { continue }
+
+      let previousEvent = _eventHolder[index - 1]
+      if eventSafeZone(previousEvent) < event.frame.origin.y {
+        previousEvent.frame.size.width = calendarWidth
+        previousEvent.frame.origin.x = leftInset
+      }
+    }
+  }
+
+  func eventSafeZone(event: EventView) -> CGFloat {
+    return event.frame.origin.y + event.contentHeight
   }
 
   // MARK: - Helpers
