@@ -1,7 +1,13 @@
 import UIKit
 import Neon
 
+protocol DayViewDataSource: class {
+  func eventViewsForDate(date: NSDate) -> [EventView]
+}
+
 class DayView: UIView {
+
+  weak var dataSource: DayViewDataSource?
 
   var headerHeight: CGFloat = 88
 
