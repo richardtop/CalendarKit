@@ -1,4 +1,5 @@
 import UIKit
+import DateTools
 
 protocol DayHeaderViewDelegate: class {
   func dateHeaderDateChanged(newDate: NSDate)
@@ -10,7 +11,7 @@ class DayHeaderView: UIView {
 
   var calendar = NSCalendar.autoupdatingCurrentCalendar()
 
-  var currentIndex = -1
+  var currentWeekdayIndex = -1
 
   var daySymbolsViewHeight: CGFloat = 20
   var pagingScrollViewHeight: CGFloat = 40
@@ -58,6 +59,20 @@ class DayHeaderView: UIView {
     }
   }
 
+  func selectDate(selectedDate: NSDate) {
+    // FIXME: this is a draft. Interface of scrollview should be changed
+    let centerDaySelector = pagingScrollView.reusableViews[1] as! DaySelector
+    let startDate = dateOnlyFromDate(centerDaySelector.startDate)
+
+    let dateRange = DTTimePeriod(size: .Week, startingAt: startDate)
+    if dateRange.containsDate(selectedDate, interval: .Open) {
+      let diff = selectedDate.daysFrom(startDate)
+      centerDaySelector.selectedIndex = diff
+    } else {
+      // TODO: Check for the direction of scrolling and reconfigure appropriate DatySelector
+    }
+  }
+
   override func layoutSubviews() {
     super.layoutSubviews()
     pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
@@ -70,7 +85,7 @@ class DayHeaderView: UIView {
 
 extension DayHeaderView: DaySelectorDelegate {
   func dateSelectorDidSelectDate(date: NSDate, index: Int) {
-    currentIndex = index
+    currentWeekdayIndex = index
     swipeLabelView.date = date
     delegate?.dateHeaderDateChanged(date)
   }
@@ -99,7 +114,7 @@ extension DayHeaderView: PagingScrollViewDelegate {
 
   func scrollviewDidScrollToView(view: UIView) {
     let activeView = view as! DaySelector
-    activeView.selectedIndex = currentIndex
+    activeView.selectedIndex = currentWeekdayIndex
     swipeLabelView.date = activeView.selectedDate!
     delegate?.dateHeaderDateChanged(activeView.selectedDate!
     )
