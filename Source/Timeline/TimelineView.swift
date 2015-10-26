@@ -1,16 +1,20 @@
 import UIKit
+import Neon
 
 class TimelineView: UIView {
 
   var date = NSDate() {
     didSet {
       label.text = String(date.day())
+      setNeedsDisplay()
     }
   }
 
   //IFDEF DEBUG
 
   lazy var label = UILabel()
+
+  lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
 
   var hourColor = UIColor.lightGrayColor()
   var timeColor = UIColor.lightGrayColor()
@@ -49,8 +53,10 @@ class TimelineView: UIView {
   private lazy var _12hTimes: [String] = Generator.timeStrings12H()
   private lazy var _24hTimes: [String] = Generator.timeStrings24H()
 
-  //TODO refactor to computed property?
-  var isToday = false
+  var isToday: Bool {
+    //TODO: Check for performance on device
+    return date.isToday()
+  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -67,6 +73,7 @@ class TimelineView: UIView {
     layer.contentsScale = 1
     contentMode = UIViewContentMode.Redraw
     backgroundColor = .whiteColor()
+    addSubview(nowLine)
     addSubview(label)
   }
 
@@ -78,7 +85,6 @@ class TimelineView: UIView {
     if isToday {
       let today = NSDate()
       let minute = today.minute()
-
       if minute > 39 {
         hourToRemoveIndex = today.hour() + 1
       } else if minute < 21 {
@@ -123,8 +129,19 @@ class TimelineView: UIView {
   }
 
   override func layoutSubviews() {
+    //TODO: Remove this label. Shows current day for testing purposes
     label.sizeToFit()
     label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50))
+
+    // TODO: Swift math
+    let hourY = CGFloat(date.hour()) * verticalDiff + verticalInset
+    let minuteY = CGFloat(date.minute()) * verticalDiff / 60
+
+    let size = CGSize(width: bounds.size.width, height: 20)
+    let rect = CGRect(origin: CGPoint.zero, size: size)
+    nowLine.date = date
+    nowLine.frame = rect
+    nowLine.center.y = hourY + minuteY
   }
 
   // MARK: - Helpers
