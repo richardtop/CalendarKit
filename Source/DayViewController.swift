@@ -22,10 +22,23 @@ public class DayViewController: UIViewController {
 extension DayViewController: DayViewDataSource {
   func eventViewsForDate(date: NSDate) -> [EventView] {
 
-    let datePeriod = DTTimePeriod(size: .Hour, startingAt: date)
-    let eventView = EventView()
-    eventView.datePeriod = datePeriod
+    return generateMockEventsForDate(date)
+  }
 
-    return [eventView]
+
+  func generateMockEventsForDate(var date: NSDate) -> [EventView] {
+    var events = [EventView]()
+    let step = 2
+
+    date = date.dateByAddingMinutes(24)
+
+    for _ in 0...5 {
+      let event = EventView()
+      let datePeriod = DTTimePeriod(size: .Hour, startingAt: date)
+      event.datePeriod = datePeriod
+      date = date.dateByAddingHours(step)
+      events.append(event)
+    }
+    return events
   }
 }
