@@ -10,6 +10,8 @@ class TimelineView: UIView {
     }
   }
 
+  var eventViews = [EventView]()
+
   //IFDEF DEBUG
 
   lazy var label = UILabel()
