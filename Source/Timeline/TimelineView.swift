@@ -1,16 +1,28 @@
 import UIKit
 import Neon
+import DateTools
 
 class TimelineView: UIView {
 
   var date = NSDate() {
     didSet {
-      label.text = String(date.day())
+      label.text = date.formattedDateWithFormat("hh:mm")
       setNeedsDisplay()
     }
   }
 
-  var eventViews = [EventView]()
+  var eventViews = [EventView]() {
+    willSet(newViews) {
+      eventViews.forEach {$0.removeFromSuperview()}
+    }
+
+    didSet {
+      setNeedsDisplay()
+      eventViews.forEach {addSubview($0)}
+    }
+  }
+
+  private var _testEventViews = [EventView]()
 
   //IFDEF DEBUG
 
@@ -29,6 +41,8 @@ class TimelineView: UIView {
   var verticalDiff: CGFloat = 45
   var verticalInset: CGFloat = 10
   var leftInset: CGFloat = 53
+
+  var horizontalEventInset: CGFloat = 3
 
   var fullHeight: CGFloat {
     return verticalInset * 2 + verticalDiff * 24
@@ -133,13 +147,72 @@ class TimelineView: UIView {
   override func layoutSubviews() {
     //TODO: Remove this label. Shows current day for testing purposes
     label.sizeToFit()
-    label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50))
+    label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 375, height: 50))
 
     let size = CGSize(width: bounds.size.width, height: 20)
     let rect = CGRect(origin: CGPoint.zero, size: size)
     nowLine.date = date
     nowLine.frame = rect
     nowLine.center.y = dateToY(date)
+    relayoutEvents()
+  }
+
+  func relayoutEvents() {
+    if eventViews.isEmpty {return}
+
+    let day = DTTimePeriod(size: .Day, startingAt:date)
+
+    eventViews = eventViews.filter {$0.datePeriod.overlapsWith(day)}
+      .sort {$0.datePeriod.StartDate.isEarlierThan($1.datePeriod.StartDate)}
+
+    var parentArray = [[EventView]]()
+
+    for event in eventViews {
+      if parentArray.isEmpty {
+        parentArray.append([event])
+        continue
+      }
+
+      var lastArray = parentArray.removeLast()
+
+      if event.datePeriod.overlapsWith(lastArray.last!.datePeriod) {
+        lastArray.append(event)
+        parentArray.append(lastArray)
+      } else {
+        parentArray.append(lastArray)
+        parentArray.append([event])
+      }
+    }
+
+
+
+    /*
+    for (index, event) in _testEventViews.enumerate() {
+    let startY = dateToY(event.datePeriod.StartDate)
+    let endY = dateToY(event.datePeriod.EndDate)
+    print(event.datePeriod.StartDate)
+    event.frame = CGRect(x: leftInset + CGFloat(index) * horizontalEventInset, y: startY, width: bounds.width - leftInset, height: endY - startY)
+    }
+    */
+
+    let calendarWidth = bounds.width - leftInset
+
+    for array in parentArray {
+      for (index , event) in array.enumerate() {
+        let startY = dateToY(event.datePeriod.StartDate)
+        let endY = dateToY(event.datePeriod.EndDate)
+
+        //TODO: Swift math
+        let floatIndex = CGFloat(index)
+        let floatCount = CGFloat(array.count)
+
+        let x = leftInset + floatIndex / floatCount * calendarWidth
+
+        let equalWidth = calendarWidth / floatCount
+
+        event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
+      }
+    }
   }
 
   // MARK: - Helpers
