@@ -5,11 +5,15 @@ import DynamicColor
 
 class EventView: UIView {
 
-  var color = UIColor(hue: 0, saturation: 81/100, brightness: 97/100, alpha: 1) {
+  var color = UIColor() {
     didSet {
       [titleLabel, subtitleLabel].forEach {$0.textColor = color.darkenColor(0.3)}
       backgroundColor = UIColor(red: color.redComponent(), green: color.greenComponent(), blue: color.blueComponent(), alpha: 0.3)
     }
+  }
+
+  var contentHeight: CGFloat {
+    return subtitleLabel.frame.height + subtitleLabel.frame.origin.x
   }
 
   lazy var titleLabel: UILabel = {
@@ -54,7 +58,9 @@ class EventView: UIView {
       addSubview($0)
       $0.numberOfLines = 0
     }
-    backgroundColor = color
+
+    color = tintColor
+
     addData()
   }
 
@@ -92,7 +98,6 @@ class EventView: UIView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    color = UIColor(hue: 0, saturation: 81/100, brightness: 97/100, alpha: 1)
     titleLabel.anchorInCorner(.TopLeft, xPad: 7, yPad: 5, width: bounds.size.width, height: 50)
     titleLabel.sizeToFit()
     subtitleLabel.alignAndFill(align: .UnderMatchingLeft, relativeTo: titleLabel, padding: 10)
