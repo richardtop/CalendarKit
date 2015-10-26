@@ -202,7 +202,7 @@ class TimelineView: UIView {
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
     }
-
+/*
     for (index, event) in _eventHolder.enumerate() {
       if event == _eventHolder.first! { continue }
 
@@ -212,6 +212,7 @@ class TimelineView: UIView {
         previousEvent.frame.origin.x = leftInset
       }
     }
+*/
   }
 
   func eventSafeZone(event: EventView) -> CGFloat {

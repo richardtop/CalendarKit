@@ -35,13 +35,13 @@ extension DayViewController: DayViewDataSource {
     for i in 0...10  {
       let event = EventView()
 
-      let duration = Int(arc4random_uniform(120) + 30)
+      let duration = Int(arc4random_uniform(60) + 30)
       let datePeriod = DTTimePeriod(size: .Minute, amount: duration, startingAt: date)
 
       event.datePeriod = datePeriod
       event.titleLabel.text = "Text \(i)"
 
-      date = date.dateByAddingMinutes(65 * step)
+      date = date.dateByAddingMinutes(Int(arc4random_uniform(180)))
       events.append(event)
     }
 
