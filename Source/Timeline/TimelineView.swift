@@ -133,20 +133,22 @@ class TimelineView: UIView {
     label.sizeToFit()
     label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 50, height: 50))
 
-    // TODO: Swift math
-    let hourY = CGFloat(date.hour()) * verticalDiff + verticalInset
-    let minuteY = CGFloat(date.minute()) * verticalDiff / 60
-
     let size = CGSize(width: bounds.size.width, height: 20)
     let rect = CGRect(origin: CGPoint.zero, size: size)
     nowLine.date = date
     nowLine.frame = rect
-    nowLine.center.y = hourY + minuteY
+    nowLine.center.y = dateToY(date)
   }
 
   // MARK: - Helpers
 
   private var onePixel: CGFloat {
     return 1 / UIScreen.mainScreen().scale
+  }
+
+  private func dateToY(date: NSDate) -> CGFloat {
+    let hourY = CGFloat(date.hour()) * verticalDiff + verticalInset
+    let minuteY = CGFloat(date.minute()) * verticalDiff / 60
+    return hourY + minuteY
   }
 }
