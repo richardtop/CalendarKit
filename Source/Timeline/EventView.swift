@@ -31,7 +31,11 @@ class EventView: UIView {
   lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "tap")
   lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress")
 
-  var datePeriod = DTTimePeriod()
+  var datePeriod = DTTimePeriod() {
+    didSet {
+      subtitleLabel.text = String(datePeriod.StartDate)
+    }
+  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -68,6 +72,7 @@ class EventView: UIView {
     titleLabel.textColor = .whiteColor()
     subtitleLabel.textColor = .whiteColor()
   }
+
   override func drawRect(rect: CGRect) {
     super.drawRect(rect)
     let context = UIGraphicsGetCurrentContext()
@@ -83,7 +88,6 @@ class EventView: UIView {
     CGContextAddLineToPoint(context, x, CGRectGetHeight(bounds))
     CGContextStrokePath(context)
     CGContextRestoreGState(context)
-
   }
 
   override func layoutSubviews() {
