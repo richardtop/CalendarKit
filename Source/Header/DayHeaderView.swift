@@ -68,17 +68,22 @@ class DayHeaderView: UIView {
   }
 
   func selectDate(selectedDate: NSDate) {
-    // FIXME: this is a draft. Interface of scrollview should be changed
     let centerDaySelector = pagingScrollView.reusableViews[1] as! DaySelector
     let startDate = dateOnlyFromDate(centerDaySelector.startDate)
 
-    let dateRange = DTTimePeriod(size: .Week, startingAt: startDate)
-    if dateRange.containsDate(selectedDate, interval: .Open) {
-      let diff = selectedDate.daysFrom(startDate)
-      centerDaySelector.selectedIndex = diff
-    } else {
-      // TODO: Check for the direction of scrolling and reconfigure appropriate DatySelector
+    let currentWeek = DTTimePeriod(size: .Week, startingAt: startDate)
+
+    if currentWeek.containsDate(selectedDate, interval: .Open) {
+      centerDaySelector.selectedDate = selectedDate//.daysFrom(startDate)
+    } else if selectedDate.isEarlierThan(currentWeek.StartDate) {
+      currentWeekdayIndex = 6
+      pagingScrollView.scrollBackward()
+
+    } else if selectedDate.isLaterThan(currentWeek.EndDate) {
+      currentWeekdayIndex = 0
+      pagingScrollView.scrollForward()
     }
+    swipeLabelView.date = selectedDate
   }
 
   override func layoutSubviews() {
