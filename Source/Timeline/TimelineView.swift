@@ -48,6 +48,10 @@ class TimelineView: UIView {
     return verticalInset * 2 + verticalDiff * 24
   }
 
+  var calendarWidth: CGFloat {
+    return bounds.width - leftInset
+  }
+
   var fontSize: CGFloat = 11
 
   var is24hClock = true {
@@ -149,15 +153,19 @@ class TimelineView: UIView {
     label.sizeToFit()
     label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 375, height: 50))
 
+    layoutNowLine()
+    layoutEvents()
+  }
+
+  func layoutNowLine() {
     let size = CGSize(width: bounds.size.width, height: 20)
     let rect = CGRect(origin: CGPoint.zero, size: size)
     nowLine.date = date
     nowLine.frame = rect
     nowLine.center.y = dateToY(date)
-    relayoutEvents()
   }
 
-  func relayoutEvents() {
+  func layoutEvents() {
     if eventViews.isEmpty {return}
 
     let day = DTTimePeriod(size: .Day, startingAt:date)
@@ -165,32 +173,26 @@ class TimelineView: UIView {
     _eventHolder = eventViews.filter {$0.datePeriod.overlapsWith(day)}
       .sort {$0.datePeriod.StartDate.isEarlierThan($1.datePeriod.StartDate)}
 
-    let datePeriods = _eventHolder.map {$0.datePeriod}
-    let zipped = Array(Zip2Sequence(datePeriods, _eventHolder))
+    var groupsOfEvents = [[EventView]]()
+    var overlappingEvents = [EventView]()
 
-    var result = [[(DTTimePeriod, EventView)]]()
-    var temporaryArray = [(DTTimePeriod, EventView)]()
-
-    for tuple in zipped {
-      if temporaryArray.isEmpty {
-        temporaryArray.append(tuple)
+    for event in _eventHolder {
+      if overlappingEvents.isEmpty {
+        overlappingEvents.append(event)
         continue
       }
-
-      if temporaryArray.last!.0.overlapsWith(tuple.0) {
-        temporaryArray.append(tuple)
-      } else {
-        result.append(temporaryArray)
-        temporaryArray.removeAll()
+      if overlappingEvents.last!.datePeriod.overlapsWith(event.datePeriod) {
+        overlappingEvents.append(event)
+        continue
       }
+      groupsOfEvents.append(overlappingEvents)
+      overlappingEvents.removeAll()
     }
 
-    let calendarWidth = bounds.width - leftInset
+    for overlappingEvents in groupsOfEvents {
+      let totalCount = CGFloat(overlappingEvents.count)
 
-    for overlappingViews in result {
-      let totalCount = CGFloat(overlappingViews.count)
-      let events = overlappingViews.map {$0.1}
-      for (index, event) in events.enumerate() {
+      for (index, event) in overlappingEvents.enumerate() {
         let startY = dateToY(event.datePeriod.StartDate)
         let endY = dateToY(event.datePeriod.EndDate)
 
