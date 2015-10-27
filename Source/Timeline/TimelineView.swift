@@ -11,6 +11,10 @@ class TimelineView: UIView {
     }
   }
 
+  var currentTime: NSDate {
+    return NSDate()
+  }
+
   var eventViews = [EventView]() {
     willSet(newViews) {
       eventViews.forEach {$0.removeFromSuperview()}
@@ -21,8 +25,6 @@ class TimelineView: UIView {
       eventViews.forEach {addSubview($0)}
     }
   }
-
-  private var _eventHolder = [EventView]()
 
   //IFDEF DEBUG
 
@@ -103,12 +105,11 @@ class TimelineView: UIView {
     var hourToRemoveIndex = -1
 
     if isToday {
-      let today = NSDate()
-      let minute = today.minute()
+      let minute = currentTime.minute()
       if minute > 39 {
-        hourToRemoveIndex = today.hour() + 1
+        hourToRemoveIndex = currentTime.hour() + 1
       } else if minute < 21 {
-        hourToRemoveIndex = today.hour()
+        hourToRemoveIndex = currentTime.hour()
       }
     }
 
@@ -158,7 +159,6 @@ class TimelineView: UIView {
   }
 
   func layoutNowLine() {
-    print(date)
     if !isToday {
       nowLine.alpha = 0
       return
@@ -166,9 +166,9 @@ class TimelineView: UIView {
     nowLine.alpha = 1
     let size = CGSize(width: bounds.size.width, height: 20)
     let rect = CGRect(origin: CGPoint.zero, size: size)
-    nowLine.date = date
+    nowLine.date = currentTime
     nowLine.frame = rect
-    nowLine.center.y = dateToY(date)
+    nowLine.center.y = dateToY(currentTime)
   }
 
   func layoutEvents() {
@@ -176,13 +176,13 @@ class TimelineView: UIView {
 
     let day = DTTimePeriod(size: .Day, startingAt:date)
 
-    _eventHolder = eventViews.filter {$0.datePeriod.overlapsWith(day)}
+    let validEvents = eventViews.filter {$0.datePeriod.overlapsWith(day)}
       .sort {$0.datePeriod.StartDate.isEarlierThan($1.datePeriod.StartDate)}
 
     var groupsOfEvents = [[EventView]]()
     var overlappingEvents = [EventView]()
 
-    for event in _eventHolder {
+    for event in validEvents {
       if overlappingEvents.isEmpty {
         overlappingEvents.append(event)
         continue
