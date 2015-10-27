@@ -16,10 +16,6 @@ class TimelineView: UIView {
   }
 
   var eventViews = [EventView]() {
-    willSet(newViews) {
-      eventViews.forEach {$0.removeFromSuperview()}
-    }
-
     didSet {
       setNeedsDisplay()
       eventViews.forEach {addSubview($0)}
@@ -211,6 +207,10 @@ class TimelineView: UIView {
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
     }
+  }
+
+  override func prepareForReuse() {
+    eventViews.forEach {$0.removeFromSuperview()}
   }
 
   // MARK: - Helpers
