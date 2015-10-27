@@ -21,14 +21,22 @@ class DayHeaderView: UIView {
   let pagingScrollView = PagingScrollView()
   lazy var swipeLabelView: SwipeLabelView = SwipeLabelView(date: self.dateOnlyFromDate(NSDate()))
 
+  init(selectedDate: NSDate) {
+    super.init(frame: CGRect.zero)
+    configure()
+    configurePages(selectedDate)
+  }
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
+    configurePages()
   }
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
+    configurePages()
   }
 
   func dateOnlyFromDate(date: NSDate) -> NSDate {
@@ -39,16 +47,14 @@ class DayHeaderView: UIView {
     [daySymbolsView, pagingScrollView, swipeLabelView].forEach {
         addSubview($0)
     }
-    configurePages()
     pagingScrollView.viewDelegate = self
     backgroundColor = UIColor(white: 247/255, alpha: 1)
   }
 
-  func configurePages() {
-    for i in 0...2 {
+  func configurePages(selectedDate: NSDate = NSDate()) {
+    for i in -1...1 {
       let daySelector = DaySelector()
-      let offset = i - 1
-      let date = NSDate().dateByAddingWeeks(offset)
+      let date = selectedDate.dateByAddingWeeks(i)
 
       daySelector.startDate = beginningOfWeek(date)
       pagingScrollView.reusableViews.append(daySelector)
@@ -57,6 +63,8 @@ class DayHeaderView: UIView {
       pagingScrollView.contentOffset = CGPoint(x: UIScreen.mainScreen().bounds.width, y: 0)
       daySelector.delegate = self
     }
+    let centerDaySelector = pagingScrollView.reusableViews[1] as! DaySelector
+    centerDaySelector.selectedDate = selectedDate
   }
 
   func selectDate(selectedDate: NSDate) {

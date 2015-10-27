@@ -27,7 +27,14 @@ class DaySelector: UIView {
   }
 
   var selectedDate: NSDate? {
-    return dateLabels.filter{$0.selected == true}.first?.date
+    get {
+      return dateLabels.filter{$0.selected == true}.first?.date
+    }
+    set(newDate) {
+      if let newDate = newDate {
+        selectedIndex = newDate.daysFrom(startDate)
+      }
+    }
   }
 
   var dateLabelWidth: CGFloat = 35
