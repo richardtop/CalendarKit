@@ -4,7 +4,7 @@ PODS:
     - DynamicColor
     - Neon
   - DateTools (1.7.0)
-  - DynamicColor (2.0.0)
+  - DynamicColor (2.0.1)
   - Neon (0.0.1)
 
 DEPENDENCIES:
@@ -17,7 +17,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   CalendarKit: 87d8eca52990905b48fdd6636773a4c018891ef1
   DateTools: 53288ee8b905fdc75897a1e6b5cc0144b14cba60
-  DynamicColor: bd4ccde8466ccbf0dd40900aa8be93a5ea482724
+  DynamicColor: 321a135fc931f155393056ce2d256e885fec084b
   Neon: cc98818d292e5284169dcee67623571d7b123a3e
 
 COCOAPODS: 0.39.0
