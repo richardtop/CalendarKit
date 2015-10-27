@@ -7,39 +7,35 @@ class EventView: UIView {
 
   var color = UIColor() {
     didSet {
-      [titleLabel, subtitleLabel].forEach {$0.textColor = color.darkenColor(0.3)}
+      textView.textColor = color.darkenColor(0.3)
       backgroundColor = UIColor(red: color.redComponent(), green: color.greenComponent(), blue: color.blueComponent(), alpha: 0.3)
     }
   }
 
   var contentHeight: CGFloat {
-    return subtitleLabel.frame.height + subtitleLabel.frame.origin.x
+    //TODO: use strings array to calculate height
+    return textView.height
   }
 
-  lazy var titleLabel: UILabel = {
-    let label = UILabel()
-    label.font = UIFont.boldSystemFontOfSize(12)
-    label.numberOfLines = 0
+  var data = [String]() {
+    didSet {
+      textView.text = data.reduce("", combine: {$0 + $1 + "\n"})
+    }
+  }
 
-    return label
-  }()
+  lazy var textView: UITextView = {
+    let view = UITextView()
+    view.font = UIFont.boldSystemFontOfSize(12)
+    view.userInteractionEnabled = false
+    view.backgroundColor = UIColor.clearColor()
 
-  var subtitleLabel: UILabel = {
-    let label = UILabel()
-    label.font = UIFont.systemFontOfSize(12)
-    label.numberOfLines = 0
-
-    return label
+    return view
   }()
 
   lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: "tap")
   lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: "longPress")
 
-  var datePeriod = DTTimePeriod() {
-    didSet {
-      subtitleLabel.text = String(datePeriod.StartDate)
-    }
-  }
+  var datePeriod = DTTimePeriod()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -54,19 +50,9 @@ class EventView: UIView {
   func configure() {
     clipsToBounds = true
     [tapGestureRecognizer, longPressGestureRecognizer].forEach {addGestureRecognizer($0)}
-    [titleLabel, subtitleLabel].forEach{
-      addSubview($0)
-      $0.numberOfLines = 0
-    }
 
     color = tintColor
-
-    addData()
-  }
-
-  func addData() {
-    titleLabel.text = ""
-    subtitleLabel.text = ""
+    addSubview(textView)
   }
 
   func tap() {
@@ -74,9 +60,8 @@ class EventView: UIView {
   }
 
   func longPress() {
-    self.backgroundColor = UIColor(red: color.redComponent(), green: color.greenComponent(), blue: color.blueComponent(), alpha: 1)
-    titleLabel.textColor = .whiteColor()
-    subtitleLabel.textColor = .whiteColor()
+    backgroundColor = UIColor(red: color.redComponent(), green: color.greenComponent(), blue: color.blueComponent(), alpha: 1)
+    textView.textColor = .whiteColor()
   }
 
   override func drawRect(rect: CGRect) {
@@ -98,9 +83,6 @@ class EventView: UIView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    titleLabel.anchorInCorner(.TopLeft, xPad: 7, yPad: 5, width: bounds.size.width, height: 50)
-    titleLabel.sizeToFit()
-    subtitleLabel.alignAndFill(align: .UnderMatchingLeft, relativeTo: titleLabel, padding: 10)
-    subtitleLabel.sizeToFit()
+    textView.fillSuperview()
   }
 }

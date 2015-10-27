@@ -39,7 +39,12 @@ extension DayViewController: DayViewDataSource {
       let datePeriod = DTTimePeriod(size: .Minute, amount: duration, startingAt: date)
 
       event.datePeriod = datePeriod
-      event.titleLabel.text = "Text \(i)"
+
+      var eventInfo = [String]()
+      eventInfo.append("Text \(i)")
+      eventInfo.append(datePeriod.StartDate.formattedDateWithStyle(.FullStyle))
+
+      event.data = eventInfo
 
       date = date.dateByAddingMinutes(Int(arc4random_uniform(180)))
       events.append(event)
