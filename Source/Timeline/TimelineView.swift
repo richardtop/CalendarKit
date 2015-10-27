@@ -76,7 +76,6 @@ class TimelineView: UIView {
   private lazy var _24hTimes: [String] = Generator.timeStrings24H()
 
   var isToday: Bool {
-    //TODO: Check for performance on device
     return date.isToday()
   }
 
@@ -150,6 +149,7 @@ class TimelineView: UIView {
   }
 
   override func layoutSubviews() {
+    super.layoutSubviews()
     //TODO: Remove this label. Shows current day for testing purposes
     label.sizeToFit()
     label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 375, height: 50))
@@ -211,10 +211,6 @@ class TimelineView: UIView {
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
     }
-  }
-
-  func eventSafeZone(event: EventView) -> CGFloat {
-    return event.frame.origin.y + event.contentHeight
   }
 
   // MARK: - Helpers

@@ -1,8 +1,12 @@
 import UIKit
 
+enum ScrollDirection {
+  case Forward
+  case Backward
+}
+
 protocol PagingScrollViewDelegate: class {
-  func viewRequiresUpdate(view: UIView, viewBefore: UIView)
-  func viewRequiresUpdate(view: UIView, viewAfter: UIView)
+  func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection)
   func scrollviewDidScrollToView(view: UIView)
 }
 
@@ -81,12 +85,12 @@ class PagingScrollView: UIScrollView {
       reusableViews.shift(1)
       accumulator++
       reusableViews[2].prepareForReuse()
-      viewDelegate?.viewRequiresUpdate(reusableViews[2], viewBefore: reusableViews[1])
+      viewDelegate?.viewRequiresUpdate(reusableViews[2], scrollDirection: .Forward)
     } else {
       reusableViews.shift(-1)
       accumulator--
       reusableViews[0].prepareForReuse()
-      viewDelegate?.viewRequiresUpdate(reusableViews[0], viewAfter: reusableViews[1])
+      viewDelegate?.viewRequiresUpdate(reusableViews[0], scrollDirection: .Backward)
     }
     contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
   }

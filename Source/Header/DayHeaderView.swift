@@ -100,16 +100,10 @@ extension DayHeaderView: DaySelectorDelegate {
 }
 
 extension DayHeaderView: PagingScrollViewDelegate {
-  func viewRequiresUpdate(view: UIView, viewBefore: UIView) {
+  func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection) {
     let viewToUpdate = view as! DaySelector
-    let newStartDate = viewToUpdate.startDate.dateByAddingWeeks(3)
-    viewToUpdate.startDate = newStartDate
-  }
-
-  func viewRequiresUpdate(view: UIView, viewAfter: UIView) {
-    let viewToUpdate = view as! DaySelector
-    let newStartDate = viewToUpdate.startDate.dateByAddingWeeks(-3)
-    viewToUpdate.startDate = newStartDate
+    let weeksToAdd = scrollDirection == .Forward ? 3 : -3
+    viewToUpdate.startDate = viewToUpdate.startDate.dateByAddingWeeks(weeksToAdd)
   }
 
   func scrollviewDidScrollToView(view: UIView) {

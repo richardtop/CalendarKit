@@ -60,19 +60,10 @@ class DayView: UIView {
 }
 
 extension DayView: PagingScrollViewDelegate {
-  func viewRequiresUpdate(view: UIView, viewBefore: UIView) {
+  func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection) {
+    let amount = scrollDirection == .Forward ? 1 : -1
     let timeline = (view as! TimelineContainer).timeline
-    timeline.date = currentDate.dateByAddingDays(1)
-
-    if let dataSource = dataSource {
-      timeline.eventViews = dataSource.eventViewsForDate(timeline.date)
-    }
-  }
-
-  func viewRequiresUpdate(view: UIView, viewAfter: UIView) {
-    let timeline = (view as! TimelineContainer).timeline
-    timeline.date = currentDate.dateByAddingDays(-1)
-
+    timeline.date = currentDate.dateByAddingDays(amount)
     if let dataSource = dataSource {
       timeline.eventViews = dataSource.eventViewsForDate(timeline.date)
     }
