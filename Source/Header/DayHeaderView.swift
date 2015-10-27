@@ -19,7 +19,7 @@ class DayHeaderView: UIView {
 
   let daySymbolsView = DaySymbolsView()
   let pagingScrollView = PagingScrollView()
-  let swipeLabelView = SwipeLabelView()
+  lazy var swipeLabelView: SwipeLabelView = SwipeLabelView(date: self.dateOnlyFromDate(NSDate()))
 
   override init(frame: CGRect) {
     super.init(frame: frame)
