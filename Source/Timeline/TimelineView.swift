@@ -165,54 +165,44 @@ class TimelineView: UIView {
     _eventHolder = eventViews.filter {$0.datePeriod.overlapsWith(day)}
       .sort {$0.datePeriod.StartDate.isEarlierThan($1.datePeriod.StartDate)}
 
-    var parentArray = [[EventView]]()
+    let datePeriods = _eventHolder.map {$0.datePeriod}
+    let zipped = Array(Zip2Sequence(datePeriods, _eventHolder))
 
-    for event in _eventHolder {
-      if parentArray.isEmpty {
-        parentArray.append([event])
+    var result = [[(DTTimePeriod, EventView)]]()
+    var temporaryArray = [(DTTimePeriod, EventView)]()
+
+    for tuple in zipped {
+      if temporaryArray.isEmpty {
+        temporaryArray.append(tuple)
         continue
       }
 
-      var lastArray = parentArray.removeLast()
-
-      if event.datePeriod.overlapsWith(lastArray.last!.datePeriod) {
-        lastArray.append(event)
-        parentArray.append(lastArray)
+      if temporaryArray.last!.0.overlapsWith(tuple.0) {
+        temporaryArray.append(tuple)
       } else {
-        parentArray.append(lastArray)
-        parentArray.append([event])
+        result.append(temporaryArray)
+        temporaryArray.removeAll()
       }
     }
 
     let calendarWidth = bounds.width - leftInset
 
-    for array in parentArray {
-      for (index , event) in array.enumerate() {
+    for overlappingViews in result {
+      let totalCount = CGFloat(overlappingViews.count)
+      let events = overlappingViews.map {$0.1}
+      for (index, event) in events.enumerate() {
         let startY = dateToY(event.datePeriod.StartDate)
         let endY = dateToY(event.datePeriod.EndDate)
 
         //TODO: Swift math
         let floatIndex = CGFloat(index)
-        let floatCount = CGFloat(array.count)
+        let x = leftInset + floatIndex / totalCount * calendarWidth
 
-        let x = leftInset + floatIndex / floatCount * calendarWidth
-
-        let equalWidth = calendarWidth / floatCount
+        let equalWidth = calendarWidth / totalCount
 
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
     }
-/*
-    for (index, event) in _eventHolder.enumerate() {
-      if event == _eventHolder.first! { continue }
-
-      let previousEvent = _eventHolder[index - 1]
-      if eventSafeZone(previousEvent) < event.frame.origin.y {
-        previousEvent.frame.size.width = calendarWidth
-        previousEvent.frame.origin.x = leftInset
-      }
-    }
-*/
   }
 
   func eventSafeZone(event: EventView) -> CGFloat {
