@@ -6,7 +6,7 @@ class TimelineView: UIView {
 
   var date = NSDate() {
     didSet {
-      label.text = date.formattedDateWithFormat("hh:mm")
+      label.text = date.formattedDateWithFormat("dd:MM:  hh:mm")
       setNeedsDisplay()
     }
   }
@@ -158,6 +158,12 @@ class TimelineView: UIView {
   }
 
   func layoutNowLine() {
+    print(date)
+    if !isToday {
+      nowLine.alpha = 0
+      return
+    }
+    nowLine.alpha = 1
     let size = CGSize(width: bounds.size.width, height: 20)
     let rect = CGRect(origin: CGPoint.zero, size: size)
     nowLine.date = date
