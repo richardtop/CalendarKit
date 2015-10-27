@@ -33,7 +33,7 @@ class DayView: UIView {
   }
 
   func configureTimelinePager() {
-    for i in 0...2 {
+    for _ in 0...2 {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
 
@@ -61,8 +61,10 @@ class DayView: UIView {
 
 extension DayView: PagingScrollViewDelegate {
   func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection) {
+    guard let container = view as? TimelineContainer else { return }
+    let timeline = container.timeline
+
     let amount = scrollDirection == .Forward ? 1 : -1
-    let timeline = (view as! TimelineContainer).timeline
     timeline.date = currentDate.dateByAddingDays(amount)
     if let dataSource = dataSource {
       timeline.eventViews = dataSource.eventViewsForDate(timeline.date)
@@ -70,8 +72,8 @@ extension DayView: PagingScrollViewDelegate {
   }
 
   func scrollviewDidScrollToView(view: UIView) {
-    let timeline = (view as! TimelineContainer).timeline
-    currentDate = timeline.date
+    guard let container = view as? TimelineContainer else { return }
+    currentDate = container.timeline.date
     dayHeaderView.selectDate(currentDate)
   }
 }
