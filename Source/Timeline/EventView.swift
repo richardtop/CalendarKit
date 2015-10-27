@@ -3,7 +3,7 @@ import DateTools
 import Neon
 import DynamicColor
 
-class EventView: UIView {
+public class EventView: UIView {
 
   var color = UIColor() {
     didSet {
@@ -42,7 +42,7 @@ class EventView: UIView {
     configure()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
   }
@@ -64,7 +64,7 @@ class EventView: UIView {
     textView.textColor = .whiteColor()
   }
 
-  override func drawRect(rect: CGRect) {
+  override public func drawRect(rect: CGRect) {
     super.drawRect(rect)
     let context = UIGraphicsGetCurrentContext()
     CGContextSetInterpolationQuality(context, .None)
@@ -81,7 +81,7 @@ class EventView: UIView {
     CGContextRestoreGState(context)
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     super.layoutSubviews()
     textView.fillSuperview()
   }
