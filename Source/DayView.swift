@@ -51,6 +51,7 @@ class DayView: UIView {
     let contentWidth = CGFloat(timelinePager.reusableViews.count) * UIScreen.mainScreen().bounds.width
     let size = CGSize(width: contentWidth, height: 50)
     timelinePager.contentSize = size
+    timelinePager.contentOffset = CGPoint(x: UIScreen.mainScreen().bounds.width, y: 0)
   }
 
   override func layoutSubviews() {
