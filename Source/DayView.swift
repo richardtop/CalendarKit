@@ -38,6 +38,8 @@ class DayView: UIView {
       timeline.frame.size.height = timeline.fullHeight
       timeline.date = currentDate.dateByAddingDays(i)
 
+      timeline.label.text = String(i)
+
       let verticalScrollView = TimelineContainer()
       verticalScrollView.timeline = timeline
       verticalScrollView.addSubview(timeline)
@@ -59,6 +61,11 @@ class DayView: UIView {
     dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: headerHeight)
     timelinePager.alignAndFill(align: .UnderCentered, relativeTo: dayHeaderView, padding: 0)
   }
+
+  func updateTimeline(timeline: TimelineView) {
+    guard let dataSource = dataSource else {return}
+    timeline.eventViews = dataSource.eventViewsForDate(timeline.date)
+  }
 }
 
 extension DayView: PagingScrollViewDelegate {
@@ -68,9 +75,7 @@ extension DayView: PagingScrollViewDelegate {
 
     let amount = scrollDirection == .Forward ? 1 : -1
     timeline.date = currentDate.dateByAddingDays(amount)
-    if let dataSource = dataSource {
-      timeline.eventViews = dataSource.eventViewsForDate(timeline.date)
-    }
+    updateTimeline(timeline)
   }
 
   func scrollviewDidScrollToView(view: UIView) {
@@ -86,12 +91,14 @@ extension DayView: DayHeaderViewDelegate {
     if newDate.isEarlierThan(currentDate) {
      let timelineContainer = timelinePager.reusableViews.first! as! TimelineContainer
       timelineContainer.timeline.date = newDate
+      updateTimeline(timelineContainer.timeline)
       timelinePager.scrollBackward()
+
     } else if newDate.isLaterThan(currentDate) {
       let timelineContainer = timelinePager.reusableViews.last! as! TimelineContainer
       timelineContainer.timeline.date = newDate
+      updateTimeline(timelineContainer.timeline)
       timelinePager.scrollForward()
     }
-    currentDate = newDate
   }
 }

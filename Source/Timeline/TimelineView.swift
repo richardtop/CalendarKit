@@ -16,9 +16,12 @@ class TimelineView: UIView {
   }
 
   var eventViews = [EventView]() {
+    willSet {
+      eventViews.forEach {$0.removeFromSuperview()}
+    }
     didSet {
       eventViews.forEach {addSubview($0)}
-      setNeedsDisplay()
+      setNeedsLayout()
     }
   }
 
