@@ -18,7 +18,7 @@ class SwipeLabelView: UIView {
     self.date = date
     super.init(frame: CGRect.zero)
     configure()
-    labels.last!.text = date.formattedDateWithStyle(.FullStyle)
+    labels.first!.text = date.formattedDateWithStyle(.FullStyle)
   }
 
   override init(frame: CGRect) {
@@ -50,7 +50,7 @@ class SwipeLabelView: UIView {
     secondLabel.frame = bounds
     secondLabel.frame.origin.x -= CGFloat(100) * multiplier
 
-    UIView.animateWithDuration(0.3, animations: { _ in
+    UIView.animateWithDuration(0.4, animations: { _ in
       secondLabel.frame = self.bounds
       label.frame.origin.x += CGFloat(30) * multiplier
       secondLabel.alpha = 1
