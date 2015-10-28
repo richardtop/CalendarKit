@@ -86,7 +86,7 @@ class PagingScrollView: UIScrollView {
       accumulator++
       reusableViews[2].prepareForReuse()
       viewDelegate?.viewRequiresUpdate(reusableViews[2], scrollDirection: .Forward)
-    } else {
+    } else if distanceFromCenter < 0 {
       reusableViews.shift(-1)
       accumulator--
       reusableViews[0].prepareForReuse()
@@ -118,6 +118,7 @@ extension PagingScrollView: UIScrollViewDelegate {
       reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
       previousPage = currentIndex
     }
+
     recenter()
   }
 
