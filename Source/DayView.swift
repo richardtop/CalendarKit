@@ -14,7 +14,7 @@ class DayView: UIView {
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView()
 
-  var currentDate = NSDate()
+  var currentDate = NSDate().dateOnly()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -33,9 +33,10 @@ class DayView: UIView {
   }
 
   func configureTimelinePager() {
-    for _ in 0...2 {
+    for i in -1...1 {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
+      timeline.date = currentDate.dateByAddingDays(i)
 
       let verticalScrollView = TimelineContainer()
       verticalScrollView.timeline = timeline
