@@ -19,7 +19,7 @@ class DayHeaderView: UIView {
 
   let daySymbolsView = DaySymbolsView()
   let pagingScrollView = PagingScrollView()
-  lazy var swipeLabelView: SwipeLabelView = SwipeLabelView(date: self.dateOnlyFromDate(NSDate()))
+  lazy var swipeLabelView: SwipeLabelView = SwipeLabelView(date: NSDate().dateOnly())
 
   init(selectedDate: NSDate) {
     super.init(frame: CGRect.zero)
@@ -37,10 +37,6 @@ class DayHeaderView: UIView {
     super.init(coder: aDecoder)
     configure()
     configurePages()
-  }
-
-  func dateOnlyFromDate(date: NSDate) -> NSDate {
-    return NSDate(year: date.year(), month: date.month(), day: date.day())
   }
 
   func configure() {
@@ -69,7 +65,7 @@ class DayHeaderView: UIView {
 
   func selectDate(selectedDate: NSDate) {
     let centerDaySelector = pagingScrollView.reusableViews[1] as! DaySelector
-    let startDate = dateOnlyFromDate(centerDaySelector.startDate)
+    let startDate = centerDaySelector.startDate.dateOnly()
 
     let currentWeek = DTTimePeriod(size: .Week, startingAt: startDate)
 
