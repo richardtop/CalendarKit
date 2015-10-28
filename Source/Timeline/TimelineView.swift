@@ -7,7 +7,7 @@ class TimelineView: UIView {
   var date = NSDate() {
     didSet {
       label.text = date.formattedDateWithFormat("dd:MM:  hh:mm")
-      setNeedsDisplay()
+      setNeedsLayout()
     }
   }
 
@@ -17,8 +17,8 @@ class TimelineView: UIView {
 
   var eventViews = [EventView]() {
     didSet {
-      setNeedsDisplay()
       eventViews.forEach {addSubview($0)}
+      setNeedsDisplay()
     }
   }
 
@@ -150,21 +150,21 @@ class TimelineView: UIView {
     label.sizeToFit()
     label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 375, height: 50))
 
-    layoutNowLine()
     layoutEvents()
+    layoutNowLine()
   }
 
   func layoutNowLine() {
     if !isToday {
       nowLine.alpha = 0
-      return
+    } else {
+      nowLine.alpha = 1
+      let size = CGSize(width: bounds.size.width, height: 20)
+      let rect = CGRect(origin: CGPoint.zero, size: size)
+      nowLine.date = currentTime
+      nowLine.frame = rect
+      nowLine.center.y = dateToY(currentTime)
     }
-    nowLine.alpha = 1
-    let size = CGSize(width: bounds.size.width, height: 20)
-    let rect = CGRect(origin: CGPoint.zero, size: size)
-    nowLine.date = currentTime
-    nowLine.frame = rect
-    nowLine.center.y = dateToY(currentTime)
   }
 
   func layoutEvents() {

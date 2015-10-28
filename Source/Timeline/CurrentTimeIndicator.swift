@@ -12,6 +12,7 @@ class CurrentTimeIndicator: UIView {
       let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
       timeLabel.text = date.formattedDateWithFormat(dateFormat)
       timeLabel.sizeToFit()
+      setNeedsLayout()
     }
   }
 
