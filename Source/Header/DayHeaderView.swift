@@ -1,4 +1,5 @@
 import UIKit
+import DateTools
 
 protocol DayHeaderViewDelegate: class {
   func dateHeaderDateChanged(newDate: NSDate)
@@ -10,22 +11,32 @@ class DayHeaderView: UIView {
 
   var calendar = NSCalendar.autoupdatingCurrentCalendar()
 
-  var daySymbolsViewHeight: CGFloat = 17
-  var pagingScrollViewHeight: CGFloat = 50
+  var currentWeekdayIndex = -1
+
+  var daySymbolsViewHeight: CGFloat = 20
+  var pagingScrollViewHeight: CGFloat = 40
   var swipeLabelViewHeight: CGFloat = 20
 
   let daySymbolsView = DaySymbolsView()
   let pagingScrollView = PagingScrollView()
-  let swipeLabelView = SwipeLabelView()
+  lazy var swipeLabelView: SwipeLabelView = SwipeLabelView(date: self.dateOnlyFromDate(NSDate()))
+
+  init(selectedDate: NSDate) {
+    super.init(frame: CGRect.zero)
+    configure()
+    configurePages(selectedDate)
+  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
+    configurePages()
   }
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
+    configurePages()
   }
 
   func dateOnlyFromDate(date: NSDate) -> NSDate {
@@ -36,16 +47,14 @@ class DayHeaderView: UIView {
     [daySymbolsView, pagingScrollView, swipeLabelView].forEach {
         addSubview($0)
     }
-    configurePages()
     pagingScrollView.viewDelegate = self
     backgroundColor = UIColor(white: 247/255, alpha: 1)
   }
 
-  func configurePages() {
-    for i in 0...2 {
+  func configurePages(selectedDate: NSDate = NSDate()) {
+    for i in -1...1 {
       let daySelector = DaySelector()
-      let offset = i - 1
-      let date = NSDate().dateByAddingWeeks(offset)
+      let date = selectedDate.dateByAddingWeeks(i)
 
       daySelector.startDate = beginningOfWeek(date)
       pagingScrollView.reusableViews.append(daySelector)
@@ -54,6 +63,27 @@ class DayHeaderView: UIView {
       pagingScrollView.contentOffset = CGPoint(x: UIScreen.mainScreen().bounds.width, y: 0)
       daySelector.delegate = self
     }
+    let centerDaySelector = pagingScrollView.reusableViews[1] as! DaySelector
+    centerDaySelector.selectedDate = selectedDate
+  }
+
+  func selectDate(selectedDate: NSDate) {
+    let centerDaySelector = pagingScrollView.reusableViews[1] as! DaySelector
+    let startDate = dateOnlyFromDate(centerDaySelector.startDate)
+
+    let currentWeek = DTTimePeriod(size: .Week, startingAt: startDate)
+
+    if currentWeek.containsDate(selectedDate, interval: .Open) {
+      centerDaySelector.selectedDate = selectedDate//.daysFrom(startDate)
+    } else if selectedDate.isEarlierThan(currentWeek.StartDate) {
+      currentWeekdayIndex = 6
+      pagingScrollView.scrollBackward()
+
+    } else if selectedDate.isLaterThan(currentWeek.EndDate) {
+      currentWeekdayIndex = 0
+      pagingScrollView.scrollForward()
+    }
+    swipeLabelView.date = selectedDate
   }
 
   override func layoutSubviews() {
@@ -62,12 +92,13 @@ class DayHeaderView: UIView {
 
     daySymbolsView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .UnderCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
-    swipeLabelView.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 0, otherSize: swipeLabelViewHeight)
+    swipeLabelView.anchorAndFillEdge(.Bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)
   }
 }
 
 extension DayHeaderView: DaySelectorDelegate {
-  func dateSelectorDidSelectDate(date: NSDate) {
+  func dateSelectorDidSelectDate(date: NSDate, index: Int) {
+    currentWeekdayIndex = index
     swipeLabelView.date = date
     delegate?.dateHeaderDateChanged(date)
   }
@@ -82,15 +113,17 @@ extension DayHeaderView: DaySelectorDelegate {
 }
 
 extension DayHeaderView: PagingScrollViewDelegate {
-  func viewRequiresUpdate(view: UIView, viewBefore: UIView) {
+  func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection) {
     let viewToUpdate = view as! DaySelector
-    let newStartDate = viewToUpdate.startDate.dateByAddingWeeks(3)
-    viewToUpdate.startDate = newStartDate
+    let weeksToAdd = scrollDirection == .Forward ? 3 : -3
+    viewToUpdate.startDate = viewToUpdate.startDate.dateByAddingWeeks(weeksToAdd)
   }
 
-  func viewRequiresUpdate(view: UIView, viewAfter: UIView) {
-    let viewToUpdate = view as! DaySelector
-    let newStartDate = viewToUpdate.startDate.dateByAddingWeeks(-3)
-    viewToUpdate.startDate = newStartDate
+  func scrollviewDidScrollToView(view: UIView) {
+    let activeView = view as! DaySelector
+    activeView.selectedIndex = currentWeekdayIndex
+    swipeLabelView.date = activeView.selectedDate!
+    delegate?.dateHeaderDateChanged(activeView.selectedDate!
+    )
   }
 }

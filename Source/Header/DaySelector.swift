@@ -3,26 +3,47 @@ import Neon
 import DateTools
 
 protocol DaySelectorDelegate: class {
-  func dateSelectorDidSelectDate(date: NSDate)
+  func dateSelectorDidSelectDate(date: NSDate, index: Int)
 }
 
 class DaySelector: UIView {
 
   weak var delegate: DaySelectorDelegate?
 
-  //TODO: change to support Work-week only (5 days instead of 7)
   var daysInWeek = 7
   var startDate: NSDate! {
     didSet {
       configure()
     }
   }
+
+  var selectedIndex = -1 {
+    didSet {
+      dateLabels.filter {$0.selected == true}
+        .first?.selected = false
+      let label = dateLabels[selectedIndex]
+      label.selected = true
+    }
+  }
+
+  var selectedDate: NSDate? {
+    get {
+      return dateLabels.filter{$0.selected == true}.first?.date
+    }
+    set(newDate) {
+      if let newDate = newDate {
+        selectedIndex = newDate.daysFrom(startDate)
+      }
+    }
+  }
+
   var dateLabelWidth: CGFloat = 35
 
   var dateLabels = [DateLabel]()
 
-  init(startDate: NSDate) {
+  init(startDate: NSDate, daysInWeek: Int = 7) {
     self.startDate = startDate
+    self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
     initializeViews()
     configure()
@@ -58,6 +79,10 @@ class DaySelector: UIView {
     }
   }
 
+  override func prepareForReuse() {
+    dateLabels.forEach {$0.selected = false}
+  }
+
   override func layoutSubviews() {
     let dateLabelsCount = CGFloat(dateLabels.count)
     var per = frame.size.width - dateLabelWidth * dateLabelsCount
@@ -74,7 +99,8 @@ class DaySelector: UIView {
 
   func dateLabelDidTap(sender: UITapGestureRecognizer) {
     if let label = sender.view as? DateLabel {
-      delegate?.dateSelectorDidSelectDate(label.date)
+      selectedIndex = dateLabels.indexOf(label)!
+      delegate?.dateSelectorDidSelectDate(label.date, index: selectedIndex)
       dateLabels.filter {$0.selected == true}
         .first?.selected = false
       label.selected = true

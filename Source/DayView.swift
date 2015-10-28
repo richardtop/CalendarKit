@@ -1,12 +1,20 @@
 import UIKit
 import Neon
 
+protocol DayViewDataSource: class {
+  func eventViewsForDate(date: NSDate) -> [EventView]
+}
+
 class DayView: UIView {
+
+  weak var dataSource: DayViewDataSource?
 
   var headerHeight: CGFloat = 88
 
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView()
+
+  var currentDate = NSDate()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -25,7 +33,7 @@ class DayView: UIView {
   }
 
   func configureTimelinePager() {
-    for i in 0...2 {
+    for _ in 0...2 {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
 
@@ -38,29 +46,51 @@ class DayView: UIView {
       timelinePager.reusableViews.append(verticalScrollView)
     }
     addSubview(timelinePager)
+
     timelinePager.viewDelegate = self
+    let contentWidth = CGFloat(timelinePager.reusableViews.count) * UIScreen.mainScreen().bounds.width
+    let size = CGSize(width: contentWidth, height: 50)
+    timelinePager.contentSize = size
+    timelinePager.contentOffset = CGPoint(x: UIScreen.mainScreen().bounds.width, y: 0)
   }
 
   override func layoutSubviews() {
-    let contentWidth = CGFloat(timelinePager.reusableViews.count) * bounds.size.width
-    let size = CGSize(width: contentWidth, height: 0)
-    timelinePager.contentSize = size
-
-    dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 20, otherSize: headerHeight)
+    dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: headerHeight)
     timelinePager.alignAndFill(align: .UnderCentered, relativeTo: dayHeaderView, padding: 0)
   }
 }
 
 extension DayView: PagingScrollViewDelegate {
-  func viewRequiresUpdate(view: UIView, viewBefore: UIView) {
+  func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection) {
+    guard let container = view as? TimelineContainer else { return }
+    let timeline = container.timeline
 
+    let amount = scrollDirection == .Forward ? 1 : -1
+    timeline.date = currentDate.dateByAddingDays(amount)
+    if let dataSource = dataSource {
+      timeline.eventViews = dataSource.eventViewsForDate(timeline.date)
+    }
   }
 
-  func viewRequiresUpdate(view: UIView, viewAfter: UIView) {
-
+  func scrollviewDidScrollToView(view: UIView) {
+    guard let container = view as? TimelineContainer else { return }
+    currentDate = container.timeline.date
+    dayHeaderView.selectDate(currentDate)
   }
 }
 
 extension DayView: DayHeaderViewDelegate {
-  func dateHeaderDateChanged(newDate: NSDate) {}
+  func dateHeaderDateChanged(newDate: NSDate) {
+    //TODO: refactor
+    if newDate.isEarlierThan(currentDate) {
+     let timelineContainer = timelinePager.reusableViews.first! as! TimelineContainer
+      timelineContainer.timeline.date = newDate
+      timelinePager.scrollBackward()
+    } else if newDate.isLaterThan(currentDate) {
+      let timelineContainer = timelinePager.reusableViews.last! as! TimelineContainer
+      timelineContainer.timeline.date = newDate
+      timelinePager.scrollForward()
+    }
+    currentDate = newDate
+  }
 }

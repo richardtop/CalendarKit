@@ -1,4 +1,5 @@
 import UIKit
+import Neon
 
 class CurrentTimeIndicator: UIView {
 
@@ -16,7 +17,7 @@ class CurrentTimeIndicator: UIView {
 
   private var timeLabel: UILabel = {
     let label = UILabel()
-    label.font = UIFont.systemFontOfSize(10)
+    label.font = UIFont.systemFontOfSize(11)
 
     return label
     }()
@@ -43,8 +44,10 @@ class CurrentTimeIndicator: UIView {
   }
 
   override func layoutSubviews() {
-    timeLabel.frame.origin = CGPoint(x: 2, y: 0)
-    line.frame = CGRect(x: leftInset - 5, y: 5, width: bounds.width, height: 1)
+    let size = timeLabel.frame.size
+    timeLabel.align(Align.ToTheLeftCentered, relativeTo: line, padding: 5, width: size.width, height: size.height)
+
+    line.frame = CGRect(x: leftInset - 5, y: bounds.height / 2, width: bounds.width, height: 1)
 
     circle.frame = CGRect(x: leftInset + 1, y: 0, width: 6, height: 6)
     circle.center.y = line.center.y
