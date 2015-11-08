@@ -9,19 +9,23 @@ class DayHeaderView: UIView {
 
   weak var delegate: DayHeaderViewDelegate?
 
+  var daysInWeek = 7
+
   var calendar = NSCalendar.autoupdatingCurrentCalendar()
 
   var currentWeekdayIndex = -1
+  var currentDate = NSDate().dateOnly()
 
   var daySymbolsViewHeight: CGFloat = 20
   var pagingScrollViewHeight: CGFloat = 40
   var swipeLabelViewHeight: CGFloat = 20
 
-  let daySymbolsView = DaySymbolsView()
+  lazy var daySymbolsView: DaySymbolsView = DaySymbolsView(daysInWeek: self.daysInWeek)
   let pagingScrollView = PagingScrollView()
   lazy var swipeLabelView: SwipeLabelView = SwipeLabelView(date: NSDate().dateOnly())
 
   init(selectedDate: NSDate) {
+    self.currentDate = selectedDate
     super.init(frame: CGRect.zero)
     configure()
     configurePages(selectedDate)
@@ -49,7 +53,7 @@ class DayHeaderView: UIView {
 
   func configurePages(selectedDate: NSDate = NSDate()) {
     for i in -1...1 {
-      let daySelector = DaySelector()
+      let daySelector = DaySelector(daysInWeek: daysInWeek)
       let date = selectedDate.dateByAddingWeeks(i)
 
       daySelector.startDate = beginningOfWeek(date)
@@ -63,23 +67,36 @@ class DayHeaderView: UIView {
     centerDaySelector.selectedDate = selectedDate
   }
 
+  func beginningOfWeek(date: NSDate) -> NSDate {
+    let components = calendar.components([.Year, .Month, .Day, .TimeZone, .Weekday], fromDate: date)
+    let offset = components.weekday - calendar.firstWeekday
+    components.day = components.day - offset
+
+    return calendar.dateFromComponents(components)!
+  }
+
   func selectDate(selectedDate: NSDate) {
     let centerDaySelector = pagingScrollView.reusableViews[1] as! DaySelector
     let startDate = centerDaySelector.startDate.dateOnly()
 
-    let currentWeek = DTTimePeriod(size: .Week, startingAt: startDate)
+    let daysFrom = selectedDate.daysFrom(startDate, calendar: calendar)
+    print("Days From: \(daysFrom)")
 
-    if currentWeek.containsDate(selectedDate, interval: .Open) {
-      centerDaySelector.selectedDate = selectedDate//.daysFrom(startDate)
-    } else if selectedDate.isEarlierThan(currentWeek.StartDate) {
-      currentWeekdayIndex = 6
+    if daysFrom < 0 {
+      print("isEarlierThan")
       pagingScrollView.scrollBackward()
-
-    } else if selectedDate.isLaterThan(currentWeek.EndDate) {
-      currentWeekdayIndex = 0
+      currentWeekdayIndex = daysInWeek - 1
+    } else if daysFrom > daysInWeek - 1 {
+      print("isLaterThan")
       pagingScrollView.scrollForward()
+      currentWeekdayIndex = 0
+    } else {
+      print("containsDate")
+      centerDaySelector.selectedDate = selectedDate
     }
+
     swipeLabelView.date = selectedDate
+    currentDate = selectedDate
   }
 
   override func layoutSubviews() {
@@ -94,17 +111,10 @@ class DayHeaderView: UIView {
 
 extension DayHeaderView: DaySelectorDelegate {
   func dateSelectorDidSelectDate(date: NSDate, index: Int) {
+    currentDate = date
     currentWeekdayIndex = index
     swipeLabelView.date = date
     delegate?.dateHeaderDateChanged(date)
-  }
-
-  func beginningOfWeek(date: NSDate) -> NSDate {
-    let components = calendar.components([.Year, .Month, .Day, .TimeZone, .Weekday], fromDate: date)
-    let offset = components.weekday - calendar.firstWeekday
-    components.day = components.day - offset
-
-    return calendar.dateFromComponents(components)!
   }
 }
 
