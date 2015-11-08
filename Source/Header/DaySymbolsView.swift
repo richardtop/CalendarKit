@@ -1,6 +1,7 @@
 import UIKit
 
 class DaySymbolsView: UIView {
+
   var daysInWeek = 7
 
   var calendar = NSCalendar.autoupdatingCurrentCalendar()
@@ -16,6 +17,12 @@ class DaySymbolsView: UIView {
 
   required init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
+    initializeViews()
+  }
+
+  init(daysInWeek: Int = 7) {
+    super.init(frame: CGRect.zero)
+    self.daysInWeek = daysInWeek
     initializeViews()
   }
 
