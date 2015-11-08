@@ -10,6 +10,8 @@ class DaySelector: UIView {
 
   weak var delegate: DaySelectorDelegate?
 
+  var calendar = NSCalendar.autoupdatingCurrentCalendar()
+
   var daysInWeek = 7
   var startDate: NSDate! {
     didSet {
@@ -32,7 +34,7 @@ class DaySelector: UIView {
     }
     set(newDate) {
       if let newDate = newDate {
-        selectedIndex = newDate.daysFrom(startDate)
+        selectedIndex = newDate.daysFrom(startDate, calendar: calendar)
       }
     }
   }
@@ -41,8 +43,8 @@ class DaySelector: UIView {
 
   var dateLabels = [DateLabel]()
 
-  init(startDate: NSDate, daysInWeek: Int = 7) {
-    self.startDate = startDate
+  init(startDate: NSDate = NSDate(), daysInWeek: Int = 7) {
+    self.startDate = startDate.dateOnly()
     self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
     initializeViews()
@@ -50,13 +52,13 @@ class DaySelector: UIView {
   }
 
   override init(frame: CGRect) {
-    startDate = NSDate()
+    startDate = NSDate().dateOnly()
     super.init(frame: frame)
     initializeViews()
   }
 
   required init?(coder aDecoder: NSCoder) {
-    startDate = NSDate()
+    startDate = NSDate().dateOnly()
     super.init(coder: aDecoder)
     initializeViews()
   }
