@@ -79,7 +79,6 @@ extension DayView: PagingScrollViewDelegate {
   func scrollviewDidScrollToViewAtIndex(index: Int) {
     let timeline = timelinePager.reusableViews[index].timeline
     currentDate = timeline.date
-    //This Causes a bug
     dayHeaderView.selectDate(currentDate)
   }
 }
