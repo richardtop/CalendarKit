@@ -81,10 +81,6 @@ class DaySelector: UIView {
     }
   }
 
-  override func prepareForReuse() {
-    dateLabels.forEach {$0.selected = false}
-  }
-
   override func layoutSubviews() {
     let dateLabelsCount = CGFloat(dateLabels.count)
     var per = frame.size.width - dateLabelWidth * dateLabelsCount
@@ -107,5 +103,11 @@ class DaySelector: UIView {
         .first?.selected = false
       label.selected = true
     }
+  }
+}
+
+extension DaySelector: ReusableView {
+  func prepareForReuse() {
+    dateLabels.forEach {$0.selected = false}
   }
 }

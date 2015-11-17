@@ -212,10 +212,6 @@ class TimelineView: UIView {
     }
   }
 
-  override func prepareForReuse() {
-    eventViews.forEach {$0.removeFromSuperview()}
-  }
-
   // MARK: - Helpers
 
   private var onePixel: CGFloat {
@@ -226,5 +222,11 @@ class TimelineView: UIView {
     let hourY = CGFloat(date.hour()) * verticalDiff + verticalInset
     let minuteY = CGFloat(date.minute()) * verticalDiff / 60
     return hourY + minuteY
+  }
+}
+
+extension TimelineView: ReusableView {
+  func prepareForReuse() {
+    eventViews.forEach {$0.removeFromSuperview()}
   }
 }
