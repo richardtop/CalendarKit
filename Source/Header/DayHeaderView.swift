@@ -80,18 +80,12 @@ class DayHeaderView: UIView {
     let startDate = centerDaySelector.startDate.dateOnly()
 
     let daysFrom = selectedDate.daysFrom(startDate, calendar: calendar)
-    print("Days From: \(daysFrom)")
-
     if daysFrom < 0 {
-      print("isEarlierThan")
       pagingScrollView.scrollBackward()
-      currentWeekdayIndex = daysInWeek - 1
     } else if daysFrom > daysInWeek - 1 {
-      print("isLaterThan")
       pagingScrollView.scrollForward()
       currentWeekdayIndex = 0
     } else {
-      print("containsDate")
       centerDaySelector.selectedDate = selectedDate
     }
 
