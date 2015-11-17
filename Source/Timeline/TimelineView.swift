@@ -160,6 +160,7 @@ class TimelineView: UIView {
     if !isToday {
       nowLine.alpha = 0
     } else {
+      bringSubviewToFront(nowLine)
       nowLine.alpha = 1
       let size = CGSize(width: bounds.size.width, height: 20)
       let rect = CGRect(origin: CGPoint.zero, size: size)
