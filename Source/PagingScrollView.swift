@@ -1,10 +1,5 @@
 import UIKit
 
-enum ScrollDirection {
-  case Forward
-  case Backward
-}
-
 protocol PagingScrollViewDelegate: class {
   func updateViewAtIndex(index: Int)
   func scrollviewDidScrollToViewAtIndex(index: Int)
