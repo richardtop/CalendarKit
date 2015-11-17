@@ -16,7 +16,6 @@ extension UIView: ReusableView {
 class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollViewDelegate {
 
   var reusableViews = [T]()
-  typealias ViewType = T.Type
   weak var viewDelegate: PagingScrollViewDelegate?
 
   var previousPage: CGFloat = 1
