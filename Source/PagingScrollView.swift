@@ -6,8 +6,8 @@ enum ScrollDirection {
 }
 
 protocol PagingScrollViewDelegate: class {
-  func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection)
-  func scrollviewDidScrollToView(view: UIView)
+  func updateViewAtIndex(index: Int)
+  func scrollviewDidScrollToViewAtIndex(index: Int)
 }
 
 protocol ReusableView: class {
@@ -18,12 +18,13 @@ extension UIView: ReusableView {
   func prepareForReuse() {}
 }
 
-class PagingScrollView: UIScrollView {
+class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollViewDelegate {
 
+  var reusableViews = [T]()
+  typealias ViewType = T.Type
   weak var viewDelegate: PagingScrollViewDelegate?
 
   var previousPage: CGFloat = 1
-
   var currentScrollViewPage: CGFloat {
     get {
       let width = bounds.width
@@ -33,12 +34,9 @@ class PagingScrollView: UIScrollView {
   }
 
   var accumulator: CGFloat = 0
-
   var currentIndex: CGFloat {
     return round(currentScrollViewPage) + accumulator
   }
-
-  var reusableViews = [UIView]()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -84,13 +82,13 @@ class PagingScrollView: UIScrollView {
     if distanceFromCenter > 0 {
       reusableViews.shift(1)
       accumulator++
-      reusableViews[2].prepareForReuse()
-      viewDelegate?.viewRequiresUpdate(reusableViews[2], scrollDirection: .Forward)
+      reusableViews.last!.prepareForReuse()
+      viewDelegate?.updateViewAtIndex(reusableViews.indexOf(reusableViews.last!)!)
     } else if distanceFromCenter < 0 {
       reusableViews.shift(-1)
       accumulator--
-      reusableViews[0].prepareForReuse()
-      viewDelegate?.viewRequiresUpdate(reusableViews[0], scrollDirection: .Backward)
+      reusableViews.first!.prepareForReuse()
+      viewDelegate?.updateViewAtIndex(reusableViews.indexOf(reusableViews.first!)!)
     }
     contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
   }
@@ -109,16 +107,14 @@ class PagingScrollView: UIScrollView {
   func scrollBackward() {
     setContentOffset(CGPoint(x: contentOffset.x - bounds.width, y: 0), animated: true)
   }
-}
 
-extension PagingScrollView: UIScrollViewDelegate {
   func checkForPageChange() {
     if currentIndex != previousPage {
-      viewDelegate?.scrollviewDidScrollToView(reusableViews[Int(currentScrollViewPage)])
+      viewDelegate?.scrollviewDidScrollToViewAtIndex(Int(currentScrollViewPage))
+      //TODO: re-think reuse engine
       reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
       previousPage = currentIndex
     }
-
     recenter()
   }
 
@@ -135,4 +131,3 @@ extension PagingScrollView: UIScrollViewDelegate {
     checkForPageChange()
   }
 }
-
