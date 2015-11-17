@@ -91,7 +91,7 @@ class TimelineView: UIView {
   func configure() {
     contentScaleFactor = 1
     layer.contentsScale = 1
-    contentMode = UIViewContentMode.Redraw
+    contentMode = .Redraw
     backgroundColor = .whiteColor()
     addSubview(nowLine)
     addSubview(label)
@@ -111,11 +111,10 @@ class TimelineView: UIView {
       }
     }
 
-    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy()
-      as! NSMutableParagraphStyle
-
+    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
     style.lineBreakMode = .ByWordWrapping
     style.alignment = .Right
+
     let attributes = [NSParagraphStyleAttributeName: style,
       NSForegroundColorAttributeName: timeColor,
       NSFontAttributeName: timeFont]
