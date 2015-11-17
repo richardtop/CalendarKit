@@ -78,12 +78,12 @@ class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollV
       reusableViews.shift(1)
       accumulator++
       reusableViews.last!.prepareForReuse()
-      viewDelegate?.updateViewAtIndex(reusableViews.indexOf(reusableViews.last!)!)
+      viewDelegate?.updateViewAtIndex(reusableViews.endIndex - 1)
     } else if distanceFromCenter < 0 {
       reusableViews.shift(-1)
       accumulator--
       reusableViews.first!.prepareForReuse()
-      viewDelegate?.updateViewAtIndex(reusableViews.indexOf(reusableViews.first!)!)
+      viewDelegate?.updateViewAtIndex(0)
     }
     contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
   }
