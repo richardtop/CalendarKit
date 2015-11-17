@@ -12,7 +12,7 @@ class DayView: UIView {
   var headerHeight: CGFloat = 88
 
   let dayHeaderView = DayHeaderView()
-  let timelinePager = PagingScrollView()
+  let timelinePager = PagingScrollView<TimelineContainer>()
 
   var currentDate = NSDate().dateOnly()
 
@@ -69,18 +69,17 @@ class DayView: UIView {
 }
 
 extension DayView: PagingScrollViewDelegate {
-  func viewRequiresUpdate(view: UIView, scrollDirection: ScrollDirection) {
-    guard let container = view as? TimelineContainer else { return }
-    let timeline = container.timeline
-
-    let amount = scrollDirection == .Forward ? 1 : -1
+  func updateViewAtIndex(index: Int) {
+    let timeline = timelinePager.reusableViews[index].timeline
+    let amount = index > 1 ? 1 : -1
     timeline.date = currentDate.dateByAddingDays(amount)
     updateTimeline(timeline)
   }
 
-  func scrollviewDidScrollToView(view: UIView) {
-    guard let container = view as? TimelineContainer else { return }
-    currentDate = container.timeline.date
+  func scrollviewDidScrollToViewAtIndex(index: Int) {
+    let timeline = timelinePager.reusableViews[index].timeline
+    currentDate = timeline.date
+    //This Causes a bug
     dayHeaderView.selectDate(currentDate)
   }
 }
@@ -89,13 +88,13 @@ extension DayView: DayHeaderViewDelegate {
   func dateHeaderDateChanged(newDate: NSDate) {
     //TODO: refactor
     if newDate.isEarlierThan(currentDate) {
-     let timelineContainer = timelinePager.reusableViews.first! as! TimelineContainer
+     let timelineContainer = timelinePager.reusableViews.first!
       timelineContainer.timeline.date = newDate
       updateTimeline(timelineContainer.timeline)
       timelinePager.scrollBackward()
 
     } else if newDate.isLaterThan(currentDate) {
-      let timelineContainer = timelinePager.reusableViews.last! as! TimelineContainer
+      let timelineContainer = timelinePager.reusableViews.last!
       timelineContainer.timeline.date = newDate
       updateTimeline(timelineContainer.timeline)
       timelinePager.scrollForward()
