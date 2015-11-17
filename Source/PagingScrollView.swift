@@ -1,5 +1,10 @@
 import UIKit
 
+enum ScrollDirection {
+  case Forward
+  case Backward
+}
+
 protocol PagingScrollViewDelegate: class {
   func updateViewAtIndex(index: Int)
   func scrollviewDidScrollToViewAtIndex(index: Int)
@@ -7,6 +12,10 @@ protocol PagingScrollViewDelegate: class {
 
 protocol ReusableView: class {
   func prepareForReuse()
+}
+
+extension UIView: ReusableView {
+  func prepareForReuse() {}
 }
 
 class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollViewDelegate {

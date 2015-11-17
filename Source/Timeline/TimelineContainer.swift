@@ -7,10 +7,8 @@ class TimelineContainer: UIScrollView {
   override func layoutSubviews() {
     timeline.frame = CGRect(x: 0, y: 0, width: frame.width, height: timeline.fullHeight)
   }
-}
 
-extension TimelineContainer: ReusableView {
-  func prepareForReuse() {
+  override func prepareForReuse() {
     timeline.prepareForReuse()
   }
 }
