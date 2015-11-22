@@ -5,9 +5,15 @@ protocol DayViewDataSource: class {
   func eventViewsForDate(date: NSDate) -> [EventView]
 }
 
+protocol DayViewDelegate: class {
+  func dayViewDidSelectEventView(eventview: EventView)
+  func dayViewDidLongPressEventView(eventView: EventView)
+}
+
 class DayView: UIView {
 
   weak var dataSource: DayViewDataSource?
+  weak var delegate: DayViewDelegate?
 
   var headerHeight: CGFloat = 88
 
@@ -64,7 +70,18 @@ class DayView: UIView {
 
   func updateTimeline(timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
-    timeline.eventViews = dataSource.eventViewsForDate(timeline.date)
+    let eventViews = dataSource.eventViewsForDate(timeline.date)
+//    eventViews.forEach.map{$0.delegate = self}
+    timeline.eventViews = eventViews
+  }
+}
+
+extension DayView: EventViewDelegate {
+  func eventViewDidTap(eventView: EventView) {
+    delegate?.dayViewDidSelectEventView(eventView)
+  }
+  func eventViewDidLongPress(eventview: EventView) {
+    delegate?.dayViewDidLongPressEventView(eventview)
   }
 }
 

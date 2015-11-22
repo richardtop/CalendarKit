@@ -1,7 +1,7 @@
 import UIKit
 import DateTools
 
-public class DayViewController: UIViewController {
+public class DayViewController: UIViewController, DayViewDelegate {
 
   lazy var dayView: DayView = DayView()
 
@@ -51,5 +51,15 @@ extension DayViewController: DayViewDataSource {
     }
 
     return events
+  }
+
+  // MARK: DayViewDelegate
+
+  func dayViewDidSelectEventView(eventview: EventView) {
+
+  }
+
+  func dayViewDidLongPressEventView(eventView: EventView) {
+
   }
 }

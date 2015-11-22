@@ -3,7 +3,14 @@ import DateTools
 import Neon
 import DynamicColor
 
+protocol EventViewDelegate: class {
+  func eventViewDidTap(eventView: EventView)
+  func eventViewDidLongPress(eventview: EventView)
+}
+
 public class EventView: UIView {
+
+  weak var delegate: EventViewDelegate?
 
   var color = UIColor() {
     didSet {
@@ -56,12 +63,11 @@ public class EventView: UIView {
   }
 
   func tap() {
-
+    delegate?.eventViewDidTap(self)
   }
 
   func longPress() {
-    backgroundColor = UIColor(red: color.redComponent(), green: color.greenComponent(), blue: color.blueComponent(), alpha: 1)
-    textView.textColor = .whiteColor()
+    delegate?.eventViewDidLongPress(self)
   }
 
   override public func drawRect(rect: CGRect) {
