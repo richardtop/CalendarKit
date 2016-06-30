@@ -1,17 +1,36 @@
 import UIKit
 
 protocol PagingScrollViewDelegate: class {
-  func viewRequiresUpdate(view: UIView, viewBefore: UIView)
-  func viewRequiresUpdate(view: UIView, viewAfter: UIView)
+  func updateViewAtIndex(index: Int)
+  func scrollviewDidScrollToViewAtIndex(index: Int)
 }
 
-class PagingScrollView: UIScrollView {
+protocol ReusableView: class {
+  func prepareForReuse()
+}
 
+extension UIView: ReusableView {
+  func prepareForReuse() {}
+}
+
+class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollViewDelegate {
+
+  var reusableViews = [T]()
   weak var viewDelegate: PagingScrollViewDelegate?
 
-  var currentPage = 0
+  var previousPage: CGFloat = 1
+  var currentScrollViewPage: CGFloat {
+    get {
+      let width = bounds.width
+      let centerOffsetX = contentOffset.x + width / 2
+      return centerOffsetX / width - 0.5
+    }
+  }
 
-  var reusableViews = [UIView]()
+  var accumulator: CGFloat = 0
+  var currentIndex: CGFloat {
+    return round(currentScrollViewPage) + accumulator
+  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -27,6 +46,8 @@ class PagingScrollView: UIScrollView {
     pagingEnabled = true
     directionalLockEnabled = true
     delegate = self
+    // TODO: Play with deceleration rate to match calendar speed
+    decelerationRate = 50
   }
 
   override func layoutSubviews() {
@@ -43,15 +64,27 @@ class PagingScrollView: UIScrollView {
     let distanceFromCenter = contentOffset.x - centerOffsetX
 
     if fabs(distanceFromCenter) > (contentWidth / 3) {
-      if distanceFromCenter > 0 {
-        reusableViews.shift(1)
-        viewDelegate?.viewRequiresUpdate(reusableViews[2], viewBefore: reusableViews[1])
-      } else {
-        reusableViews.shift(-1)
-        viewDelegate?.viewRequiresUpdate(reusableViews[0], viewAfter: reusableViews[1])
-      }
-      contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
+      recenter()
     }
+  }
+
+  func recenter() {
+    let contentWidth = contentSize.width
+    let centerOffsetX = (contentWidth - bounds.size.width) / 2
+    let distanceFromCenter = contentOffset.x - centerOffsetX
+
+    if distanceFromCenter > 0 {
+      reusableViews.shift(1)
+      accumulator++
+      reusableViews.last!.prepareForReuse()
+      viewDelegate?.updateViewAtIndex(reusableViews.endIndex - 1)
+    } else if distanceFromCenter < 0 {
+      reusableViews.shift(-1)
+      accumulator--
+      reusableViews.first!.prepareForReuse()
+      viewDelegate?.updateViewAtIndex(0)
+    }
+    contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
   }
 
   func realignViews() {
@@ -60,16 +93,35 @@ class PagingScrollView: UIScrollView {
       subview.frame.size = bounds.size
     }
   }
-}
 
-extension PagingScrollView: UIScrollViewDelegate {
-  func scrollViewDidScroll(scrollView: UIScrollView) {
-    let pageWidth = scrollView.frame.size.width;
-    let fractionalPage = scrollView.contentOffset.x / pageWidth;
-    let page = lround(Double(fractionalPage));
-    if currentPage != page {
-      // TODO: better solution for page sync
-      currentPage = page;
+  func scrollForward() {
+    setContentOffset(CGPoint(x: contentOffset.x + bounds.width, y: 0), animated: true)
+  }
+
+  func scrollBackward() {
+    setContentOffset(CGPoint(x: contentOffset.x - bounds.width, y: 0), animated: true)
+  }
+
+  func checkForPageChange() {
+    if currentIndex != previousPage {
+      viewDelegate?.scrollviewDidScrollToViewAtIndex(Int(currentScrollViewPage))
+      //TODO: re-think reuse engine
+      reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
+      previousPage = currentIndex
     }
+    recenter()
+  }
+
+  func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+    if decelerate {return}
+    checkForPageChange()
+  }
+
+  func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+    checkForPageChange()
+  }
+
+  func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+    checkForPageChange()
   }
 }

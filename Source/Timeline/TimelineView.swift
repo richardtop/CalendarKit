@@ -1,8 +1,35 @@
 import UIKit
+import Neon
+import DateTools
 
 class TimelineView: UIView {
 
-  var date = NSDate()
+  var date = NSDate() {
+    didSet {
+      label.text = date.formattedDateWithFormat("dd:MM:  hh:mm")
+      setNeedsLayout()
+    }
+  }
+
+  var currentTime: NSDate {
+    return NSDate()
+  }
+
+  var eventViews = [EventView]() {
+    willSet {
+      eventViews.forEach {$0.removeFromSuperview()}
+    }
+    didSet {
+      eventViews.forEach {addSubview($0)}
+      setNeedsLayout()
+    }
+  }
+
+  //IFDEF DEBUG
+
+  lazy var label = UILabel()
+
+  lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
 
   var hourColor = UIColor.lightGrayColor()
   var timeColor = UIColor.lightGrayColor()
@@ -16,8 +43,14 @@ class TimelineView: UIView {
   var verticalInset: CGFloat = 10
   var leftInset: CGFloat = 53
 
+  var horizontalEventInset: CGFloat = 3
+
   var fullHeight: CGFloat {
     return verticalInset * 2 + verticalDiff * 24
+  }
+
+  var calendarWidth: CGFloat {
+    return bounds.width - leftInset
   }
 
   var fontSize: CGFloat = 11
@@ -41,8 +74,9 @@ class TimelineView: UIView {
   private lazy var _12hTimes: [String] = Generator.timeStrings12H()
   private lazy var _24hTimes: [String] = Generator.timeStrings24H()
 
-  //TODO refactor to computed property?
-  var isToday = false
+  var isToday: Bool {
+    return date.isToday()
+  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -57,8 +91,10 @@ class TimelineView: UIView {
   func configure() {
     contentScaleFactor = 1
     layer.contentsScale = 1
-    contentMode = UIViewContentMode.Redraw
+    contentMode = .Redraw
     backgroundColor = .whiteColor()
+    addSubview(nowLine)
+    addSubview(label)
   }
 
   override func drawRect(rect: CGRect) {
@@ -67,21 +103,18 @@ class TimelineView: UIView {
     var hourToRemoveIndex = -1
 
     if isToday {
-      let today = NSDate()
-      let minute = today.minute()
-
+      let minute = currentTime.minute()
       if minute > 39 {
-        hourToRemoveIndex = today.hour() + 1
+        hourToRemoveIndex = currentTime.hour() + 1
       } else if minute < 21 {
-        hourToRemoveIndex = today.hour()
+        hourToRemoveIndex = currentTime.hour()
       }
     }
 
-    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy()
-      as! NSMutableParagraphStyle
-
+    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
     style.lineBreakMode = .ByWordWrapping
     style.alignment = .Right
+
     let attributes = [NSParagraphStyleAttributeName: style,
       NSForegroundColorAttributeName: timeColor,
       NSFontAttributeName: timeFont]
@@ -113,9 +146,85 @@ class TimelineView: UIView {
     }
   }
 
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    //TODO: Remove this label. Shows current day for testing purposes
+    label.sizeToFit()
+    label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 375, height: 50))
+
+    layoutEvents()
+    layoutNowLine()
+  }
+
+  func layoutNowLine() {
+    if !isToday {
+      nowLine.alpha = 0
+    } else {
+      bringSubviewToFront(nowLine)
+      nowLine.alpha = 1
+      let size = CGSize(width: bounds.size.width, height: 20)
+      let rect = CGRect(origin: CGPoint.zero, size: size)
+      nowLine.date = currentTime
+      nowLine.frame = rect
+      nowLine.center.y = dateToY(currentTime)
+    }
+  }
+
+  func layoutEvents() {
+    if eventViews.isEmpty {return}
+
+    let day = DTTimePeriod(size: .Day, startingAt:date)
+
+    let validEvents = eventViews.filter {$0.datePeriod.overlapsWith(day)}
+      .sort {$0.datePeriod.StartDate.isEarlierThan($1.datePeriod.StartDate)}
+
+    var groupsOfEvents = [[EventView]]()
+    var overlappingEvents = [EventView]()
+
+    for event in validEvents {
+      if overlappingEvents.isEmpty {
+        overlappingEvents.append(event)
+        continue
+      }
+      if overlappingEvents.last!.datePeriod.overlapsWith(event.datePeriod) {
+        overlappingEvents.append(event)
+        continue
+      }
+      groupsOfEvents.append(overlappingEvents)
+      overlappingEvents.removeAll()
+    }
+
+    for overlappingEvents in groupsOfEvents {
+      let totalCount = CGFloat(overlappingEvents.count)
+
+      for (index, event) in overlappingEvents.enumerate() {
+        let startY = dateToY(event.datePeriod.StartDate)
+        let endY = dateToY(event.datePeriod.EndDate)
+
+        //TODO: Swift math
+        let floatIndex = CGFloat(index)
+        let x = leftInset + floatIndex / totalCount * calendarWidth
+
+        let equalWidth = calendarWidth / totalCount
+
+        event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
+      }
+    }
+  }
+
+  override func prepareForReuse() {
+    eventViews.forEach {$0.removeFromSuperview()}
+  }
+
   // MARK: - Helpers
 
   private var onePixel: CGFloat {
     return 1 / UIScreen.mainScreen().scale
+  }
+
+  private func dateToY(date: NSDate) -> CGFloat {
+    let hourY = CGFloat(date.hour()) * verticalDiff + verticalInset
+    let minuteY = CGFloat(date.minute()) * verticalDiff / 60
+    return hourY + minuteY
   }
 }

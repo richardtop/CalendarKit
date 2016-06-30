@@ -57,7 +57,7 @@ class DateLabel: UILabel {
   }
 
   func animate(){
-    UIView.transitionWithView(self, duration: 0.3,
+    UIView.transitionWithView(self, duration: 0.4,
       options: .TransitionCrossDissolve,
       animations: { _ in
         self.updateState()

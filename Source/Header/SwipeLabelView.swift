@@ -14,6 +14,13 @@ class SwipeLabelView: UIView {
 
   var labels = [UILabel]()
 
+  init(date: NSDate) {
+    self.date = date
+    super.init(frame: CGRect.zero)
+    configure()
+    labels.first!.text = date.formattedDateWithStyle(.FullStyle)
+  }
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -26,7 +33,6 @@ class SwipeLabelView: UIView {
 
   func configure() {
     for _ in 0...1 {
-      //TODO: Copy styles from original calendar
       let label = UILabel()
       label.textAlignment = .Center
       labels.append(label)
@@ -40,13 +46,16 @@ class SwipeLabelView: UIView {
     let label = labels.first!
     let secondLabel = labels.last!
 
+    let shiftRatio: CGFloat = 30/375
+    let screenWidth = bounds.width
+
     secondLabel.alpha = 0
     secondLabel.frame = bounds
-    secondLabel.frame.origin.x -= CGFloat(100) * multiplier
+    secondLabel.frame.origin.x -= CGFloat(shiftRatio * screenWidth * 3) * multiplier
 
     UIView.animateWithDuration(0.3, animations: { _ in
       secondLabel.frame = self.bounds
-      label.frame.origin.x += CGFloat(30) * multiplier
+      label.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
       secondLabel.alpha = 1
       label.alpha = 0
       }) { _ in
