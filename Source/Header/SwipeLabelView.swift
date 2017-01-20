@@ -11,12 +11,20 @@ class SwipeLabelView: UIView {
       animate(shouldMoveForward)
     }
   }
-
+  
+  var firstLabel: UILabel {
+    return labels.first!
+  }
+  
+  var secondLabel: UILabel {
+    return labels.last!
+  }
+  
   var labels = [UILabel]()
 
   init(date: Date) {
     self.date = date
-    super.init(frame: CGRect.zero)
+    super.init(frame: .zero)
     configure()
     labels.first!.text = date.format(with: .full)
   }
@@ -42,10 +50,6 @@ class SwipeLabelView: UIView {
 
   func animate(_ forward: Bool) {
     let multiplier: CGFloat = forward ? -1 : 1
-
-    let label = labels.first!
-    let secondLabel = labels.last!
-
     let shiftRatio: CGFloat = 30/375
     let screenWidth = bounds.width
 
@@ -54,10 +58,10 @@ class SwipeLabelView: UIView {
     secondLabel.frame.origin.x -= CGFloat(shiftRatio * screenWidth * 3) * multiplier
 
     UIView.animate(withDuration: 0.3, animations: { _ in
-      secondLabel.frame = self.bounds
-      label.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
-      secondLabel.alpha = 1
-      label.alpha = 0
+      self.secondLabel.frame = self.bounds
+      self.firstLabel.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
+      self.secondLabel.alpha = 1
+      self.firstLabel.alpha = 0
       }, completion: { _ in
         self.labels = self.labels.reversed()
     }) 
