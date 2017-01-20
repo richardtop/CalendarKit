@@ -9,10 +9,6 @@ protocol ReusableView: class {
   func prepareForReuse()
 }
 
-extension UIView: ReusableView {
-  func prepareForReuse() {}
-}
-
 class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: ReusableView {
 
   var reusableViews = [T]()

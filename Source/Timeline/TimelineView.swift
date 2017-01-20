@@ -2,7 +2,7 @@ import UIKit
 import Neon
 import DateTools
 
-class TimelineView: UIView {
+class TimelineView: UIView, ReusableView {
 
   var date = Date() {
     didSet {
@@ -215,7 +215,7 @@ class TimelineView: UIView {
     }
   }
 
-  override func prepareForReuse() {
+  func prepareForReuse() {
     eventViews.forEach {$0.removeFromSuperview()}
   }
 

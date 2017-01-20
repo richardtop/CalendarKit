@@ -1,6 +1,6 @@
 import UIKit
 
-class TimelineContainer: UIScrollView {
+class TimelineContainer: UIScrollView, ReusableView {
 
   var timeline: TimelineView!
 
@@ -8,7 +8,7 @@ class TimelineContainer: UIScrollView {
     timeline.frame = CGRect(x: 0, y: 0, width: frame.width, height: timeline.fullHeight)
   }
 
-  override func prepareForReuse() {
+  func prepareForReuse() {
     timeline.prepareForReuse()
   }
 }

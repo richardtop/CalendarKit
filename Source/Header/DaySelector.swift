@@ -6,7 +6,7 @@ protocol DaySelectorDelegate: class {
   func dateSelectorDidSelectDate(_ date: Date, index: Int)
 }
 
-class DaySelector: UIView {
+class DaySelector: UIView, ReusableView {
 
   weak var delegate: DaySelectorDelegate?
 
@@ -81,7 +81,7 @@ class DaySelector: UIView {
     }
   }
 
-  override func prepareForReuse() {
+  func prepareForReuse() {
     dateLabels.forEach {$0.selected = false}
   }
 
