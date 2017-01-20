@@ -4,15 +4,15 @@ import DateTools
 
 class TimelineView: UIView {
 
-  var date = NSDate() {
+  var date = Date() {
     didSet {
-      label.text = date.formattedDateWithFormat("dd:MM:  hh:mm")
+      label.text = date.format(with: "dd:MM:  hh:mm")
       setNeedsLayout()
     }
   }
 
-  var currentTime: NSDate {
-    return NSDate()
+  var currentTime: Date {
+    return Date()
   }
 
   var eventViews = [EventView]() {
@@ -31,12 +31,12 @@ class TimelineView: UIView {
 
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
 
-  var hourColor = UIColor.lightGrayColor()
-  var timeColor = UIColor.lightGrayColor()
-  var lineColor = UIColor.lightGrayColor()
+  var hourColor = UIColor.lightGray
+  var timeColor = UIColor.lightGray
+  var lineColor = UIColor.lightGray
 
   var timeFont: UIFont {
-    return UIFont.boldSystemFontOfSize(fontSize)
+    return UIFont.boldSystemFont(ofSize: fontSize)
   }
 
   var verticalDiff: CGFloat = 45
@@ -71,11 +71,11 @@ class TimelineView: UIView {
     return is24hClock ? _24hTimes : _12hTimes
   }
 
-  private lazy var _12hTimes: [String] = Generator.timeStrings12H()
-  private lazy var _24hTimes: [String] = Generator.timeStrings24H()
+  fileprivate lazy var _12hTimes: [String] = Generator.timeStrings12H()
+  fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
 
   var isToday: Bool {
-    return date.isToday()
+    return date.isToday
   }
 
   override init(frame: CGRect) {
@@ -91,58 +91,58 @@ class TimelineView: UIView {
   func configure() {
     contentScaleFactor = 1
     layer.contentsScale = 1
-    contentMode = .Redraw
-    backgroundColor = .whiteColor()
+    contentMode = .redraw
+    backgroundColor = .white
     addSubview(nowLine)
     addSubview(label)
   }
 
-  override func drawRect(rect: CGRect) {
-    super.drawRect(rect)
+  override func draw(_ rect: CGRect) {
+    super.draw(rect)
 
     var hourToRemoveIndex = -1
 
     if isToday {
-      let minute = currentTime.minute()
+      let minute = currentTime.minute
       if minute > 39 {
-        hourToRemoveIndex = currentTime.hour() + 1
+        hourToRemoveIndex = currentTime.hour + 1
       } else if minute < 21 {
-        hourToRemoveIndex = currentTime.hour()
+        hourToRemoveIndex = currentTime.hour
       }
     }
 
-    let style = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as! NSMutableParagraphStyle
-    style.lineBreakMode = .ByWordWrapping
-    style.alignment = .Right
+    let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+    style.lineBreakMode = .byWordWrapping
+    style.alignment = .right
 
     let attributes = [NSParagraphStyleAttributeName: style,
-      NSForegroundColorAttributeName: timeColor,
-      NSFontAttributeName: timeFont]
+                      NSForegroundColorAttributeName: timeColor,
+                      NSFontAttributeName: timeFont] as [String : Any]
 
-    for (i, time) in times.enumerate() {
+    for (i, time) in times.enumerated() {
       let iFloat = CGFloat(i)
       let context = UIGraphicsGetCurrentContext()
-      CGContextSetInterpolationQuality(context, .None)
-      CGContextSaveGState(context)
-      CGContextSetStrokeColorWithColor(context, lineColor.CGColor)
-      CGContextSetLineWidth(context, onePixel)
-      CGContextTranslateCTM(context, 0, 0.5)
+      context!.interpolationQuality = .none
+      context?.saveGState()
+      context?.setStrokeColor(lineColor.cgColor)
+      context?.setLineWidth(onePixel)
+      context?.translateBy(x: 0, y: 0.5)
       let x: CGFloat = 53
       let y = verticalInset + iFloat * verticalDiff
-      CGContextBeginPath(context)
-      CGContextMoveToPoint(context, x, y)
-      CGContextAddLineToPoint(context, CGRectGetWidth(bounds), y)
-      CGContextStrokePath(context)
-      CGContextRestoreGState(context)
+      context?.beginPath()
+      context?.move(to: CGPoint(x: x, y: y))
+      context?.addLine(to: CGPoint(x: (bounds).width, y: y))
+      context?.strokePath()
+      context?.restoreGState()
 
       if i == hourToRemoveIndex { continue }
 
       let timeRect = CGRect(x: 2, y: iFloat * verticalDiff + verticalInset - 7,
-        width: leftInset - 8, height: fontSize + 2)
+                            width: leftInset - 8, height: fontSize + 2)
 
       let timeString = NSString(string: time)
 
-      timeString.drawInRect(timeRect, withAttributes: attributes)
+      timeString.draw(in: timeRect, withAttributes: attributes)
     }
   }
 
@@ -160,7 +160,7 @@ class TimelineView: UIView {
     if !isToday {
       nowLine.alpha = 0
     } else {
-      bringSubviewToFront(nowLine)
+      bringSubview(toFront: nowLine)
       nowLine.alpha = 1
       let size = CGSize(width: bounds.size.width, height: 20)
       let rect = CGRect(origin: CGPoint.zero, size: size)
@@ -173,10 +173,13 @@ class TimelineView: UIView {
   func layoutEvents() {
     if eventViews.isEmpty {return}
 
-    let day = DTTimePeriod(size: .Day, startingAt:date)
+    let day = TimePeriod(beginning: date, chunk: TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
 
-    let validEvents = eventViews.filter {$0.datePeriod.overlapsWith(day)}
-      .sort {$0.datePeriod.StartDate.isEarlierThan($1.datePeriod.StartDate)}
+//    let validEvents = eventViews.filter {$0.datePeriod.overlaps(with: day)}
+//      .sorted {$0.datePeriod.beginning!.($1.datePeriod.beginning)}
+
+    let validEvents = eventViews.filter {$0.datePeriod.overlaps(with: day)}
+      .sorted {$0.datePeriod.beginning!.isEarlier(than: $1.datePeriod.beginning!)}
 
     var groupsOfEvents = [[EventView]]()
     var overlappingEvents = [EventView]()
@@ -186,7 +189,7 @@ class TimelineView: UIView {
         overlappingEvents.append(event)
         continue
       }
-      if overlappingEvents.last!.datePeriod.overlapsWith(event.datePeriod) {
+      if overlappingEvents.last!.datePeriod.overlaps(with: event.datePeriod) {
         overlappingEvents.append(event)
         continue
       }
@@ -197,9 +200,9 @@ class TimelineView: UIView {
     for overlappingEvents in groupsOfEvents {
       let totalCount = CGFloat(overlappingEvents.count)
 
-      for (index, event) in overlappingEvents.enumerate() {
-        let startY = dateToY(event.datePeriod.StartDate)
-        let endY = dateToY(event.datePeriod.EndDate)
+      for (index, event) in overlappingEvents.enumerated() {
+        let startY = dateToY(event.datePeriod.beginning!)
+        let endY = dateToY(event.datePeriod.end!)
 
         //TODO: Swift math
         let floatIndex = CGFloat(index)
@@ -218,13 +221,13 @@ class TimelineView: UIView {
 
   // MARK: - Helpers
 
-  private var onePixel: CGFloat {
-    return 1 / UIScreen.mainScreen().scale
+  fileprivate var onePixel: CGFloat {
+    return 1 / UIScreen.main.scale
   }
 
-  private func dateToY(date: NSDate) -> CGFloat {
-    let hourY = CGFloat(date.hour()) * verticalDiff + verticalInset
-    let minuteY = CGFloat(date.minute()) * verticalDiff / 60
+  fileprivate func dateToY(_ date: Date) -> CGFloat {
+    let hourY = CGFloat(date.hour) * verticalDiff + verticalInset
+    let minuteY = CGFloat(date.minute) * verticalDiff / 60
     return hourY + minuteY
   }
 }

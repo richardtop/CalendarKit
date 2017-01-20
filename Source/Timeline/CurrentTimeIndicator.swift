@@ -7,25 +7,25 @@ class CurrentTimeIndicator: UIView {
 
   var is24hClock = true
 
-  var date = NSDate() {
+  var date = Date() {
     didSet {
       let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
-      timeLabel.text = date.formattedDateWithFormat(dateFormat)
+      timeLabel.text = date.format(with: dateFormat)
       timeLabel.sizeToFit()
       setNeedsLayout()
     }
   }
 
-  private var timeLabel: UILabel = {
+  fileprivate var timeLabel: UILabel = {
     let label = UILabel()
-    label.font = UIFont.systemFontOfSize(11)
+    label.font = UIFont.systemFont(ofSize: 11)
 
     return label
     }()
 
-  private var circle = UIView()
+  fileprivate var circle = UIView()
 
-  private var line = UIView()
+  fileprivate var line = UIView()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -46,7 +46,7 @@ class CurrentTimeIndicator: UIView {
 
   override func layoutSubviews() {
     let size = timeLabel.frame.size
-    timeLabel.align(Align.ToTheLeftCentered, relativeTo: line, padding: 5, width: size.width, height: size.height)
+    timeLabel.align(Align.toTheLeftCentered, relativeTo: line, padding: 5, width: size.width, height: size.height)
 
     line.frame = CGRect(x: leftInset - 5, y: bounds.height / 2, width: bounds.width, height: 1)
 
@@ -59,7 +59,7 @@ class CurrentTimeIndicator: UIView {
     resetSubviewsColor()
   }
 
-  private func resetSubviewsColor() {
+  fileprivate func resetSubviewsColor() {
     timeLabel.textColor = tintColor
     circle.backgroundColor = tintColor
     line.backgroundColor = tintColor

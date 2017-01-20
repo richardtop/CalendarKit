@@ -1,52 +1,53 @@
 import UIKit
 import DateTools
 
-public class DayViewController: UIViewController, DayViewDelegate {
+open class DayViewController: UIViewController, DayViewDelegate {
 
   lazy var dayView: DayView = DayView()
 
-  override public func viewDidLoad() {
+  override open func viewDidLoad() {
     super.viewDidLoad()
-    self.edgesForExtendedLayout = UIRectEdge.None
+    self.edgesForExtendedLayout = UIRectEdge()
     view.addSubview(dayView)
-    view.tintColor = UIColor.redColor()
+    view.tintColor = UIColor.red
 
     dayView.dataSource = self
   }
 
-  public override func viewDidLayoutSubviews() {
+  open override func viewDidLayoutSubviews() {
     dayView.fillSuperview()
   }
 }
 
 extension DayViewController: DayViewDataSource {
-  func eventViewsForDate(date: NSDate) -> [EventView] {
+  func eventViewsForDate(_ date: Date) -> [EventView] {
 
     return generateMockEventsForDate(date)
   }
 
 
-  func generateMockEventsForDate(var date: NSDate) -> [EventView] {
+  func generateMockEventsForDate(_ date: Date) -> [EventView] {
+    var date = date
     var events = [EventView]()
     let step = 2
 
-    date = date.dateByAddingMinutes(24)
+    date = date.add(TimeChunk(seconds: 0, minutes: 24, hours: 0, days: 0, weeks: 0, months: 0, years: 0))
 
     for i in 0...10  {
       let event = EventView()
 
       let duration = Int(arc4random_uniform(60) + 30)
-      let datePeriod = DTTimePeriod(size: .Minute, amount: duration, startingAt: date)
+        let datePeriod = TimePeriod(beginning: date, duration: Double(duration))
 
       event.datePeriod = datePeriod
 
       var eventInfo = [String]()
       eventInfo.append("Text \(i)")
-      eventInfo.append(datePeriod.StartDate.formattedDateWithStyle(.FullStyle))
+//      eventInfo.append(datePeriod.startDate.formattedDate(with: .full))
 
       event.data = eventInfo
 
-      date = date.dateByAddingMinutes(Int(arc4random_uniform(180)))
+      date = date.add(TimeChunk(seconds: 0, minutes: 24, hours: 0, days: 0, weeks: 0, months: 0, years: 0))
       events.append(event)
     }
 
@@ -55,11 +56,11 @@ extension DayViewController: DayViewDataSource {
 
   // MARK: DayViewDelegate
 
-  func dayViewDidSelectEventView(eventview: EventView) {
+  func dayViewDidSelectEventView(_ eventview: EventView) {
 
   }
 
-  func dayViewDidLongPressEventView(eventView: EventView) {
+  func dayViewDidLongPressEventView(_ eventView: EventView) {
 
   }
 }

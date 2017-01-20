@@ -8,7 +8,7 @@ struct Generator {
     for i in 1...24 {
       let i = i % 24
       var string = i < 10 ? "0" + String(i) : String(i)
-      string.appendContentsOf(":00")
+      string.append(":00")
       numbers.append(string)
     }
 

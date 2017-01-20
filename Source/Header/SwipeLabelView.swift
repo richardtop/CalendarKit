@@ -2,23 +2,23 @@ import UIKit
 
 class SwipeLabelView: UIView {
 
-  var date = NSDate() {
+  var date = Date() {
     willSet(newDate) {
-      guard !newDate.isEqualToDate(date)
+      guard newDate != date
         else { return }
-      labels.last!.text = newDate.formattedDateWithStyle(.FullStyle)
-      let shouldMoveForward = newDate.isLaterThan(date)
+      labels.last!.text = newDate.format(with: .full)
+      let shouldMoveForward = newDate.isLater(than: date)
       animate(shouldMoveForward)
     }
   }
 
   var labels = [UILabel]()
 
-  init(date: NSDate) {
+  init(date: Date) {
     self.date = date
     super.init(frame: CGRect.zero)
     configure()
-    labels.first!.text = date.formattedDateWithStyle(.FullStyle)
+    labels.first!.text = date.format(with: .full)
   }
 
   override init(frame: CGRect) {
@@ -34,13 +34,13 @@ class SwipeLabelView: UIView {
   func configure() {
     for _ in 0...1 {
       let label = UILabel()
-      label.textAlignment = .Center
+      label.textAlignment = .center
       labels.append(label)
       addSubview(label)
     }
   }
 
-  func animate(forward: Bool) {
+  func animate(_ forward: Bool) {
     let multiplier: CGFloat = forward ? -1 : 1
 
     let label = labels.first!
@@ -53,14 +53,14 @@ class SwipeLabelView: UIView {
     secondLabel.frame = bounds
     secondLabel.frame.origin.x -= CGFloat(shiftRatio * screenWidth * 3) * multiplier
 
-    UIView.animateWithDuration(0.3, animations: { _ in
+    UIView.animate(withDuration: 0.3, animations: { _ in
       secondLabel.frame = self.bounds
       label.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
       secondLabel.alpha = 1
       label.alpha = 0
-      }) { _ in
-        self.labels = self.labels.reverse()
-    }
+      }, completion: { _ in
+        self.labels = self.labels.reversed()
+    }) 
   }
 
   override func layoutSubviews() {

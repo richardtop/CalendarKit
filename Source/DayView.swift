@@ -1,13 +1,14 @@
 import UIKit
 import Neon
+import DateTools
 
 protocol DayViewDataSource: class {
-  func eventViewsForDate(date: NSDate) -> [EventView]
+  func eventViewsForDate(_ date: Date) -> [EventView]
 }
 
 protocol DayViewDelegate: class {
-  func dayViewDidSelectEventView(eventview: EventView)
-  func dayViewDidLongPressEventView(eventView: EventView)
+  func dayViewDidSelectEventView(_ eventview: EventView)
+  func dayViewDidLongPressEventView(_ eventView: EventView)
 }
 
 class DayView: UIView {
@@ -20,7 +21,7 @@ class DayView: UIView {
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView<TimelineContainer>()
 
-  var currentDate = NSDate().dateOnly()
+  var currentDate = Date().dateOnly()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -42,7 +43,7 @@ class DayView: UIView {
     for i in -1...1 {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
-      timeline.date = currentDate.dateByAddingDays(i)
+      timeline.date = currentDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: i, weeks: 0, months: 0, years: 0))
 
       timeline.label.text = String(i)
 
@@ -57,59 +58,59 @@ class DayView: UIView {
     addSubview(timelinePager)
 
     timelinePager.viewDelegate = self
-    let contentWidth = CGFloat(timelinePager.reusableViews.count) * UIScreen.mainScreen().bounds.width
+    let contentWidth = CGFloat(timelinePager.reusableViews.count) * UIScreen.main.bounds.width
     let size = CGSize(width: contentWidth, height: 50)
     timelinePager.contentSize = size
-    timelinePager.contentOffset = CGPoint(x: UIScreen.mainScreen().bounds.width, y: 0)
+    timelinePager.contentOffset = CGPoint(x: UIScreen.main.bounds.width, y: 0)
   }
 
   override func layoutSubviews() {
-    dayHeaderView.anchorAndFillEdge(.Top, xPad: 0, yPad: 0, otherSize: headerHeight)
-    timelinePager.alignAndFill(align: .UnderCentered, relativeTo: dayHeaderView, padding: 0)
+    dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: headerHeight)
+    timelinePager.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
   }
 
-  func updateTimeline(timeline: TimelineView) {
+  func updateTimeline(_ timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
-    let eventViews = dataSource.eventViewsForDate(timeline.date)
+    let eventViews = dataSource.eventViewsForDate(timeline.date as Date)
 //    eventViews.forEach.map{$0.delegate = self}
     timeline.eventViews = eventViews
   }
 }
 
 extension DayView: EventViewDelegate {
-  func eventViewDidTap(eventView: EventView) {
+  func eventViewDidTap(_ eventView: EventView) {
     delegate?.dayViewDidSelectEventView(eventView)
   }
-  func eventViewDidLongPress(eventview: EventView) {
+  func eventViewDidLongPress(_ eventview: EventView) {
     delegate?.dayViewDidLongPressEventView(eventview)
   }
 }
 
 extension DayView: PagingScrollViewDelegate {
-  func updateViewAtIndex(index: Int) {
+  func updateViewAtIndex(_ index: Int) {
     let timeline = timelinePager.reusableViews[index].timeline
     let amount = index > 1 ? 1 : -1
-    timeline.date = currentDate.dateByAddingDays(amount)
-    updateTimeline(timeline)
+    timeline?.date = currentDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: amount, weeks: 0, months: 0, years: 0))
+    updateTimeline(timeline!)
   }
 
-  func scrollviewDidScrollToViewAtIndex(index: Int) {
+  func scrollviewDidScrollToViewAtIndex(_ index: Int) {
     let timeline = timelinePager.reusableViews[index].timeline
-    currentDate = timeline.date
+    currentDate = timeline!.date
     dayHeaderView.selectDate(currentDate)
   }
 }
 
 extension DayView: DayHeaderViewDelegate {
-  func dateHeaderDateChanged(newDate: NSDate) {
+  func dateHeaderDateChanged(_ newDate: Date) {
     //TODO: refactor
-    if newDate.isEarlierThan(currentDate) {
+    if newDate.isEarlier(than: currentDate) {
      let timelineContainer = timelinePager.reusableViews.first!
       timelineContainer.timeline.date = newDate
       updateTimeline(timelineContainer.timeline)
       timelinePager.scrollBackward()
 
-    } else if newDate.isLaterThan(currentDate) {
+    } else if newDate.isLater(than: currentDate) {
       let timelineContainer = timelinePager.reusableViews.last!
       timelineContainer.timeline.date = newDate
       updateTimeline(timelineContainer.timeline)

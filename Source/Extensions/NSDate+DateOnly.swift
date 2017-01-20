@@ -1,7 +1,7 @@
 import Foundation
 
-extension NSDate {
-  func dateOnly() -> NSDate {
-    return NSDate(year: year(), month: month(), day: day())
+extension Date {
+  func dateOnly() -> Date {
+    return Date(year: year, month: month, day: day)
   }
 }
