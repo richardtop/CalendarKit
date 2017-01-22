@@ -71,8 +71,7 @@ class DayView: UIView {
 
   func updateTimeline(_ timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
-    let eventViews = dataSource.eventViewsForDate(timeline.date as Date)
-//    eventViews.forEach.map{$0.delegate = self}
+    let eventViews = dataSource.eventViewsForDate(timeline.date)
     timeline.eventViews = eventViews
   }
 }
