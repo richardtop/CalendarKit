@@ -3,11 +3,8 @@ import UIKit
 class DaySymbolsView: UIView {
 
   var daysInWeek = 7
-
   var calendar = Calendar.autoupdatingCurrent
-
   var labels = [UILabel]()
-
   var weekendColor = UIColor.lightGray
 
   override init(frame: CGRect) {
