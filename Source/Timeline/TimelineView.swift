@@ -173,10 +173,8 @@ class TimelineView: UIView, ReusableView {
   func layoutEvents() {
     if eventViews.isEmpty {return}
 
-    let day = TimePeriod(beginning: date, chunk: TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
-
-//    let validEvents = eventViews.filter {$0.datePeriod.overlaps(with: day)}
-//      .sorted {$0.datePeriod.beginning!.($1.datePeriod.beginning)}
+    let day = TimePeriod(beginning: date.dateOnly(),
+                         chunk: TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
 
     let validEvents = eventViews.filter {$0.datePeriod.overlaps(with: day)}
       .sorted {$0.datePeriod.beginning!.isEarlier(than: $1.datePeriod.beginning!)}
@@ -197,19 +195,17 @@ class TimelineView: UIView, ReusableView {
       overlappingEvents.removeAll()
     }
 
+    groupsOfEvents.append(overlappingEvents)
+    overlappingEvents.removeAll()
+
     for overlappingEvents in groupsOfEvents {
       let totalCount = CGFloat(overlappingEvents.count)
-
       for (index, event) in overlappingEvents.enumerated() {
         let startY = dateToY(event.datePeriod.beginning!)
         let endY = dateToY(event.datePeriod.end!)
-
-        //TODO: Swift math
         let floatIndex = CGFloat(index)
         let x = leftInset + floatIndex / totalCount * calendarWidth
-
         let equalWidth = calendarWidth / totalCount
-
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
     }
