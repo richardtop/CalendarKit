@@ -23,8 +23,10 @@ class DaySelector: UIView, ReusableView {
     didSet {
       dateLabels.filter {$0.selected == true}
         .first?.selected = false
-      let label = dateLabels[selectedIndex]
-      label.selected = true
+      if selectedIndex < dateLabels.count && selectedIndex > -1 {
+        let label = dateLabels[selectedIndex]
+        label.selected = true
+      }
     }
   }
 
@@ -91,7 +93,6 @@ class DaySelector: UIView, ReusableView {
     per /= dateLabelsCount
     let minX = per / 2
 
-    //TODO refactor swifty math by applying extension ?
     for (i, label) in dateLabels.enumerated() {
       let frame = CGRect(x: minX + (dateLabelWidth + per) * CGFloat(i), y: 0,
         width: dateLabelWidth, height: dateLabelWidth)
