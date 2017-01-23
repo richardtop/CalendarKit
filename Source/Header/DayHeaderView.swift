@@ -5,7 +5,7 @@ protocol DayHeaderViewDelegate: class {
   func dateHeaderDateChanged(_ newDate: Date)
 }
 
-class DayHeaderView: UIView {
+public class DayHeaderView: UIView {
 
   weak var delegate: DayHeaderViewDelegate?
 
@@ -37,7 +37,7 @@ class DayHeaderView: UIView {
     configurePages()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
     configurePages()
@@ -91,7 +91,7 @@ class DayHeaderView: UIView {
     currentDate = selectedDate
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     super.layoutSubviews()
     pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
 
