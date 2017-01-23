@@ -24,7 +24,7 @@ public class DayHeaderView: UIView {
   let pagingScrollView = PagingScrollView<DaySelector>()
   lazy var swipeLabelView: SwipeLabelView = SwipeLabelView(date: Date().dateOnly())
 
-  init(selectedDate: Date) {
+  public init(selectedDate: Date) {
     self.currentDate = selectedDate
     super.init(frame: CGRect.zero)
     configure()
@@ -63,6 +63,7 @@ public class DayHeaderView: UIView {
     }
     let centerDaySelector = pagingScrollView.reusableViews[1]
     centerDaySelector.selectedDate = selectedDate
+    currentWeekdayIndex = centerDaySelector.selectedIndex
   }
 
   func beginningOfWeek(_ date: Date) -> Date {
@@ -73,16 +74,19 @@ public class DayHeaderView: UIView {
     return calendar.date(from: components)!
   }
 
-  func selectDate(_ selectedDate: Date) {
+  public func selectDate(_ selectedDate: Date) {
+    var selectedDate = selectedDate.dateOnly()
     let centerDaySelector = pagingScrollView.reusableViews[1]
     let startDate = centerDaySelector.startDate.dateOnly()
 
-    let daysFrom = selectedDate.days(from: startDate as Date!, calendar: calendar)
+    let daysFrom = selectedDate.days(from: startDate, calendar: calendar)
+
     if daysFrom < 0 {
       pagingScrollView.scrollBackward()
+      currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek)
     } else if daysFrom > daysInWeek - 1 {
       pagingScrollView.scrollForward()
-      currentWeekdayIndex = 0
+      currentWeekdayIndex = daysFrom % daysInWeek
     } else {
       centerDaySelector.selectedDate = selectedDate
     }
@@ -122,6 +126,6 @@ extension DayHeaderView: PagingScrollViewDelegate {
     let activeView = pagingScrollView.reusableViews[index]
     activeView.selectedIndex = currentWeekdayIndex
     swipeLabelView.date = activeView.selectedDate!
-    delegate?.dateHeaderDateChanged(activeView.selectedDate! as Date)
+    delegate?.dateHeaderDateChanged(activeView.selectedDate!)
   }
 }
