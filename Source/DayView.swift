@@ -69,6 +69,10 @@ class DayView: UIView {
     timelinePager.contentOffset = CGPoint(x: UIScreen.main.bounds.width, y: 0)
   }
 
+  func reloadData() {
+    updateTimeline(timelinePager.reusableViews[1].timeline)
+  }
+
   override func layoutSubviews() {
     dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: headerHeight)
     timelinePager.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
@@ -113,7 +117,6 @@ extension DayView: DayHeaderViewDelegate {
       timelineContainer.timeline.date = newDate
       updateTimeline(timelineContainer.timeline)
       timelinePager.scrollBackward()
-
     } else if newDate.isLater(than: currentDate) {
       let timelineContainer = timelinePager.reusableViews.last!
       timelineContainer.timeline.date = newDate

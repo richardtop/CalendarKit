@@ -12,6 +12,7 @@ open class DayViewController: UIViewController, DayViewDelegate {
     view.tintColor = UIColor.red
 
     dayView.dataSource = self
+    dayView.reloadData()
   }
 
   open override func viewDidLayoutSubviews() {
