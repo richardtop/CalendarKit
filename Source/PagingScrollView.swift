@@ -48,7 +48,6 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    recenterIfNecessary()
     realignViews()
   }
 
