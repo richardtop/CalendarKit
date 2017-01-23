@@ -20,6 +20,7 @@ class DayView: UIView {
 
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView<TimelineContainer>()
+  var timelineSynchronizer: ScrollSynchronizer?
 
   var currentDate = Date().dateOnly()
 
@@ -40,6 +41,7 @@ class DayView: UIView {
   }
 
   func configureTimelinePager() {
+    var verticalScrollViews = [TimelineContainer]()
     for i in -1...1 {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
@@ -54,7 +56,10 @@ class DayView: UIView {
 
       timelinePager.addSubview(verticalScrollView)
       timelinePager.reusableViews.append(verticalScrollView)
+
+      verticalScrollViews.append(verticalScrollView)
     }
+    timelineSynchronizer = ScrollSynchronizer(views: verticalScrollViews)
     addSubview(timelinePager)
 
     timelinePager.viewDelegate = self
