@@ -11,7 +11,7 @@ protocol DayViewDelegate: class {
   func dayViewDidLongPressEventView(_ eventView: EventView)
 }
 
-class DayView: UIView {
+public class DayView: UIView {
 
   weak var dataSource: DayViewDataSource?
   weak var delegate: DayViewDelegate?
@@ -24,12 +24,12 @@ class DayView: UIView {
 
   var currentDate = Date().dateOnly()
 
-  override init(frame: CGRect) {
+  override public init(frame: CGRect) {
     super.init(frame: frame)
     configure()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
   }
@@ -67,11 +67,11 @@ class DayView: UIView {
     timelinePager.contentOffset = CGPoint(x: UIScreen.main.bounds.width, y: 0)
   }
 
-  func reloadData() {
+  public func reloadData() {
     timelinePager.reusableViews.forEach{self.updateTimeline($0.timeline)}
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: headerHeight)
     timelinePager.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
   }
@@ -108,7 +108,7 @@ extension DayView: PagingScrollViewDelegate {
 }
 
 extension DayView: DayHeaderViewDelegate {
-  func dateHeaderDateChanged(_ newDate: Date) {
+  public func dateHeaderDateChanged(_ newDate: Date) {
     if newDate.isEarlier(than: currentDate) {
       let timelineContainer = timelinePager.reusableViews.first!
       timelineContainer.timeline.date = newDate

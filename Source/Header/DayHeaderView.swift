@@ -1,17 +1,17 @@
 import UIKit
 import DateTools
 
-protocol DayHeaderViewDelegate: class {
+public protocol DayHeaderViewDelegate: class {
   func dateHeaderDateChanged(_ newDate: Date)
 }
 
 public class DayHeaderView: UIView {
 
-  weak var delegate: DayHeaderViewDelegate?
+  public weak var delegate: DayHeaderViewDelegate?
 
-  var daysInWeek = 7
+  public var daysInWeek = 7
 
-  var calendar = Calendar.autoupdatingCurrent
+  public var calendar = Calendar.autoupdatingCurrent
 
   var currentWeekdayIndex = -1
   var currentDate = Date().dateOnly()

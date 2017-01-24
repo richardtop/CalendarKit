@@ -2,7 +2,7 @@ import UIKit
 import Neon
 import DateTools
 
-class TimelineView: UIView, ReusableView {
+public class TimelineView: UIView, ReusableView {
 
   var date = Date() {
     didSet {
@@ -78,7 +78,7 @@ class TimelineView: UIView, ReusableView {
     configure()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
   }
@@ -91,7 +91,7 @@ class TimelineView: UIView, ReusableView {
     addSubview(nowLine)
   }
 
-  override func draw(_ rect: CGRect) {
+  override public func draw(_ rect: CGRect) {
     super.draw(rect)
 
     var hourToRemoveIndex = -1
@@ -140,7 +140,7 @@ class TimelineView: UIView, ReusableView {
     }
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     super.layoutSubviews()
     layoutEvents()
     layoutNowLine()

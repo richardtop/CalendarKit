@@ -12,7 +12,7 @@ open class EventView: UIView {
 
   weak var delegate: EventViewDelegate?
 
-  var color = UIColor() {
+  public var color = UIColor() {
     didSet {
       textView.textColor = color.darkened(amount: 0.3)
       backgroundColor = UIColor(red: color.redComponent, green: color.greenComponent, blue: color.blueComponent, alpha: 0.3)
@@ -24,7 +24,7 @@ open class EventView: UIView {
     return textView.height
   }
 
-  var data = [String]() {
+  public var data = [String]() {
     didSet {
       textView.text = data.reduce("", {$0 + $1 + "\n"})
     }
@@ -42,7 +42,7 @@ open class EventView: UIView {
   lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(EventView.tap))
   lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(EventView.longPress))
 
-  var datePeriod = TimePeriod()
+  public var datePeriod = TimePeriod()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
