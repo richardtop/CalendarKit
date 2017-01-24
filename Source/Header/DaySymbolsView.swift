@@ -55,7 +55,6 @@ class DaySymbolsView: UIView {
     per /= labelsCount
 
     let minX = per / 2
-    //TODO refactor swifty math by applying extension ?
     for (i, label) in labels.enumerated() {
       let frame = CGRect(x: minX + (bounds.height + per) * CGFloat(i), y: 0,
         width: bounds.height, height: bounds.height)

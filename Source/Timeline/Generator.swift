@@ -26,7 +26,6 @@ struct Generator {
 
     var am = numbers.map { $0 + " AM" }
     var pm = numbers.map { $0 + " PM" }
-    // TODO use localized string here
     am.append("Noon")
     pm.removeFirst()
     pm.append(am.first!)

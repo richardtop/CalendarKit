@@ -6,7 +6,6 @@ class TimelineView: UIView, ReusableView {
 
   var date = Date() {
     didSet {
-      label.text = date.format(with: "dd:MM:  hh:mm")
       setNeedsLayout()
     }
   }
@@ -24,10 +23,6 @@ class TimelineView: UIView, ReusableView {
       setNeedsLayout()
     }
   }
-
-  //IFDEF DEBUG
-
-  lazy var label = UILabel()
 
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
 
@@ -94,7 +89,6 @@ class TimelineView: UIView, ReusableView {
     contentMode = .redraw
     backgroundColor = .white
     addSubview(nowLine)
-    addSubview(label)
   }
 
   override func draw(_ rect: CGRect) {
@@ -148,10 +142,6 @@ class TimelineView: UIView, ReusableView {
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    //TODO: Remove this label. Shows current day for testing purposes
-    label.sizeToFit()
-    label.frame = CGRect(origin: CGPoint.zero, size: CGSize(width: 375, height: 50))
-
     layoutEvents()
     layoutNowLine()
   }

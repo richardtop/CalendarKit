@@ -47,8 +47,6 @@ class DayView: UIView {
       timeline.frame.size.height = timeline.fullHeight
       timeline.date = currentDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: i, weeks: 0, months: 0, years: 0))
 
-      timeline.label.text = String(i)
-
       let verticalScrollView = TimelineContainer()
       verticalScrollView.timeline = timeline
       verticalScrollView.addSubview(timeline)
