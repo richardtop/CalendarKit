@@ -42,8 +42,6 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
     isPagingEnabled = true
     isDirectionalLockEnabled = true
     delegate = self
-    // TODO: Play with deceleration rate to match calendar speed
-    decelerationRate = 50
   }
 
   override func layoutSubviews() {
