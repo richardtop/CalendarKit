@@ -41,6 +41,8 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
   func configure() {
     isPagingEnabled = true
     isDirectionalLockEnabled = true
+    showsHorizontalScrollIndicator = false
+    showsVerticalScrollIndicator = false
     delegate = self
   }
 
