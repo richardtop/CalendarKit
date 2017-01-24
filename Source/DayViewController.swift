@@ -3,7 +3,7 @@ import DateTools
 
 open class DayViewController: UIViewController, DayViewDelegate {
 
-  lazy var dayView: DayView = DayView()
+  public lazy var dayView: DayView = DayView()
 
   override open func viewDidLoad() {
     super.viewDidLoad()
@@ -12,26 +12,31 @@ open class DayViewController: UIViewController, DayViewDelegate {
     view.tintColor = UIColor.red
 
     dayView.dataSource = self
+    dayView.delegate = self
     dayView.reloadData()
   }
 
   open override func viewDidLayoutSubviews() {
     dayView.fillSuperview()
   }
+
+  open func reloadData() {
+    dayView.reloadData()
+  }
 }
 
 extension DayViewController: DayViewDataSource {
-  func eventViewsForDate(_ date: Date) -> [EventView] {
+  open func eventViewsForDate(_ date: Date) -> [EventView] {
     return [EventView]()
   }
 
   // MARK: DayViewDelegate
 
-  func dayViewDidSelectEventView(_ eventview: EventView) {
+  open func dayViewDidSelectEventView(_ eventview: EventView) {
 
   }
 
-  func dayViewDidLongPressEventView(_ eventView: EventView) {
+  open func dayViewDidLongPressEventView(_ eventView: EventView) {
     
   }
 }
