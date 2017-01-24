@@ -11,11 +11,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.backgroundColor = UIColor.white
     window?.makeKeyAndVisible()
 
-    let dayViewController = DayViewController()
+    let dayViewController = ExampleController()
     let navigationController = UINavigationController(rootViewController: dayViewController)
     window?.rootViewController = navigationController
 
     return true
   }
 }
-
