@@ -100,8 +100,6 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
   func checkForPageChange() {
     if currentIndex != previousPage {
       viewDelegate?.scrollviewDidScrollToViewAtIndex(Int(currentScrollViewPage))
-      //TODO: re-think reuse engine
-      reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
       previousPage = currentIndex
     }
     recenter()

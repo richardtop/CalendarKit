@@ -70,7 +70,7 @@ class DayView: UIView {
   }
 
   func reloadData() {
-    updateTimeline(timelinePager.reusableViews[1].timeline)
+    timelinePager.reusableViews.forEach{self.updateTimeline($0.timeline)}
   }
 
   override func layoutSubviews() {
@@ -111,9 +111,8 @@ extension DayView: PagingScrollViewDelegate {
 
 extension DayView: DayHeaderViewDelegate {
   func dateHeaderDateChanged(_ newDate: Date) {
-    //TODO: refactor
     if newDate.isEarlier(than: currentDate) {
-     let timelineContainer = timelinePager.reusableViews.first!
+      let timelineContainer = timelinePager.reusableViews.first!
       timelineContainer.timeline.date = newDate
       updateTimeline(timelineContainer.timeline)
       timelinePager.scrollBackward()
