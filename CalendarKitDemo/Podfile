@@ -1,6 +1,7 @@
-platform :ios, '8.0'
-
 use_frameworks!
 inhibit_all_warnings!
 
-pod 'CalendarKit', path: '../'
+target "CalendarKitDemo" do
+	pod 'CalendarKit', path: '../'
+	pod 'DateTools', :git => 'https://github.com/MatthewYork/DateTools.git', :branch => 'swift'
+end

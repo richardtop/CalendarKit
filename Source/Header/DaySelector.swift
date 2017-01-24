@@ -3,17 +3,17 @@ import Neon
 import DateTools
 
 protocol DaySelectorDelegate: class {
-  func dateSelectorDidSelectDate(date: NSDate, index: Int)
+  func dateSelectorDidSelectDate(_ date: Date, index: Int)
 }
 
-class DaySelector: UIView {
+class DaySelector: UIView, ReusableView {
 
   weak var delegate: DaySelectorDelegate?
 
-  var calendar = NSCalendar.autoupdatingCurrentCalendar()
+  var calendar = Calendar.autoupdatingCurrent
 
   var daysInWeek = 7
-  var startDate: NSDate! {
+  var startDate: Date! {
     didSet {
       configure()
     }
@@ -23,18 +23,20 @@ class DaySelector: UIView {
     didSet {
       dateLabels.filter {$0.selected == true}
         .first?.selected = false
-      let label = dateLabels[selectedIndex]
-      label.selected = true
+      if selectedIndex < dateLabels.count && selectedIndex > -1 {
+        let label = dateLabels[selectedIndex]
+        label.selected = true
+      }
     }
   }
 
-  var selectedDate: NSDate? {
+  var selectedDate: Date? {
     get {
-      return dateLabels.filter{$0.selected == true}.first?.date
+      return dateLabels.filter{$0.selected == true}.first?.date as Date?
     }
     set(newDate) {
       if let newDate = newDate {
-        selectedIndex = newDate.daysFrom(startDate, calendar: calendar)
+        selectedIndex = newDate.days(from: startDate, calendar: calendar)
       }
     }
   }
@@ -43,7 +45,7 @@ class DaySelector: UIView {
 
   var dateLabels = [DateLabel]()
 
-  init(startDate: NSDate = NSDate(), daysInWeek: Int = 7) {
+  init(startDate: Date = Date(), daysInWeek: Int = 7) {
     self.startDate = startDate.dateOnly()
     self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
@@ -52,13 +54,13 @@ class DaySelector: UIView {
   }
 
   override init(frame: CGRect) {
-    startDate = NSDate().dateOnly()
+    startDate = Date().dateOnly()
     super.init(frame: frame)
     initializeViews()
   }
 
   required init?(coder aDecoder: NSCoder) {
-    startDate = NSDate().dateOnly()
+    startDate = Date().dateOnly()
     super.init(coder: aDecoder)
     initializeViews()
   }
@@ -70,18 +72,18 @@ class DaySelector: UIView {
       addSubview(label)
 
       let recognizer = UITapGestureRecognizer(target: self,
-        action: "dateLabelDidTap:")
+        action: #selector(DaySelector.dateLabelDidTap(_:)))
       label.addGestureRecognizer(recognizer)
     }
   }
 
   func configure() {
-    for (increment, label) in dateLabels.enumerate() {
-      label.date = startDate.dateByAddingDays(increment)
+    for (increment, label) in dateLabels.enumerated() {
+      label.date = startDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: increment, weeks: 0, months: 0, years: 0))
     }
   }
 
-  override func prepareForReuse() {
+  func prepareForReuse() {
     dateLabels.forEach {$0.selected = false}
   }
 
@@ -91,18 +93,17 @@ class DaySelector: UIView {
     per /= dateLabelsCount
     let minX = per / 2
 
-    //TODO refactor swifty math by applying extension ?
-    for (i, label) in dateLabels.enumerate() {
+    for (i, label) in dateLabels.enumerated() {
       let frame = CGRect(x: minX + (dateLabelWidth + per) * CGFloat(i), y: 0,
         width: dateLabelWidth, height: dateLabelWidth)
       label.frame = frame
     }
   }
 
-  func dateLabelDidTap(sender: UITapGestureRecognizer) {
+  func dateLabelDidTap(_ sender: UITapGestureRecognizer) {
     if let label = sender.view as? DateLabel {
-      selectedIndex = dateLabels.indexOf(label)!
-      delegate?.dateSelectorDidSelectDate(label.date, index: selectedIndex)
+      selectedIndex = dateLabels.index(of: label)!
+      delegate?.dateSelectorDidSelectDate(label.date as Date, index: selectedIndex)
       dateLabels.filter {$0.selected == true}
         .first?.selected = false
       label.selected = true

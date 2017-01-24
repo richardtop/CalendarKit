@@ -1,12 +1,13 @@
 import UIKit
+import DateTools
 
 class DateLabel: UILabel {
 
   var fontSize: CGFloat = 18
 
-  var date: NSDate! {
+  var date: Date! {
     didSet {
-      text = String(date.day())
+      text = String(date.day)
       updateState()
     }
   }
@@ -19,12 +20,12 @@ class DateLabel: UILabel {
 
   //TODO: these vars are to introduce factory later
 
-  var activeTextColor = UIColor.whiteColor()
-  var weekendTextColor = UIColor.grayColor()
-  var inactiveTextColor = UIColor.blackColor()
+  var activeTextColor = UIColor.white
+  var weekendTextColor = UIColor.gray
+  var inactiveTextColor = UIColor.black
 
-  var selectedBackgroundColor = UIColor.blackColor()
-  var inactiveBackgroundColor = UIColor.clearColor()
+  var selectedBackgroundColor = UIColor.black
+  var inactiveBackgroundColor = UIColor.clear
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -37,28 +38,28 @@ class DateLabel: UILabel {
   }
 
   func configure() {
-    userInteractionEnabled = true
-    textAlignment = .Center
+    isUserInteractionEnabled = true
+    textAlignment = .center
     clipsToBounds = true
   }
 
   func updateState() {
-    let today = date.isToday()
+    let today = date.isToday
     if selected {
-      font = UIFont.boldSystemFontOfSize(fontSize)
+      font = UIFont.boldSystemFont(ofSize: fontSize)
       textColor = activeTextColor
       backgroundColor = today ? tintColor : selectedBackgroundColor
     } else {
-      let notTodayColor = date.isWeekend() ? weekendTextColor : inactiveTextColor
-      font = UIFont.systemFontOfSize(fontSize)
+      let notTodayColor = date.isWeekend ? weekendTextColor : inactiveTextColor
+      font = UIFont.systemFont(ofSize: fontSize)
       textColor = today ? tintColor : notTodayColor
       backgroundColor = inactiveBackgroundColor
     }
   }
 
   func animate(){
-    UIView.transitionWithView(self, duration: 0.4,
-      options: .TransitionCrossDissolve,
+    UIView.transition(with: self, duration: 0.4,
+      options: .transitionCrossDissolve,
       animations: { _ in
         self.updateState()
       }, completion: nil)

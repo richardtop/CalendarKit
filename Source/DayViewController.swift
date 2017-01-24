@@ -1,65 +1,42 @@
 import UIKit
 import DateTools
 
-public class DayViewController: UIViewController, DayViewDelegate {
+open class DayViewController: UIViewController, DayViewDelegate {
 
-  lazy var dayView: DayView = DayView()
+  public lazy var dayView: DayView = DayView()
 
-  override public func viewDidLoad() {
+  override open func viewDidLoad() {
     super.viewDidLoad()
-    self.edgesForExtendedLayout = UIRectEdge.None
+    self.edgesForExtendedLayout = UIRectEdge()
     view.addSubview(dayView)
-    view.tintColor = UIColor.redColor()
+    view.tintColor = UIColor.red
 
     dayView.dataSource = self
+    dayView.delegate = self
+    dayView.reloadData()
   }
 
-  public override func viewDidLayoutSubviews() {
+  open override func viewDidLayoutSubviews() {
     dayView.fillSuperview()
+  }
+
+  open func reloadData() {
+    dayView.reloadData()
   }
 }
 
 extension DayViewController: DayViewDataSource {
-  func eventViewsForDate(date: NSDate) -> [EventView] {
-
-    return generateMockEventsForDate(date)
-  }
-
-
-  func generateMockEventsForDate(var date: NSDate) -> [EventView] {
-    var events = [EventView]()
-    let step = 2
-
-    date = date.dateByAddingMinutes(24)
-
-    for i in 0...10  {
-      let event = EventView()
-
-      let duration = Int(arc4random_uniform(60) + 30)
-      let datePeriod = DTTimePeriod(size: .Minute, amount: duration, startingAt: date)
-
-      event.datePeriod = datePeriod
-
-      var eventInfo = [String]()
-      eventInfo.append("Text \(i)")
-      eventInfo.append(datePeriod.StartDate.formattedDateWithStyle(.FullStyle))
-
-      event.data = eventInfo
-
-      date = date.dateByAddingMinutes(Int(arc4random_uniform(180)))
-      events.append(event)
-    }
-
-    return events
+  open func eventViewsForDate(_ date: Date) -> [EventView] {
+    return [EventView]()
   }
 
   // MARK: DayViewDelegate
 
-  func dayViewDidSelectEventView(eventview: EventView) {
+  open func dayViewDidSelectEventView(_ eventview: EventView) {
 
   }
 
-  func dayViewDidLongPressEventView(eventView: EventView) {
-
+  open func dayViewDidLongPressEventView(_ eventView: EventView) {
+    
   }
 }

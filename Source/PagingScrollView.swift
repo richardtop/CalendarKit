@@ -1,19 +1,15 @@
 import UIKit
 
 protocol PagingScrollViewDelegate: class {
-  func updateViewAtIndex(index: Int)
-  func scrollviewDidScrollToViewAtIndex(index: Int)
+  func updateViewAtIndex(_ index: Int)
+  func scrollviewDidScrollToViewAtIndex(_ index: Int)
 }
 
 protocol ReusableView: class {
   func prepareForReuse()
 }
 
-extension UIView: ReusableView {
-  func prepareForReuse() {}
-}
-
-class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollViewDelegate {
+class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: ReusableView {
 
   var reusableViews = [T]()
   weak var viewDelegate: PagingScrollViewDelegate?
@@ -43,16 +39,15 @@ class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollV
   }
 
   func configure() {
-    pagingEnabled = true
-    directionalLockEnabled = true
+    isPagingEnabled = true
+    isDirectionalLockEnabled = true
+    showsHorizontalScrollIndicator = false
+    showsVerticalScrollIndicator = false
     delegate = self
-    // TODO: Play with deceleration rate to match calendar speed
-    decelerationRate = 50
   }
 
   override func layoutSubviews() {
     super.layoutSubviews()
-    recenterIfNecessary()
     realignViews()
   }
 
@@ -75,12 +70,12 @@ class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollV
 
     if distanceFromCenter > 0 {
       reusableViews.shift(1)
-      accumulator++
+      accumulator += 1
       reusableViews.last!.prepareForReuse()
       viewDelegate?.updateViewAtIndex(reusableViews.endIndex - 1)
     } else if distanceFromCenter < 0 {
       reusableViews.shift(-1)
-      accumulator--
+      accumulator -= 1
       reusableViews.first!.prepareForReuse()
       viewDelegate?.updateViewAtIndex(0)
     }
@@ -88,7 +83,7 @@ class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollV
   }
 
   func realignViews() {
-    for (index, subview) in reusableViews.enumerate() {
+    for (index, subview) in reusableViews.enumerated() {
       subview.frame.origin.x = bounds.width * CGFloat(index)
       subview.frame.size = bounds.size
     }
@@ -105,23 +100,21 @@ class PagingScrollView<T: UIView where T: ReusableView>: UIScrollView, UIScrollV
   func checkForPageChange() {
     if currentIndex != previousPage {
       viewDelegate?.scrollviewDidScrollToViewAtIndex(Int(currentScrollViewPage))
-      //TODO: re-think reuse engine
-      reusableViews.filter { $0 != reusableViews[Int(currentScrollViewPage)]}.forEach {$0.prepareForReuse()}
       previousPage = currentIndex
     }
     recenter()
   }
 
-  func scrollViewDidEndDragging(scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+  func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
     if decelerate {return}
     checkForPageChange()
   }
 
-  func scrollViewDidEndDecelerating(scrollView: UIScrollView) {
+  func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
     checkForPageChange()
   }
 
-  func scrollViewDidEndScrollingAnimation(scrollView: UIScrollView) {
+  func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
     checkForPageChange()
   }
 }
