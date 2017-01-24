@@ -20,7 +20,6 @@ open class EventView: UIView {
   }
 
   var contentHeight: CGFloat {
-    //TODO: use strings array to calculate height
     return textView.height
   }
 
