@@ -13,7 +13,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   CalendarKit:
-    :path: "../"
+    :path: ../
   DateTools:
     :branch: swift
     :git: https://github.com/MatthewYork/DateTools.git
@@ -24,11 +24,11 @@ CHECKOUT OPTIONS:
     :git: https://github.com/MatthewYork/DateTools.git
 
 SPEC CHECKSUMS:
-  CalendarKit: 65ac7e7c4f7fc0352cbd07e4aac536507f725c48
+  CalendarKit: b9d413b7bcb57fddd0871c036f60c133daf626df
   DateTools: fe8ad1e2e77ebb9cf1db6becf077772dd83fdb63
   DynamicColor: 4786d650c69da6c3f2cbfe068348288ec4e5521f
   Neon: 7fb5a9327e7e57911843f608e08f4893a74deaf9
 
 PODFILE CHECKSUM: 47861b479160f3945007aac487ba0f1574ebad2a
 
-COCOAPODS: 1.2.0.rc.1
+COCOAPODS: 1.1.1
