@@ -1,6 +1,6 @@
 Licensed under the **MIT** license
 
-> Copyright (c) 2015 Hyper
+> Copyright (c) 2017 Richard Topchii
 >
 > Permission is hereby granted, free of charge, to any person obtaining
 > a copy of this software and associated documentation files (the
