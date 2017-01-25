@@ -5,9 +5,15 @@
 [![Platform](https://img.shields.io/cocoapods/p/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 
 # CalendarKit
-**CalendarKit** is a fully customizable calendar library written in Swift.
-It was designed to look similar to iOS Calendar app out-of-the-box, but allow complete customization when needed.
-To make modifications easy, CalendarKit is composed of multiple small modules. They can be used together, or on their own.
+**CalendarKit** is a fully customizable calendar library written in Swift. It was designed to look similar to iOS Calendar app out-of-the-box, but allow complete customization when needed. To make modifications easy, CalendarKit is composed of multiple small modules. They can be used together, or on their own.
+
+## Try it
+You can try CalendarKit using CocoaPods. Just enter this line in Terminal:
+```ruby
+pod try CalendarKit
+```
+Or watch it live in [this video](https://www.youtube.com/watch?v=jWM6EfGSCWc)
+
 
 ## Installation
 
@@ -45,6 +51,7 @@ Subclass DayViewController and implement `DayViewDataSource` protocol to show ev
     return views
   }
 ```
+There is  no need to do layout, CalendarKit will take care of it.
 
 If needed, implement DayViewDelegate to handle user input
 
@@ -64,12 +71,16 @@ If needed, implement DayViewDelegate to handle user input
 - Swift 3.0+
 
 ## Dependencies
-- **[Neon](https://github.com/mamaral/Neon)**
-is used for declarative layout
-- **[DateTools](https://github.com/MatthewYork/DateTools)**
-is used for date manipulation
-- **[DynamicColor](https://github.com/yannickl/DynamicColor)**
-is used to update the colors of Events
+- **[Neon](https://github.com/mamaral/Neon)** is used for declarative layout
+- **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
+- **[DynamicColor](https://github.com/yannickl/DynamicColor)** is used to update the colors of Events
+
+## Roadmap
+CalendarKit is under development, API can and will be changed.
+- [ ] Improve customization
+- [ ] Landscape support
+- [ ] Add to Carthage
+- [ ] Documentation
 
 ## Author
 
