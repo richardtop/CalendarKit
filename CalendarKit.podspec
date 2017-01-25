@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/RTopchiy'
   s.platform     = :ios, '9.0'
   s.requires_arc = true
-  s.source_files = 'Source/*  */*'
+  s.source_files = 'Source/**/*'
   s.dependency 'DateTools'
   s.dependency 'Neon'
   s.dependency 'DynamicColor'
