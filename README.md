@@ -21,7 +21,7 @@ pod 'DateTools', :git => 'https://github.com/MatthewYork/DateTools.git', :branch
 For now, it is required to specify DateTools `swift` branch, as it is still in beta. When swift version of DateTools is released, this line could be removed.
 
 ## Usage
-### Subclass DayViewController and implement `DayViewDataSource` protocol to show events
+Subclass DayViewController and implement `DayViewDataSource` protocol to show events
 
 ```swift
     // Return an array of EventViews for particular date
@@ -46,7 +46,7 @@ For now, it is required to specify DateTools `swift` branch, as it is still in b
   }
 ```
 
-### If needed, implement DayViewDelegate to handle user input
+If needed, implement DayViewDelegate to handle user input
 
 ```swift
   override func dayViewDidSelectEventView(_ eventview: EventView) {
