@@ -64,6 +64,17 @@ If needed, implement DayViewDelegate to handle user input
     print("Event has been longPressed: \(eventView.data)")
   }
 ```
+## Localization
+CalendarKit supports localization and uses iOS default locale to display month and day names. First day of the week is also selected according to iOS locale. Here are few examples:
+
+<img src="https://cloud.githubusercontent.com/assets/8013017/22315259/bda72b46-e376-11e6-8d0b-20cb5fa2dc95.png" alt="Finnish" width="320">
+<br>
+<img src="https://cloud.githubusercontent.com/assets/8013017/22315567/8ba5f9c2-e378-11e6-860d-b94e87a2a45c.PNG" alt="German" width="320">
+<br>
+<img src="https://cloud.githubusercontent.com/assets/8013017/22315600/c87e826a-e378-11e6-9280-732982b42077.PNG" alt="Norwegian" width="320">
+
+
+
 
 ## Requirements
 
