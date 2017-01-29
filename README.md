@@ -30,39 +30,39 @@ For now, it is required to specify DateTools `swift` branch, as it is still in b
 Subclass DayViewController and implement `DayViewDataSource` protocol to show events
 
 ```swift
-    // Return an array of EventViews for particular date
-  override func eventViewsForDate(_ date: Date) -> [EventView] {
-    var events = // Get events (models) from the storage / API
+// Return an array of EventViews for particular date
+override func eventViewsForDate(_ date: Date) -> [EventView] {
+  var events = // Get events (models) from the storage / API
 
-    var views = [EventView]()
+  var views = [EventView]()
 
-    for event in events {
-        // Create new EventView
-        let view = EventView()
-        // Specify TimePeriod
-        view.datePeriod = TimePeriod(beginning: event.beginning, end: event.start)
-        // Add info: event title, subtitle, location to the array of Strings
-        var info = [event.title, event.location]
-        info.append("\(datePeriod.beginning!.format(with: "HH:mm")!) - \(datePeriod.end!.format(with: "HH:mm")!)")
-        view.data = info
-        views.append(view)
-    }
-
-    return views
+  for event in events {
+      // Create new EventView
+      let view = EventView()
+      // Specify TimePeriod
+      view.datePeriod = TimePeriod(beginning: event.beginning, end: event.start)
+      // Add info: event title, subtitle, location to the array of Strings
+      var info = [event.title, event.location]
+      info.append("\(datePeriod.beginning!.format(with: "HH:mm")!) - \(datePeriod.end!.format(with: "HH:mm")!)")
+      view.data = info
+      views.append(view)
   }
+
+  return views
+}
 ```
 There is  no need to do layout, CalendarKit will take care of it.
 
 If needed, implement DayViewDelegate to handle user input
 
 ```swift
-  override func dayViewDidSelectEventView(_ eventview: EventView) {
-    print("Event has been selected: \(eventview.data)")
-  }
-  
-  override func dayViewDidLongPressEventView(_ eventView: EventView) {
-    print("Event has been longPressed: \(eventView.data)")
-  }
+override func dayViewDidSelectEventView(_ eventview: EventView) {
+  print("Event has been selected: \(eventview.data)")
+}
+
+override func dayViewDidLongPressEventView(_ eventView: EventView) {
+  print("Event has been longPressed: \(eventView.data)")
+}
 ```
 ## Localization
 CalendarKit supports localization and uses iOS default locale to display month and day names. First day of the week is also selected according to iOS locale. Here are few examples:
