@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "CalendarKit"
-  s.summary          = "Clone of iOS Calendar app"
+  s.summary          = "Fully customizable calendar for iOS"
   s.version          = "0.1.3"
   s.homepage         = "https://github.com/richardtop/CalendarKit"
   s.license          = 'MIT'
