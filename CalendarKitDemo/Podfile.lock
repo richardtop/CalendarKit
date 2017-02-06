@@ -1,34 +1,26 @@
 PODS:
-  - CalendarKit (0.1.0):
-    - DateTools
+  - CalendarKit (0.1.1):
+    - DateToolsSwift
     - DynamicColor
     - Neon
-  - DateTools (2.0.0-beta.3)
+  - DateToolsSwift (2.0.0)
   - DynamicColor (3.2.1)
   - Neon (0.4.0)
 
 DEPENDENCIES:
   - CalendarKit (from `../`)
-  - DateTools (from `https://github.com/MatthewYork/DateTools.git`, branch `swift`)
+  - DateToolsSwift
 
 EXTERNAL SOURCES:
   CalendarKit:
-    :path: ../
-  DateTools:
-    :branch: swift
-    :git: https://github.com/MatthewYork/DateTools.git
-
-CHECKOUT OPTIONS:
-  DateTools:
-    :commit: b763d05a9bfa9d18235e5520a40d3bd4751fcc83
-    :git: https://github.com/MatthewYork/DateTools.git
+    :path: "../"
 
 SPEC CHECKSUMS:
-  CalendarKit: b9d413b7bcb57fddd0871c036f60c133daf626df
-  DateTools: fe8ad1e2e77ebb9cf1db6becf077772dd83fdb63
+  CalendarKit: a67745780c4b2e85188ea6a8cabd5232df6483a4
+  DateToolsSwift: 27336736d877c8734159da1f37afbda2aa704649
   DynamicColor: 4786d650c69da6c3f2cbfe068348288ec4e5521f
   Neon: 7fb5a9327e7e57911843f608e08f4893a74deaf9
 
-PODFILE CHECKSUM: 47861b479160f3945007aac487ba0f1574ebad2a
+PODFILE CHECKSUM: edf8dda0ca5250d3b195dd853552c187ffb33f07
 
-COCOAPODS: 1.1.1
+COCOAPODS: 1.2.0.rc.1

@@ -3,5 +3,5 @@ inhibit_all_warnings!
 
 target "CalendarKitDemo" do
 	pod 'CalendarKit', path: '../'
-	pod 'DateTools', :git => 'https://github.com/MatthewYork/DateTools.git', :branch => 'swift'
+	pod 'DateToolsSwift'
 end
