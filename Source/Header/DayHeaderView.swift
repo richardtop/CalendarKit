@@ -1,5 +1,5 @@
 import UIKit
-import DateTools
+import DateToolsSwift
 
 public protocol DayHeaderViewDelegate: class {
   func dateHeaderDateChanged(_ newDate: Date)

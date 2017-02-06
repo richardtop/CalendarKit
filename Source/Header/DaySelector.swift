@@ -1,6 +1,6 @@
 import UIKit
 import Neon
-import DateTools
+import DateToolsSwift
 
 protocol DaySelectorDelegate: class {
   func dateSelectorDidSelectDate(_ date: Date, index: Int)

@@ -1,6 +1,6 @@
 import UIKit
 import Neon
-import DateTools
+import DateToolsSwift
 
 protocol DayViewDataSource: class {
   func eventViewsForDate(_ date: Date) -> [EventView]

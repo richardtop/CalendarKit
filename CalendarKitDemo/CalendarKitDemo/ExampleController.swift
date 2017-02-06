@@ -1,6 +1,6 @@
 import UIKit
 import CalendarKit
-import DateTools
+import DateToolsSwift
 
 class ExampleController: DayViewController {
 

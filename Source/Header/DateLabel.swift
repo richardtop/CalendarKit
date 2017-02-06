@@ -1,5 +1,5 @@
 import UIKit
-import DateTools
+import DateToolsSwift
 
 class DateLabel: UILabel {
 
