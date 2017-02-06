@@ -9,7 +9,6 @@ PODS:
 
 DEPENDENCIES:
   - CalendarKit (from `../`)
-  - DateToolsSwift
 
 EXTERNAL SOURCES:
   CalendarKit:
@@ -21,6 +20,6 @@ SPEC CHECKSUMS:
   DynamicColor: 4786d650c69da6c3f2cbfe068348288ec4e5521f
   Neon: 7fb5a9327e7e57911843f608e08f4893a74deaf9
 
-PODFILE CHECKSUM: edf8dda0ca5250d3b195dd853552c187ffb33f07
+PODFILE CHECKSUM: b5dec4d20e8ed0a167ef49501772f9c8dd2fd76c
 
 COCOAPODS: 1.2.0.rc.1

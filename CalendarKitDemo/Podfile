@@ -3,5 +3,4 @@ inhibit_all_warnings!
 
 target "CalendarKitDemo" do
 	pod 'CalendarKit', path: '../'
-	pod 'DateToolsSwift'
 end
