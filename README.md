@@ -18,13 +18,11 @@ Or watch it live in [this video](https://www.youtube.com/watch?v=jWM6EfGSCWc)
 ## Installation
 
 **CalendarKit** is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following lines to your Podfile:
+it, simply add the following line to your Podfile:
 
 ```ruby
 pod 'CalendarKit'
-pod 'DateTools', :git => 'https://github.com/MatthewYork/DateTools.git', :branch => 'swift'
 ```
-For now, it is required to specify DateTools `swift` branch, as it is still in beta. When swift version of DateTools is released, this line could be removed.
 
 ## Usage
 Subclass DayViewController and implement `DayViewDataSource` protocol to show events

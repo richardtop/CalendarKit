@@ -1,6 +1,6 @@
 import UIKit
 import Neon
-import DateTools
+import DateToolsSwift
 
 public class TimelineView: UIView, ReusableView {
 
