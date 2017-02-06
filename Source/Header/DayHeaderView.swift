@@ -75,7 +75,7 @@ public class DayHeaderView: UIView {
   }
 
   public func selectDate(_ selectedDate: Date) {
-    var selectedDate = selectedDate.dateOnly()
+    let selectedDate = selectedDate.dateOnly()
     let centerDaySelector = pagingScrollView.reusableViews[1]
     let startDate = centerDaySelector.startDate.dateOnly()
 
