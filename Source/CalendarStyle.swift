@@ -14,11 +14,15 @@ public class DayHeaderStyle {
 
 public class DaySelectorStyle {
   public var activeTextColor = UIColor.white
+  public var selectedBackgroundColor = UIColor.black
+
   public var weekendTextColor = UIColor.gray
   public var inactiveTextColor = UIColor.black
-
-  public var selectedBackgroundColor = UIColor.black
   public var inactiveBackgroundColor = UIColor.clear
+
+  public var todayInactiveTextColor = UIColor.red
+  public var todayActiveBackgroundColor = UIColor.red
+
   public init() {}
 }
 
@@ -35,9 +39,9 @@ public class SwipeLabelStyle {
 
 public class TimelineStyle {
   public var timeIndicator = CurrentTimeIndicatorStyle()
-  var timeColor = UIColor.lightGray
-  var lineColor = UIColor.lightGray
-  var backgroundColor = UIColor.white
+  public var timeColor = UIColor.lightGray
+  public var lineColor = UIColor.lightGray
+  public var backgroundColor = UIColor.white
   public init() {}
 }
 

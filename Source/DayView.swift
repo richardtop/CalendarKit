@@ -47,6 +47,7 @@ public class DayView: UIView {
     dayHeaderView.updateStyle(style.header)
     timelinePager.reusableViews.forEach{ timelineContainer in
       timelineContainer.timeline.updateStyle(style.timeline)
+      timelineContainer.backgroundColor = style.timeline.backgroundColor
     }
   }
 
