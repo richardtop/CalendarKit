@@ -13,6 +13,8 @@ public class DayHeaderView: UIView {
 
   public var calendar = Calendar.autoupdatingCurrent
 
+  var style = DayHeaderStyle()
+
   var currentWeekdayIndex = -1
   var currentDate = Date().dateOnly()
 
@@ -48,7 +50,7 @@ public class DayHeaderView: UIView {
       addSubview($0)
     }
     pagingScrollView.viewDelegate = self
-    backgroundColor = UIColor(white: 247/255, alpha: 1)
+    backgroundColor = style.backgroundColor
   }
 
   func configurePages(_ selectedDate: Date = Date()) {
@@ -93,6 +95,16 @@ public class DayHeaderView: UIView {
 
     swipeLabelView.date = selectedDate
     currentDate = selectedDate
+  }
+
+  public func updateStyle(_ newStyle: DayHeaderStyle) {
+    style = newStyle
+    daySymbolsView.updateStyle(style.daySymbols)
+    swipeLabelView.updateStyle(style.swipeLabel)
+    pagingScrollView.reusableViews.forEach { daySelector in
+      daySelector.updateStyle(style.daySelector)
+    }
+    backgroundColor = style.backgroundColor
   }
 
   override public func layoutSubviews() {

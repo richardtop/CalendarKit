@@ -35,7 +35,7 @@ class DaySymbolsView: UIView {
     configure()
   }
 
-  func updateStyle(newStyle: DaySymbolsStyle) {
+  func updateStyle(_ newStyle: DaySymbolsStyle) {
     style = newStyle
     configure()
   }

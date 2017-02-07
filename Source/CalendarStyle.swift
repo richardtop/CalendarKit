@@ -1,12 +1,13 @@
 public class CalendarStyle {
-  public var header = HeaderStyle()
+  public var header = DayHeaderStyle()
   public init() {}
 }
 
-public class HeaderStyle {
+public class DayHeaderStyle {
   public var daySymbols = DaySymbolsStyle()
   public var daySelector = DaySelectorStyle()
   public var swipeLabel = SwipeLabelStyle()
+  public var backgroundColor = UIColor(white: 247/255, alpha: 1)
   public init() {}
 }
 

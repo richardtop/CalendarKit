@@ -12,7 +12,7 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   CalendarKit:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
   CalendarKit: b3fa639de54c2ca2f6543e9b5e3503e4b989d2ff
@@ -22,4 +22,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: b76013ff0b66b8e61c214e583d26b4c3d93a550b
 
-COCOAPODS: 1.2.0.rc.1
+COCOAPODS: 1.2.0
