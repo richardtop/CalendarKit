@@ -27,6 +27,8 @@ class CurrentTimeIndicator: UIView {
 
   fileprivate var line = UIView()
 
+  var style = CurrentTimeIndicatorStyle()
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -41,7 +43,7 @@ class CurrentTimeIndicator: UIView {
     [timeLabel, circle, line].forEach {
       addSubview($0)
     }
-    resetSubviewsColor()
+    updateStyle(style)
   }
 
   override func layoutSubviews() {
@@ -55,13 +57,10 @@ class CurrentTimeIndicator: UIView {
     circle.layer.cornerRadius = circle.bounds.height / 2
   }
 
-  override func tintColorDidChange() {
-    resetSubviewsColor()
-  }
-
-  fileprivate func resetSubviewsColor() {
-    timeLabel.textColor = tintColor
-    circle.backgroundColor = tintColor
-    line.backgroundColor = tintColor
+  func updateStyle(_ newStyle: CurrentTimeIndicatorStyle) {
+    style = newStyle
+    timeLabel.textColor = style.color
+    circle.backgroundColor = style.color
+    line.backgroundColor = style.color
   }
 }

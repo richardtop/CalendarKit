@@ -45,6 +45,9 @@ public class DayView: UIView {
   public func updateStyle(_ newStyle: CalendarStyle) {
     style = newStyle
     dayHeaderView.updateStyle(style.header)
+    timelinePager.reusableViews.forEach{ timelineContainer in
+      timelineContainer.timeline.updateStyle(style.timeline)
+    }
   }
 
   func configureTimelinePager() {

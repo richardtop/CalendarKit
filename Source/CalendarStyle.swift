@@ -1,5 +1,6 @@
 public class CalendarStyle {
   public var header = DayHeaderStyle()
+  public var timeline = TimelineStyle()
   public init() {}
 }
 
@@ -29,5 +30,18 @@ public class DaySymbolsStyle {
 
 public class SwipeLabelStyle {
   public var textColor = UIColor.black
+  public init() {}
+}
+
+public class TimelineStyle {
+  public var timeIndicator = CurrentTimeIndicatorStyle()
+  var timeColor = UIColor.lightGray
+  var lineColor = UIColor.lightGray
+  var backgroundColor = UIColor.white
+  public init() {}
+}
+
+public class CurrentTimeIndicatorStyle {
+  public var color = UIColor.red
   public init() {}
 }
