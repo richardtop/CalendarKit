@@ -24,6 +24,8 @@ public class DayView: UIView {
 
   var currentDate = Date().dateOnly()
 
+  var style = CalendarStyle()
+
   override public init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -38,6 +40,11 @@ public class DayView: UIView {
     configureTimelinePager()
     dayHeaderView.delegate = self
     addSubview(dayHeaderView)
+  }
+
+  public func updateStyle(_ newStyle: CalendarStyle) {
+    style = newStyle
+    dayHeaderView.updateStyle(style.header)
   }
 
   func configureTimelinePager() {
