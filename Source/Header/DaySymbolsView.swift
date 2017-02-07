@@ -6,6 +6,7 @@ class DaySymbolsView: UIView {
   var calendar = Calendar.autoupdatingCurrent
   var labels = [UILabel]()
   var weekendColor = UIColor.lightGray
+  var style: DaySymbolsStyle = DaySymbolsStyle()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -34,6 +35,11 @@ class DaySymbolsView: UIView {
     configure()
   }
 
+  func updateStyle(newStyle: DaySymbolsStyle) {
+    style = newStyle
+    configure()
+  }
+
   func configure() {
     let daySymbols = calendar.shortWeekdaySymbols
       .map { String($0.characters.first!)}
@@ -44,9 +50,10 @@ class DaySymbolsView: UIView {
 
     for (index, label) in labels.enumerated() {
       label.text = weekDays[index].0
-      label.textColor = weekDays[index].1 ? weekendColor : .black
+      label.textColor = weekDays[index].1 ? style.weekendColor : style.weekDayColor
     }
   }
+
 
   override func layoutSubviews() {
     let labelsCount = CGFloat(labels.count)

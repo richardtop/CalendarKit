@@ -22,6 +22,8 @@ class SwipeLabelView: UIView {
   
   var labels = [UILabel]()
 
+  var style = SwipeLabelStyle()
+
   init(date: Date) {
     self.date = date
     super.init(frame: .zero)
@@ -45,6 +47,14 @@ class SwipeLabelView: UIView {
       label.textAlignment = .center
       labels.append(label)
       addSubview(label)
+    }
+    updateStyle(style)
+  }
+
+  func updateStyle(_ newStyle: SwipeLabelStyle) {
+    style = newStyle
+    labels.forEach { label in
+      label.textColor = style.textColor
     }
   }
 

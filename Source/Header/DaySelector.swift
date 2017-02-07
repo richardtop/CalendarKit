@@ -12,6 +12,8 @@ class DaySelector: UIView, ReusableView {
 
   var calendar = Calendar.autoupdatingCurrent
 
+  var style = DaySelectorStyle()
+
   var daysInWeek = 7
   var startDate: Date! {
     didSet {
@@ -80,6 +82,13 @@ class DaySelector: UIView, ReusableView {
   func configure() {
     for (increment, label) in dateLabels.enumerated() {
       label.date = startDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: increment, weeks: 0, months: 0, years: 0))
+    }
+  }
+
+  func updateStyle(_ newStyle: DaySelectorStyle) {
+    style = newStyle
+    dateLabels.forEach{ label in
+      label.updateStyle(style)
     }
   }
 

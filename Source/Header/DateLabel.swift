@@ -18,14 +18,7 @@ class DateLabel: UILabel {
     }
   }
 
-  //TODO: these vars are to introduce factory later
-
-  var activeTextColor = UIColor.white
-  var weekendTextColor = UIColor.gray
-  var inactiveTextColor = UIColor.black
-
-  var selectedBackgroundColor = UIColor.black
-  var inactiveBackgroundColor = UIColor.clear
+  var style = DaySelectorStyle()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -43,17 +36,22 @@ class DateLabel: UILabel {
     clipsToBounds = true
   }
 
+  func updateStyle(_ newStyle: DaySelectorStyle) {
+    style = newStyle
+    updateState()
+  }
+
   func updateState() {
     let today = date.isToday
     if selected {
       font = UIFont.boldSystemFont(ofSize: fontSize)
-      textColor = activeTextColor
-      backgroundColor = today ? tintColor : selectedBackgroundColor
+      textColor = style.activeTextColor
+      backgroundColor = today ? tintColor : style.selectedBackgroundColor
     } else {
-      let notTodayColor = date.isWeekend ? weekendTextColor : inactiveTextColor
+      let notTodayColor = date.isWeekend ? style.weekendTextColor : style.inactiveTextColor
       font = UIFont.systemFont(ofSize: fontSize)
       textColor = today ? tintColor : notTodayColor
-      backgroundColor = inactiveBackgroundColor
+      backgroundColor = style.inactiveBackgroundColor
     }
   }
 
