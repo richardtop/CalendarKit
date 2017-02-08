@@ -175,14 +175,16 @@ public class TimelineView: UIView, ReusableView {
     for event in validEvents {
       if overlappingEvents.isEmpty {
         overlappingEvents.append(event)
-        continue
+          continue
       }
       if overlappingEvents.last!.datePeriod.overlaps(with: event.datePeriod) {
         overlappingEvents.append(event)
-        continue
+          continue
+      } else {
+        groupsOfEvents.append(overlappingEvents)
+        overlappingEvents.removeAll()
+        overlappingEvents.append(event)
       }
-      groupsOfEvents.append(overlappingEvents)
-      overlappingEvents.removeAll()
     }
 
     groupsOfEvents.append(overlappingEvents)
