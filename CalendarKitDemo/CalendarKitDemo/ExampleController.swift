@@ -75,7 +75,7 @@ class ExampleController: DayViewController {
       style = StyleGenerator.darkStyle()
       currentStyle = .Dark
     }
-    dayView.updateStyle(style)
+    updateStyle(style)
     navigationItem.rightBarButtonItem!.title = title
     navigationController?.navigationBar.barTintColor = style.header.backgroundColor
     navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:style.header.swipeLabel.textColor]
