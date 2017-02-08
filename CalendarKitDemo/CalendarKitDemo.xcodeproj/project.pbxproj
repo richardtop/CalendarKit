@@ -10,6 +10,7 @@
 		790EF2B91E36E77C008488B7 /* ExampleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 790EF2B81E36E77C008488B7 /* ExampleController.swift */; };
 		793B14DE1BD6815D00961414 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 793B14DD1BD6815D00961414 /* AppDelegate.swift */; };
 		793B14E51BD6815D00961414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 793B14E41BD6815D00961414 /* Assets.xcassets */; };
+		798DE8631E4A8B4F00486CDC /* StyleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DE8621E4A8B4F00486CDC /* StyleGenerator.swift */; };
 		F71D88835BFAB8CCF9FD8AA5 /* Pods_CalendarKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36A94A098CA6074A2AEE834F /* Pods_CalendarKitDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -22,6 +23,7 @@
 		793B14DD1BD6815D00961414 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		793B14E41BD6815D00961414 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		793B14E91BD6815D00961414 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		798DE8621E4A8B4F00486CDC /* StyleGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleGenerator.swift; sourceTree = "<group>"; };
 		881D3E4878A988B8B04CD379 /* Pods-CalendarKitDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CalendarKitDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-CalendarKitDemo/Pods-CalendarKitDemo.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -68,6 +70,7 @@
 			isa = PBXGroup;
 			children = (
 				790EF2B81E36E77C008488B7 /* ExampleController.swift */,
+				798DE8621E4A8B4F00486CDC /* StyleGenerator.swift */,
 				793B14DD1BD6815D00961414 /* AppDelegate.swift */,
 				793B14E41BD6815D00961414 /* Assets.xcassets */,
 				793B14E91BD6815D00961414 /* Info.plist */,
@@ -206,6 +209,7 @@
 			files = (
 				790EF2B91E36E77C008488B7 /* ExampleController.swift in Sources */,
 				793B14DE1BD6815D00961414 /* AppDelegate.swift in Sources */,
+				798DE8631E4A8B4F00486CDC /* StyleGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
