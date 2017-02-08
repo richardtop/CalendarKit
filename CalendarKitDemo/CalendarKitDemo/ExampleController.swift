@@ -2,6 +2,11 @@ import UIKit
 import CalendarKit
 import DateToolsSwift
 
+enum SelectedStyle {
+  case Dark
+  case Light
+}
+
 class ExampleController: DayViewController {
 
   var data = [["Breakfast at Tiffany's",
@@ -44,10 +49,36 @@ class ExampleController: DayViewController {
                 UIColor.green,
                 UIColor.red]
 
+  var currentStyle = SelectedStyle.Light
+
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "CalendarKit Demo"
+    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Dark",
+                                                        style: .done,
+                                                        target: self,
+                                                        action: #selector(ExampleController.changeStyle))
+    navigationController?.navigationBar.isTranslucent = false
     reloadData()
+  }
+
+  func changeStyle() {
+    var title: String!
+    var style: CalendarStyle!
+
+    if currentStyle == .Dark {
+      currentStyle = .Light
+      title = "Dark"
+      style = StyleGenerator.defaultStyle()
+    } else {
+      title = "Light"
+      style = StyleGenerator.darkStyle()
+      currentStyle = .Dark
+    }
+    updateStyle(style)
+    navigationItem.rightBarButtonItem!.title = title
+    navigationController?.navigationBar.barTintColor = style.header.backgroundColor
+    navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:style.header.swipeLabel.textColor]
   }
 
   // MARK: DayViewDataSource
@@ -79,7 +110,7 @@ class ExampleController: DayViewController {
   // MARK: DayViewDelegate
 
   override func dayViewDidSelectEventView(_ eventview: EventView) {
-    
+
     print("Event has been selected: \(eventview.data)")
   }
   

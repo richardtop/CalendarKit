@@ -23,6 +23,10 @@ open class DayViewController: UIViewController, DayViewDelegate {
   open func reloadData() {
     dayView.reloadData()
   }
+
+  public func updateStyle(_ newStyle: CalendarStyle) {
+    dayView.updateStyle(newStyle)
+  }
 }
 
 extension DayViewController: DayViewDataSource {

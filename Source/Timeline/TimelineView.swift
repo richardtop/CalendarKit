@@ -26,9 +26,7 @@ public class TimelineView: UIView, ReusableView {
 
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
 
-  var hourColor = UIColor.lightGray
-  var timeColor = UIColor.lightGray
-  var lineColor = UIColor.lightGray
+  var style = TimelineStyle()
 
   var timeFont: UIFont {
     return UIFont.boldSystemFont(ofSize: fontSize)
@@ -91,6 +89,13 @@ public class TimelineView: UIView, ReusableView {
     addSubview(nowLine)
   }
 
+  public func updateStyle(_ newStyle: TimelineStyle) {
+    style = newStyle
+    nowLine.updateStyle(style.timeIndicator)
+    backgroundColor = style.backgroundColor
+    setNeedsDisplay()
+  }
+
   override public func draw(_ rect: CGRect) {
     super.draw(rect)
 
@@ -110,7 +115,7 @@ public class TimelineView: UIView, ReusableView {
     style.alignment = .right
 
     let attributes = [NSParagraphStyleAttributeName: style,
-                      NSForegroundColorAttributeName: timeColor,
+                      NSForegroundColorAttributeName: self.style.timeColor,
                       NSFontAttributeName: timeFont] as [String : Any]
 
     for (i, time) in times.enumerated() {
@@ -118,7 +123,7 @@ public class TimelineView: UIView, ReusableView {
       let context = UIGraphicsGetCurrentContext()
       context!.interpolationQuality = .none
       context?.saveGState()
-      context?.setStrokeColor(lineColor.cgColor)
+      context?.setStrokeColor(self.style.lineColor.cgColor)
       context?.setLineWidth(onePixel)
       context?.translateBy(x: 0, y: 0.5)
       let x: CGFloat = 53

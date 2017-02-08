@@ -1,5 +1,5 @@
 PODS:
-  - CalendarKit (0.1.1):
+  - CalendarKit (0.1.3):
     - DateToolsSwift
     - DynamicColor
     - Neon
@@ -12,14 +12,14 @@ DEPENDENCIES:
 
 EXTERNAL SOURCES:
   CalendarKit:
-    :path: "../"
+    :path: ../
 
 SPEC CHECKSUMS:
-  CalendarKit: a67745780c4b2e85188ea6a8cabd5232df6483a4
+  CalendarKit: b3fa639de54c2ca2f6543e9b5e3503e4b989d2ff
   DateToolsSwift: 27336736d877c8734159da1f37afbda2aa704649
   DynamicColor: 4786d650c69da6c3f2cbfe068348288ec4e5521f
   Neon: 7fb5a9327e7e57911843f608e08f4893a74deaf9
 
-PODFILE CHECKSUM: b5dec4d20e8ed0a167ef49501772f9c8dd2fd76c
+PODFILE CHECKSUM: b76013ff0b66b8e61c214e583d26b4c3d93a550b
 
-COCOAPODS: 1.2.0.rc.1
+COCOAPODS: 1.2.0
