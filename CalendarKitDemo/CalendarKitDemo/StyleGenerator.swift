@@ -12,14 +12,12 @@ struct StyleGenerator {
     let light = UIColor.lightGray
     let white = UIColor.white
 
-
     let selector = DaySelectorStyle()
     selector.activeTextColor = white
     selector.inactiveTextColor = white
     selector.selectedBackgroundColor = light
     selector.todayActiveBackgroundColor = orange
     selector.todayInactiveTextColor = orange
-
 
     let daySymbols = DaySymbolsStyle()
     daySymbols.weekDayColor = white
@@ -41,10 +39,8 @@ struct StyleGenerator {
     timeline.backgroundColor = dark
 
     let style = CalendarStyle()
-
     style.header = header
     style.timeline = timeline
-
 
     return style
   }
