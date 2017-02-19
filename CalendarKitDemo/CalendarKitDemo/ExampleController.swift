@@ -84,14 +84,26 @@ class ExampleController: DayViewController {
   // MARK: DayViewDataSource
 
   override func eventViewsForDate(_ date: Date) -> [EventView] {
-    var date = date.add(TimeChunk(seconds: 0, minutes: 0, hours: Int(arc4random_uniform(10) + 5), days: 0, weeks: 0, months: 0, years: 0))
+    var date = date.add(TimeChunk(seconds: 0,
+                                  minutes: 0,
+                                  hours: Int(arc4random_uniform(10) + 5),
+                                  days: 0,
+                                  weeks: 0,
+                                  months: 0,
+                                  years: 0))
     var events = [EventView]()
 
     for _ in 0...5 {
       let event = EventView()
       let duration = Int(arc4random_uniform(160) + 60)
       let datePeriod = TimePeriod(beginning: date,
-                                  chunk: TimeChunk(seconds: 0, minutes: duration, hours: 0, days: 0, weeks: 0, months: 0, years: 0))
+                                  chunk: TimeChunk(seconds: 0,
+                                                   minutes: duration,
+                                                   hours: 0,
+                                                   days: 0,
+                                                   weeks: 0,
+                                                   months: 0,
+                                                   years: 0))
 
       event.datePeriod = datePeriod
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
@@ -101,7 +113,13 @@ class ExampleController: DayViewController {
       events.append(event)
 
       let nextOffset = Int(arc4random_uniform(250) + 40)
-      date = date.add(TimeChunk(seconds: 0, minutes: nextOffset, hours: 0, days: 0, weeks: 0, months: 0, years: 0))
+      date = date.add(TimeChunk(seconds: 0,
+                                minutes: nextOffset,
+                                hours: 0,
+                                days: 0,
+                                weeks: 0,
+                                months: 0,
+                                years: 0))
     }
 
     return events

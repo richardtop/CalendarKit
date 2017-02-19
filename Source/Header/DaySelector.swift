@@ -81,7 +81,13 @@ class DaySelector: UIView, ReusableView {
 
   func configure() {
     for (increment, label) in dateLabels.enumerated() {
-      label.date = startDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: increment, weeks: 0, months: 0, years: 0))
+      label.date = startDate.add(TimeChunk(seconds: 0,
+                                           minutes: 0,
+                                           hours: 0,
+                                           days: increment,
+                                           weeks: 0,
+                                           months: 0,
+                                           years: 0))
     }
   }
 
@@ -112,7 +118,7 @@ class DaySelector: UIView, ReusableView {
   func dateLabelDidTap(_ sender: UITapGestureRecognizer) {
     if let label = sender.view as? DateLabel {
       selectedIndex = dateLabels.index(of: label)!
-      delegate?.dateSelectorDidSelectDate(label.date as Date, index: selectedIndex)
+      delegate?.dateSelectorDidSelectDate(label.date, index: selectedIndex)
       dateLabels.filter {$0.selected == true}
         .first?.selected = false
       label.selected = true

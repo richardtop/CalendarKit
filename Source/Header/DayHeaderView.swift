@@ -56,7 +56,13 @@ public class DayHeaderView: UIView {
   func configurePages(_ selectedDate: Date = Date()) {
     for i in -1...1 {
       let daySelector = DaySelector(daysInWeek: daysInWeek)
-      let date = selectedDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 0, weeks: i, months: 0, years: 0))
+      let date = selectedDate.add(TimeChunk(seconds: 0,
+                                            minutes: 0,
+                                            hours: 0,
+                                            days: 0,
+                                            weeks: i,
+                                            months: 0,
+                                            years: 0))
       daySelector.startDate = beginningOfWeek(date)
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
@@ -69,7 +75,8 @@ public class DayHeaderView: UIView {
   }
 
   func beginningOfWeek(_ date: Date) -> Date {
-    var components = (calendar as NSCalendar).components([.year, .month, .day, .timeZone, .weekday], from: date)
+    var components = calendar.dateComponents([.year, .month, .day,
+                                              .weekday, .timeZone], from: date)
     let offset = components.weekday! - calendar.firstWeekday
     components.day = components.day! - offset
 
@@ -110,7 +117,6 @@ public class DayHeaderView: UIView {
   override public func layoutSubviews() {
     super.layoutSubviews()
     pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
-
     daySymbolsView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)
@@ -131,7 +137,13 @@ extension DayHeaderView: PagingScrollViewDelegate {
   func updateViewAtIndex(_ index: Int) {
     let viewToUpdate = pagingScrollView.reusableViews[index]
     let weeksToAdd = index > 1 ? 3 : -3
-    viewToUpdate.startDate = viewToUpdate.startDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 0, weeks: weeksToAdd, months: 0, years: 0))
+    viewToUpdate.startDate = viewToUpdate.startDate.add(TimeChunk(seconds: 0,
+                                                                  minutes: 0,
+                                                                  hours: 0,
+                                                                  days: 0,
+                                                                  weeks: weeksToAdd,
+                                                                  months: 0,
+                                                                  years: 0))
   }
 
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {

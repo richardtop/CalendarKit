@@ -56,7 +56,13 @@ public class DayView: UIView {
     for i in -1...1 {
       let timeline = TimelineView(frame: bounds)
       timeline.frame.size.height = timeline.fullHeight
-      timeline.date = currentDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: i, weeks: 0, months: 0, years: 0))
+      timeline.date = currentDate.add(TimeChunk(seconds: 0,
+                                                minutes: 0,
+                                                hours: 0,
+                                                days: i,
+                                                weeks: 0,
+                                                months: 0,
+                                                years: 0))
 
       let verticalScrollView = TimelineContainer()
       verticalScrollView.timeline = timeline
@@ -65,7 +71,6 @@ public class DayView: UIView {
 
       timelinePager.addSubview(verticalScrollView)
       timelinePager.reusableViews.append(verticalScrollView)
-
       verticalScrollViews.append(verticalScrollView)
     }
     timelineSynchronizer = ScrollSynchronizer(views: verticalScrollViews)
@@ -108,7 +113,13 @@ extension DayView: PagingScrollViewDelegate {
   func updateViewAtIndex(_ index: Int) {
     let timeline = timelinePager.reusableViews[index].timeline
     let amount = index > 1 ? 1 : -1
-    timeline?.date = currentDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: amount, weeks: 0, months: 0, years: 0))
+    timeline?.date = currentDate.add(TimeChunk(seconds: 0,
+                                               minutes: 0,
+                                               hours: 0,
+                                               days: amount,
+                                               weeks: 0,
+                                               months: 0,
+                                               years: 0))
     updateTimeline(timeline!)
   }
 
