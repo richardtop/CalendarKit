@@ -56,7 +56,13 @@ public class DayHeaderView: UIView {
   func configurePages(_ selectedDate: Date = Date()) {
     for i in -1...1 {
       let daySelector = DaySelector(daysInWeek: daysInWeek)
-      let date = selectedDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 0, weeks: i, months: 0, years: 0))
+      let date = selectedDate.add(TimeChunk(seconds: 0,
+                                            minutes: 0,
+                                            hours: 0,
+                                            days: 0,
+                                            weeks: i,
+                                            months: 0,
+                                            years: 0))
       daySelector.startDate = beginningOfWeek(date)
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
@@ -131,7 +137,13 @@ extension DayHeaderView: PagingScrollViewDelegate {
   func updateViewAtIndex(_ index: Int) {
     let viewToUpdate = pagingScrollView.reusableViews[index]
     let weeksToAdd = index > 1 ? 3 : -3
-    viewToUpdate.startDate = viewToUpdate.startDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 0, weeks: weeksToAdd, months: 0, years: 0))
+    viewToUpdate.startDate = viewToUpdate.startDate.add(TimeChunk(seconds: 0,
+                                                                  minutes: 0,
+                                                                  hours: 0,
+                                                                  days: 0,
+                                                                  weeks: weeksToAdd,
+                                                                  months: 0,
+                                                                  years: 0))
   }
 
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {

@@ -81,7 +81,13 @@ class DaySelector: UIView, ReusableView {
 
   func configure() {
     for (increment, label) in dateLabels.enumerated() {
-      label.date = startDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: increment, weeks: 0, months: 0, years: 0))
+      label.date = startDate.add(TimeChunk(seconds: 0,
+                                           minutes: 0,
+                                           hours: 0,
+                                           days: increment,
+                                           weeks: 0,
+                                           months: 0,
+                                           years: 0))
     }
   }
 
