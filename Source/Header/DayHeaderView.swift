@@ -75,7 +75,8 @@ public class DayHeaderView: UIView {
   }
 
   func beginningOfWeek(_ date: Date) -> Date {
-    var components = (calendar as NSCalendar).components([.year, .month, .day, .timeZone, .weekday], from: date)
+    var components = calendar.dateComponents([.year, .month, .day,
+                                              .weekday, .timeZone], from: date)
     let offset = components.weekday! - calendar.firstWeekday
     components.day = components.day! - offset
 
@@ -116,7 +117,6 @@ public class DayHeaderView: UIView {
   override public func layoutSubviews() {
     super.layoutSubviews()
     pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
-
     daySymbolsView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)

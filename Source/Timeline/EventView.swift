@@ -33,13 +33,12 @@ open class EventView: UIView {
     let view = UITextView()
     view.font = UIFont.boldSystemFont(ofSize: 12)
     view.isUserInteractionEnabled = false
-    view.backgroundColor = UIColor.clear
-
+    view.backgroundColor = .clear
     return view
   }()
 
-  lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(EventView.tap))
-  lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(EventView.longPress))
+  lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
+  lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
 
   public var datePeriod = TimePeriod()
 

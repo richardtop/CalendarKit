@@ -55,7 +55,7 @@ public class TimelineView: UIView, ReusableView {
   }
 
   init() {
-    super.init(frame: CGRect.zero)
+    super.init(frame: .zero)
     frame.size.height = fullHeight
     configure()
   }

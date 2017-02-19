@@ -5,7 +5,6 @@ class DaySymbolsView: UIView {
   var daysInWeek = 7
   var calendar = Calendar.autoupdatingCurrent
   var labels = [UILabel]()
-  var weekendColor = UIColor.lightGray
   var style: DaySymbolsStyle = DaySymbolsStyle()
 
   override init(frame: CGRect) {
