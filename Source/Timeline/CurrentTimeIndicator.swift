@@ -19,12 +19,10 @@ class CurrentTimeIndicator: UIView {
   fileprivate var timeLabel: UILabel = {
     let label = UILabel()
     label.font = UIFont.systemFont(ofSize: 11)
-
     return label
     }()
 
   fileprivate var circle = UIView()
-
   fileprivate var line = UIView()
 
   var style = CurrentTimeIndicatorStyle()

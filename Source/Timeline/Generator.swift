@@ -29,7 +29,6 @@ struct Generator {
     am.append("Noon")
     pm.removeFirst()
     pm.append(am.first!)
-
     return am + pm
   }
 }
