@@ -308,7 +308,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7332CB1116326D24149EE2D6 /* Pods-CalendarKitDemo.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
@@ -324,7 +324,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 881D3E4878A988B8B04CD379 /* Pods-CalendarKitDemo.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
