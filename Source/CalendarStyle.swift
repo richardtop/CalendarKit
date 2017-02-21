@@ -42,10 +42,15 @@ public class TimelineStyle {
   public var timeColor = UIColor.lightGray
   public var lineColor = UIColor.lightGray
   public var backgroundColor = UIColor.white
+  public var timeFormat = TimelineTimeFormat.system
   public init() {}
 }
 
 public class CurrentTimeIndicatorStyle {
   public var color = UIColor.red
   public init() {}
+}
+
+public enum TimelineTimeFormat {
+    case twentyFourHour, twelveHour, system
 }
