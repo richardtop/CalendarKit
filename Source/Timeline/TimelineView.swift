@@ -101,6 +101,7 @@ public class TimelineView: UIView, ReusableView {
     style = newStyle
     nowLine.updateStyle(style.timeIndicator)
     timeFormat = newStyle.timeFormat
+    verticalDiff = newStyle.density
     backgroundColor = style.backgroundColor
     setNeedsDisplay()
   }
