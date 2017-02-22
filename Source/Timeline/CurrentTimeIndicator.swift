@@ -9,17 +9,8 @@ class CurrentTimeIndicator: UIView {
 
   var date = Date() {
     didSet {
-		switch style.timeFormat {
-		case .twentyFourHour :
-			timeLabel.text = date.format(with: "HH:mm")
-		case .twelveHour :
-			timeLabel.text = date.format(with: "h:mm a")
-		case .system :
-			timeLabel.text = date.format(with: "hh:mm a")
-		}
-      timeLabel.sizeToFit()
-      setNeedsLayout()
-    }
+		updateTimeLabel()
+	}
   }
 
   fileprivate var timeLabel: UILabel = {
@@ -66,6 +57,19 @@ class CurrentTimeIndicator: UIView {
     timeLabel.textColor = style.color
     circle.backgroundColor = style.color
     line.backgroundColor = style.color
-	date = date
+	updateTimeLabel()
+  }
+
+  func updateTimeLabel() {
+	switch style.timeFormat {
+	case .twentyFourHour :
+		timeLabel.text = date.format(with: "HH:mm")
+	case .twelveHour :
+		timeLabel.text = date.format(with: "h:mm a")
+	case .system :
+		timeLabel.text = date.format(with: "hh:mm a")
+	}
+	timeLabel.sizeToFit()
+	setNeedsLayout()
   }
 }
