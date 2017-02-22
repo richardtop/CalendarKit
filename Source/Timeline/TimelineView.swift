@@ -100,6 +100,7 @@ public class TimelineView: UIView, ReusableView {
   public func updateStyle(_ newStyle: TimelineStyle) {
     style = newStyle
     nowLine.updateStyle(style.timeIndicator)
+    timeFormat = newStyle.timeFormat
     backgroundColor = style.backgroundColor
     setNeedsDisplay()
   }
