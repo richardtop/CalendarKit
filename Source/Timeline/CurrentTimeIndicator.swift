@@ -9,8 +9,14 @@ class CurrentTimeIndicator: UIView {
 
   var date = Date() {
     didSet {
-      let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
-      timeLabel.text = date.format(with: dateFormat)
+		switch style.timeFormat {
+		case .twentyFourHour :
+			timeLabel.text = date.format(with: "HH:mm")
+		case .twelveHour :
+			timeLabel.text = date.format(with: "h:mm a")
+		case .system :
+			timeLabel.text = date.format(with: "hh:mm a")
+		}
       timeLabel.sizeToFit()
       setNeedsLayout()
     }
@@ -60,5 +66,6 @@ class CurrentTimeIndicator: UIView {
     timeLabel.textColor = style.color
     circle.backgroundColor = style.color
     line.backgroundColor = style.color
+	date = date
   }
 }

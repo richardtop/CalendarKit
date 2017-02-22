@@ -49,6 +49,7 @@ public class TimelineStyle {
 
 public class CurrentTimeIndicatorStyle {
   public var color = UIColor.red
+  public var timeFormat = TimelineTimeFormat.system
   public init() {}
 }
 
