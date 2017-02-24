@@ -2,19 +2,19 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-protocol DayViewDataSource: class {
+public protocol DayViewDataSource: class {
   func eventViewsForDate(_ date: Date) -> [EventView]
 }
 
-protocol DayViewDelegate: class {
+public protocol DayViewDelegate: class {
   func dayViewDidSelectEventView(_ eventview: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
 }
 
 public class DayView: UIView {
 
-  weak var dataSource: DayViewDataSource?
-  weak var delegate: DayViewDelegate?
+  public weak var dataSource: DayViewDataSource?
+  public weak var delegate: DayViewDelegate?
 
   var headerHeight: CGFloat = 88
 
