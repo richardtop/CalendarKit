@@ -48,7 +48,7 @@ public class TimelineView: UIView, ReusableView {
 
   var fontSize: CGFloat = 11
 
-  var is24hClock = true {
+  var timeFormat: TimelineTimeFormat = .system {
     didSet {
       setNeedsDisplay()
     }
@@ -61,11 +61,19 @@ public class TimelineView: UIView, ReusableView {
   }
 
   var times: [String] {
-    return is24hClock ? _24hTimes : _12hTimes
+    switch timeFormat {
+    case .twentyFourHour :
+      return _24hTimes
+    case .twelveHour :
+      return _12hTimes
+    case .system :
+      return _systemTimes
+    }
   }
 
   fileprivate lazy var _12hTimes: [String] = Generator.timeStrings12H()
   fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
+  fileprivate lazy var _systemTimes: [String] = Generator.timeStringsSystem()
 
   var isToday: Bool {
     return date.isToday
@@ -92,6 +100,8 @@ public class TimelineView: UIView, ReusableView {
   public func updateStyle(_ newStyle: TimelineStyle) {
     style = newStyle
     nowLine.updateStyle(style.timeIndicator)
+    timeFormat = newStyle.timeFormat
+    verticalDiff = newStyle.density
     backgroundColor = style.backgroundColor
     setNeedsDisplay()
   }

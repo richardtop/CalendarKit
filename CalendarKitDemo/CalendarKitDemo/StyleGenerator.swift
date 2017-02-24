@@ -37,7 +37,9 @@ struct StyleGenerator {
     timeline.lineColor = light
     timeline.timeColor = light
     timeline.backgroundColor = dark
-
+	timeline.timeFormat = .twentyFourHour
+	timeline.timeIndicator.timeFormat = .twentyFourHour
+	
     let style = CalendarStyle()
     style.header = header
     style.timeline = timeline

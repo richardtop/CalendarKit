@@ -42,10 +42,24 @@ public class TimelineStyle {
   public var timeColor = UIColor.lightGray
   public var lineColor = UIColor.lightGray
   public var backgroundColor = UIColor.white
+  public var timeFormat = TimelineTimeFormat.system
+  public var density = CalendarDensity.regular.rawValue
   public init() {}
 }
 
 public class CurrentTimeIndicatorStyle {
   public var color = UIColor.red
+  public var timeFormat = TimelineTimeFormat.system
   public init() {}
+}
+
+public enum TimelineTimeFormat {
+  case twentyFourHour, twelveHour, system
+}
+
+public enum CalendarDensity: CGFloat {
+  case compact = 30.0
+  case regular = 45.0
+  case low = 100.0
+  case veryLow = 140.0
 }
