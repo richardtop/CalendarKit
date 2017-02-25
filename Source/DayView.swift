@@ -77,10 +77,6 @@ public class DayView: UIView {
     addSubview(timelinePager)
 
     timelinePager.viewDelegate = self
-    let contentWidth = CGFloat(timelinePager.reusableViews.count) * UIScreen.main.bounds.width
-    let size = CGSize(width: contentWidth, height: 50)
-    timelinePager.contentSize = size
-    timelinePager.contentOffset = CGPoint(x: UIScreen.main.bounds.width, y: 0)
   }
 
   public func reloadData() {
@@ -88,6 +84,13 @@ public class DayView: UIView {
   }
 
   override public func layoutSubviews() {
+    super.layoutSubviews()
+
+    let contentWidth = CGFloat(timelinePager.reusableViews.count) * bounds.width
+    let size = CGSize(width: contentWidth, height: 50)
+    timelinePager.contentSize = size
+    timelinePager.contentOffset = CGPoint(x: bounds.width, y: 0)
+
     dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: headerHeight)
     timelinePager.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
   }

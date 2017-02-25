@@ -66,7 +66,6 @@ public class DayHeaderView: UIView {
       daySelector.startDate = beginningOfWeek(date)
       pagingScrollView.reusableViews.append(daySelector)
       pagingScrollView.addSubview(daySelector)
-      pagingScrollView.contentOffset = CGPoint(x: UIScreen.main.bounds.width, y: 0)
       daySelector.delegate = self
     }
     let centerDaySelector = pagingScrollView.reusableViews[1]
@@ -116,6 +115,7 @@ public class DayHeaderView: UIView {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
+    pagingScrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
     pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
     daySymbolsView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
     pagingScrollView.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
