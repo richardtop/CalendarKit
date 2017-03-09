@@ -9,6 +9,7 @@ public protocol DayViewDataSource: class {
 public protocol DayViewDelegate: class {
   func dayViewDidSelectEventView(_ eventview: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
+  func dayViewDidSelectDate(_ date: Date)
 }
 
 public class DayView: UIView {
@@ -135,6 +136,7 @@ extension DayView: PagingScrollViewDelegate {
 
 extension DayView: DayHeaderViewDelegate {
   public func dateHeaderDateChanged(_ newDate: Date) {
+    delegate?.dayViewDidSelectDate(newDate)
     if newDate.isEarlier(than: currentDate) {
       let timelineContainer = timelinePager.reusableViews.first!
       timelineContainer.timeline.date = newDate
