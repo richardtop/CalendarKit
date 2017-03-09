@@ -29,6 +29,8 @@ open class EventView: UIView {
     }
   }
 
+  public var extraData: Any?
+
   lazy var textView: UITextView = {
     let view = UITextView()
     view.font = UIFont.boldSystemFont(ofSize: 12)
