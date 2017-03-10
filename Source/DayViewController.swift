@@ -43,4 +43,12 @@ extension DayViewController: DayViewDataSource {
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
     
   }
+
+  public func dayView(dayView: DayView, willMoveTo date: Date) {
+    print("DayView = \(dayView) will move to: \(date)")
+  }
+
+  public func dayView(dayView: DayView, didMoveTo date: Date) {
+    print("DayView = \(dayView) did move to: \(date)")
+  }
 }
