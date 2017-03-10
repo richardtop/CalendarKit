@@ -29,7 +29,7 @@ open class EventView: UIView {
     }
   }
 
-  public var extraData: Any?
+  public var userInfo: Any?
 
   lazy var textView: UITextView = {
     let view = UITextView()
