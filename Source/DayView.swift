@@ -63,6 +63,22 @@ public class DayView: UIView {
     }
   }
 
+  public func changeCurrentDate(to newDate: Date) {
+    var newDate = newDate.dateOnly()
+    if newDate.isEarlier(than: currentDate) {
+      let timelineContainer = timelinePager.reusableViews.first!
+      timelineContainer.timeline.date = newDate
+      updateTimeline(timelineContainer.timeline)
+      timelinePager.scrollBackward()
+    } else if newDate.isLater(than: currentDate) {
+      let timelineContainer = timelinePager.reusableViews.last!
+      timelineContainer.timeline.date = newDate
+      updateTimeline(timelineContainer.timeline)
+      timelinePager.scrollForward()
+    }
+    currentDate = newDate
+  }
+
   func configureTimelinePager() {
     var verticalScrollViews = [TimelineContainer]()
     for i in -1...1 {
@@ -149,16 +165,6 @@ extension DayView: PagingScrollViewDelegate {
 
 extension DayView: DayHeaderViewDelegate {
   public func dateHeaderDateChanged(_ newDate: Date) {
-    if newDate.isEarlier(than: currentDate) {
-      let timelineContainer = timelinePager.reusableViews.first!
-      timelineContainer.timeline.date = newDate
-      updateTimeline(timelineContainer.timeline)
-      timelinePager.scrollBackward()
-    } else if newDate.isLater(than: currentDate) {
-      let timelineContainer = timelinePager.reusableViews.last!
-      timelineContainer.timeline.date = newDate
-      updateTimeline(timelineContainer.timeline)
-      timelinePager.scrollForward()
-    }
+    changeCurrentDate(to: newDate)
   }
 }
