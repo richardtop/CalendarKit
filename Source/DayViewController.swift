@@ -44,6 +44,10 @@ extension DayViewController: DayViewDataSource {
     
   }
 
+  public func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
+
+  }
+
   public func dayView(dayView: DayView, willMoveTo date: Date) {
     print("DayView = \(dayView) will move to: \(date)")
   }

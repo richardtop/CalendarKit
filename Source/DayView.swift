@@ -9,6 +9,7 @@ public protocol DayViewDataSource: class {
 public protocol DayViewDelegate: class {
   func dayViewDidSelectEventView(_ eventview: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
+  func dayViewDidLongPressTimelineAtHour(_ hour: Int)
   func dayView(dayView: DayView, willMoveTo date: Date)
   func dayView(dayView: DayView, didMoveTo  date: Date)
 }
@@ -94,6 +95,7 @@ public class DayView: UIView {
     var verticalScrollViews = [TimelineContainer]()
     for i in -1...1 {
       let timeline = TimelineView(frame: bounds)
+      timeline.delegate = self
       timeline.frame.size.height = timeline.fullHeight
       timeline.date = currentDate.add(TimeChunk(seconds: 0,
                                                 minutes: 0,
@@ -177,5 +179,11 @@ extension DayView: PagingScrollViewDelegate {
 extension DayView: DayHeaderViewDelegate {
   public func dateHeaderDateChanged(_ newDate: Date) {
     changeCurrentDate(to: newDate)
+  }
+}
+
+extension DayView: TimelineViewDelegate {
+  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
+    delegate?.dayViewDidLongPressTimelineAtHour(hour)
   }
 }

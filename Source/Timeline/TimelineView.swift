@@ -2,7 +2,14 @@ import UIKit
 import Neon
 import DateToolsSwift
 
+
+protocol TimelineViewDelegate: class {
+  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
+}
+
 public class TimelineView: UIView, ReusableView {
+
+  weak var delegate: TimelineViewDelegate?
 
   var date = Date() {
     didSet {
@@ -66,6 +73,8 @@ public class TimelineView: UIView, ReusableView {
 
   fileprivate lazy var _12hTimes: [String] = Generator.timeStrings12H()
   fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
+  
+  fileprivate lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
 
   var isToday: Bool {
     return date.isToday
@@ -87,6 +96,19 @@ public class TimelineView: UIView, ReusableView {
     contentMode = .redraw
     backgroundColor = .white
     addSubview(nowLine)
+    
+    // Add long press gesture recognizer
+    addGestureRecognizer(longPressGestureRecognizer)
+  }
+  
+  func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+    if (gestureRecognizer.state == .began) {
+      // Get timeslot of gesture location
+      let pressedLocation = gestureRecognizer.location(in: self)
+      let percentOfHeight = (pressedLocation.y - verticalInset) / (bounds.height - (verticalInset * 2))
+      let pressedAtHour: Int = Int(24 * percentOfHeight)
+      delegate?.timelineView(self, didLongPressAt: pressedAtHour)
+    }
   }
 
   public func updateStyle(_ newStyle: TimelineStyle) {
