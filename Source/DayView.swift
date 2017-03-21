@@ -15,10 +15,20 @@ public protocol DayViewDelegate: class {
 
 public class DayView: UIView {
 
+  /// Hides or shows header view
+  public var isHeaderViewVisible = true {
+    didSet {
+      headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
+      dayHeaderView.isHidden = !isHeaderViewVisible
+      setNeedsLayout()
+    }
+  }
+  
   public weak var dataSource: DayViewDataSource?
   public weak var delegate: DayViewDelegate?
 
-  var headerHeight: CGFloat = 88
+  static let headerVisibleHeight: CGFloat = 88
+  var headerHeight: CGFloat = headerVisibleHeight
 
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView<TimelineContainer>()
