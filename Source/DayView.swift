@@ -20,6 +20,7 @@ public class DayView: UIView {
     didSet {
       headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
       dayHeaderView.isHidden = !isHeaderViewVisible
+      dayHeaderView.delegate = isHeaderViewVisible ? self : nil
       setNeedsLayout()
     }
   }
