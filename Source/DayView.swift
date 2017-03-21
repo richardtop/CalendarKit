@@ -66,14 +66,24 @@ public class DayView: UIView {
   public func changeCurrentDate(to newDate: Date) {
     var newDate = newDate.dateOnly()
     if newDate.isEarlier(than: currentDate) {
-      let timelineContainer = timelinePager.reusableViews.first!
-      timelineContainer.timeline.date = newDate
-      updateTimeline(timelineContainer.timeline)
+      var timelineDate = newDate
+      for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
+        timelineContainer.timeline.date = timelineDate
+        timelineDate = timelineDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
+        if index == 0 {
+          updateTimeline(timelineContainer.timeline)
+        }
+      }
       timelinePager.scrollBackward()
     } else if newDate.isLater(than: currentDate) {
-      let timelineContainer = timelinePager.reusableViews.last!
-      timelineContainer.timeline.date = newDate
-      updateTimeline(timelineContainer.timeline)
+      var timelineDate = newDate
+      for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
+        timelineContainer.timeline.date = timelineDate
+        timelineDate = timelineDate.subtract(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
+        if index == 0 {
+          updateTimeline(timelineContainer.timeline)
+        }
+      }
       timelinePager.scrollForward()
     }
     currentDate = newDate
