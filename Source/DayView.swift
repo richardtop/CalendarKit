@@ -25,6 +25,10 @@ public class DayView: UIView {
       setNeedsLayout()
     }
   }
+  public var currentTimelineScrollOffset: CGPoint {
+    // Any view is fine as they are all synchronized
+    return timelinePager.reusableViews.first?.contentOffset ?? CGPoint()
+  }
   
   public weak var dataSource: DayViewDataSource?
   public weak var delegate: DayViewDelegate?
