@@ -9,16 +9,28 @@ public protocol DayViewDataSource: class {
 public protocol DayViewDelegate: class {
   func dayViewDidSelectEventView(_ eventview: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
+  func dayViewDidLongPressTimelineAtHour(_ hour: Int)
   func dayView(dayView: DayView, willMoveTo date: Date)
   func dayView(dayView: DayView, didMoveTo  date: Date)
 }
 
 public class DayView: UIView {
 
+  /// Hides or shows header view
+  public var isHeaderViewVisible = true {
+    didSet {
+      headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
+      dayHeaderView.isHidden = !isHeaderViewVisible
+      dayHeaderView.delegate = isHeaderViewVisible ? self : nil
+      setNeedsLayout()
+    }
+  }
+  
   public weak var dataSource: DayViewDataSource?
   public weak var delegate: DayViewDelegate?
 
-  var headerHeight: CGFloat = 88
+  static let headerVisibleHeight: CGFloat = 88
+  var headerHeight: CGFloat = headerVisibleHeight
 
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView<TimelineContainer>()
@@ -53,10 +65,37 @@ public class DayView: UIView {
     }
   }
 
+  public func changeCurrentDate(to newDate: Date) {
+    var newDate = newDate.dateOnly()
+    if newDate.isEarlier(than: currentDate) {
+      var timelineDate = newDate
+      for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
+        timelineContainer.timeline.date = timelineDate
+        timelineDate = timelineDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
+        if index == 0 {
+          updateTimeline(timelineContainer.timeline)
+        }
+      }
+      timelinePager.scrollBackward()
+    } else if newDate.isLater(than: currentDate) {
+      var timelineDate = newDate
+      for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
+        timelineContainer.timeline.date = timelineDate
+        timelineDate = timelineDate.subtract(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
+        if index == 0 {
+          updateTimeline(timelineContainer.timeline)
+        }
+      }
+      timelinePager.scrollForward()
+    }
+    currentDate = newDate
+  }
+
   func configureTimelinePager() {
     var verticalScrollViews = [TimelineContainer]()
     for i in -1...1 {
       let timeline = TimelineView(frame: bounds)
+      timeline.delegate = self
       timeline.frame.size.height = timeline.fullHeight
       timeline.date = currentDate.add(TimeChunk(seconds: 0,
                                                 minutes: 0,
@@ -139,16 +178,12 @@ extension DayView: PagingScrollViewDelegate {
 
 extension DayView: DayHeaderViewDelegate {
   public func dateHeaderDateChanged(_ newDate: Date) {
-    if newDate.isEarlier(than: currentDate) {
-      let timelineContainer = timelinePager.reusableViews.first!
-      timelineContainer.timeline.date = newDate
-      updateTimeline(timelineContainer.timeline)
-      timelinePager.scrollBackward()
-    } else if newDate.isLater(than: currentDate) {
-      let timelineContainer = timelinePager.reusableViews.last!
-      timelineContainer.timeline.date = newDate
-      updateTimeline(timelineContainer.timeline)
-      timelinePager.scrollForward()
-    }
+    changeCurrentDate(to: newDate)
+  }
+}
+
+extension DayView: TimelineViewDelegate {
+  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
+    delegate?.dayViewDidLongPressTimelineAtHour(hour)
   }
 }
