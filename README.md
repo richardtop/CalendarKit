@@ -78,8 +78,7 @@ let style = CalendarStyle()
 style.backgroundColor = UIColor.black
 dayView.updateStyle(style)
 ```
-<img src="https://cloud.githubusercontent.com/assets/8013017/22717895/a2a63a66-edae-11e6-8611-727348598f09.png" alt="Finnish" width="320">
-<img src="https://cloud.githubusercontent.com/assets/8013017/22717896/a2a6c6f2-edae-11e6-8ac3-d9add3d61fb9.png" alt="German" width="320">
+<img src="https://cloud.githubusercontent.com/assets/8013017/22717896/a2a6c6f2-edae-11e6-8ac3-d9add3d61fb9.png" alt="Light theme" width="320"> <img src="https://cloud.githubusercontent.com/assets/8013017/22717895/a2a63a66-edae-11e6-8611-727348598f09.png" alt="Dark theme" width="320"> 
 
 ## Requirements
 
