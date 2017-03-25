@@ -128,11 +128,18 @@ class ExampleController: DayViewController {
   // MARK: DayViewDelegate
 
   override func dayViewDidSelectEventView(_ eventview: EventView) {
-
     print("Event has been selected: \(eventview.data)")
   }
-  
+
   override func dayViewDidLongPressEventView(_ eventView: EventView) {
     print("Event has been longPressed: \(eventView.data)")
+  }
+
+  override func dayView(dayView: DayView, willMoveTo date: Date) {
+    print("DayView = \(dayView) will move to: \(date)")
+  }
+  
+  override func dayView(dayView: DayView, didMoveTo date: Date) {
+    print("DayView = \(dayView) did move to: \(date)")
   }
 }
