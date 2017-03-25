@@ -107,7 +107,7 @@ class ExampleController: DayViewController {
 
       event.datePeriod = datePeriod
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
-      info.append("\(datePeriod.beginning!.format(with: "HH:mm")!) - \(datePeriod.end!.format(with: "HH:mm")!)")
+      info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
       event.data = info
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       events.append(event)
