@@ -1,7 +1,7 @@
 import UIKit
 import DateToolsSwift
 
-open class DayViewController: UIViewController, DayViewDelegate {
+open class DayViewController: UIViewController, DayViewDataSource, DayViewDelegate {
 
   public lazy var dayView: DayView = DayView()
 
@@ -27,9 +27,7 @@ open class DayViewController: UIViewController, DayViewDelegate {
   public func updateStyle(_ newStyle: CalendarStyle) {
     dayView.updateStyle(newStyle)
   }
-}
 
-extension DayViewController: DayViewDataSource {
   open func eventViewsForDate(_ date: Date) -> [EventView] {
     return [EventView]()
   }
@@ -41,7 +39,7 @@ extension DayViewController: DayViewDataSource {
   }
 
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
-    
+
   }
 
   open func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
