@@ -24,7 +24,7 @@ open class DayViewController: UIViewController, DayViewDataSource, DayViewDelega
     dayView.reloadData()
   }
 
-  public func updateStyle(_ newStyle: CalendarStyle) {
+  open func updateStyle(_ newStyle: CalendarStyle) {
     dayView.updateStyle(newStyle)
   }
 
