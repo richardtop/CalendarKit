@@ -107,7 +107,7 @@ class ExampleController: DayViewController {
 
       event.datePeriod = datePeriod
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
-      info.append("\(datePeriod.beginning!.format(with: "HH:mm")!) - \(datePeriod.end!.format(with: "HH:mm")!)")
+      info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
       event.data = info
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       events.append(event)
@@ -128,11 +128,18 @@ class ExampleController: DayViewController {
   // MARK: DayViewDelegate
 
   override func dayViewDidSelectEventView(_ eventview: EventView) {
-
     print("Event has been selected: \(eventview.data)")
   }
-  
+
   override func dayViewDidLongPressEventView(_ eventView: EventView) {
     print("Event has been longPressed: \(eventView.data)")
+  }
+
+  override func dayView(dayView: DayView, willMoveTo date: Date) {
+    print("DayView = \(dayView) will move to: \(date)")
+  }
+  
+  override func dayView(dayView: DayView, didMoveTo date: Date) {
+    print("DayView = \(dayView) did move to: \(date)")
   }
 }

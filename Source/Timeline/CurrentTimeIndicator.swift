@@ -56,7 +56,7 @@ class CurrentTimeIndicator: UIView {
   }
 
   func updateStyle(_ newStyle: CurrentTimeIndicatorStyle) {
-    style = newStyle
+    style = newStyle.copy() as! CurrentTimeIndicatorStyle
     timeLabel.textColor = style.color
     circle.backgroundColor = style.color
     line.backgroundColor = style.color

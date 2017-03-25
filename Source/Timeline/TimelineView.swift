@@ -112,7 +112,7 @@ public class TimelineView: UIView, ReusableView {
   }
 
   public func updateStyle(_ newStyle: TimelineStyle) {
-    style = newStyle
+    style = newStyle.copy() as! TimelineStyle
     nowLine.updateStyle(style.timeIndicator)
     backgroundColor = style.backgroundColor
     setNeedsDisplay()

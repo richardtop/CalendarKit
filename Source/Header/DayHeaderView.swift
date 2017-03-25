@@ -104,7 +104,7 @@ public class DayHeaderView: UIView {
   }
 
   public func updateStyle(_ newStyle: DayHeaderStyle) {
-    style = newStyle
+    style = newStyle.copy() as! DayHeaderStyle
     daySymbolsView.updateStyle(style.daySymbols)
     swipeLabelView.updateStyle(style.swipeLabel)
     pagingScrollView.reusableViews.forEach { daySelector in

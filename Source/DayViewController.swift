@@ -1,7 +1,7 @@
 import UIKit
 import DateToolsSwift
 
-open class DayViewController: UIViewController, DayViewDelegate {
+open class DayViewController: UIViewController, DayViewDataSource, DayViewDelegate {
 
   public lazy var dayView: DayView = DayView()
 
@@ -24,12 +24,10 @@ open class DayViewController: UIViewController, DayViewDelegate {
     dayView.reloadData()
   }
 
-  public func updateStyle(_ newStyle: CalendarStyle) {
+  open func updateStyle(_ newStyle: CalendarStyle) {
     dayView.updateStyle(newStyle)
   }
-}
 
-extension DayViewController: DayViewDataSource {
   open func eventViewsForDate(_ date: Date) -> [EventView] {
     return [EventView]()
   }
@@ -41,18 +39,18 @@ extension DayViewController: DayViewDataSource {
   }
 
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
-    
-  }
-
-  public func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
 
   }
 
-  public func dayView(dayView: DayView, willMoveTo date: Date) {
+  open func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
+
+  }
+
+  open func dayView(dayView: DayView, willMoveTo date: Date) {
     print("DayView = \(dayView) will move to: \(date)")
   }
 
-  public func dayView(dayView: DayView, didMoveTo date: Date) {
+  open func dayView(dayView: DayView, didMoveTo date: Date) {
     print("DayView = \(dayView) did move to: \(date)")
   }
 }

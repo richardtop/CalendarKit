@@ -57,7 +57,7 @@ public class DayView: UIView {
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
-    style = newStyle
+    style = newStyle.copy() as! CalendarStyle
     dayHeaderView.updateStyle(style.header)
     timelinePager.reusableViews.forEach{ timelineContainer in
       timelineContainer.timeline.updateStyle(style.timeline)
@@ -168,9 +168,9 @@ extension DayView: PagingScrollViewDelegate {
   }
 
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {
-    let timeline = timelinePager.reusableViews[index].timeline
-    currentDate = timeline!.date
-    delegate?.dayView(dayView: self, willMoveTo: currentDate)
+    let nextDate = timelinePager.reusableViews[index].timeline.date
+    delegate?.dayView(dayView: self, willMoveTo: nextDate)
+    currentDate = nextDate
     dayHeaderView.selectDate(currentDate)
     delegate?.dayView(dayView: self, didMoveTo: currentDate)
   }
