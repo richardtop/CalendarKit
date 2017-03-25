@@ -168,9 +168,9 @@ extension DayView: PagingScrollViewDelegate {
   }
 
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {
-    let timeline = timelinePager.reusableViews[index].timeline
-    currentDate = timeline!.date
-    delegate?.dayView(dayView: self, willMoveTo: currentDate)
+    let nextDate = timelinePager.reusableViews[index].timeline.date
+    delegate?.dayView(dayView: self, willMoveTo: nextDate)
+    currentDate = nextDate
     dayHeaderView.selectDate(currentDate)
     delegate?.dayView(dayView: self, didMoveTo: currentDate)
   }
