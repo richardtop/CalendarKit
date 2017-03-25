@@ -92,7 +92,7 @@ class DaySelector: UIView, ReusableView {
   }
 
   func updateStyle(_ newStyle: DaySelectorStyle) {
-    style = newStyle
+    style = newStyle.copy() as! DaySelectorStyle
     dateLabels.forEach{ label in
       label.updateStyle(style)
     }

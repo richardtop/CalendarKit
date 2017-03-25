@@ -52,7 +52,7 @@ class SwipeLabelView: UIView {
   }
 
   func updateStyle(_ newStyle: SwipeLabelStyle) {
-    style = newStyle
+    style = newStyle.copy() as! SwipeLabelStyle 
     labels.forEach { label in
       label.textColor = style.textColor
     }
