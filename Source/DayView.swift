@@ -94,6 +94,12 @@ public class DayView: UIView {
     }
     currentDate = newDate
   }
+  
+  public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
+    for timelineContainer in timelinePager.reusableViews {
+      timelineContainer.panGestureRecognizer.require(toFail: gesture)
+    }
+  }
 
   func configureTimelinePager() {
     var verticalScrollViews = [TimelineContainer]()
