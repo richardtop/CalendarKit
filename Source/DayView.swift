@@ -25,6 +25,10 @@ public class DayView: UIView {
       setNeedsLayout()
     }
   }
+  public var timelineScrollOffset: CGPoint {
+    // Any view is fine as they are all synchronized
+    return timelinePager.reusableViews.first?.contentOffset ?? CGPoint()
+  }
   
   public weak var dataSource: DayViewDataSource?
   public weak var delegate: DayViewDelegate?
@@ -89,6 +93,12 @@ public class DayView: UIView {
       timelinePager.scrollForward()
     }
     currentDate = newDate
+  }
+  
+  public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
+    for timelineContainer in timelinePager.reusableViews {
+      timelineContainer.panGestureRecognizer.require(toFail: gesture)
+    }
   }
 
   func configureTimelinePager() {
