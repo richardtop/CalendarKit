@@ -70,7 +70,7 @@ public class DayView: UIView {
   }
 
   public func changeCurrentDate(to newDate: Date) {
-    var newDate = newDate.dateOnly()
+    let newDate = newDate.dateOnly()
     if newDate.isEarlier(than: currentDate) {
       var timelineDate = newDate
       for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
