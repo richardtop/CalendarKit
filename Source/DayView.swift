@@ -19,6 +19,12 @@ public protocol DayHeaderProtocol {
   func selectDate(_ selectedDate: Date)
 }
 
+  /// Component used only as initialization parameter to enforce both view & controller
+public struct DayHeaderComponent {
+  let view: UIView
+  let controller: DayHeaderProtocol & DayHeaderStyleProtocol
+}
+
 public class DayView: UIView {
 
   /// Hides or shows header view
@@ -26,7 +32,7 @@ public class DayView: UIView {
     didSet {
       headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
       dayHeaderView.isHidden = !isHeaderViewVisible
-      dayHeaderView.delegate = isHeaderViewVisible ? self : nil
+      dayHeaderController.delegate = isHeaderViewVisible ? self : nil
       setNeedsLayout()
     }
   }
@@ -41,7 +47,9 @@ public class DayView: UIView {
   static let headerVisibleHeight: CGFloat = 88
   var headerHeight: CGFloat = headerVisibleHeight
 
-  let dayHeaderView = DayHeaderView()
+  var dayHeaderView: UIView
+  var dayHeaderController: DayHeaderProtocol & DayHeaderStyleProtocol
+
   let timelinePager = PagingScrollView<TimelineContainer>()
   var timelineSynchronizer: ScrollSynchronizer?
 
@@ -61,13 +69,13 @@ public class DayView: UIView {
 
   func configure() {
     configureTimelinePager()
-    dayHeaderView.delegate = self
+    dayHeaderController.delegate = self
     addSubview(dayHeaderView)
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
     style = newStyle.copy() as! CalendarStyle
-    dayHeaderView.updateStyle(style.header)
+    dayHeaderController.updateStyle(style.header)
     timelinePager.reusableViews.forEach{ timelineContainer in
       timelineContainer.timeline.updateStyle(style.timeline)
       timelineContainer.backgroundColor = style.timeline.backgroundColor
@@ -186,7 +194,7 @@ extension DayView: PagingScrollViewDelegate {
     let nextDate = timelinePager.reusableViews[index].timeline.date
     delegate?.dayView(dayView: self, willMoveTo: nextDate)
     currentDate = nextDate
-    dayHeaderView.selectDate(currentDate)
+    dayHeaderController.selectDate(currentDate)
     delegate?.dayView(dayView: self, didMoveTo: currentDate)
   }
 }
