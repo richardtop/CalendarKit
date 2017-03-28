@@ -14,6 +14,11 @@ public protocol DayViewDelegate: class {
   func dayView(dayView: DayView, didMoveTo  date: Date)
 }
 
+public protocol DayHeaderProtocol {
+  var delegate: DayHeaderViewDelegate? {get set}
+  func selectDate(_ selectedDate: Date)
+}
+
 public class DayView: UIView {
 
   /// Hides or shows header view
