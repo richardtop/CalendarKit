@@ -57,12 +57,23 @@ public class DayView: UIView {
 
   var style = CalendarStyle()
 
-  override public init(frame: CGRect) {
-    super.init(frame: frame)
+  public init(headerComponent: DayHeaderComponent? = nil) {
+    if let headerComponent = headerComponent {
+      dayHeaderView = headerComponent.view
+      dayHeaderController = headerComponent.controller
+    } else {
+      let defaultHeader = DayHeaderView()
+      dayHeaderView = defaultHeader
+      dayHeaderController = defaultHeader
+    }
+    super.init(frame: .zero)
     configure()
   }
 
   required public init?(coder aDecoder: NSCoder) {
+    let defaultHeader = DayHeaderView()
+    dayHeaderView = defaultHeader
+    dayHeaderController = defaultHeader
     super.init(coder: aDecoder)
     configure()
   }
