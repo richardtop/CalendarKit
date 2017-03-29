@@ -19,10 +19,14 @@ public protocol DayHeaderProtocol {
   func selectDate(_ selectedDate: Date)
 }
 
-  /// Component used only as initialization parameter to enforce both view & controller
+/// Component used only as initialization parameter to enforce both view & controller
 public struct DayHeaderComponent {
-  let view: UIView
-  let controller: DayHeaderProtocol & DayHeaderStyleProtocol
+  public let view: UIView
+  public let controller: DayHeaderProtocol & DayHeaderStyleProtocol
+  public init(view: UIView, controller: DayHeaderProtocol & DayHeaderStyleProtocol) {
+    self.view = view
+    self.controller = controller
+  }
 }
 
 public class DayView: UIView {
