@@ -49,7 +49,7 @@ public class DayView: UIView {
   public weak var delegate: DayViewDelegate?
 
   static let headerVisibleHeight: CGFloat = 88
-  var headerHeight: CGFloat = headerVisibleHeight
+  public var headerHeight: CGFloat = headerVisibleHeight
 
   var dayHeaderView: UIView
   var dayHeaderController: DayHeaderProtocol & DayHeaderStyleProtocol
