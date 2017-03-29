@@ -5,7 +5,7 @@ public protocol DayHeaderViewDelegate: class {
   func dateHeaderDateChanged(_ newDate: Date)
 }
 
-public class DayHeaderView: UIView {
+public class DayHeaderView: UIView, DayHeaderProtocol, DayHeaderStyleProtocol {
 
   public weak var delegate: DayHeaderViewDelegate?
 

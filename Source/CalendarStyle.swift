@@ -10,6 +10,10 @@ public class CalendarStyle: NSCopying {
   }
 }
 
+public protocol DayHeaderStyleProtocol {
+  func updateStyle(_ newStyle: DayHeaderStyle)
+}
+
 public class DayHeaderStyle: NSCopying {
   public var daySymbols = DaySymbolsStyle()
   public var daySelector = DaySelectorStyle()

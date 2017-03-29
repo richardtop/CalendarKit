@@ -14,6 +14,21 @@ public protocol DayViewDelegate: class {
   func dayView(dayView: DayView, didMoveTo  date: Date)
 }
 
+public protocol DayHeaderProtocol {
+  var delegate: DayHeaderViewDelegate? {get set}
+  func selectDate(_ selectedDate: Date)
+}
+
+/// Component used only as initialization parameter to enforce both view & controller
+public struct DayHeaderComponent {
+  public let view: UIView
+  public let controller: DayHeaderProtocol & DayHeaderStyleProtocol
+  public init(view: UIView, controller: DayHeaderProtocol & DayHeaderStyleProtocol) {
+    self.view = view
+    self.controller = controller
+  }
+}
+
 public class DayView: UIView {
 
   /// Hides or shows header view
@@ -21,7 +36,7 @@ public class DayView: UIView {
     didSet {
       headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
       dayHeaderView.isHidden = !isHeaderViewVisible
-      dayHeaderView.delegate = isHeaderViewVisible ? self : nil
+      dayHeaderController.delegate = isHeaderViewVisible ? self : nil
       setNeedsLayout()
     }
   }
@@ -34,9 +49,11 @@ public class DayView: UIView {
   public weak var delegate: DayViewDelegate?
 
   static let headerVisibleHeight: CGFloat = 88
-  var headerHeight: CGFloat = headerVisibleHeight
+  public var headerHeight: CGFloat = headerVisibleHeight
 
-  let dayHeaderView = DayHeaderView()
+  var dayHeaderView: UIView
+  var dayHeaderController: DayHeaderProtocol & DayHeaderStyleProtocol
+
   let timelinePager = PagingScrollView<TimelineContainer>()
   var timelineSynchronizer: ScrollSynchronizer?
 
@@ -44,25 +61,36 @@ public class DayView: UIView {
 
   var style = CalendarStyle()
 
-  override public init(frame: CGRect) {
-    super.init(frame: frame)
+  public init(headerComponent: DayHeaderComponent? = nil) {
+    if let headerComponent = headerComponent {
+      dayHeaderView = headerComponent.view
+      dayHeaderController = headerComponent.controller
+    } else {
+      let defaultHeader = DayHeaderView()
+      dayHeaderView = defaultHeader
+      dayHeaderController = defaultHeader
+    }
+    super.init(frame: .zero)
     configure()
   }
 
   required public init?(coder aDecoder: NSCoder) {
+    let defaultHeader = DayHeaderView()
+    dayHeaderView = defaultHeader
+    dayHeaderController = defaultHeader
     super.init(coder: aDecoder)
     configure()
   }
 
   func configure() {
     configureTimelinePager()
-    dayHeaderView.delegate = self
+    dayHeaderController.delegate = self
     addSubview(dayHeaderView)
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
     style = newStyle.copy() as! CalendarStyle
-    dayHeaderView.updateStyle(style.header)
+    dayHeaderController.updateStyle(style.header)
     timelinePager.reusableViews.forEach{ timelineContainer in
       timelineContainer.timeline.updateStyle(style.timeline)
       timelineContainer.backgroundColor = style.timeline.backgroundColor
@@ -181,7 +209,7 @@ extension DayView: PagingScrollViewDelegate {
     let nextDate = timelinePager.reusableViews[index].timeline.date
     delegate?.dayView(dayView: self, willMoveTo: nextDate)
     currentDate = nextDate
-    dayHeaderView.selectDate(currentDate)
+    dayHeaderController.selectDate(currentDate)
     delegate?.dayView(dayView: self, didMoveTo: currentDate)
   }
 }
