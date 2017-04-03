@@ -243,6 +243,7 @@ public class TimelineView: UIView, ReusableView {
 
   func prepareForReuse() {
     eventViews.forEach {$0.removeFromSuperview()}
+    setNeedsDisplay()
   }
 
   // MARK: - Helpers
