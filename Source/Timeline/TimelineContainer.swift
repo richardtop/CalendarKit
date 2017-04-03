@@ -11,4 +11,9 @@ class TimelineContainer: UIScrollView, ReusableView {
   func prepareForReuse() {
     timeline.prepareForReuse()
   }
+
+  func scrollToFirstEvent() {
+    let yToScroll = timeline.firstEventYPosition ?? 0
+    setContentOffset(CGPoint(x: contentOffset.x, y: yToScroll), animated: true)
+  }
 }

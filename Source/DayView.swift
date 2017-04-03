@@ -16,6 +16,9 @@ public protocol DayViewDelegate: class {
 
 public class DayView: UIView {
 
+  public weak var dataSource: DayViewDataSource?
+  public weak var delegate: DayViewDelegate?
+
   /// Hides or shows header view
   public var isHeaderViewVisible = true {
     didSet {
@@ -25,16 +28,16 @@ public class DayView: UIView {
       setNeedsLayout()
     }
   }
+
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
     return timelinePager.reusableViews.first?.contentOffset ?? CGPoint()
   }
-  
-  public weak var dataSource: DayViewDataSource?
-  public weak var delegate: DayViewDelegate?
 
   static let headerVisibleHeight: CGFloat = 88
   var headerHeight: CGFloat = headerVisibleHeight
+
+  var autoScrollToFirstEvent = false
 
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView<TimelineContainer>()
@@ -94,7 +97,7 @@ public class DayView: UIView {
     }
     currentDate = newDate
   }
-  
+
   public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
     for timelineContainer in timelinePager.reusableViews {
       timelineContainer.panGestureRecognizer.require(toFail: gesture)
@@ -182,7 +185,15 @@ extension DayView: PagingScrollViewDelegate {
     delegate?.dayView(dayView: self, willMoveTo: nextDate)
     currentDate = nextDate
     dayHeaderView.selectDate(currentDate)
+    if autoScrollToFirstEvent {
+      scrollToFirstEvent()
+    }
     delegate?.dayView(dayView: self, didMoveTo: currentDate)
+  }
+
+  func scrollToFirstEvent() {
+    let index = Int(timelinePager.currentScrollViewPage)
+    timelinePager.reusableViews[index].scrollToFirstEvent()
   }
 }
 

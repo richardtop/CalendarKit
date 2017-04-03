@@ -31,6 +31,11 @@ public class TimelineView: UIView, ReusableView {
     }
   }
 
+  var firstEventYPosition: CGFloat? {
+    return eventViews.sorted{$0.frame.origin.y < $1.frame.origin.y}
+      .first?.frame.origin.y
+  }
+
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
 
   var style = TimelineStyle()
@@ -238,6 +243,7 @@ public class TimelineView: UIView, ReusableView {
 
   func prepareForReuse() {
     eventViews.forEach {$0.removeFromSuperview()}
+    setNeedsDisplay()
   }
 
   // MARK: - Helpers
