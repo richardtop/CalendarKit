@@ -37,6 +37,8 @@ public class DayView: UIView {
   static let headerVisibleHeight: CGFloat = 88
   var headerHeight: CGFloat = headerVisibleHeight
 
+  var autoScrollToFirstEvent = false
+
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView<TimelineContainer>()
   var timelineSynchronizer: ScrollSynchronizer?
@@ -95,7 +97,7 @@ public class DayView: UIView {
     }
     currentDate = newDate
   }
-  
+
   public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
     for timelineContainer in timelinePager.reusableViews {
       timelineContainer.panGestureRecognizer.require(toFail: gesture)
@@ -183,7 +185,15 @@ extension DayView: PagingScrollViewDelegate {
     delegate?.dayView(dayView: self, willMoveTo: nextDate)
     currentDate = nextDate
     dayHeaderView.selectDate(currentDate)
+    if autoScrollToFirstEvent {
+      scrollToFirstEvent()
+    }
     delegate?.dayView(dayView: self, didMoveTo: currentDate)
+  }
+
+  func scrollToFirstEvent() {
+    let index = Int(timelinePager.currentScrollViewPage)
+    timelinePager.reusableViews[index].scrollToFirstEvent()
   }
 }
 
