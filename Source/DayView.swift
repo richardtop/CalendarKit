@@ -16,6 +16,9 @@ public protocol DayViewDelegate: class {
 
 public class DayView: UIView {
 
+  public weak var dataSource: DayViewDataSource?
+  public weak var delegate: DayViewDelegate?
+
   /// Hides or shows header view
   public var isHeaderViewVisible = true {
     didSet {
@@ -25,13 +28,11 @@ public class DayView: UIView {
       setNeedsLayout()
     }
   }
+
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
     return timelinePager.reusableViews.first?.contentOffset ?? CGPoint()
   }
-  
-  public weak var dataSource: DayViewDataSource?
-  public weak var delegate: DayViewDelegate?
 
   static let headerVisibleHeight: CGFloat = 88
   var headerHeight: CGFloat = headerVisibleHeight
