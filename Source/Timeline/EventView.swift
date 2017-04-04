@@ -1,7 +1,6 @@
 import UIKit
 import DateToolsSwift
 import Neon
-import DynamicColor
 
 protocol EventViewDelegate: class {
   func eventViewDidTap(_ eventView: EventView)
@@ -40,8 +39,6 @@ open class EventView: UIView {
 
   lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
   lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
-
-  public var datePeriod = TimePeriod()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
