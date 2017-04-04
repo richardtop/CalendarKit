@@ -3,7 +3,7 @@ import Neon
 import DateToolsSwift
 
 public protocol DayViewDataSource: class {
-  func eventViewsForDate(_ date: Date) -> [EventView]
+  func eventsForDate(_ date: Date) -> [EventDescriptor]
 }
 
 public protocol DayViewDelegate: class {
@@ -109,6 +109,7 @@ public class DayView: UIView {
     for i in -1...1 {
       let timeline = TimelineView(frame: bounds)
       timeline.delegate = self
+      timeline.eventViewDelegate = self
       timeline.frame.size.height = timeline.fullHeight
       timeline.date = currentDate.add(TimeChunk(seconds: 0,
                                                 minutes: 0,
@@ -151,9 +152,8 @@ public class DayView: UIView {
 
   func updateTimeline(_ timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
-    let eventViews = dataSource.eventViewsForDate(timeline.date)
-    eventViews.forEach{$0.delegate = self}
-    timeline.eventViews = eventViews
+    let events = dataSource.eventsForDate(timeline.date)
+    timeline.eventDescriptors = events
   }
 }
 

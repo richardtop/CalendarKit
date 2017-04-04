@@ -28,8 +28,8 @@ open class DayViewController: UIViewController, DayViewDataSource, DayViewDelega
     dayView.updateStyle(newStyle)
   }
 
-  open func eventViewsForDate(_ date: Date) -> [EventView] {
-    return [EventView]()
+  open func eventsForDate(_ date: Date) -> [EventDescriptor] {
+    return [Event]()
   }
 
   // MARK: DayViewDelegate
