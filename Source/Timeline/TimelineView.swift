@@ -256,7 +256,9 @@ public class TimelineView: UIView, ReusableView {
     for _ in 0...eventDescriptors.endIndex {
       let newView = pool.dequeue()
       newView.delegate = eventViewDelegate
-      addSubview(newView)
+      if newView.superview == nil {
+        addSubview(newView)
+      }
       eventViews.append(newView)
     }
   }

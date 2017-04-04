@@ -8,7 +8,7 @@ class ReusePool<T: UIView> {
   }
 
   func enqueue(views: [T]) {
-    views.forEach{$0.removeFromSuperview()}
+    views.forEach{$0.frame = .zero}
     storage.append(contentsOf: views)
   }
 
