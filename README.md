@@ -25,31 +25,33 @@ pod 'CalendarKit'
 ```
 
 ## Usage
-Subclass DayViewController and implement `DayViewDataSource` protocol to show events
+Subclass DayViewController and implement `DayViewDataSource` protocol to show events.
+CalendarKit requires `DayViewDataSource` to return an array of objects conforming to `EventDescriptor` protocol, specifying all the information needed to display a particular event:
 
 ```swift
-// Return an array of EventViews for particular date
-override func eventViewsForDate(_ date: Date) -> [EventView] {
-  var events = // Get events (models) from the storage / API
+// Return an array of EventDescriptors for particular date
+override func eventsForDate(_ date: Date) -> [EventDescriptor] {
+  var models = // Get events (models) from the storage / API
 
-  var views = [EventView]()
+  var events = [Event]()
 
-  for event in events {
+  for model in models {
       // Create new EventView
-      let view = EventView()
+      let event = Event()
       // Specify TimePeriod
-      view.datePeriod = TimePeriod(beginning: event.beginning, end: event.start)
+      event.datePeriod = TimePeriod(beginning: model.beginning, end: model.start)
       // Add info: event title, subtitle, location to the array of Strings
       var info = [event.title, event.location]
-      info.append("\(datePeriod.beginning!.format(with: "HH:mm")!) - \(datePeriod.end!.format(with: "HH:mm")!)")
-      view.data = info
-      views.append(view)
+      info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
+      // Set "text" value of event by formatting all the information needed for display
+      event.text = info.reduce("", {$0 + $1 + "\n"})
+      events.append(view)
   }
 
-  return views
+  return events
 }
 ```
-There is  no need to do layout, CalendarKit will take care of it.
+There is  no need to do layout, CalendarKit will take care of it. CalendarKit also creates `EventViews` for you and reuses them.
 
 If needed, implement DayViewDelegate to handle user input
 
