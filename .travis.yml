@@ -1,3 +1,8 @@
-language: swift
+osx_image: xcode8
+language: objective-c
+
+before_install:
+- travis_wait 35; cd CalendarKitDemo; pod update
+
 script:
-- xcodebuild clean build -workspace CalendarKitDemo/CalendarKitDemo.xcworkspace -scheme "CalendarKitDemo" -sdk iphonesimulator
+- xcodebuild build -workspace CalendarKitDemo.xcworkspace -scheme "CalendarKitDemo" -sdk iphonesimulator | xcpretty
