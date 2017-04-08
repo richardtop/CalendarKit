@@ -39,9 +39,10 @@ override func eventsForDate(_ date: Date) -> [EventDescriptor] {
       // Create new EventView
       let event = Event()
       // Specify TimePeriod
-      event.datePeriod = TimePeriod(beginning: model.beginning, end: model.start)
+      let datePeriod = TimePeriod(beginning: model.beginning, end: model.start)
+      event.datePeriod = datePeriod
       // Add info: event title, subtitle, location to the array of Strings
-      var info = [event.title, event.location]
+      var info = [model.title, model.location]
       info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
       // Set "text" value of event by formatting all the information needed for display
       event.text = info.reduce("", {$0 + $1 + "\n"})
