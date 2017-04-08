@@ -83,7 +83,7 @@ class ExampleController: DayViewController {
 
   // MARK: DayViewDataSource
 
-  override func eventViewsForDate(_ date: Date) -> [EventView] {
+  override func eventsForDate(_ date: Date) -> [EventDescriptor] {
     var date = date.add(TimeChunk(seconds: 0,
                                   minutes: 0,
                                   hours: Int(arc4random_uniform(10) + 5),
@@ -91,10 +91,10 @@ class ExampleController: DayViewController {
                                   weeks: 0,
                                   months: 0,
                                   years: 0))
-    var events = [EventView]()
+    var events = [Event]()
 
     for _ in 0...5 {
-      let event = EventView()
+      let event = Event()
       let duration = Int(arc4random_uniform(160) + 60)
       let datePeriod = TimePeriod(beginning: date,
                                   chunk: TimeChunk(seconds: 0,
@@ -108,7 +108,7 @@ class ExampleController: DayViewController {
       event.datePeriod = datePeriod
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
       info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
-      event.data = info
+      event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       events.append(event)
 
@@ -128,18 +128,18 @@ class ExampleController: DayViewController {
   // MARK: DayViewDelegate
 
   override func dayViewDidSelectEventView(_ eventview: EventView) {
-    print("Event has been selected: \(eventview.data)")
+    print("Event has been selected: \(String(describing: eventview.descriptor))")
   }
 
   override func dayViewDidLongPressEventView(_ eventView: EventView) {
-    print("Event has been longPressed: \(eventView.data)")
+    print("Event has been longPressed: \(String(describing: eventView.descriptor))")
   }
 
   override func dayView(dayView: DayView, willMoveTo date: Date) {
-    print("DayView = \(dayView) will move to: \(date)")
+//    print("DayView = \(dayView) will move to: \(date)")
   }
   
   override func dayView(dayView: DayView, didMoveTo date: Date) {
-    print("DayView = \(dayView) did move to: \(date)")
+//    print("DayView = \(dayView) did move to: \(date)")
   }
 }

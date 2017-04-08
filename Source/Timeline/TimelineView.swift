@@ -11,6 +11,8 @@ public class TimelineView: UIView, ReusableView {
 
   weak var delegate: TimelineViewDelegate?
 
+  weak var eventViewDelegate: EventViewDelegate?
+
   var date = Date() {
     didSet {
       setNeedsLayout()
@@ -21,15 +23,15 @@ public class TimelineView: UIView, ReusableView {
     return Date()
   }
 
-  var eventViews = [EventView]() {
-    willSet {
-      eventViews.forEach {$0.removeFromSuperview()}
-    }
+  var eventViews = [EventView]()
+  var eventDescriptors = [EventDescriptor]() {
     didSet {
-      eventViews.forEach {addSubview($0)}
+      recalculateEventLayout()
+      prepareEventViews()
       setNeedsLayout()
     }
   }
+  var pool = ReusePool<EventView>()
 
   var firstEventYPosition: CGFloat? {
     return eventViews.sorted{$0.frame.origin.y < $1.frame.origin.y}
@@ -174,6 +176,7 @@ public class TimelineView: UIView, ReusableView {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
+    recalculateEventLayout()
     layoutEvents()
     layoutNowLine()
   }
@@ -195,6 +198,14 @@ public class TimelineView: UIView, ReusableView {
   func layoutEvents() {
     if eventViews.isEmpty {return}
 
+    for (idx, descriptor) in eventDescriptors.enumerated() {
+      let eventView = eventViews[idx]
+      eventView.frame = descriptor.frame
+      eventView.updateWithDescriptor(event: descriptor)
+    }
+  }
+
+  func recalculateEventLayout() {
     let day = TimePeriod(beginning: date.dateOnly(),
                          chunk: TimeChunk(seconds: 0,
                                           minutes: 0,
@@ -204,11 +215,11 @@ public class TimelineView: UIView, ReusableView {
                                           months: 0,
                                           years: 0))
 
-    let validEvents = eventViews.filter {$0.datePeriod.overlaps(with: day)}
+    let validEvents = eventDescriptors.filter {$0.datePeriod.overlaps(with: day)}
       .sorted {$0.datePeriod.beginning!.isEarlier(than: $1.datePeriod.beginning!)}
 
-    var groupsOfEvents = [[EventView]]()
-    var overlappingEvents = [EventView]()
+    var groupsOfEvents = [[EventDescriptor]]()
+    var overlappingEvents = [EventDescriptor]()
 
     for event in validEvents {
       if overlappingEvents.isEmpty {
@@ -241,8 +252,20 @@ public class TimelineView: UIView, ReusableView {
     }
   }
 
+  func prepareEventViews() {
+    for _ in 0...eventDescriptors.endIndex {
+      let newView = pool.dequeue()
+      newView.delegate = eventViewDelegate
+      if newView.superview == nil {
+        addSubview(newView)
+      }
+      eventViews.append(newView)
+    }
+  }
+
   func prepareForReuse() {
-    eventViews.forEach {$0.removeFromSuperview()}
+    pool.enqueue(views: eventViews)
+    eventViews.removeAll()
     setNeedsDisplay()
   }
 

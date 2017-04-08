@@ -1,32 +1,30 @@
 import UIKit
 import DateToolsSwift
 import Neon
-import DynamicColor
 
 protocol EventViewDelegate: class {
   func eventViewDidTap(_ eventView: EventView)
   func eventViewDidLongPress(_ eventview: EventView)
 }
 
+public protocol EventDescriptor: class {
+  var datePeriod: TimePeriod {get}
+  var text: String {get}
+  var color: UIColor {get}
+  var textColor: UIColor {get}
+  var backgroundColor: UIColor {get}
+  var frame: CGRect {get set}
+}
+
 open class EventView: UIView {
 
   weak var delegate: EventViewDelegate?
+  public var descriptor: EventDescriptor?
 
-  public var color = UIColor() {
-    didSet {
-      textView.textColor = color.darkened(amount: 0.3)
-      backgroundColor = UIColor(red: color.redComponent, green: color.greenComponent, blue: color.blueComponent, alpha: 0.3)
-    }
-  }
+  public var color = UIColor()
 
   var contentHeight: CGFloat {
     return textView.height
-  }
-
-  public var data = [String]() {
-    didSet {
-      textView.text = data.reduce("", {$0 + $1 + "\n"})
-    }
   }
 
   public var userInfo: Any?
@@ -41,8 +39,6 @@ open class EventView: UIView {
 
   lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
   lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
-
-  public var datePeriod = TimePeriod()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -60,6 +56,16 @@ open class EventView: UIView {
 
     color = tintColor
     addSubview(textView)
+  }
+
+  func updateWithDescriptor(event: EventDescriptor) {
+    descriptor = event
+    textView.text = event.text
+    textView.textColor = event.textColor
+    backgroundColor = event.backgroundColor
+    color = event.color
+    setNeedsDisplay()
+    setNeedsLayout()
   }
 
   func tap() {
