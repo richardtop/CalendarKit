@@ -276,8 +276,16 @@ public class TimelineView: UIView, ReusableView {
   }
 
   fileprivate func dateToY(_ date: Date) -> CGFloat {
-    let hourY = CGFloat(date.hour) * verticalDiff + verticalInset
-    let minuteY = CGFloat(date.minute) * verticalDiff / 60
-    return hourY + minuteY
+    if date.dateOnly() > self.date.dateOnly() {
+      // Event ending the next day
+      return 24 * verticalDiff + verticalInset
+    } else if date.dateOnly() < self.date.dateOnly() {
+      // Event starting the previous day
+      return verticalInset
+    } else {
+      let hourY = CGFloat(date.hour) * verticalDiff + verticalInset
+      let minuteY = CGFloat(date.minute) * verticalDiff / 60
+      return hourY + minuteY
+    }
   }
 }

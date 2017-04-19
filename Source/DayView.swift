@@ -103,6 +103,11 @@ public class DayView: UIView {
       timelineContainer.panGestureRecognizer.require(toFail: gesture)
     }
   }
+  
+  public func scrollTo(hour24: Float) {
+    // Any view is fine as they are all synchronized
+    timelinePager.reusableViews.first?.scrollTo(hour24: hour24)
+  }
 
   func configureTimelinePager() {
     var verticalScrollViews = [TimelineContainer]()
