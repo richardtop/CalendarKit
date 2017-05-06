@@ -37,7 +37,7 @@ public class DayView: UIView {
   static let headerVisibleHeight: CGFloat = 88
   var headerHeight: CGFloat = headerVisibleHeight
 
-  var autoScrollToFirstEvent = false
+  open var autoScrollToFirstEvent = false
 
   let dayHeaderView = DayHeaderView()
   let timelinePager = PagingScrollView<TimelineContainer>()
