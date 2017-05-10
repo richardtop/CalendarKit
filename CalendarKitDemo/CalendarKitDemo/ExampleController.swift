@@ -93,7 +93,7 @@ class ExampleController: DayViewController {
                                   years: 0))
     var events = [Event]()
 
-    for _ in 0...5 {
+    for i in 0...5 {
       let event = Event()
       let duration = Int(arc4random_uniform(160) + 60)
       let datePeriod = TimePeriod(beginning: date,
@@ -120,6 +120,7 @@ class ExampleController: DayViewController {
                                 weeks: 0,
                                 months: 0,
                                 years: 0))
+      event.userInfo = String(i)
     }
 
     return events
@@ -127,12 +128,18 @@ class ExampleController: DayViewController {
 
   // MARK: DayViewDelegate
 
-  override func dayViewDidSelectEventView(_ eventview: EventView) {
-    print("Event has been selected: \(String(describing: eventview.descriptor))")
+  override func dayViewDidSelectEventView(_ eventView: EventView) {
+    guard let descriptor = eventView.descriptor as? Event else {
+      return
+    }
+    print("Event has been selected: \(descriptor) \(String(describing: descriptor.userInfo))")
   }
 
   override func dayViewDidLongPressEventView(_ eventView: EventView) {
-    print("Event has been longPressed: \(String(describing: eventView.descriptor))")
+    guard let descriptor = eventView.descriptor as? Event else {
+      return
+    }
+    print("Event has been longPressed: \(descriptor) \(String(describing: descriptor.userInfo))")
   }
 
   override func dayView(dayView: DayView, willMoveTo date: Date) {
