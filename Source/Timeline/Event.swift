@@ -14,5 +14,6 @@ open class Event: EventDescriptor {
   public var backgroundColor = UIColor()
   public var textColor = UIColor()
   public var frame = CGRect.zero
+  public var userInfo: Any?
   public init() {}
 }
