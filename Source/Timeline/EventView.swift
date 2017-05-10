@@ -27,8 +27,6 @@ open class EventView: UIView {
     return textView.height
   }
 
-  public var userInfo: Any?
-
   lazy var textView: UITextView = {
     let view = UITextView()
     view.font = UIFont.boldSystemFont(ofSize: 12)
