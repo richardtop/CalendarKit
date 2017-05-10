@@ -34,7 +34,7 @@ open class DayViewController: UIViewController, DayViewDataSource, DayViewDelega
 
   // MARK: DayViewDelegate
 
-  open func dayViewDidSelectEventView(_ eventview: EventView) {
+  open func dayViewDidSelectEventView(_ eventView: EventView) {
 
   }
 

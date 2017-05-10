@@ -7,7 +7,7 @@ public protocol DayViewDataSource: class {
 }
 
 public protocol DayViewDelegate: class {
-  func dayViewDidSelectEventView(_ eventview: EventView)
+  func dayViewDidSelectEventView(_ eventView: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
   func dayViewDidLongPressTimelineAtHour(_ hour: Int)
   func dayView(dayView: DayView, willMoveTo date: Date)
