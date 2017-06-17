@@ -253,6 +253,8 @@ public class TimelineView: UIView, ReusableView {
   }
 
   func prepareEventViews() {
+    pool.enqueue(views: eventViews)
+    eventViews.removeAll()
     for _ in 0...eventDescriptors.endIndex {
       let newView = pool.dequeue()
       newView.delegate = eventViewDelegate
