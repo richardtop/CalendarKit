@@ -161,7 +161,6 @@ extension TimelinePagerView: PagingScrollViewDelegate {
     let nextDate = timelinePager.reusableViews[index].timeline.date
     delegate?.timelinePager(timelinePager: self, willMoveTo: nextDate)
     currentDate = nextDate
-    //        dayHeaderView.selectDate(currentDate)
     if autoScrollToFirstEvent {
       scrollToFirstEvent()
     }
