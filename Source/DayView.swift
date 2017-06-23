@@ -30,8 +30,7 @@ public class DayView: UIView {
   }
 
   public var timelineScrollOffset: CGPoint {
-    // Any view is fine as they are all synchronized
-    return timelinePager.reusableViews.first?.contentOffset ?? CGPoint()
+    return timelinePagerView.timelineScrollOffset
   }
 
   static let headerVisibleHeight: CGFloat = 88
@@ -40,8 +39,7 @@ public class DayView: UIView {
   open var autoScrollToFirstEvent = false
 
   let dayHeaderView = DayHeaderView()
-  let timelinePager = PagingScrollView<TimelineContainer>()
-  var timelineSynchronizer: ScrollSynchronizer?
+  let timelinePagerView = TimelinePagerView()
 
   var currentDate = Date().dateOnly()
 
@@ -66,99 +64,38 @@ public class DayView: UIView {
   public func updateStyle(_ newStyle: CalendarStyle) {
     style = newStyle.copy() as! CalendarStyle
     dayHeaderView.updateStyle(style.header)
-    timelinePager.reusableViews.forEach{ timelineContainer in
-      timelineContainer.timeline.updateStyle(style.timeline)
-      timelineContainer.backgroundColor = style.timeline.backgroundColor
-    }
+    timelinePagerView.updateStyle(style.timeline)
   }
 
   public func changeCurrentDate(to newDate: Date) {
     let newDate = newDate.dateOnly()
-    if newDate.isEarlier(than: currentDate) {
-      var timelineDate = newDate
-      for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
-        timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
-        if index == 0 {
-          updateTimeline(timelineContainer.timeline)
-        }
-      }
-      timelinePager.scrollBackward()
-    } else if newDate.isLater(than: currentDate) {
-      var timelineDate = newDate
-      for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
-        timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.subtract(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
-        if index == 0 {
-          updateTimeline(timelineContainer.timeline)
-        }
-      }
-      timelinePager.scrollForward()
-    }
+    timelinePagerView.changeCurrentDate(to: newDate)
     currentDate = newDate
   }
 
   public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
-    for timelineContainer in timelinePager.reusableViews {
-      timelineContainer.panGestureRecognizer.require(toFail: gesture)
-    }
+    timelinePagerView.timelinePanGestureRequire(toFail: gesture)
   }
-  
+
   public func scrollTo(hour24: Float) {
     // Any view is fine as they are all synchronized
-    timelinePager.reusableViews.first?.scrollTo(hour24: hour24)
+    timelinePagerView.scrollTo(hour24: hour24)
   }
 
   func configureTimelinePager() {
-    var verticalScrollViews = [TimelineContainer]()
-    for i in -1...1 {
-      let timeline = TimelineView(frame: bounds)
-      timeline.delegate = self
-      timeline.eventViewDelegate = self
-      timeline.frame.size.height = timeline.fullHeight
-      timeline.date = currentDate.add(TimeChunk(seconds: 0,
-                                                minutes: 0,
-                                                hours: 0,
-                                                days: i,
-                                                weeks: 0,
-                                                months: 0,
-                                                years: 0))
-
-      let verticalScrollView = TimelineContainer()
-      verticalScrollView.timeline = timeline
-      verticalScrollView.addSubview(timeline)
-      verticalScrollView.contentSize = timeline.frame.size
-
-      timelinePager.addSubview(verticalScrollView)
-      timelinePager.reusableViews.append(verticalScrollView)
-      verticalScrollViews.append(verticalScrollView)
-    }
-    timelineSynchronizer = ScrollSynchronizer(views: verticalScrollViews)
-    addSubview(timelinePager)
-
-    timelinePager.viewDelegate = self
+    addSubview(timelinePagerView)
+    timelinePagerView.dataSource = self
+    timelinePagerView.delegate = self
   }
 
   public func reloadData() {
-    timelinePager.reusableViews.forEach{self.updateTimeline($0.timeline)}
+    timelinePagerView.reloadData()
   }
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-
-    let contentWidth = CGFloat(timelinePager.reusableViews.count) * bounds.width
-    let size = CGSize(width: contentWidth, height: 50)
-    timelinePager.contentSize = size
-    timelinePager.contentOffset = CGPoint(x: bounds.width, y: 0)
-
     dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: headerHeight)
-    timelinePager.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
-  }
-
-  func updateTimeline(_ timeline: TimelineView) {
-    guard let dataSource = dataSource else {return}
-    let events = dataSource.eventsForDate(timeline.date)
-    timeline.eventDescriptors = events
+    timelinePagerView.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
   }
 }
 
@@ -171,34 +108,29 @@ extension DayView: EventViewDelegate {
   }
 }
 
-extension DayView: PagingScrollViewDelegate {
-  func updateViewAtIndex(_ index: Int) {
-    let timeline = timelinePager.reusableViews[index].timeline
-    let amount = index > 1 ? 1 : -1
-    timeline?.date = currentDate.add(TimeChunk(seconds: 0,
-                                               minutes: 0,
-                                               hours: 0,
-                                               days: amount,
-                                               weeks: 0,
-                                               months: 0,
-                                               years: 0))
-    updateTimeline(timeline!)
+extension DayView: TimelinePagerViewDelegate {
+  public func timelinePagerDidSelectEventView(_ eventView: EventView) {
+    delegate?.dayViewDidSelectEventView(eventView)
   }
-
-  func scrollviewDidScrollToViewAtIndex(_ index: Int) {
-    let nextDate = timelinePager.reusableViews[index].timeline.date
-    delegate?.dayView(dayView: self, willMoveTo: nextDate)
-    currentDate = nextDate
-    dayHeaderView.selectDate(currentDate)
-    if autoScrollToFirstEvent {
-      scrollToFirstEvent()
-    }
-    delegate?.dayView(dayView: self, didMoveTo: currentDate)
+  public func timelinePagerDidLongPressEventView(_ eventView: EventView) {
+    delegate?.dayViewDidLongPressEventView(eventView)
   }
+  public func timelinePagerDidLongPressTimelineAtHour(_ hour: Int) {
+    delegate?.dayViewDidLongPressTimelineAtHour(hour)
+  }
+  public func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date) {
+    delegate?.dayView(dayView: self, willMoveTo: date)
+  }
+  public func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date) {
+    changeCurrentDate(to: date)
+    dayHeaderView.selectDate(date)
+    delegate?.dayView(dayView: self, didMoveTo: date)
+  }
+}
 
-  func scrollToFirstEvent() {
-    let index = Int(timelinePager.currentScrollViewPage)
-    timelinePager.reusableViews[index].scrollToFirstEvent()
+extension DayView: TimelinePagerViewDataSource {
+  public func eventsForDate(_ date: Date) -> [EventDescriptor] {
+    return dataSource?.eventsForDate(date) ?? []
   }
 }
 
