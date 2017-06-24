@@ -14,7 +14,7 @@ class TimelineContainer: UIScrollView, ReusableView {
 
   func scrollToFirstEvent() {
     if let yToScroll = timeline.firstEventYPosition {
-      setContentOffset(CGPoint(x: contentOffset.x, y: yToScroll), animated: true)
+      setContentOffset(CGPoint(x: contentOffset.x, y: yToScroll - 15), animated: true)
     }
   }
   
