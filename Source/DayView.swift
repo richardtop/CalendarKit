@@ -12,7 +12,15 @@ public protocol DayViewDelegate: class {
 
 public class DayView: UIView {
 
-  public weak var dataSource: EventDataSource?
+  public weak var dataSource: EventDataSource? {
+    get {
+      return timelinePagerView.dataSource
+    }
+    set(value) {
+      timelinePagerView.dataSource = value
+    }
+  }
+
   public weak var delegate: DayViewDelegate?
 
   /// Hides or shows header view
@@ -87,7 +95,6 @@ public class DayView: UIView {
 
   func configureTimelinePager() {
     addSubview(timelinePagerView)
-    timelinePagerView.dataSource = self
     timelinePagerView.delegate = self
   }
 
@@ -128,12 +135,6 @@ extension DayView: TimelinePagerViewDelegate {
     changeCurrentDate(to: date)
     dayHeaderView.selectDate(date)
     delegate?.dayView(dayView: self, didMoveTo: date)
-  }
-}
-
-extension DayView: EventDataSource {
-  public func eventsForDate(_ date: Date) -> [EventDescriptor] {
-    return dataSource?.eventsForDate(date) ?? []
   }
 }
 
