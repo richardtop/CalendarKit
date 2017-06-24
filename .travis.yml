@@ -6,3 +6,6 @@ before_install:
 
 script:
 - xcodebuild build -workspace CalendarKitDemo.xcworkspace -scheme "CalendarKitDemo" -sdk iphonesimulator | xcpretty
+
+notifications:
+  email: false
