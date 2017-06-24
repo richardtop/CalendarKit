@@ -216,7 +216,11 @@ public class TimelineView: UIView, ReusableView {
         overlappingEvents.append(event)
         continue
       }
-      if overlappingEvents.last!.datePeriod.overlaps(with: event.datePeriod) {
+
+      let longestEvent = overlappingEvents.sorted{$0.datePeriod.seconds > $1.datePeriod.seconds}.first!
+      let lastEvent = overlappingEvents.last!
+      if longestEvent.datePeriod.overlaps(with: event.datePeriod) ||
+        lastEvent.datePeriod.overlaps(with: event.datePeriod) {
         overlappingEvents.append(event)
         continue
       } else {
