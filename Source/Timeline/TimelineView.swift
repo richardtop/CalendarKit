@@ -206,16 +206,12 @@ public class TimelineView: UIView, ReusableView {
   }
 
   func recalculateEventLayout() {
-    let day = TimePeriod(beginning: date.dateOnly(),
-                         chunk: TimeChunk.dateComponents(days: 1))
-
-    let validEvents = eventDescriptors.filter {$0.datePeriod.overlaps(with: day)}
-      .sorted {$0.datePeriod.beginning!.isEarlier(than: $1.datePeriod.beginning!)}
+    let sortedEvents = eventDescriptors.sorted {$0.datePeriod.beginning!.isEarlier(than: $1.datePeriod.beginning!)}
 
     var groupsOfEvents = [[EventDescriptor]]()
     var overlappingEvents = [EventDescriptor]()
 
-    for event in validEvents {
+    for event in sortedEvents {
       if overlappingEvents.isEmpty {
         overlappingEvents.append(event)
         continue
