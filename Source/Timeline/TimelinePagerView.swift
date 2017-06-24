@@ -149,15 +149,15 @@ extension TimelinePagerView: PagingScrollViewDelegate {
     let nextDate = timelinePager.reusableViews[index].timeline.date
     delegate?.timelinePager(timelinePager: self, willMoveTo: nextDate)
     currentDate = nextDate
-    if autoScrollToFirstEvent {
-      scrollToFirstEvent()
-    }
+    scrollToFirstEventIfNeeded()
     delegate?.timelinePager(timelinePager: self, didMoveTo: nextDate)
   }
 
-  func scrollToFirstEvent() {
-    let index = Int(timelinePager.currentScrollViewPage)
-    timelinePager.reusableViews[index].scrollToFirstEvent()
+  func scrollToFirstEventIfNeeded() {
+    if autoScrollToFirstEvent {
+      let index = Int(timelinePager.currentScrollViewPage)
+      timelinePager.reusableViews[index].scrollToFirstEvent()
+    }
   }
 }
 

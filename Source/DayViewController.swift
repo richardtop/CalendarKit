@@ -16,6 +16,11 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     dayView.reloadData()
   }
 
+  open override func viewWillAppear(_ animated: Bool) {
+    super.viewWillAppear(animated)
+    dayView.scrollToFirstEventIfNeeded()
+  }
+
   open override func viewDidLayoutSubviews() {
     dayView.fillSuperview()
   }

@@ -92,6 +92,10 @@ public class DayView: UIView {
     timelinePagerView.scrollTo(hour24: hour24)
   }
 
+  public func scrollToFirstEventIfNeeded() {
+    timelinePagerView.scrollToFirstEventIfNeeded()
+  }
+
   func configureTimelinePager() {
     addSubview(timelinePagerView)
     timelinePagerView.delegate = self
