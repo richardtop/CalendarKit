@@ -89,7 +89,6 @@ public class DayView: UIView {
   }
 
   public func scrollTo(hour24: Float) {
-    // Any view is fine as they are all synchronized
     timelinePagerView.scrollTo(hour24: hour24)
   }
 
