@@ -59,6 +59,7 @@ class ExampleController: DayViewController {
                                                         target: self,
                                                         action: #selector(ExampleController.changeStyle))
     navigationController?.navigationBar.isTranslucent = false
+    dayView.autoScrollToFirstEvent = true
     reloadData()
   }
 
