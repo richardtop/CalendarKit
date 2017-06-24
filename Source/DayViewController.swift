@@ -1,7 +1,7 @@
 import UIKit
 import DateToolsSwift
 
-open class DayViewController: UIViewController, DayViewDataSource, DayViewDelegate {
+open class DayViewController: UIViewController, EventDataSource, DayViewDelegate {
 
   public lazy var dayView: DayView = DayView()
 
