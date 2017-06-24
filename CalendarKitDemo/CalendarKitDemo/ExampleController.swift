@@ -84,26 +84,14 @@ class ExampleController: DayViewController {
   // MARK: EventDataSource
 
   override func eventsForDate(_ date: Date) -> [EventDescriptor] {
-    var date = date.add(TimeChunk(seconds: 0,
-                                  minutes: 0,
-                                  hours: Int(arc4random_uniform(10) + 5),
-                                  days: 0,
-                                  weeks: 0,
-                                  months: 0,
-                                  years: 0))
+    var date = date.add(TimeChunk.dateComponents(hours: Int(arc4random_uniform(10) + 5)))
     var events = [Event]()
 
     for i in 0...5 {
       let event = Event()
       let duration = Int(arc4random_uniform(160) + 60)
       let datePeriod = TimePeriod(beginning: date,
-                                  chunk: TimeChunk(seconds: 0,
-                                                   minutes: duration,
-                                                   hours: 0,
-                                                   days: 0,
-                                                   weeks: 0,
-                                                   months: 0,
-                                                   years: 0))
+                                  chunk: TimeChunk.dateComponents(minutes: duration))
 
       event.datePeriod = datePeriod
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
@@ -113,13 +101,7 @@ class ExampleController: DayViewController {
       events.append(event)
 
       let nextOffset = Int(arc4random_uniform(250) + 40)
-      date = date.add(TimeChunk(seconds: 0,
-                                minutes: nextOffset,
-                                hours: 0,
-                                days: 0,
-                                weeks: 0,
-                                months: 0,
-                                years: 0))
+      date = date.add(TimeChunk.dateComponents(minutes: nextOffset))
       event.userInfo = String(i)
     }
 

@@ -57,13 +57,7 @@ public class TimelinePagerView: UIView {
       var timelineDate = newDate
       for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
         timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.add(TimeChunk(seconds: 0,
-                                                  minutes: 0,
-                                                  hours: 0,
-                                                  days: 1,
-                                                  weeks: 0,
-                                                  months: 0,
-                                                  years: 0))
+        timelineDate = timelineDate.add(TimeChunk.dateComponents(days: 1))
         if index == 0 {
           updateTimeline(timelineContainer.timeline)
         }
@@ -73,13 +67,7 @@ public class TimelinePagerView: UIView {
       var timelineDate = newDate
       for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
         timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.subtract(TimeChunk(seconds: 0,
-                                                       minutes: 0,
-                                                       hours: 0,
-                                                       days: 1,
-                                                       weeks: 0,
-                                                       months: 0,
-                                                       years: 0))
+        timelineDate = timelineDate.subtract(TimeChunk.dateComponents(days: 1))
         if index == 0 {
           updateTimeline(timelineContainer.timeline)
         }
@@ -107,13 +95,7 @@ public class TimelinePagerView: UIView {
       timeline.delegate = self
       timeline.eventViewDelegate = self
       timeline.frame.size.height = timeline.fullHeight
-      timeline.date = currentDate.add(TimeChunk(seconds: 0,
-                                                minutes: 0,
-                                                hours: 0,
-                                                days: i,
-                                                weeks: 0,
-                                                months: 0,
-                                                years: 0))
+      timeline.date = currentDate.add(TimeChunk.dateComponents(days: i))
 
       let verticalScrollView = TimelineContainer()
       verticalScrollView.timeline = timeline
@@ -155,13 +137,7 @@ extension TimelinePagerView: PagingScrollViewDelegate {
   func updateViewAtIndex(_ index: Int) {
     let timeline = timelinePager.reusableViews[index].timeline
     let amount = index > 1 ? 1 : -1
-    timeline?.date = currentDate.add(TimeChunk(seconds: 0,
-                                               minutes: 0,
-                                               hours: 0,
-                                               days: amount,
-                                               weeks: 0,
-                                               months: 0,
-                                               years: 0))
+    timeline?.date = currentDate.add(TimeChunk.dateComponents(days: amount))
     updateTimeline(timeline!)
   }
 
