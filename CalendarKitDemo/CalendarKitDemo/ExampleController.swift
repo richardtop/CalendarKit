@@ -81,7 +81,7 @@ class ExampleController: DayViewController {
     navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:style.header.swipeLabel.textColor]
   }
 
-  // MARK: DayViewDataSource
+  // MARK: EventDataSource
 
   override func eventsForDate(_ date: Date) -> [EventDescriptor] {
     var date = date.add(TimeChunk(seconds: 0,

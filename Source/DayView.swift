@@ -2,10 +2,6 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-public protocol DayViewDataSource: class {
-  func eventsForDate(_ date: Date) -> [EventDescriptor]
-}
-
 public protocol DayViewDelegate: class {
   func dayViewDidSelectEventView(_ eventView: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
@@ -16,7 +12,7 @@ public protocol DayViewDelegate: class {
 
 public class DayView: UIView {
 
-  public weak var dataSource: DayViewDataSource?
+  public weak var dataSource: EventDataSource?
   public weak var delegate: DayViewDelegate?
 
   /// Hides or shows header view
@@ -135,7 +131,7 @@ extension DayView: TimelinePagerViewDelegate {
   }
 }
 
-extension DayView: TimelinePagerViewDataSource {
+extension DayView: EventDataSource {
   public func eventsForDate(_ date: Date) -> [EventDescriptor] {
     return dataSource?.eventsForDate(date) ?? []
   }

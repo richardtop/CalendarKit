@@ -2,10 +2,6 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-public protocol TimelinePagerViewDataSource: class {
-  func eventsForDate(_ date: Date) -> [EventDescriptor]
-}
-
 public protocol TimelinePagerViewDelegate: class {
   func timelinePagerDidSelectEventView(_ eventView: EventView)
   func timelinePagerDidLongPressEventView(_ eventView: EventView)
@@ -16,7 +12,7 @@ public protocol TimelinePagerViewDelegate: class {
 
 public class TimelinePagerView: UIView {
 
-  public weak var dataSource: TimelinePagerViewDataSource?
+  public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
 
   public var timelineScrollOffset: CGPoint {
