@@ -128,8 +128,12 @@ public class TimelinePagerView: UIView {
 
   func updateTimeline(_ timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
-    let events = dataSource.eventsForDate(timeline.date)
-    timeline.eventDescriptors = events
+    let date = timeline.date.dateOnly()
+    let events = dataSource.eventsForDate(date)
+    let day = TimePeriod(beginning: date,
+                         chunk: TimeChunk.dateComponents(days: 1))
+    let validEvents = events.filter{$0.datePeriod.overlaps(with: day)}
+    timeline.eventDescriptors = validEvents
   }
 }
 
@@ -145,15 +149,15 @@ extension TimelinePagerView: PagingScrollViewDelegate {
     let nextDate = timelinePager.reusableViews[index].timeline.date
     delegate?.timelinePager(timelinePager: self, willMoveTo: nextDate)
     currentDate = nextDate
-    if autoScrollToFirstEvent {
-      scrollToFirstEvent()
-    }
+    scrollToFirstEventIfNeeded()
     delegate?.timelinePager(timelinePager: self, didMoveTo: nextDate)
   }
 
-  func scrollToFirstEvent() {
-    let index = Int(timelinePager.currentScrollViewPage)
-    timelinePager.reusableViews[index].scrollToFirstEvent()
+  func scrollToFirstEventIfNeeded() {
+    if autoScrollToFirstEvent {
+      let index = Int(timelinePager.currentScrollViewPage)
+      timelinePager.reusableViews[index].scrollToFirstEvent()
+    }
   }
 }
 
