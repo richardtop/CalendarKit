@@ -19,7 +19,10 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
     get {
       let width = bounds.width
       let centerOffsetX = contentOffset.x + width / 2
-      return centerOffsetX / width - 0.5
+
+      let result = centerOffsetX / width - 0.5
+      // Return central page if impossible to calculate (View has no size yet)
+      return result.isNaN ? 1 : result
     }
   }
 
