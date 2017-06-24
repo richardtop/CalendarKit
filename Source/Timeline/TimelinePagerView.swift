@@ -61,7 +61,13 @@ public class TimelinePagerView: UIView {
       var timelineDate = newDate
       for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
         timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.add(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
+        timelineDate = timelineDate.add(TimeChunk(seconds: 0,
+                                                  minutes: 0,
+                                                  hours: 0,
+                                                  days: 1,
+                                                  weeks: 0,
+                                                  months: 0,
+                                                  years: 0))
         if index == 0 {
           updateTimeline(timelineContainer.timeline)
         }
@@ -71,7 +77,13 @@ public class TimelinePagerView: UIView {
       var timelineDate = newDate
       for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
         timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.subtract(TimeChunk(seconds: 0, minutes: 0, hours: 0, days: 1, weeks: 0, months: 0, years: 0))
+        timelineDate = timelineDate.subtract(TimeChunk(seconds: 0,
+                                                       minutes: 0,
+                                                       hours: 0,
+                                                       days: 1,
+                                                       weeks: 0,
+                                                       months: 0,
+                                                       years: 0))
         if index == 0 {
           updateTimeline(timelineContainer.timeline)
         }
