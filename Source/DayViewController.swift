@@ -4,6 +4,7 @@ import DateToolsSwift
 open class DayViewController: UIViewController, EventDataSource, DayViewDelegate {
 
   public lazy var dayView: DayView = DayView()
+  var state = CalendarState()
 
   override open func viewDidLoad() {
     super.viewDidLoad()
@@ -13,6 +14,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
 
     dayView.dataSource = self
     dayView.delegate = self
+    dayView.state = state
     dayView.reloadData()
   }
 
