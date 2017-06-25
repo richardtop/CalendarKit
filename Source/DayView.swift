@@ -52,7 +52,12 @@ public class DayView: UIView {
   let dayHeaderView = DayHeaderView()
   let timelinePagerView = TimelinePagerView()
 
-  var currentDate = Date().dateOnly()
+  var state: CalendarState? {
+    didSet {
+      dayHeaderView.state = state
+      timelinePagerView.state = state
+    }
+  }
 
   var style = CalendarStyle()
 
@@ -77,12 +82,6 @@ public class DayView: UIView {
     style = newStyle.copy() as! CalendarStyle
     dayHeaderView.updateStyle(style.header)
     timelinePagerView.updateStyle(style.timeline)
-  }
-
-  public func changeCurrentDate(to newDate: Date) {
-    let newDate = newDate.dateOnly()
-    timelinePagerView.changeCurrentDate(to: newDate)
-    currentDate = newDate
   }
 
   public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
@@ -131,15 +130,12 @@ extension DayView: TimelinePagerViewDelegate {
     delegate?.dayView(dayView: self, willMoveTo: date)
   }
   public func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date) {
-    changeCurrentDate(to: date)
-    dayHeaderView.selectDate(date)
     delegate?.dayView(dayView: self, didMoveTo: date)
   }
 }
 
 extension DayView: DayHeaderViewDelegate {
   public func dateHeaderDateChanged(_ newDate: Date) {
-    changeCurrentDate(to: newDate)
   }
 }
 
