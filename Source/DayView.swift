@@ -67,7 +67,8 @@ public class DayView: UIView {
   }
 
   func configure() {
-    configureTimelinePager()
+    addSubview(timelinePagerView)
+    timelinePagerView.delegate = self
     dayHeaderView.delegate = self
     addSubview(dayHeaderView)
   }
@@ -94,11 +95,6 @@ public class DayView: UIView {
 
   public func scrollToFirstEventIfNeeded() {
     timelinePagerView.scrollToFirstEventIfNeeded()
-  }
-
-  func configureTimelinePager() {
-    addSubview(timelinePagerView)
-    timelinePagerView.delegate = self
   }
 
   public func reloadData() {
