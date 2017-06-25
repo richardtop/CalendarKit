@@ -2,24 +2,29 @@ import UIKit
 
 class SwipeLabelView: UIView {
 
+  enum AnimationDirection {
+    case Forward
+    case Backward
+  }
+
   var date = Date() {
     willSet(newDate) {
       guard newDate != date
         else { return }
       labels.last!.text = newDate.format(with: .full)
-      let shouldMoveForward = newDate.isLater(than: date)
-      animate(shouldMoveForward)
+      let direction: AnimationDirection = newDate.isLater(than: date) ? .Forward : .Backward
+      animate(direction)
     }
   }
-  
+
   var firstLabel: UILabel {
     return labels.first!
   }
-  
+
   var secondLabel: UILabel {
     return labels.last!
   }
-  
+
   var labels = [UILabel]()
 
   var style = SwipeLabelStyle()
@@ -52,14 +57,14 @@ class SwipeLabelView: UIView {
   }
 
   func updateStyle(_ newStyle: SwipeLabelStyle) {
-    style = newStyle.copy() as! SwipeLabelStyle 
+    style = newStyle.copy() as! SwipeLabelStyle
     labels.forEach { label in
       label.textColor = style.textColor
     }
   }
 
-  func animate(_ forward: Bool) {
-    let multiplier: CGFloat = forward ? -1 : 1
+  func animate(_ direction: AnimationDirection) {
+    let multiplier: CGFloat = direction == .Forward ? -1 : 1
     let shiftRatio: CGFloat = 30/375
     let screenWidth = bounds.width
 
@@ -72,9 +77,9 @@ class SwipeLabelView: UIView {
       self.firstLabel.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
       self.secondLabel.alpha = 1
       self.firstLabel.alpha = 0
-      }, completion: { _ in
-        self.labels = self.labels.reversed()
-    }) 
+    }, completion: { _ in
+      self.labels = self.labels.reversed()
+    })
   }
 
   override func layoutSubviews() {
