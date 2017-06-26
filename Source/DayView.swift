@@ -52,7 +52,7 @@ public class DayView: UIView {
   let dayHeaderView = DayHeaderView()
   let timelinePagerView = TimelinePagerView()
 
-  var state: DayViewState? {
+  public var state: DayViewState? {
     didSet {
       dayHeaderView.state = state
       timelinePagerView.state = state

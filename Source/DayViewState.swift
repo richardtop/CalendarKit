@@ -6,7 +6,7 @@ public protocol DayViewStateUpdating: class {
 
 public class DayViewState {
 
-  private(set) var selectedDate: Date
+  public private(set) var selectedDate: Date
   private var clients = [DayViewStateUpdating]()
 
   public init(date: Date = Date()) {
