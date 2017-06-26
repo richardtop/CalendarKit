@@ -119,7 +119,7 @@ public class TimelinePagerView: UIView {
 }
 
 extension TimelinePagerView: DayViewStateUpdating {
-  func move(from oldDate: Date, to newDate: Date) {
+  public func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly()
     if newDate.isEarlier(than: oldDate) {
       var timelineDate = newDate

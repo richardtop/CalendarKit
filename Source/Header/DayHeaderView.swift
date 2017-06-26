@@ -107,7 +107,7 @@ extension DayHeaderView: DaySelectorDelegate {
 }
 
 extension DayHeaderView: DayViewStateUpdating {
-  func move(from oldDate: Date, to newDate: Date) {
+  public func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly()
     let centerDaySelector = pagingScrollView.reusableViews[1]
     let startDate = centerDaySelector.startDate.dateOnly()
