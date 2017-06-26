@@ -1,37 +1,37 @@
 import Foundation
 
-protocol DayViewStateUpdating: class {
+public protocol DayViewStateUpdating: class {
   func move(from oldDate: Date, to newDate: Date)
 }
 
-class DayViewState {
+public class DayViewState {
 
   private(set) var selectedDate: Date
   private var clients = [DayViewStateUpdating]()
 
-  init(date: Date = Date()) {
+  public init(date: Date = Date()) {
     let date = date.dateOnly()
     self.selectedDate = date
   }
 
-  func move(to date: Date) {
+  public func move(to date: Date) {
     let date = date.dateOnly()
     notify(clients: clients, moveTo: date)
     selectedDate = date
   }
 
-  func client(client: DayViewStateUpdating, didMoveTo date: Date) {
+  public func client(client: DayViewStateUpdating, didMoveTo date: Date) {
     let date = date.dateOnly()
     notify(clients: allClientsWithout(client: client),
            moveTo: date)
     selectedDate = date
   }
 
-  func subscribe(client: DayViewStateUpdating) {
+  public func subscribe(client: DayViewStateUpdating) {
     clients.append(client)
   }
 
-  func unsubscribe(client: DayViewStateUpdating) {
+  public func unsubscribe(client: DayViewStateUpdating) {
     clients = allClientsWithout(client: client)
   }
 
