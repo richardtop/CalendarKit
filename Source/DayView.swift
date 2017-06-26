@@ -28,7 +28,6 @@ public class DayView: UIView {
     didSet {
       headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
       dayHeaderView.isHidden = !isHeaderViewVisible
-      dayHeaderView.delegate = isHeaderViewVisible ? self : nil
       setNeedsLayout()
     }
   }
@@ -52,9 +51,20 @@ public class DayView: UIView {
   let dayHeaderView = DayHeaderView()
   let timelinePagerView = TimelinePagerView()
 
-  var currentDate = Date().dateOnly()
+  public var state: DayViewState? {
+    didSet {
+      dayHeaderView.state = state
+      timelinePagerView.state = state
+    }
+  }
 
   var style = CalendarStyle()
+
+  public init(state: DayViewState) {
+    super.init(frame: .zero)
+    self.state = state
+    configure()
+  }
 
   override public init(frame: CGRect) {
     super.init(frame: frame)
@@ -68,21 +78,18 @@ public class DayView: UIView {
 
   func configure() {
     addSubview(timelinePagerView)
-    timelinePagerView.delegate = self
-    dayHeaderView.delegate = self
     addSubview(dayHeaderView)
+    timelinePagerView.delegate = self
+
+    if state == nil {
+      state = DayViewState()
+    }
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
     style = newStyle.copy() as! CalendarStyle
     dayHeaderView.updateStyle(style.header)
     timelinePagerView.updateStyle(style.timeline)
-  }
-
-  public func changeCurrentDate(to newDate: Date) {
-    let newDate = newDate.dateOnly()
-    timelinePagerView.changeCurrentDate(to: newDate)
-    currentDate = newDate
   }
 
   public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
@@ -131,15 +138,7 @@ extension DayView: TimelinePagerViewDelegate {
     delegate?.dayView(dayView: self, willMoveTo: date)
   }
   public func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date) {
-    changeCurrentDate(to: date)
-    dayHeaderView.selectDate(date)
     delegate?.dayView(dayView: self, didMoveTo: date)
-  }
-}
-
-extension DayView: DayHeaderViewDelegate {
-  public func dateHeaderDateChanged(_ newDate: Date) {
-    changeCurrentDate(to: newDate)
   }
 }
 

@@ -7,13 +7,13 @@ class SwipeLabelView: UIView {
     case Backward
   }
 
-  var date = Date() {
-    willSet(newDate) {
-      guard newDate != date
-        else { return }
-      labels.last!.text = newDate.format(with: .full)
-      let direction: AnimationDirection = newDate.isLater(than: date) ? .Forward : .Backward
-      animate(direction)
+  weak var state: DayViewState? {
+    willSet(newValue) {
+      state?.unsubscribe(client: self)
+    }
+    didSet {
+      state?.subscribe(client: self)
+      labels.first!.text = state?.selectedDate.format(with: .full)
     }
   }
 
@@ -29,11 +29,9 @@ class SwipeLabelView: UIView {
 
   var style = SwipeLabelStyle()
 
-  init(date: Date) {
-    self.date = date
+  init() {
     super.init(frame: .zero)
     configure()
-    labels.first!.text = date.format(with: .full)
   }
 
   override init(frame: CGRect) {
@@ -86,5 +84,15 @@ class SwipeLabelView: UIView {
     for subview in subviews {
       subview.frame = bounds
     }
+  }
+}
+
+extension SwipeLabelView: DayViewStateUpdating {
+  func move(from oldDate: Date, to newDate: Date) {
+    guard newDate != oldDate
+      else { return }
+    labels.last!.text = newDate.format(with: .full)
+    let direction: AnimationDirection = newDate.isLater(than: oldDate) ? .Forward : .Backward
+    animate(direction)
   }
 }

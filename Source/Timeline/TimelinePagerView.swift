@@ -25,9 +25,16 @@ public class TimelinePagerView: UIView {
   let timelinePager = PagingScrollView<TimelineContainer>()
   var timelineSynchronizer: ScrollSynchronizer?
 
-  var currentDate = Date().dateOnly()
-
   var style = TimelineStyle()
+
+  weak var state: DayViewState? {
+    willSet(newValue) {
+      state?.unsubscribe(client: self)
+    }
+    didSet {
+      state?.subscribe(client: self)
+    }
+  }
 
   override public init(frame: CGRect) {
     super.init(frame: frame)
@@ -51,32 +58,6 @@ public class TimelinePagerView: UIView {
     }
   }
 
-  public func changeCurrentDate(to newDate: Date) {
-    let newDate = newDate.dateOnly()
-    if newDate.isEarlier(than: currentDate) {
-      var timelineDate = newDate
-      for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
-        timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.add(TimeChunk.dateComponents(days: 1))
-        if index == 0 {
-          updateTimeline(timelineContainer.timeline)
-        }
-      }
-      timelinePager.scrollBackward()
-    } else if newDate.isLater(than: currentDate) {
-      var timelineDate = newDate
-      for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
-        timelineContainer.timeline.date = timelineDate
-        timelineDate = timelineDate.subtract(TimeChunk.dateComponents(days: 1))
-        if index == 0 {
-          updateTimeline(timelineContainer.timeline)
-        }
-      }
-      timelinePager.scrollForward()
-    }
-    currentDate = newDate
-  }
-
   public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
     for timelineContainer in timelinePager.reusableViews {
       timelineContainer.panGestureRecognizer.require(toFail: gesture)
@@ -95,7 +76,7 @@ public class TimelinePagerView: UIView {
       timeline.delegate = self
       timeline.eventViewDelegate = self
       timeline.frame.size.height = timeline.fullHeight
-      timeline.date = currentDate.add(TimeChunk.dateComponents(days: i))
+      timeline.date = Date().add(TimeChunk.dateComponents(days: i))
 
       let verticalScrollView = TimelineContainer()
       verticalScrollView.timeline = timeline
@@ -137,18 +118,47 @@ public class TimelinePagerView: UIView {
   }
 }
 
+extension TimelinePagerView: DayViewStateUpdating {
+  public func move(from oldDate: Date, to newDate: Date) {
+    let newDate = newDate.dateOnly()
+    if newDate.isEarlier(than: oldDate) {
+      var timelineDate = newDate
+      for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
+        timelineContainer.timeline.date = timelineDate
+        timelineDate = timelineDate.add(TimeChunk.dateComponents(days: 1))
+        if index == 0 {
+          updateTimeline(timelineContainer.timeline)
+        }
+      }
+      timelinePager.scrollBackward()
+    } else if newDate.isLater(than: oldDate) {
+      var timelineDate = newDate
+      for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
+        timelineContainer.timeline.date = timelineDate
+        timelineDate = timelineDate.subtract(TimeChunk.dateComponents(days: 1))
+        if index == 0 {
+          updateTimeline(timelineContainer.timeline)
+        }
+      }
+      timelinePager.scrollForward()
+    }
+  }
+}
+
 extension TimelinePagerView: PagingScrollViewDelegate {
   func updateViewAtIndex(_ index: Int) {
     let timeline = timelinePager.reusableViews[index].timeline
     let amount = index > 1 ? 1 : -1
-    timeline?.date = currentDate.add(TimeChunk.dateComponents(days: amount))
+    guard let state = state
+      else{ return }
+    timeline?.date = state.selectedDate.add(TimeChunk.dateComponents(days: amount))
     updateTimeline(timeline!)
   }
 
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {
     let nextDate = timelinePager.reusableViews[index].timeline.date
     delegate?.timelinePager(timelinePager: self, willMoveTo: nextDate)
-    currentDate = nextDate
+    state?.client(client: self, didMoveTo: nextDate)
     scrollToFirstEventIfNeeded()
     delegate?.timelinePager(timelinePager: self, didMoveTo: nextDate)
   }
