@@ -28,7 +28,6 @@ public class DayView: UIView {
     didSet {
       headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
       dayHeaderView.isHidden = !isHeaderViewVisible
-      dayHeaderView.delegate = isHeaderViewVisible ? self : nil
       setNeedsLayout()
     }
   }
@@ -81,7 +80,6 @@ public class DayView: UIView {
     addSubview(timelinePagerView)
     addSubview(dayHeaderView)
     timelinePagerView.delegate = self
-    dayHeaderView.delegate = self
 
     if state == nil {
       state = DayViewState()
@@ -141,11 +139,6 @@ extension DayView: TimelinePagerViewDelegate {
   }
   public func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date) {
     delegate?.dayView(dayView: self, didMoveTo: date)
-  }
-}
-
-extension DayView: DayHeaderViewDelegate {
-  public func dateHeaderDateChanged(_ newDate: Date) {
   }
 }
 

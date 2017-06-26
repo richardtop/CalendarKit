@@ -1,13 +1,7 @@
 import UIKit
 import DateToolsSwift
 
-public protocol DayHeaderViewDelegate: class {
-  func dateHeaderDateChanged(_ newDate: Date)
-}
-
 public class DayHeaderView: UIView {
-
-  public weak var delegate: DayHeaderViewDelegate?
 
   public var daysInWeek = 7
 
@@ -101,7 +95,6 @@ public class DayHeaderView: UIView {
 extension DayHeaderView: DaySelectorDelegate {
   func dateSelectorDidSelectDate(_ date: Date, index: Int) {
     currentWeekdayIndex = index
-    delegate?.dateHeaderDateChanged(date)
     state?.client(client: self, didMoveTo: date)
   }
 }
@@ -137,6 +130,5 @@ extension DayHeaderView: PagingScrollViewDelegate {
     let activeView = pagingScrollView.reusableViews[index]
     activeView.selectedIndex = currentWeekdayIndex
     state?.client(client: self, didMoveTo: activeView.selectedDate!)
-    delegate?.dateHeaderDateChanged(activeView.selectedDate!)
   }
 }
