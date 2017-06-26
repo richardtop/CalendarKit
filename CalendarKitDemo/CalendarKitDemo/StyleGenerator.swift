@@ -1,5 +1,4 @@
 import CalendarKit
-import DynamicColor
 
 struct StyleGenerator {
   static func defaultStyle() -> CalendarStyle {
@@ -8,7 +7,7 @@ struct StyleGenerator {
 
   static func darkStyle() -> CalendarStyle {
     let orange = UIColor.orange
-    let dark = UIColor(hexString: "1A1A1A")
+    let dark = UIColor(white: 0.1, alpha: 1)
     let light = UIColor.lightGray
     let white = UIColor.white
 
