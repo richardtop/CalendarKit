@@ -7,7 +7,7 @@ enum SelectedStyle {
   case Light
 }
 
-class ExampleController: DayViewController {
+class ExampleController: DayViewController, DatePickerControllerDelegate {
 
   var data = [["Breakfast at Tiffany's",
                "New York, 5th avenue"],
@@ -58,6 +58,10 @@ class ExampleController: DayViewController {
                                                         style: .done,
                                                         target: self,
                                                         action: #selector(ExampleController.changeStyle))
+    navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Change Date",
+                                                        style: .plain,
+                                                        target: self,
+                                                        action: #selector(ExampleController.presentDatePicker))
     navigationController?.navigationBar.isTranslucent = false
     dayView.autoScrollToFirstEvent = true
     reloadData()
@@ -80,6 +84,21 @@ class ExampleController: DayViewController {
     navigationItem.rightBarButtonItem!.title = title
     navigationController?.navigationBar.barTintColor = style.header.backgroundColor
     navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:style.header.swipeLabel.textColor]
+  }
+
+  func presentDatePicker() {
+    let picker = DatePickerController()
+    picker.date = dayView.state!.selectedDate
+    picker.delegate = self
+    let navC = UINavigationController(rootViewController: picker)
+    navigationController?.present(navC, animated: true, completion: nil)
+  }
+
+  func datePicker(controller: DatePickerController, didSelect date: Date?) {
+    if let date = date {
+      dayView.state?.move(to: date)
+    }
+    controller.dismiss(animated: true, completion: nil)
   }
 
   // MARK: EventDataSource
