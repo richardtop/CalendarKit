@@ -61,6 +61,12 @@ public class DayView: UIView {
 
   var style = CalendarStyle()
 
+  public init(state: DayViewState) {
+    super.init(frame: .zero)
+    self.state = state
+    configure()
+  }
+
   override public init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -73,9 +79,13 @@ public class DayView: UIView {
 
   func configure() {
     addSubview(timelinePagerView)
+    addSubview(dayHeaderView)
     timelinePagerView.delegate = self
     dayHeaderView.delegate = self
-    addSubview(dayHeaderView)
+
+    if state == nil {
+      state = DayViewState()
+    }
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
