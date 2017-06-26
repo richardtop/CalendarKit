@@ -91,7 +91,6 @@ dayView.updateStyle(style)
 ## Dependencies
 - **[Neon](https://github.com/mamaral/Neon)** is used for declarative layout
 - **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
-- **[DynamicColor](https://github.com/yannickl/DynamicColor)** is used to update the colors of Events
 
 ## Roadmap
 CalendarKit is under development, API can and will be changed.
