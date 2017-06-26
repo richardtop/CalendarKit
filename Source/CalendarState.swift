@@ -1,13 +1,13 @@
 import Foundation
 
-protocol CalendarStateUpdating: class {
+protocol DayViewStateUpdating: class {
   func move(from oldDate: Date, to newDate: Date)
 }
 
-class CalendarState {
+class DayViewState {
 
   private(set) var selectedDate: Date
-  private var clients = [CalendarStateUpdating]()
+  private var clients = [DayViewStateUpdating]()
 
   init(date: Date = Date()) {
     let date = date.dateOnly()
@@ -20,26 +20,26 @@ class CalendarState {
     selectedDate = date
   }
 
-  func client(client: CalendarStateUpdating, didMoveTo date: Date) {
+  func client(client: DayViewStateUpdating, didMoveTo date: Date) {
     let date = date.dateOnly()
     notify(clients: allClientsWithout(client: client),
            moveTo: date)
     selectedDate = date
   }
 
-  func subscribe(client: CalendarStateUpdating) {
+  func subscribe(client: DayViewStateUpdating) {
     clients.append(client)
   }
 
-  func unsubscribe(client: CalendarStateUpdating) {
+  func unsubscribe(client: DayViewStateUpdating) {
     clients = allClientsWithout(client: client)
   }
 
-  private func allClientsWithout(client: CalendarStateUpdating) -> [CalendarStateUpdating] {
+  private func allClientsWithout(client: DayViewStateUpdating) -> [DayViewStateUpdating] {
     return clients.filter{$0 !== client}
   }
 
-  private func notify(clients: [CalendarStateUpdating], moveTo date: Date) {
+  private func notify(clients: [DayViewStateUpdating], moveTo date: Date) {
     for client in clients {
       client.move(from: selectedDate, to: date)
     }

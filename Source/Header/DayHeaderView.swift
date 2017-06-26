@@ -15,7 +15,7 @@ public class DayHeaderView: UIView {
 
   var style = DayHeaderStyle()
 
-  weak var state: CalendarState? {
+  weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)
     }
@@ -106,7 +106,7 @@ extension DayHeaderView: DaySelectorDelegate {
   }
 }
 
-extension DayHeaderView: CalendarStateUpdating {
+extension DayHeaderView: DayViewStateUpdating {
   func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly()
     let centerDaySelector = pagingScrollView.reusableViews[1]

@@ -7,7 +7,7 @@ class SwipeLabelView: UIView {
     case Backward
   }
 
-  weak var state: CalendarState? {
+  weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)
     }
@@ -87,7 +87,7 @@ class SwipeLabelView: UIView {
   }
 }
 
-extension SwipeLabelView: CalendarStateUpdating {
+extension SwipeLabelView: DayViewStateUpdating {
   func move(from oldDate: Date, to newDate: Date) {
     guard newDate != oldDate
       else { return }

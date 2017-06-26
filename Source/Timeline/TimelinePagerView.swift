@@ -27,7 +27,7 @@ public class TimelinePagerView: UIView {
 
   var style = TimelineStyle()
 
-  weak var state: CalendarState? {
+  weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)
     }
@@ -118,7 +118,7 @@ public class TimelinePagerView: UIView {
   }
 }
 
-extension TimelinePagerView: CalendarStateUpdating {
+extension TimelinePagerView: DayViewStateUpdating {
   func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly()
     if newDate.isEarlier(than: oldDate) {
