@@ -123,22 +123,18 @@ extension TimelinePagerView: DayViewStateUpdating {
     let newDate = newDate.dateOnly()
     if newDate.isEarlier(than: oldDate) {
       var timelineDate = newDate
-      for (index, timelineContainer) in timelinePager.reusableViews.enumerated() {
+      for timelineContainer in timelinePager.reusableViews {
         timelineContainer.timeline.date = timelineDate
         timelineDate = timelineDate.add(TimeChunk.dateComponents(days: 1))
-        if index == 0 {
-          updateTimeline(timelineContainer.timeline)
-        }
+        updateTimeline(timelineContainer.timeline)
       }
       timelinePager.scrollBackward()
     } else if newDate.isLater(than: oldDate) {
       var timelineDate = newDate
-      for (index, timelineContainer) in timelinePager.reusableViews.reversed().enumerated() {
+      for timelineContainer in timelinePager.reusableViews.reversed() {
         timelineContainer.timeline.date = timelineDate
         timelineDate = timelineDate.subtract(TimeChunk.dateComponents(days: 1))
-        if index == 0 {
-          updateTimeline(timelineContainer.timeline)
-        }
+        updateTimeline(timelineContainer.timeline)
       }
       timelinePager.scrollForward()
     }

@@ -32,6 +32,7 @@ open class EventView: UIView {
     view.font = UIFont.boldSystemFont(ofSize: 12)
     view.isUserInteractionEnabled = false
     view.backgroundColor = .clear
+    view.isScrollEnabled = false
     return view
   }()
 
