@@ -94,8 +94,7 @@ public class DayHeaderView: UIView {
 
 extension DayHeaderView: DaySelectorDelegate {
   func dateSelectorDidSelectDate(_ date: Date, index: Int) {
-    currentWeekdayIndex = index
-    state?.client(client: self, didMoveTo: date)
+    state?.move(to: date)
   }
 }
 
@@ -115,6 +114,7 @@ extension DayHeaderView: DayViewStateUpdating {
       currentWeekdayIndex = daysFrom % daysInWeek
     } else {
       centerDaySelector.selectedDate = newDate
+      currentWeekdayIndex = daysFrom
     }
   }
 }
