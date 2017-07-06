@@ -14,7 +14,7 @@ pod try CalendarKit
 ```
 [Watch demo video](https://www.youtube.com/watch?v=jWM6EfGSCWc)
 
-[Try it live in your browser](https://appetize.io/app/hauxptt044dype9jz4x3c4ka0c?device=iphone7&scale=75&orientation=portrait&osVersion=10.3&deviceColor=black)
+[Try it live in your browser](https://appetize.io/app/hauxptt044dype9jz4x3c4ka0c)
 
 
 
