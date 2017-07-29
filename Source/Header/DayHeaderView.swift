@@ -103,13 +103,16 @@ extension DayHeaderView: DayViewStateUpdating {
     let startDate = centerDaySelector.startDate.dateOnly()
 
     let daysFrom = newDate.days(from: startDate, calendar: calendar)
+    let newStartDate = beginningOfWeek(newDate)
 
     if daysFrom < 0 {
-      pagingScrollView.scrollBackward()
+      pagingScrollView.reusableViews[0].startDate = newStartDate
       currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek)
+      pagingScrollView.scrollBackward()
     } else if daysFrom > daysInWeek - 1 {
-      pagingScrollView.scrollForward()
+      pagingScrollView.reusableViews[2].startDate = newStartDate
       currentWeekdayIndex = daysFrom % daysInWeek
+      pagingScrollView.scrollForward()
     } else {
       centerDaySelector.selectedDate = newDate
       currentWeekdayIndex = daysFrom
