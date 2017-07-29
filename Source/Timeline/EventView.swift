@@ -21,7 +21,7 @@ open class EventView: UIView {
   weak var delegate: EventViewDelegate?
   public var descriptor: EventDescriptor?
 
-  public var color = UIColor()
+  public var color = UIColor.lightGray
 
   var contentHeight: CGFloat {
     return textView.height
