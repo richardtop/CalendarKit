@@ -121,15 +121,16 @@ extension DayHeaderView: DayViewStateUpdating {
 }
 
 extension DayHeaderView: PagingScrollViewDelegate {
-  func updateViewAtIndex(_ index: Int) {
-    let viewToUpdate = pagingScrollView.reusableViews[index]
-    let weeksToAdd = index > 1 ? 3 : -3
-    viewToUpdate.startDate = viewToUpdate.startDate.add(TimeChunk.dateComponents(weeks: weeksToAdd))
-  }
-
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {
     let activeView = pagingScrollView.reusableViews[index]
     activeView.selectedIndex = currentWeekdayIndex
+
+    let leftView = pagingScrollView.reusableViews[0]
+    let rightView = pagingScrollView.reusableViews[2]
+
+    leftView.startDate = activeView.startDate.add(TimeChunk.dateComponents(weeks: -1))
+    rightView.startDate = activeView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+
     state?.client(client: self, didMoveTo: activeView.selectedDate!)
   }
 }
