@@ -1,7 +1,6 @@
 import UIKit
 
 protocol PagingScrollViewDelegate: class {
-  func updateViewAtIndex(_ index: Int)
   func scrollviewDidScrollToViewAtIndex(_ index: Int)
 }
 
@@ -75,12 +74,10 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
       reusableViews.shift(1)
       accumulator += 1
       reusableViews.last!.prepareForReuse()
-      viewDelegate?.updateViewAtIndex(reusableViews.endIndex - 1)
     } else if distanceFromCenter < 0 {
       reusableViews.shift(-1)
       accumulator -= 1
       reusableViews.first!.prepareForReuse()
-      viewDelegate?.updateViewAtIndex(0)
     }
     contentOffset = CGPoint(x: centerOffsetX, y: contentOffset.y)
   }
@@ -101,11 +98,11 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
   }
 
   func checkForPageChange() {
+    recenter()
     if currentIndex != previousPage {
       viewDelegate?.scrollviewDidScrollToViewAtIndex(Int(currentScrollViewPage))
       previousPage = currentIndex
     }
-    recenter()
   }
 
   func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {

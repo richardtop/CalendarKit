@@ -142,21 +142,25 @@ extension TimelinePagerView: DayViewStateUpdating {
 }
 
 extension TimelinePagerView: PagingScrollViewDelegate {
-  func updateViewAtIndex(_ index: Int) {
-    let timeline = timelinePager.reusableViews[index].timeline
-    let amount = index > 1 ? 1 : -1
-    guard let state = state
-      else{ return }
-    timeline?.date = state.selectedDate.add(TimeChunk.dateComponents(days: amount))
-    updateTimeline(timeline!)
-  }
-
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {
     let nextDate = timelinePager.reusableViews[index].timeline.date
     delegate?.timelinePager(timelinePager: self, willMoveTo: nextDate)
     state?.client(client: self, didMoveTo: nextDate)
     scrollToFirstEventIfNeeded()
     delegate?.timelinePager(timelinePager: self, didMoveTo: nextDate)
+
+    // Update left & right views
+
+    let leftView = timelinePager.reusableViews[0].timeline!
+    let rightView = timelinePager.reusableViews[2].timeline!
+
+    guard let state = state
+      else{ return }
+
+    leftView.date = state.selectedDate.add(TimeChunk.dateComponents(days: -1))
+    rightView.date = state.selectedDate.add(TimeChunk.dateComponents(days: 1))
+
+    [leftView, rightView].forEach{self.updateTimeline($0)}
   }
 
   func scrollToFirstEventIfNeeded() {

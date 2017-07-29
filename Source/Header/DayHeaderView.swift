@@ -64,12 +64,10 @@ public class DayHeaderView: UIView {
   }
 
   func beginningOfWeek(_ date: Date) -> Date {
-    var components = calendar.dateComponents([.year, .month, .day,
-                                              .weekday, .timeZone], from: date)
-    let offset = components.weekday! - calendar.firstWeekday
-    components.day = components.day! - offset
-
-    return calendar.date(from: components)!
+    return calendar.date(from: DateComponents(calendar: calendar,
+                                              year: date.year,
+                                              weekday: calendar.firstWeekday,
+                                              weekOfYear: date.weekOfYear))!
   }
 
   public func updateStyle(_ newStyle: DayHeaderStyle) {
@@ -93,9 +91,8 @@ public class DayHeaderView: UIView {
 }
 
 extension DayHeaderView: DaySelectorDelegate {
-  func dateSelectorDidSelectDate(_ date: Date, index: Int) {
-    currentWeekdayIndex = index
-    state?.client(client: self, didMoveTo: date)
+  func dateSelectorDidSelectDate(_ date: Date) {
+    state?.move(to: date)
   }
 }
 
@@ -106,29 +103,34 @@ extension DayHeaderView: DayViewStateUpdating {
     let startDate = centerDaySelector.startDate.dateOnly()
 
     let daysFrom = newDate.days(from: startDate, calendar: calendar)
+    let newStartDate = beginningOfWeek(newDate)
 
     if daysFrom < 0 {
-      pagingScrollView.scrollBackward()
+      pagingScrollView.reusableViews[0].startDate = newStartDate
       currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek)
+      pagingScrollView.scrollBackward()
     } else if daysFrom > daysInWeek - 1 {
-      pagingScrollView.scrollForward()
+      pagingScrollView.reusableViews[2].startDate = newStartDate
       currentWeekdayIndex = daysFrom % daysInWeek
+      pagingScrollView.scrollForward()
     } else {
       centerDaySelector.selectedDate = newDate
+      currentWeekdayIndex = daysFrom
     }
   }
 }
 
 extension DayHeaderView: PagingScrollViewDelegate {
-  func updateViewAtIndex(_ index: Int) {
-    let viewToUpdate = pagingScrollView.reusableViews[index]
-    let weeksToAdd = index > 1 ? 3 : -3
-    viewToUpdate.startDate = viewToUpdate.startDate.add(TimeChunk.dateComponents(weeks: weeksToAdd))
-  }
-
   func scrollviewDidScrollToViewAtIndex(_ index: Int) {
     let activeView = pagingScrollView.reusableViews[index]
     activeView.selectedIndex = currentWeekdayIndex
+
+    let leftView = pagingScrollView.reusableViews[0]
+    let rightView = pagingScrollView.reusableViews[2]
+
+    leftView.startDate = activeView.startDate.add(TimeChunk.dateComponents(weeks: -1))
+    rightView.startDate = activeView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+
     state?.client(client: self, didMoveTo: activeView.selectedDate!)
   }
 }
