@@ -64,12 +64,10 @@ public class DayHeaderView: UIView {
   }
 
   func beginningOfWeek(_ date: Date) -> Date {
-    var components = calendar.dateComponents([.year, .month, .day,
-                                              .weekday, .timeZone], from: date)
-    let offset = components.weekday! - calendar.firstWeekday
-    components.day = components.day! - offset
-
-    return calendar.date(from: components)!
+    return calendar.date(from: DateComponents(calendar: calendar,
+                                              year: date.year,
+                                              weekday: calendar.firstWeekday,
+                                              weekOfYear: date.weekOfYear))!
   }
 
   public func updateStyle(_ newStyle: DayHeaderStyle) {
