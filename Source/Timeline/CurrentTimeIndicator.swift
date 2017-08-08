@@ -16,12 +16,7 @@ class CurrentTimeIndicator: UIView {
     }
   }
 
-  fileprivate var timeLabel: UILabel = {
-    let label = UILabel()
-    label.font = UIFont.systemFont(ofSize: 11)
-    return label
-    }()
-
+  fileprivate var timeLabel = UILabel()
   fileprivate var circle = UIView()
   fileprivate var line = UIView()
 
@@ -58,6 +53,7 @@ class CurrentTimeIndicator: UIView {
   func updateStyle(_ newStyle: CurrentTimeIndicatorStyle) {
     style = newStyle.copy() as! CurrentTimeIndicatorStyle
     timeLabel.textColor = style.color
+    timeLabel.font = style.font
     circle.backgroundColor = style.color
     line.backgroundColor = style.color
   }

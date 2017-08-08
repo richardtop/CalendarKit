@@ -42,10 +42,6 @@ public class TimelineView: UIView, ReusableView {
 
   var style = TimelineStyle()
 
-  var timeFont: UIFont {
-    return UIFont.boldSystemFont(ofSize: fontSize)
-  }
-
   var verticalDiff: CGFloat = 45
   var verticalInset: CGFloat = 10
   var leftInset: CGFloat = 53
@@ -59,9 +55,7 @@ public class TimelineView: UIView, ReusableView {
   var calendarWidth: CGFloat {
     return bounds.width - leftInset
   }
-
-  var fontSize: CGFloat = 11
-
+    
   var is24hClock = true {
     didSet {
       setNeedsDisplay()
@@ -139,13 +133,13 @@ public class TimelineView: UIView, ReusableView {
       }
     }
 
-    let style = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
-    style.lineBreakMode = .byWordWrapping
-    style.alignment = .right
+    let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+    paragraphStyle.lineBreakMode = .byWordWrapping
+    paragraphStyle.alignment = .right
 
-    let attributes = [NSParagraphStyleAttributeName: style,
+    let attributes = [NSParagraphStyleAttributeName: paragraphStyle,
                       NSForegroundColorAttributeName: self.style.timeColor,
-                      NSFontAttributeName: timeFont] as [String : Any]
+                      NSFontAttributeName: style.font] as [String : Any]
 
     for (i, time) in times.enumerated() {
       let iFloat = CGFloat(i)
@@ -164,7 +158,8 @@ public class TimelineView: UIView, ReusableView {
       context?.restoreGState()
 
       if i == hourToRemoveIndex { continue }
-
+        
+      let fontSize = style.font.pointSize
       let timeRect = CGRect(x: 2, y: iFloat * verticalDiff + verticalInset - 7,
                             width: leftInset - 8, height: fontSize + 2)
 

@@ -36,6 +36,9 @@ public class DaySelectorStyle: NSCopying {
 
   public var todayInactiveTextColor = UIColor.red
   public var todayActiveBackgroundColor = UIColor.red
+    
+  public var font = UIFont.systemFont(ofSize: 18)
+  public var todayFont = UIFont.boldSystemFont(ofSize: 18)
 
   public init() {}
 
@@ -48,6 +51,8 @@ public class DaySelectorStyle: NSCopying {
     copy.inactiveBackgroundColor = inactiveBackgroundColor
     copy.todayInactiveTextColor = todayInactiveTextColor
     copy.todayActiveBackgroundColor = todayActiveBackgroundColor
+    copy.font = font
+    copy.todayFont = todayFont
     return copy
   }
 }
@@ -55,21 +60,25 @@ public class DaySelectorStyle: NSCopying {
 public class DaySymbolsStyle: NSCopying {
   public var weekendColor = UIColor.lightGray
   public var weekDayColor = UIColor.black
+  public var font = UIFont.systemFont(ofSize: 10)
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = DaySymbolsStyle()
     copy.weekendColor = weekendColor
     copy.weekDayColor = weekDayColor
+    copy.font = font
     return copy
   }
 }
 
 public class SwipeLabelStyle: NSCopying {
   public var textColor = UIColor.black
+  public var font = UIFont.systemFont(ofSize: 15)
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = SwipeLabelStyle()
     copy.textColor = textColor
+    copy.font = font
     return copy
   }
 }
@@ -79,6 +88,7 @@ public class TimelineStyle: NSCopying {
   public var timeColor = UIColor.lightGray
   public var lineColor = UIColor.lightGray
   public var backgroundColor = UIColor.white
+  public var font = UIFont.boldSystemFont(ofSize: 11)
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = TimelineStyle()
@@ -86,16 +96,19 @@ public class TimelineStyle: NSCopying {
     copy.timeColor = timeColor
     copy.lineColor = lineColor
     copy.backgroundColor = backgroundColor
+    copy.font = font
     return copy
   }
 }
 
 public class CurrentTimeIndicatorStyle: NSCopying {
   public var color = UIColor.red
+  public var font = UIFont.systemFont(ofSize: 11)
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = CurrentTimeIndicatorStyle()
     copy.color = color
+    copy.font = font
     return copy
   }
 }
