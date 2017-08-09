@@ -2,9 +2,7 @@ import UIKit
 import DateToolsSwift
 
 class DateLabel: UILabel {
-
-  var fontSize: CGFloat = 18
-
+    
   var date: Date! {
     didSet {
       text = String(date.day)
@@ -44,12 +42,12 @@ class DateLabel: UILabel {
   func updateState() {
     let today = date.isToday
     if selected {
-      font = UIFont.boldSystemFont(ofSize: fontSize)
+      font = style.todayFont
       textColor = style.activeTextColor
       backgroundColor = today ? style.todayActiveBackgroundColor : style.selectedBackgroundColor
     } else {
       let notTodayColor = date.isWeekend ? style.weekendTextColor : style.inactiveTextColor
-      font = UIFont.systemFont(ofSize: fontSize)
+      font = style.font
       textColor = today ? style.todayInactiveTextColor : notTodayColor
       backgroundColor = style.inactiveBackgroundColor
     }

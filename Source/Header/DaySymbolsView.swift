@@ -26,7 +26,6 @@ class DaySymbolsView: UIView {
   func initializeViews() {
     for _ in 1...daysInWeek {
       let label = UILabel()
-      label.font = UIFont.systemFont(ofSize: 10)
       label.textAlignment = .center
       labels.append(label)
       addSubview(label)
@@ -50,6 +49,7 @@ class DaySymbolsView: UIView {
     for (index, label) in labels.enumerated() {
       label.text = weekDays[index].0
       label.textColor = weekDays[index].1 ? style.weekendColor : style.weekDayColor
+      label.font = style.font
     }
   }
 

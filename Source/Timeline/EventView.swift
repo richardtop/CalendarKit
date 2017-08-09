@@ -10,6 +10,7 @@ protocol EventViewDelegate: class {
 public protocol EventDescriptor: class {
   var datePeriod: TimePeriod {get}
   var text: String {get}
+  var font : UIFont {get}
   var color: UIColor {get}
   var textColor: UIColor {get}
   var backgroundColor: UIColor {get}
@@ -29,7 +30,6 @@ open class EventView: UIView {
 
   lazy var textView: UITextView = {
     let view = UITextView()
-    view.font = UIFont.boldSystemFont(ofSize: 12)
     view.isUserInteractionEnabled = false
     view.backgroundColor = .clear
     view.isScrollEnabled = false
@@ -61,6 +61,7 @@ open class EventView: UIView {
     descriptor = event
     textView.text = event.text
     textView.textColor = event.textColor
+    textView.font = event.font
     backgroundColor = event.backgroundColor
     color = event.color
     setNeedsDisplay()

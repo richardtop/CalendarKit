@@ -58,6 +58,7 @@ class SwipeLabelView: UIView {
     style = newStyle.copy() as! SwipeLabelStyle
     labels.forEach { label in
       label.textColor = style.textColor
+      label.font = style.font
     }
   }
 
