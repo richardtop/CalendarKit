@@ -49,7 +49,7 @@ override func eventsForDate(_ date: Date) -> [EventDescriptor] {
       info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
       // Set "text" value of event by formatting all the information needed for display
       event.text = info.reduce("", {$0 + $1 + "\n"})
-      events.append(view)
+      events.append(event)
   }
 
   return events
