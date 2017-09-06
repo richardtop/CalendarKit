@@ -2,17 +2,20 @@ import UIKit
 import Neon
 
 class CurrentTimeIndicator: UIView {
-
+    
+  let padding : CGFloat = 5
   var leftInset: CGFloat = 53
 
-  var is24hClock = true
+  /// Determines if times should be displayed in a 24 hour format. Defaults to the current locale's setting
+  var is24hClock : Bool = true {
+    didSet {
+      updateDate()
+    }
+  }
 
   var date = Date() {
     didSet {
-      let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
-      timeLabel.text = date.format(with: dateFormat)
-      timeLabel.sizeToFit()
-      setNeedsLayout()
+      updateDate()
     }
   }
 
@@ -36,14 +39,32 @@ class CurrentTimeIndicator: UIView {
     [timeLabel, circle, line].forEach {
       addSubview($0)
     }
+    
+    //Allow label to adjust so that am/pm can be displayed if format is changed.
+    timeLabel.numberOfLines = 1
+    timeLabel.adjustsFontSizeToFitWidth = true
+    timeLabel.minimumScaleFactor = 0.5
+    
+    //The width of the label is determined by leftInset and padding. 
+    //The y position is determined by the line's middle.
+    timeLabel.translatesAutoresizingMaskIntoConstraints = false
+    timeLabel.widthAnchor.constraint(equalToConstant: leftInset - (3 * padding)).isActive = true
+    timeLabel.rightAnchor.constraint(equalTo: line.leftAnchor, constant: -padding).isActive = true
+    timeLabel.centerYAnchor.constraint(equalTo: line.centerYAnchor).isActive = true
+    timeLabel.baselineAdjustment = .alignCenters
+    
     updateStyle(style)
+  }
+    
+  func updateDate() {
+    let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
+    timeLabel.text = date.format(with: dateFormat)
+    timeLabel.sizeToFit()
+    setNeedsLayout()
   }
 
   override func layoutSubviews() {
-    let size = timeLabel.frame.size
-    timeLabel.align(Align.toTheLeftCentered, relativeTo: line, padding: 5, width: size.width, height: size.height)
-
-    line.frame = CGRect(x: leftInset - 5, y: bounds.height / 2, width: bounds.width, height: 1)
+    line.frame = CGRect(x: leftInset - padding, y: bounds.height / 2, width: bounds.width, height: 1)
 
     circle.frame = CGRect(x: leftInset + 1, y: 0, width: 6, height: 6)
     circle.center.y = line.center.y
@@ -56,5 +77,6 @@ class CurrentTimeIndicator: UIView {
     timeLabel.font = style.font
     circle.backgroundColor = style.color
     line.backgroundColor = style.color
+    is24hClock = style.show24Hour
   }
 }

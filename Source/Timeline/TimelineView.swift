@@ -115,6 +115,7 @@ public class TimelineView: UIView, ReusableView {
   public func updateStyle(_ newStyle: TimelineStyle) {
     style = newStyle.copy() as! TimelineStyle
     nowLine.updateStyle(style.timeIndicator)
+    is24hClock = style.show24Hour
     backgroundColor = style.backgroundColor
     setNeedsDisplay()
   }

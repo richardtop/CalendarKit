@@ -58,6 +58,7 @@ open class EventView: UIView {
   }
 
   func updateWithDescriptor(event: EventDescriptor) {
+    print (event.font)
     descriptor = event
     textView.text = event.text
     textView.textColor = event.textColor

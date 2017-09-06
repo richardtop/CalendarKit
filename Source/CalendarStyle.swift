@@ -89,6 +89,7 @@ public class TimelineStyle: NSCopying {
   public var lineColor = UIColor.lightGray
   public var backgroundColor = UIColor.white
   public var font = UIFont.boldSystemFont(ofSize: 11)
+  public var show24Hour = Locale.current.uses24hClock()
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = TimelineStyle()
@@ -97,6 +98,7 @@ public class TimelineStyle: NSCopying {
     copy.lineColor = lineColor
     copy.backgroundColor = backgroundColor
     copy.font = font
+    copy.show24Hour = show24Hour
     return copy
   }
 }
@@ -104,11 +106,13 @@ public class TimelineStyle: NSCopying {
 public class CurrentTimeIndicatorStyle: NSCopying {
   public var color = UIColor.red
   public var font = UIFont.systemFont(ofSize: 11)
+  public var show24Hour = Locale.current.uses24hClock()
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = CurrentTimeIndicatorStyle()
     copy.color = color
     copy.font = font
+    copy.show24Hour = show24Hour
     return copy
   }
 }
