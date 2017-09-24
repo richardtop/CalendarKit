@@ -10,6 +10,7 @@ protocol EventViewDelegate: class {
 public protocol EventDescriptor: class {
   var datePeriod: TimePeriod {get}
   var text: String {get}
+  var attributedText: NSAttributedString? {get}
   var font : UIFont {get}
   var color: UIColor {get}
   var textColor: UIColor {get}
