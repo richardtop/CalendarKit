@@ -102,7 +102,7 @@ public class TimelineView: UIView, ReusableView {
     addGestureRecognizer(longPressGestureRecognizer)
   }
   
-  func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+  @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     if (gestureRecognizer.state == .began) {
       // Get timeslot of gesture location
       let pressedLocation = gestureRecognizer.location(in: self)
@@ -133,13 +133,18 @@ public class TimelineView: UIView, ReusableView {
       }
     }
 
-    let paragraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
-    paragraphStyle.lineBreakMode = .byWordWrapping
-    paragraphStyle.alignment = .right
+    let mutableParagraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
+    mutableParagraphStyle.lineBreakMode = .byWordWrapping
+    mutableParagraphStyle.alignment = .right
+    let paragraphStyle = mutableParagraphStyle.copy() as! NSParagraphStyle
 
-    let attributes = [NSParagraphStyleAttributeName: paragraphStyle,
-                      NSForegroundColorAttributeName: self.style.timeColor,
-                      NSFontAttributeName: style.font] as [String : Any]
+//    let attributes = [NSAttributedStringKey.paragraphStyle.rawValue: paragraphStyle,
+//                      NSAttributedStringKey.foregroundColor: self.style.timeColor,
+//                      NSAttributedStringKey.font: style.font] as! [NSAttributedStringKey : Any]
+
+    let attributes = [NSAttributedStringKey.paragraphStyle: paragraphStyle,
+                      NSAttributedStringKey.foregroundColor: self.style.timeColor,
+                      NSAttributedStringKey.font: style.font] as [NSAttributedStringKey : Any]
 
     for (i, time) in times.enumerated() {
       let iFloat = CGFloat(i)

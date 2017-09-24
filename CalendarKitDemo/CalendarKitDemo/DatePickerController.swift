@@ -39,11 +39,11 @@ class DatePickerController: UIViewController {
                                                        action: #selector(DatePickerController.cancelButtonDidTap))
   }
 
-  func doneButtonDidTap() {
+  @objc func doneButtonDidTap() {
     delegate?.datePicker(controller: self, didSelect: date)
   }
 
-  func cancelButtonDidTap() {
+  @objc func cancelButtonDidTap() {
     delegate?.datePicker(controller: self, didSelect: nil)
   }
 }
