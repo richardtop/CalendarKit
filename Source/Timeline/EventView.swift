@@ -10,6 +10,7 @@ protocol EventViewDelegate: class {
 public protocol EventDescriptor: class {
   var datePeriod: TimePeriod {get}
   var text: String {get}
+  var attributedText: NSAttributedString? {get}
   var font : UIFont {get}
   var color: UIColor {get}
   var textColor: UIColor {get}
@@ -58,10 +59,14 @@ open class EventView: UIView {
   }
 
   func updateWithDescriptor(event: EventDescriptor) {
+    if let attributedText = event.attributedText {
+      textView.attributedText = attributedText
+    } else {
+      textView.text = event.text
+      textView.textColor = event.textColor
+      textView.font = event.font
+    }
     descriptor = event
-    textView.text = event.text
-    textView.textColor = event.textColor
-    textView.font = event.font
     backgroundColor = event.backgroundColor
     color = event.color
     setNeedsDisplay()

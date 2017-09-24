@@ -4,6 +4,7 @@ import DateToolsSwift
 open class Event: EventDescriptor {
   public var datePeriod = TimePeriod()
   public var text = ""
+  public var attributedText: NSAttributedString?
   public var color = UIColor.blue {
     didSet {
       backgroundColor = color.withAlphaComponent(0.3)
