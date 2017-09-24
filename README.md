@@ -1,4 +1,4 @@
-![CalendarKit](https://cloud.githubusercontent.com/assets/8013017/22312394/aaf83e76-e368-11e6-8473-b3bcb4811803.png)
+![CalendarKit](https://user-images.githubusercontent.com/8013017/30786599-1a05d3b0-a181-11e7-81fa-db6c7044bfa1.jpg)
 [![CI Status](http://img.shields.io/travis/richardtop/CalendarKit.svg?style=flat)](https://travis-ci.org/richardtop/CalendarKit)
 [![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![License](https://img.shields.io/cocoapods/l/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
