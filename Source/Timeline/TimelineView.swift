@@ -137,11 +137,7 @@ public class TimelineView: UIView, ReusableView {
     mutableParagraphStyle.lineBreakMode = .byWordWrapping
     mutableParagraphStyle.alignment = .right
     let paragraphStyle = mutableParagraphStyle.copy() as! NSParagraphStyle
-
-//    let attributes = [NSAttributedStringKey.paragraphStyle.rawValue: paragraphStyle,
-//                      NSAttributedStringKey.foregroundColor: self.style.timeColor,
-//                      NSAttributedStringKey.font: style.font] as! [NSAttributedStringKey : Any]
-
+    
     let attributes = [NSAttributedStringKey.paragraphStyle: paragraphStyle,
                       NSAttributedStringKey.foregroundColor: self.style.timeColor,
                       NSAttributedStringKey.font: style.font] as [NSAttributedStringKey : Any]
