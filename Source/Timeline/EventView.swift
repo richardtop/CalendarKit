@@ -59,10 +59,14 @@ open class EventView: UIView {
   }
 
   func updateWithDescriptor(event: EventDescriptor) {
+    if let attributedText = event.attributedText {
+      textView.attributedText = attributedText
+    } else {
+      textView.text = event.text
+      textView.textColor = event.textColor
+      textView.font = event.font
+    }
     descriptor = event
-    textView.text = event.text
-    textView.textColor = event.textColor
-    textView.font = event.font
     backgroundColor = event.backgroundColor
     color = event.color
     setNeedsDisplay()
