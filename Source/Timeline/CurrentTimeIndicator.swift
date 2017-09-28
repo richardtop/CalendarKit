@@ -77,6 +77,17 @@ class CurrentTimeIndicator: UIView {
     timeLabel.font = style.font
     circle.backgroundColor = style.color
     line.backgroundColor = style.color
-    is24hClock = style.show24Hour
+    
+    switch style.dateStyle {
+    case .twelveHour:
+        is24hClock = false
+        break
+    case .twentyFourHour:
+        is24hClock = true
+        break
+    default:
+        is24hClock = Locale.autoupdatingCurrent.uses24hClock()
+        break
+    }
   }
 }

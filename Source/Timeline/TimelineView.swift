@@ -42,7 +42,7 @@ public class TimelineView: UIView, ReusableView {
 
   var style = TimelineStyle()
 
-  var verticalDiff: CGFloat = 45
+  var verticalDiff: CGFloat = 100
   var verticalInset: CGFloat = 10
   var leftInset: CGFloat = 53
 
@@ -115,7 +115,19 @@ public class TimelineView: UIView, ReusableView {
   public func updateStyle(_ newStyle: TimelineStyle) {
     style = newStyle.copy() as! TimelineStyle
     nowLine.updateStyle(style.timeIndicator)
-    is24hClock = style.show24Hour
+    
+    switch style.dateStyle {
+      case .twelveHour:
+        is24hClock = false
+        break
+      case .twentyFourHour:
+        is24hClock = true
+        break
+      default:
+        is24hClock = Locale.autoupdatingCurrent.uses24hClock()
+        break
+    }
+    
     backgroundColor = style.backgroundColor
     setNeedsDisplay()
   }
