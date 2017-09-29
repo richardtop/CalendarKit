@@ -5,7 +5,7 @@ Alternatively, you may ask questions related to this library on [StackOverflow](
 
 If you are posting about a crash in your application, a stack trace is helpful, but additional context, in the form of code and explanation, is necessary to be of any use.
 
-##Code Style
+## Code Style
 This project has the following code style:
 
 * Indent with spaces (not tabs)
@@ -14,7 +14,7 @@ This project has the following code style:
 * No file headers
 * Curly braces open on the same line as the code
 
-###Examples
+### Examples
 
 **Incorrect:**
 
