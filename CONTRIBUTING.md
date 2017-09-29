@@ -1,4 +1,4 @@
-GitHub Issues is for reporting bugs, discussing features and general feedback in **CalendarKit**. Be sure to check our [documentation](http://cocoadocs.org/docsets/CalendarKit) and [past issues](https://github.com/hyperoslo/CalendarKit/issues?state=closed) before opening any new issues.
+GitHub Issues is for reporting bugs, discussing features and general feedback in **CalendarKit**. Be sure to check our [documentation](http://cocoadocs.org/docsets/CalendarKit) and [past issues](https://github.com/richardtop/CalendarKit/issues?state=closed) before opening any new issues.
 
 Alternatively, you may ask questions related to this library on [StackOverflow](https://stackoverflow.com/).
 
