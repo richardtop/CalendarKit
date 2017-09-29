@@ -14,7 +14,7 @@ pod try CalendarKit
 ```
 [Watch demo video](https://www.youtube.com/watch?v=jWM6EfGSCWc)
 
-[Try it live in your browser](https://appetize.io/app/hauxptt044dype9jz4x3c4ka0c)
+[Try it live in your browser](https://appetize.io/app/j6pa2hjxhrxzxxv6u3p759kmf8)
 
 
 
