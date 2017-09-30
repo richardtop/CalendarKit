@@ -20,8 +20,7 @@ pod try CalendarKit
 
 ## Installation
 
-**CalendarKit** is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+**CalendarKit** is available through [CocoaPods](http://cocoapods.org). To install it, add the following line to your Podfile:
 
 ```ruby
 pod 'CalendarKit'
@@ -83,7 +82,13 @@ CalendarKit supports localization and uses iOS default locale to display month a
 <img src="https://cloud.githubusercontent.com/assets/8013017/22315600/c87e826a-e378-11e6-9280-732982b42077.PNG" alt="Norwegian" width="320">
 
 ## Styles
-CalendarKit's look can easily be customized. Just new `CalendarStyle` object to `DayView`'s `updateStyle` method:
+CalendarKit's look can be easily customized. The steps needed for customizations are as follows:
+
+1. Create a new `CalendarStyle` object (or copy existing one)
+2. Change style by updating the properties.
+3. Invoke `updateStyle` method with the new `CalendarStyle`.
+
+
 ```Swift
 let style = CalendarStyle()
 style.backgroundColor = UIColor.black
@@ -100,12 +105,10 @@ dayView.updateStyle(style)
 - **[Neon](https://github.com/mamaral/Neon)** is used for declarative layout
 - **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
 
-## Roadmap
-CalendarKit is under development, API can and will be changed.
-- [ ] Landscape support
-- [ ] Add to Carthage
-- [ ] Documentation
+## Contributing
+The list of features currently in development can be viewed at [issues](https://github.com/richardtop/CalendarKit/issues) page.
 
+Before contributing, it is highly recommended to review [guidelines and code style](https://github.com/richardtop/CalendarKit/blob/master/CONTRIBUTING.md).
 ## Author
 
 Richard Topchii
