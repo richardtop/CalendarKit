@@ -30,7 +30,8 @@ import Foundation
 
 class aClass
 {
-    func aFunction() {
+    func aFunction()
+    {
         
     }
 }
