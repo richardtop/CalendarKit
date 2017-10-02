@@ -109,7 +109,7 @@ class DaySelector: UIView, ReusableView {
     }
   }
 
-  func dateLabelDidTap(_ sender: UITapGestureRecognizer) {
+  @objc func dateLabelDidTap(_ sender: UITapGestureRecognizer) {
     if let label = sender.view as? DateLabel {
       delegate?.dateSelectorDidSelectDate(label.date)
     }

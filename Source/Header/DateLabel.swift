@@ -54,11 +54,12 @@ class DateLabel: UILabel {
   }
 
   func animate(){
-    UIView.transition(with: self, duration: 0.4,
-      options: .transitionCrossDissolve,
-      animations: { _ in
-        self.updateState()
-      }, completion: nil)
+    UIView.transition(with: self,
+                      duration: 0.4,
+                      options: .transitionCrossDissolve,
+                      animations: {
+                        self.updateState()
+    }, completion: nil)
   }
 
   override func layoutSubviews() {

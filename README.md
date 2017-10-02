@@ -1,4 +1,4 @@
-![CalendarKit](https://cloud.githubusercontent.com/assets/8013017/22312394/aaf83e76-e368-11e6-8473-b3bcb4811803.png)
+![CalendarKit](https://user-images.githubusercontent.com/8013017/30786599-1a05d3b0-a181-11e7-81fa-db6c7044bfa1.jpg)
 [![CI Status](http://img.shields.io/travis/richardtop/CalendarKit.svg?style=flat)](https://travis-ci.org/richardtop/CalendarKit)
 [![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![License](https://img.shields.io/cocoapods/l/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
@@ -14,17 +14,21 @@ pod try CalendarKit
 ```
 [Watch demo video](https://www.youtube.com/watch?v=jWM6EfGSCWc)
 
-[Try it live in your browser](https://appetize.io/app/hauxptt044dype9jz4x3c4ka0c)
+[Try it live in your browser](https://appetize.io/app/j6pa2hjxhrxzxxv6u3p759kmf8)
 
 
 
 ## Installation
 
-**CalendarKit** is available through [CocoaPods](http://cocoapods.org). To install
-it, simply add the following line to your Podfile:
+**CalendarKit** is available through [CocoaPods](http://cocoapods.org). To install it, add the following line to your Podfile:
 
 ```ruby
 pod 'CalendarKit'
+```
+To install **Swift 3** version, add a version requirement to the Podfile:
+
+```ruby
+pod 'CalendarKit', '0.1.22'
 ```
 
 ## Usage
@@ -78,7 +82,13 @@ CalendarKit supports localization and uses iOS default locale to display month a
 <img src="https://cloud.githubusercontent.com/assets/8013017/22315600/c87e826a-e378-11e6-9280-732982b42077.PNG" alt="Norwegian" width="320">
 
 ## Styles
-CalendarKit's look can easily be customized. Just new `CalendarStyle` object to `DayView`'s `updateStyle` method:
+CalendarKit's look can be easily customized. The steps needed for customizations are as follows:
+
+1. Create a new `CalendarStyle` object (or copy existing one)
+2. Change style by updating the properties.
+3. Invoke `updateStyle` method with the new `CalendarStyle`.
+
+
 ```Swift
 let style = CalendarStyle()
 style.backgroundColor = UIColor.black
@@ -89,19 +99,16 @@ dayView.updateStyle(style)
 ## Requirements
 
 - iOS 9.0+
-- Swift 3.0+
+- Swift 4.0+
 
 ## Dependencies
 - **[Neon](https://github.com/mamaral/Neon)** is used for declarative layout
 - **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
 
-## Roadmap
-CalendarKit is under development, API can and will be changed.
-- [ ] Improve customization
-- [ ] Landscape support
-- [ ] Add to Carthage
-- [ ] Documentation
+## Contributing
+The list of features currently in development can be viewed at [issues](https://github.com/richardtop/CalendarKit/issues) page.
 
+Before contributing, it is highly recommended to review [guidelines and code style](https://github.com/richardtop/CalendarKit/blob/master/CONTRIBUTING.md).
 ## Author
 
 Richard Topchii

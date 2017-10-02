@@ -67,7 +67,7 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
     reloadData()
   }
 
-  func changeStyle() {
+  @objc func changeStyle() {
     var title: String!
     var style: CalendarStyle!
 
@@ -83,10 +83,10 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
     updateStyle(style)
     navigationItem.rightBarButtonItem!.title = title
     navigationController?.navigationBar.barTintColor = style.header.backgroundColor
-    navigationController?.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName:style.header.swipeLabel.textColor]
+    navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:style.header.swipeLabel.textColor]
   }
 
-  func presentDatePicker() {
+  @objc func presentDatePicker() {
     let picker = DatePickerController()
     picker.date = dayView.state!.selectedDate
     picker.delegate = self

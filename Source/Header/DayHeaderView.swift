@@ -107,7 +107,7 @@ extension DayHeaderView: DayViewStateUpdating {
 
     if daysFrom < 0 {
       pagingScrollView.reusableViews[0].startDate = newStartDate
-      currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek)
+      currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
       pagingScrollView.scrollBackward()
     } else if daysFrom > daysInWeek - 1 {
       pagingScrollView.reusableViews[2].startDate = newStartDate

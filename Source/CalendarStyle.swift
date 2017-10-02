@@ -1,3 +1,16 @@
+
+
+public enum DateStyle {
+    ///Times should be shown in the 12 hour format
+    case twelveHour
+    
+    ///Times should be shown in the 24 hour format
+    case twentyFourHour
+    
+    ///Times should be shown according to the user's system preference.
+    case system
+}
+
 public class CalendarStyle: NSCopying {
   public var header = DayHeaderStyle()
   public var timeline = TimelineStyle()
@@ -89,6 +102,7 @@ public class TimelineStyle: NSCopying {
   public var lineColor = UIColor.lightGray
   public var backgroundColor = UIColor.white
   public var font = UIFont.boldSystemFont(ofSize: 11)
+  public var dateStyle : DateStyle = .system
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = TimelineStyle()
@@ -97,6 +111,7 @@ public class TimelineStyle: NSCopying {
     copy.lineColor = lineColor
     copy.backgroundColor = backgroundColor
     copy.font = font
+    copy.dateStyle = dateStyle
     return copy
   }
 }
@@ -104,11 +119,13 @@ public class TimelineStyle: NSCopying {
 public class CurrentTimeIndicatorStyle: NSCopying {
   public var color = UIColor.red
   public var font = UIFont.systemFont(ofSize: 11)
+  public var dateStyle : DateStyle = .system
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = CurrentTimeIndicatorStyle()
     copy.color = color
     copy.font = font
+    copy.dateStyle = dateStyle
     return copy
   }
 }
