@@ -45,7 +45,6 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
 
   var colors = [UIColor.blue,
                 UIColor.yellow,
-                UIColor.black,
                 UIColor.green,
                 UIColor.red]
 
@@ -84,6 +83,7 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
     navigationItem.rightBarButtonItem!.title = title
     navigationController?.navigationBar.barTintColor = style.header.backgroundColor
     navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:style.header.swipeLabel.textColor]
+    reloadData()
   }
 
   @objc func presentDatePicker() {
@@ -119,6 +119,14 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
       info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
+      
+      // Event styles are updated independently from CalendarStyle
+      // hence the need to specify exact colors in case of Dark style
+      if currentStyle == .Dark {
+        event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
+        event.backgroundColor = event.color.withAlphaComponent(0.6)
+      }
+      
       events.append(event)
 
       let nextOffset = Int(arc4random_uniform(250) + 40)
@@ -127,6 +135,12 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
     }
 
     return events
+  }
+  
+  private func textColorForEventInDarkTheme(baseColor: UIColor) -> UIColor {
+    var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+    baseColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
+    return UIColor(hue: h, saturation: s * 0.3, brightness: b, alpha: a)
   }
 
   // MARK: DayViewDelegate
