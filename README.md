@@ -12,7 +12,7 @@ You can try CalendarKit with CocoaPods. Just enter in Terminal:
 ```ruby
 pod try CalendarKit
 ```
-[Watch demo video](https://www.youtube.com/watch?v=jWM6EfGSCWc)
+[Watch demo video](https://streamable.com/zsnu1)
 
 [Try it live in your browser](https://appetize.io/app/j6pa2hjxhrxzxxv6u3p759kmf8)
 
