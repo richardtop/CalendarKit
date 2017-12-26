@@ -78,8 +78,7 @@ public class TimelinePagerView: UIView {
       timeline.frame.size.height = timeline.fullHeight
       timeline.date = Date().add(TimeChunk.dateComponents(days: i))
 
-      let verticalScrollView = TimelineContainer()
-      verticalScrollView.timeline = timeline
+      let verticalScrollView = TimelineContainer(timeline)
       verticalScrollView.addSubview(timeline)
       verticalScrollView.contentSize = timeline.frame.size
 
@@ -151,8 +150,8 @@ extension TimelinePagerView: PagingScrollViewDelegate {
 
     // Update left & right views
 
-    let leftView = timelinePager.reusableViews[0].timeline!
-    let rightView = timelinePager.reusableViews[2].timeline!
+    let leftView = timelinePager.reusableViews[0].timeline
+    let rightView = timelinePager.reusableViews[2].timeline
 
     guard let state = state
       else{ return }
