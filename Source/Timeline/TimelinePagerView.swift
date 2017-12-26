@@ -171,16 +171,16 @@ extension TimelinePagerView: PagingScrollViewDelegate {
 }
 
 extension TimelinePagerView: TimelineViewDelegate {
-  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
+  public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
     delegate?.timelinePagerDidLongPressTimelineAtHour(hour)
   }
 }
 
 extension TimelinePagerView: EventViewDelegate {
-  func eventViewDidTap(_ eventView: EventView) {
+  public func eventViewDidTap(_ eventView: EventView) {
     delegate?.timelinePagerDidSelectEventView(eventView)
   }
-  func eventViewDidLongPress(_ eventview: EventView) {
+  public func eventViewDidLongPress(_ eventview: EventView) {
     delegate?.timelinePagerDidLongPressEventView(eventview)
   }
 }

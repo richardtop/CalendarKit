@@ -2,17 +2,17 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-protocol TimelineViewDelegate: class {
+public protocol TimelineViewDelegate: class {
   func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
 }
 
 public class TimelineView: UIView, ReusableView {
 
-  weak var delegate: TimelineViewDelegate?
+  public weak var delegate: TimelineViewDelegate?
 
-  weak var eventViewDelegate: EventViewDelegate?
+  public weak var eventViewDelegate: EventViewDelegate?
 
-  var date = Date() {
+  public var date = Date() {
     didSet {
       setNeedsLayout()
     }
@@ -23,7 +23,7 @@ public class TimelineView: UIView, ReusableView {
   }
 
   var eventViews = [EventView]()
-  var eventDescriptors = [EventDescriptor]() {
+  public var eventDescriptors = [EventDescriptor]() {
     didSet {
       recalculateEventLayout()
       prepareEventViews()
@@ -47,7 +47,7 @@ public class TimelineView: UIView, ReusableView {
 
   var horizontalEventInset: CGFloat = 3
 
-  var fullHeight: CGFloat {
+  public var fullHeight: CGFloat {
     return verticalInset * 2 + verticalDiff * 24
   }
 
