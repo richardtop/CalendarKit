@@ -12,6 +12,7 @@
 		793B14E51BD6815D00961414 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 793B14E41BD6815D00961414 /* Assets.xcassets */; };
 		79413AEB1F01088C00A9448E /* DatePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79413AEA1F01088C00A9448E /* DatePickerController.swift */; };
 		798DE8631E4A8B4F00486CDC /* StyleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 798DE8621E4A8B4F00486CDC /* StyleGenerator.swift */; };
+		CE2CF59A1FF2D6750064DFB1 /* ExampleNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2CF5991FF2D6750064DFB1 /* ExampleNotificationController.swift */; };
 		F71D88835BFAB8CCF9FD8AA5 /* Pods_CalendarKitDemo.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 36A94A098CA6074A2AEE834F /* Pods_CalendarKitDemo.framework */; };
 /* End PBXBuildFile section */
 
@@ -27,6 +28,7 @@
 		79413AEA1F01088C00A9448E /* DatePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerController.swift; sourceTree = "<group>"; };
 		798DE8621E4A8B4F00486CDC /* StyleGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleGenerator.swift; sourceTree = "<group>"; };
 		881D3E4878A988B8B04CD379 /* Pods-CalendarKitDemo.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CalendarKitDemo.release.xcconfig"; path = "Pods/Target Support Files/Pods-CalendarKitDemo/Pods-CalendarKitDemo.release.xcconfig"; sourceTree = "<group>"; };
+		CE2CF5991FF2D6750064DFB1 /* ExampleNotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleNotificationController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +75,7 @@
 			children = (
 				793B14DD1BD6815D00961414 /* AppDelegate.swift */,
 				790EF2B81E36E77C008488B7 /* ExampleController.swift */,
+				CE2CF5991FF2D6750064DFB1 /* ExampleNotificationController.swift */,
 				798DE8621E4A8B4F00486CDC /* StyleGenerator.swift */,
 				79413AEA1F01088C00A9448E /* DatePickerController.swift */,
 				793B14E41BD6815D00961414 /* Assets.xcassets */,
@@ -124,6 +127,7 @@
 				TargetAttributes = {
 					793B14D91BD6815D00961414 = {
 						CreatedOnToolsVersion = 7.0;
+						DevelopmentTeam = 38LX96JV5Y;
 						LastSwiftMigration = 0900;
 					};
 				};
@@ -223,6 +227,7 @@
 				790EF2B91E36E77C008488B7 /* ExampleController.swift in Sources */,
 				79413AEB1F01088C00A9448E /* DatePickerController.swift in Sources */,
 				793B14DE1BD6815D00961414 /* AppDelegate.swift in Sources */,
+				CE2CF59A1FF2D6750064DFB1 /* ExampleNotificationController.swift in Sources */,
 				798DE8631E4A8B4F00486CDC /* StyleGenerator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -336,7 +341,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 38LX96JV5Y;
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -353,7 +358,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 38LX96JV5Y;
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
