@@ -1,33 +1,33 @@
 import UIKit
 
-class TimelineContainer: UIScrollView, ReusableView {
+public class TimelineContainer: UIScrollView, ReusableView {
   
-  let timeline: TimelineView
+  public let timeline: TimelineView
   
-  init(_ timeline: TimelineView) {
+  public init(_ timeline: TimelineView) {
     self.timeline = timeline
     super.init(frame: .zero)
   }
   
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
   
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     timeline.frame = CGRect(x: 0, y: 0, width: frame.width, height: timeline.fullHeight)
   }
   
-  func prepareForReuse() {
+  public func prepareForReuse() {
     timeline.prepareForReuse()
   }
   
-  func scrollToFirstEvent() {
+  public func scrollToFirstEvent() {
     if let yToScroll = timeline.firstEventYPosition {
       setContentOffset(CGPoint(x: contentOffset.x, y: yToScroll - 15), animated: true)
     }
   }
   
-  func scrollTo(hour24: Float) {
+  public func scrollTo(hour24: Float) {
     let percentToScroll = CGFloat(hour24 / 24)
     let yToScroll = contentSize.height * percentToScroll
     let padding: CGFloat = 8
