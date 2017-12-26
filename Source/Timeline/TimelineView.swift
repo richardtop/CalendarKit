@@ -2,7 +2,6 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-
 protocol TimelineViewDelegate: class {
   func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
 }
