@@ -116,10 +116,10 @@ public class DayView: UIView {
 }
 
 extension DayView: EventViewDelegate {
-  func eventViewDidTap(_ eventView: EventView) {
+  public func eventViewDidTap(_ eventView: EventView) {
     delegate?.dayViewDidSelectEventView(eventView)
   }
-  func eventViewDidLongPress(_ eventview: EventView) {
+  public func eventViewDidLongPress(_ eventview: EventView) {
     delegate?.dayViewDidLongPressEventView(eventview)
   }
 }
@@ -143,7 +143,7 @@ extension DayView: TimelinePagerViewDelegate {
 }
 
 extension DayView: TimelineViewDelegate {
-  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
+  public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
     delegate?.dayViewDidLongPressTimelineAtHour(hour)
   }
 }
