@@ -3,6 +3,9 @@
 [![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![License](https://img.shields.io/cocoapods/l/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![Platform](https://img.shields.io/cocoapods/p/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
+ <a href="http://starveller.sigsev.io/richardtop/CalendarKit">
+    <img src="http://starveller.sigsev.io/api/repos/richardtop/CalendarKit/badge" alt="stars" />
+  </a>
 
 # CalendarKit
 **CalendarKit** is a fully customizable calendar library written in Swift. It was designed to look similar to iOS Calendar app out-of-the-box, but allow complete customization when needed. To make modifications easy, CalendarKit is composed of multiple small modules. They can be used together, or on their own.
