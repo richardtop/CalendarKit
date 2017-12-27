@@ -3,6 +3,8 @@
 [![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![License](https://img.shields.io/cocoapods/l/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![Platform](https://img.shields.io/cocoapods/p/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
+[![Apps Using](https://img.shields.io/cocoapods/at/CalendarKit.svg?label=Apps%20Using%20CalendarKit)](http://cocoapods.org/pods/CalendarKit)
+[![Downloads](https://img.shields.io/cocoapods/dt/CalendarKit.svg?label=Total%20Downloads)](http://cocoapods.org/pods/CalendarKit)
  <a href="http://starveller.sigsev.io/richardtop/CalendarKit">
     <img src="http://starveller.sigsev.io/api/repos/richardtop/CalendarKit/badge" alt="stars" />
   </a>
