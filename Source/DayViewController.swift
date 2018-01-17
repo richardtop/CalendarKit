@@ -5,12 +5,13 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
 
   public lazy var dayView: DayView = DayView()
 
+  open override func loadView() {
+    view = dayView
+  }
+
   override open func viewDidLoad() {
     super.viewDidLoad()
-    self.edgesForExtendedLayout = UIRectEdge()
-    view.addSubview(dayView)
     view.tintColor = UIColor.red
-
     dayView.dataSource = self
     dayView.delegate = self
     dayView.reloadData()
@@ -19,10 +20,6 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     dayView.scrollToFirstEventIfNeeded()
-  }
-
-  open override func viewDidLayoutSubviews() {
-    dayView.fillSuperview()
   }
 
   open func reloadData() {
@@ -59,3 +56,4 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     print("DayView = \(dayView) did move to: \(date)")
   }
 }
+
