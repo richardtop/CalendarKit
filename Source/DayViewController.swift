@@ -37,23 +37,17 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   // MARK: DayViewDelegate
 
   open func dayViewDidSelectEventView(_ eventView: EventView) {
-
   }
 
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
-
   }
 
   open func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
-
   }
 
   open func dayView(dayView: DayView, willMoveTo date: Date) {
-    print("DayView = \(dayView) will move to: \(date)")
   }
 
   open func dayView(dayView: DayView, didMoveTo date: Date) {
-    print("DayView = \(dayView) did move to: \(date)")
   }
 }
-
