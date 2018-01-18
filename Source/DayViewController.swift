@@ -11,6 +11,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
 
   override open func viewDidLoad() {
     super.viewDidLoad()
+    edgesForExtendedLayout = []
     view.tintColor = UIColor.red
     dayView.dataSource = self
     dayView.delegate = self
