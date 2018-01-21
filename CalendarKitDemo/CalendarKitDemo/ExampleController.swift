@@ -160,10 +160,10 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
   }
 
   override func dayView(dayView: DayView, willMoveTo date: Date) {
-//    print("DayView = \(dayView) will move to: \(date)")
+    print("DayView = \(dayView) will move to: \(date)")
   }
   
   override func dayView(dayView: DayView, didMoveTo date: Date) {
-//    print("DayView = \(dayView) did move to: \(date)")
+    print("DayView = \(dayView) did move to: \(date)")
   }
 }
