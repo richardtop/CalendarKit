@@ -39,8 +39,7 @@ class DaySymbolsView: UIView {
   }
 
   func configure() {
-    let daySymbols = calendar.shortWeekdaySymbols
-      .map { String($0.characters.first!)}
+    let daySymbols = calendar.veryShortWeekdaySymbols
     let weekendMask = [true] + [Bool](repeating: false, count: 5) + [true]
     var weekDays = Array(zip(daySymbols, weekendMask))
 
@@ -63,7 +62,7 @@ class DaySymbolsView: UIView {
     let minX = per / 2
     for (i, label) in labels.enumerated() {
       let frame = CGRect(x: minX + (bounds.height + per) * CGFloat(i), y: 0,
-        width: bounds.height, height: bounds.height)
+                         width: bounds.height, height: bounds.height)
       label.frame = frame
     }
   }
