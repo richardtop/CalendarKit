@@ -23,7 +23,7 @@ public class TimelineContainer: UIScrollView, ReusableView {
   
   public func scrollToFirstEvent() {
     if let yToScroll = timeline.firstEventYPosition {
-      setContentOffset(CGPoint(x: contentOffset.x, y: yToScroll - 15), animated: true)
+      setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - 15), animated: true)
     }
   }
   
@@ -31,6 +31,13 @@ public class TimelineContainer: UIScrollView, ReusableView {
     let percentToScroll = CGFloat(hour24 / 24)
     let yToScroll = contentSize.height * percentToScroll
     let padding: CGFloat = 8
-    setContentOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: true)
+    setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: true)
+  }
+
+  private func setTimelineOffset(_ offset: CGPoint, animated: Bool) {
+    let yToScroll = offset.y
+    let bottomOfScrollView = contentSize.height - bounds.size.height
+    let newContentY = (yToScroll < bottomOfScrollView) ? yToScroll : bottomOfScrollView
+    setContentOffset(CGPoint(x: offset.x, y: newContentY), animated: animated)
   }
 }
