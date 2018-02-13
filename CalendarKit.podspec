@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "CalendarKit"
   s.summary          = "Fully customizable calendar for iOS"
-  s.version          = "0.2.3"
+  s.version          = "0.2.4"
   s.homepage         = "https://github.com/richardtop/CalendarKit"
   s.license          = 'MIT'
   s.author           = { "Richard Topchii" => "richardtop@users.noreply.github.com" }
