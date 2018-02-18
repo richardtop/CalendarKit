@@ -55,25 +55,29 @@ class DaySelector: UIView, ReusableView {
     self.startDate = startDate.dateOnly()
     self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
-    initializeViews(viewType: DayDateCell.self)
+    initializeViews(viewType: DateLabel.self)
     configure()
   }
 
   override init(frame: CGRect) {
     startDate = Date().dateOnly()
     super.init(frame: frame)
-    initializeViews(viewType: DayDateCell.self)
+    initializeViews(viewType: DateLabel.self)
   }
 
   required init?(coder aDecoder: NSCoder) {
     startDate = Date().dateOnly()
     super.init(coder: aDecoder)
-    initializeViews(viewType: DayDateCell.self)
+    initializeViews(viewType: DateLabel.self)
   }
 
   func initializeViews<T: UIView>(viewType: T.Type) where T: DaySelectorItemProtocol {
+    // Store last selected date
+    let lastSelectedDate = selectedDate
+
     // Remove previous Items
     items.forEach{$0.removeFromSuperview()}
+    items.removeAll()
 
     // Create new with corresponding class
     for _ in 1...daysInWeek {
@@ -85,8 +89,11 @@ class DaySelector: UIView, ReusableView {
                                               action: #selector(DaySelector.dateLabelDidTap(_:)))
       label.addGestureRecognizer(recognizer)
     }
-  }
+    configure()
 
+    // Restore last date
+    selectedDate = lastSelectedDate
+  }
 
   func configure() {
     for (increment, label) in items.enumerated() {
@@ -96,9 +103,7 @@ class DaySelector: UIView, ReusableView {
 
   func updateStyle(_ newStyle: DaySelectorStyle) {
     style = newStyle.copy() as! DaySelectorStyle
-    items.forEach{ label in
-      label.updateStyle(style)
-    }
+    items.forEach{$0.updateStyle(style)}
   }
 
   func prepareForReuse() {
@@ -106,17 +111,32 @@ class DaySelector: UIView, ReusableView {
   }
 
   override func layoutSubviews() {
-    let dateLabelsCount = CGFloat(items.count)
+    super.layoutSubviews()
+
+    let itemCount = CGFloat(items.count)
     let size = items.first?.intrinsicContentSize ?? .zero
 
-    var per = frame.size.width - size.width * dateLabelsCount
-    per /= dateLabelsCount
+    let parentWidth = bounds.size.width
+
+    var per = parentWidth - size.width * itemCount
+    per /= itemCount
     let minX = per / 2
 
-    for (i, label) in items.enumerated() {
-      let frame = CGRect(x: minX + (size.width + per) * CGFloat(i), y: 0,
-                         width: size.width, height: size.height)
-      label.frame = frame
+    for (i, item) in items.enumerated() {
+      let origin = CGPoint(x: minX + (size.width + per) * CGFloat(i),
+                           y: 0)
+      let frame = CGRect(origin: origin,
+                         size: size)
+      item.frame = frame
+    }
+  }
+
+  func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+    switch sizeClass {
+    case .regular:
+      initializeViews(viewType: DayDateCell.self)
+    default:
+      initializeViews(viewType: DateLabel.self)
     }
   }
 
