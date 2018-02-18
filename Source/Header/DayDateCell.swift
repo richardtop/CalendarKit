@@ -2,12 +2,12 @@ import UIKit
 import DateToolsSwift
 import Neon
 
-class DayDateCell: UIView {
+class DayDateCell: UIView, DaySelectorItemProtocol {
 
   let dateLabel = DateLabel()
   let dayLabel = UILabel()
 
-  var fontSize: CGFloat = 16
+  var regularSizeClassFontSize: CGFloat = 16
 
   var date = Date() {
     didSet {
@@ -27,6 +27,10 @@ class DayDateCell: UIView {
 
   var style = DaySelectorStyle()
 
+  override var intrinsicContentSize: CGSize {
+    return CGSize(width: 75, height: 35)
+  }
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -38,8 +42,6 @@ class DayDateCell: UIView {
   }
 
   func configure() {
-    layer.borderColor = UIColor.red.cgColor
-    layer.borderWidth = 2
     clipsToBounds = true
     [dayLabel, dateLabel].forEach(addSubview(_:))
   }
@@ -51,9 +53,8 @@ class DayDateCell: UIView {
 
   func updateState() {
     dateLabel.textColor = date.isWeekend ? style.weekendTextColor : style.inactiveTextColor
-//    dateLabel.fontSize = fontSize
     dateLabel.updateState()
-    dayLabel.font = UIFont.systemFont(ofSize: fontSize)
+    dayLabel.font = UIFont.systemFont(ofSize: regularSizeClassFontSize)
     updateDayLabel()
     setNeedsLayout()
   }
@@ -71,7 +72,11 @@ class DayDateCell: UIView {
     super.layoutSubviews()
     dayLabel.sizeToFit()
     dayLabel.center.y = center.y
-    dateLabel.align(.toTheRightCentered, relativeTo: dayLabel, padding: 2, width: 25, height: 25)
+    let interItemSpacing: CGFloat = selected ? 5 : 3
+    dateLabel.align(.toTheRightCentered,
+                    relativeTo: dayLabel,
+                    padding: interItemSpacing,
+                    width: 30, height: 30)
 
     let freeSpace = bounds.width - (dateLabel.frame.origin.x + dateLabel.frame.width)
     let padding = freeSpace / 2
