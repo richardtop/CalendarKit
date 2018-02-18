@@ -2,6 +2,12 @@ import UIKit
 import Neon
 import DateToolsSwift
 
+public protocol DaySelectorItemProtocol: class {
+  var date: Date {get set}
+  var selected: Bool {get set}
+  func updateStyle(_ newStyle: DaySelectorStyle)
+}
+
 protocol DaySelectorDelegate: class {
   func dateSelectorDidSelectDate(_ date: Date)
 }
@@ -23,10 +29,10 @@ class DaySelector: UIView, ReusableView {
 
   var selectedIndex = -1 {
     didSet {
-      dateLabels.filter {$0.selected == true}
+      items.filter {$0.selected == true}
         .first?.selected = false
-      if selectedIndex < dateLabels.count && selectedIndex > -1 {
-        let label = dateLabels[selectedIndex]
+      if selectedIndex < items.count && selectedIndex > -1 {
+        let label = items[selectedIndex]
         label.selected = true
       }
     }
@@ -34,7 +40,7 @@ class DaySelector: UIView, ReusableView {
 
   var selectedDate: Date? {
     get {
-      return dateLabels.filter{$0.selected == true}.first?.date as Date?
+      return items.filter{$0.selected == true}.first?.date as Date?
     }
     set(newDate) {
       if let newDate = newDate {
@@ -43,75 +49,100 @@ class DaySelector: UIView, ReusableView {
     }
   }
 
-  var dateLabelWidth: CGFloat = 35
-
-  var dateLabels = [DateLabel]()
+  var items = [UIView & DaySelectorItemProtocol]()
 
   init(startDate: Date = Date(), daysInWeek: Int = 7) {
     self.startDate = startDate.dateOnly()
     self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
-    initializeViews()
+    initializeViews(viewType: DateLabel.self)
     configure()
   }
 
   override init(frame: CGRect) {
     startDate = Date().dateOnly()
     super.init(frame: frame)
-    initializeViews()
+    initializeViews(viewType: DateLabel.self)
   }
 
   required init?(coder aDecoder: NSCoder) {
     startDate = Date().dateOnly()
     super.init(coder: aDecoder)
-    initializeViews()
+    initializeViews(viewType: DateLabel.self)
   }
 
-  func initializeViews() {
+  func initializeViews<T: UIView>(viewType: T.Type) where T: DaySelectorItemProtocol {
+    // Store last selected date
+    let lastSelectedDate = selectedDate
+
+    // Remove previous Items
+    items.forEach{$0.removeFromSuperview()}
+    items.removeAll()
+
+    // Create new with corresponding class
     for _ in 1...daysInWeek {
-      let label = DateLabel()
-      dateLabels.append(label)
+      let label = T()
+      items.append(label)
       addSubview(label)
 
       let recognizer = UITapGestureRecognizer(target: self,
-        action: #selector(DaySelector.dateLabelDidTap(_:)))
+                                              action: #selector(DaySelector.dateLabelDidTap(_:)))
       label.addGestureRecognizer(recognizer)
     }
+    configure()
+
+    // Restore last date
+    selectedDate = lastSelectedDate
   }
 
   func configure() {
-    for (increment, label) in dateLabels.enumerated() {
+    for (increment, label) in items.enumerated() {
       label.date = startDate.add(TimeChunk.dateComponents(days: increment))
     }
   }
 
   func updateStyle(_ newStyle: DaySelectorStyle) {
     style = newStyle.copy() as! DaySelectorStyle
-    dateLabels.forEach{ label in
-      label.updateStyle(style)
-    }
+    items.forEach{$0.updateStyle(style)}
   }
 
   func prepareForReuse() {
-    dateLabels.forEach {$0.selected = false}
+    items.forEach {$0.selected = false}
   }
 
   override func layoutSubviews() {
-    let dateLabelsCount = CGFloat(dateLabels.count)
-    var per = frame.size.width - dateLabelWidth * dateLabelsCount
-    per /= dateLabelsCount
+    super.layoutSubviews()
+
+    let itemCount = CGFloat(items.count)
+    let size = items.first?.intrinsicContentSize ?? .zero
+
+    let parentWidth = bounds.size.width
+
+    var per = parentWidth - size.width * itemCount
+    per /= itemCount
     let minX = per / 2
 
-    for (i, label) in dateLabels.enumerated() {
-      let frame = CGRect(x: minX + (dateLabelWidth + per) * CGFloat(i), y: 0,
-        width: dateLabelWidth, height: dateLabelWidth)
-      label.frame = frame
+    for (i, item) in items.enumerated() {
+      let origin = CGPoint(x: minX + (size.width + per) * CGFloat(i),
+                           y: 0)
+      let frame = CGRect(origin: origin,
+                         size: size)
+      item.frame = frame
+    }
+  }
+
+  func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+    switch sizeClass {
+    case .regular:
+      initializeViews(viewType: DayDateCell.self)
+    default:
+      initializeViews(viewType: DateLabel.self)
     }
   }
 
   @objc func dateLabelDidTap(_ sender: UITapGestureRecognizer) {
-    if let label = sender.view as? DateLabel {
-      delegate?.dateSelectorDidSelectDate(label.date)
+    if let item = sender.view as? DaySelectorItemProtocol {
+      delegate?.dateSelectorDidSelectDate(item.date)
     }
   }
 }

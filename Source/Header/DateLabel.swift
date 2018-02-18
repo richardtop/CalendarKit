@@ -1,9 +1,9 @@
 import UIKit
 import DateToolsSwift
 
-class DateLabel: UILabel {
-    
-  var date: Date! {
+class DateLabel: UILabel, DaySelectorItemProtocol {
+  
+  var date = Date() {
     didSet {
       text = String(date.day)
       updateState()
@@ -17,6 +17,10 @@ class DateLabel: UILabel {
   }
 
   var style = DaySelectorStyle()
+
+  override var intrinsicContentSize: CGSize {
+    return CGSize(width: 35, height: 35)
+  }
 
   override init(frame: CGRect) {
     super.init(frame: frame)
