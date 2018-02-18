@@ -88,6 +88,11 @@ public class DayHeaderView: UIView {
     pagingScrollView.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)
   }
+
+  public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+    daySymbolsView.isHidden = sizeClass == .regular
+    pagingScrollView.reusableViews.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
+  }
 }
 
 extension DayHeaderView: DaySelectorDelegate {

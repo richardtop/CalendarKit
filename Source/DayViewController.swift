@@ -16,11 +16,23 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     dayView.dataSource = self
     dayView.delegate = self
     dayView.reloadData()
+
+    let sizeClass = traitCollection.horizontalSizeClass
+    configureDayViewLayoutForHorizontalSizeClass(sizeClass)
   }
 
   open override func viewWillAppear(_ animated: Bool) {
     super.viewWillAppear(animated)
     dayView.scrollToFirstEventIfNeeded()
+  }
+
+  open override func willTransition(to newCollection: UITraitCollection, with coordinator: UIViewControllerTransitionCoordinator) {
+    super.willTransition(to: newCollection, with: coordinator)
+    configureDayViewLayoutForHorizontalSizeClass(newCollection.horizontalSizeClass)
+  }
+
+  func configureDayViewLayoutForHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+    dayView.transitionToHorizontalSizeClass(sizeClass)
   }
 
   open func reloadData() {
