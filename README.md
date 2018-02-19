@@ -19,7 +19,7 @@ pod try CalendarKit
 ```
 [Watch demo video](https://streamable.com/zsnu1)
 
-[Try it live in your browser](https://appetize.io/app/j6pa2hjxhrxzxxv6u3p759kmf8)
+[Try it live in your browser](https://appetize.io/app/15j0k57kfecrawvez76ex2p9j0)
 
 
 
