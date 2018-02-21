@@ -116,6 +116,7 @@ public class DayView: UIView {
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     dayHeaderView.transitionToHorizontalSizeClass(sizeClass)
+    updateStyle(style)
   }
 }
 
