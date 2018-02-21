@@ -7,17 +7,6 @@ public protocol EventViewDelegate: class {
   func eventViewDidLongPress(_ eventview: EventView)
 }
 
-public protocol EventDescriptor: class {
-  var datePeriod: TimePeriod {get}
-  var text: String {get}
-  var attributedText: NSAttributedString? {get}
-  var font : UIFont {get}
-  var color: UIColor {get}
-  var textColor: UIColor {get}
-  var backgroundColor: UIColor {get}
-  var frame: CGRect {get set}
-}
-
 open class EventView: UIView {
 
   weak var delegate: EventViewDelegate?

@@ -33,7 +33,7 @@ class ExampleNotificationController: UIViewController {
     info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
     event.text = info.reduce("", {$0 + $1 + "\n"})
     event.color = .red
-    timelineContainer.timeline.eventDescriptors = [event]
+    timelineContainer.timeline.layoutAttributes = [EventLayoutAttributes(event)]
     timelineContainer.scrollTo(hour24: 20)
   }
 
