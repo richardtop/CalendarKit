@@ -113,7 +113,7 @@ public class TimelinePagerView: UIView {
     let day = TimePeriod(beginning: date,
                          chunk: TimeChunk.dateComponents(days: 1))
     let validEvents = events.filter{$0.datePeriod.overlaps(with: day)}
-    timeline.eventDescriptors = validEvents
+    timeline.layoutAttributes = validEvents.map(EventLayoutAttributes.init)
   }
 }
 
