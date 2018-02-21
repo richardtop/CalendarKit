@@ -113,7 +113,9 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
       let datePeriod = TimePeriod(beginning: date,
                                   chunk: TimeChunk.dateComponents(minutes: duration))
 
-      event.datePeriod = datePeriod
+      event.startDate = datePeriod.beginning!
+      event.endDate = datePeriod.end!
+
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
       info.append("\(datePeriod.beginning!.format(with: "dd.MM.YYYY"))")
       info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
