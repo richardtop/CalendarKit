@@ -215,7 +215,11 @@ public class TimelineView: UIView, ReusableView {
   }
 
   func recalculateEventLayout() {
-    let sortedEvents = layoutAttributes.sorted {$0.descriptor.datePeriod.beginning!.isEarlier(than: $1.descriptor.datePeriod.beginning!)}
+    let sortedEvents = layoutAttributes.sorted { (attr1, attr2) -> Bool in
+      let start1 = attr1.descriptor.startDate
+      let start2 = attr2.descriptor.startDate
+      return start1.isEarlier(than: start2)
+    }
 
     var groupsOfEvents = [[EventLayoutAttributes]]()
     var overlappingEvents = [EventLayoutAttributes]()
@@ -226,7 +230,13 @@ public class TimelineView: UIView, ReusableView {
         continue
       }
 
-      let longestEvent = overlappingEvents.sorted{$0.descriptor.datePeriod.seconds > $1.descriptor.datePeriod.seconds}.first!
+      let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
+        let period1 = attr1.descriptor.datePeriod.seconds
+        let period2 = attr2.descriptor.datePeriod.seconds
+        return period1 > period2
+        }
+        .first!
+
       let lastEvent = overlappingEvents.last!
       if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
         lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
