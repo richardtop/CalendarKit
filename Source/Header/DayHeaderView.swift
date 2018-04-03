@@ -102,27 +102,36 @@ extension DayHeaderView: DaySelectorDelegate {
 }
 
 extension DayHeaderView: DayViewStateUpdating {
-  public func move(from oldDate: Date, to newDate: Date) {
-    let newDate = newDate.dateOnly()
-    let centerDaySelector = pagingScrollView.reusableViews[1]
-    let startDate = centerDaySelector.startDate.dateOnly()
+    public func move(from oldDate: Date, to newDate: Date) {
+        let newDate = newDate.dateOnly()
+        let centerView = pagingScrollView.reusableViews[1]
+        let startDate = centerView.startDate.dateOnly()
 
-    let daysFrom = newDate.days(from: startDate, calendar: calendar)
-    let newStartDate = beginningOfWeek(newDate)
+        let daysFrom = newDate.days(from: startDate, calendar: calendar)
+        let newStartDate = beginningOfWeek(newDate)
 
-    if daysFrom < 0 {
-      pagingScrollView.reusableViews[0].startDate = newStartDate
-      currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
-      pagingScrollView.scrollBackward()
-    } else if daysFrom > daysInWeek - 1 {
-      pagingScrollView.reusableViews[2].startDate = newStartDate
-      currentWeekdayIndex = daysFrom % daysInWeek
-      pagingScrollView.scrollForward()
-    } else {
-      centerDaySelector.selectedDate = newDate
-      currentWeekdayIndex = daysFrom
+        let leftView = pagingScrollView.reusableViews[0]
+        let rightView = pagingScrollView.reusableViews[2]
+        if daysFrom < 0 {
+            currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
+            centerView.startDate = newStartDate
+            centerView.selectedIndex = currentWeekdayIndex
+            leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
+            rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+            //pagingScrollView.scrollBackward()
+        } else if daysFrom > daysInWeek - 1 {
+            currentWeekdayIndex = daysFrom % daysInWeek
+            centerView.startDate = newStartDate
+            centerView.selectedIndex = currentWeekdayIndex
+            leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
+            rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+            //pagingScrollView.scrollForward()
+        } else {
+            currentWeekdayIndex = daysFrom
+            centerView.selectedDate = newDate
+            centerView.selectedIndex = currentWeekdayIndex
+        }
     }
-  }
 }
 
 extension DayHeaderView: PagingScrollViewDelegate {
