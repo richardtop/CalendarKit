@@ -1,6 +1,6 @@
 import Foundation
 
-struct Generator {
+enum Generator {
   static func timeStrings24H() -> [String] {
     var numbers = [String]()
     numbers.append("00:00")
