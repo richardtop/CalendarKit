@@ -30,11 +30,6 @@ pod try CalendarKit
 ```ruby
 pod 'CalendarKit'
 ```
-To install **Swift 3** version, add a version requirement to the Podfile:
-
-```ruby
-pod 'CalendarKit', '0.1.22'
-```
 
 ## Usage
 Subclass DayViewController and implement `DayViewDataSource` protocol to show events.
