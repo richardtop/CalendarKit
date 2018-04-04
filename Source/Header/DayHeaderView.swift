@@ -102,36 +102,34 @@ extension DayHeaderView: DaySelectorDelegate {
 }
 
 extension DayHeaderView: DayViewStateUpdating {
-    public func move(from oldDate: Date, to newDate: Date) {
-        let newDate = newDate.dateOnly()
-        let centerView = pagingScrollView.reusableViews[1]
-        let startDate = centerView.startDate.dateOnly()
+  public func move(from oldDate: Date, to newDate: Date) {
+    let newDate = newDate.dateOnly()
+    let centerView = pagingScrollView.reusableViews[1]
+    let startDate = centerView.startDate.dateOnly()
 
-        let daysFrom = newDate.days(from: startDate, calendar: calendar)
-        let newStartDate = beginningOfWeek(newDate)
+    let daysFrom = newDate.days(from: startDate, calendar: calendar)
+    let newStartDate = beginningOfWeek(newDate)
 
-        let leftView = pagingScrollView.reusableViews[0]
-        let rightView = pagingScrollView.reusableViews[2]
-        if daysFrom < 0 {
-            currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
-            centerView.startDate = newStartDate
-            centerView.selectedIndex = currentWeekdayIndex
-            leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
-            rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
-            //pagingScrollView.scrollBackward()
-        } else if daysFrom > daysInWeek - 1 {
-            currentWeekdayIndex = daysFrom % daysInWeek
-            centerView.startDate = newStartDate
-            centerView.selectedIndex = currentWeekdayIndex
-            leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
-            rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
-            //pagingScrollView.scrollForward()
-        } else {
-            currentWeekdayIndex = daysFrom
-            centerView.selectedDate = newDate
-            centerView.selectedIndex = currentWeekdayIndex
-        }
+    let leftView = pagingScrollView.reusableViews[0]
+    let rightView = pagingScrollView.reusableViews[2]
+    if daysFrom < 0 {
+      currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
+      centerView.startDate = newStartDate
+      centerView.selectedIndex = currentWeekdayIndex
+      leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
+      rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+    } else if daysFrom > daysInWeek - 1 {
+      currentWeekdayIndex = daysFrom % daysInWeek
+      centerView.startDate = newStartDate
+      centerView.selectedIndex = currentWeekdayIndex
+      leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
+      rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+    } else {
+      currentWeekdayIndex = daysFrom
+      centerView.selectedDate = newDate
+      centerView.selectedIndex = currentWeekdayIndex
     }
+  }
 }
 
 extension DayHeaderView: PagingScrollViewDelegate {
