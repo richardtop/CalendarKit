@@ -1,8 +1,8 @@
 PODS:
-  - CalendarKit (0.2.1):
+  - CalendarKit (0.3.0):
     - DateToolsSwift
     - Neon
-  - DateToolsSwift (2.0.3)
+  - DateToolsSwift (4.0.0)
   - Neon (0.4.0)
 
 DEPENDENCIES:
@@ -13,10 +13,10 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  CalendarKit: 6ecc1a1efaa967565178a6a56738dee741d83f4a
-  DateToolsSwift: bf69bf9056d9e53c5c03f06e51f219b9b8b02f9e
+  CalendarKit: 430f5e144ab8507e48467553e9d66ec13e8f5dd6
+  DateToolsSwift: 875d97ff9e3a5d54abdd67a269b3f51c757b71ab
   Neon: 7fb5a9327e7e57911843f608e08f4893a74deaf9
 
 PODFILE CHECKSUM: b76013ff0b66b8e61c214e583d26b4c3d93a550b
 
-COCOAPODS: 1.3.1
+COCOAPODS: 1.4.0
