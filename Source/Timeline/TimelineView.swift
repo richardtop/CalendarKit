@@ -71,7 +71,6 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
     allDayView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
     allDayView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-    allDayView.heightAnchor.constraint(equalToConstant: 64).isActive = true
     layoutIfNeeded()
     
     allDayView.reloadData()

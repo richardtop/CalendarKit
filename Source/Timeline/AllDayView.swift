@@ -27,7 +27,8 @@ public class AllDayView: UIView {
   // MARK: - METHODS
   
   private func configure() {
-    backgroundColor = UIColor.gray
+    backgroundColor = UIColor.lightGray
+    clipsToBounds = true
     reloadData()
   }
   
@@ -46,8 +47,8 @@ public class AllDayView: UIView {
     
     //TODO: remove local vars by using properties
     let allDayLabelWidth: CGFloat = 53.0
-    let scrollViewWidth: CGFloat = bounds.width - allDayLabelWidth
-    let eventViewHeight: CGFloat = 32.0
+//    let scrollViewWidth: CGFloat = bounds.width - allDayLabelWidth
+    let allDayEventHeight: CGFloat = 24.0
     
     // create vertical stack view
     let verticalStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
@@ -60,9 +61,9 @@ public class AllDayView: UIView {
       let eventDescriptor = dataSource.allDayView(self, eventDescriptorFor: index)
       
       // create event TODO: reuse event views
-      let eventRect = CGRect(x: 0, y: 0, width: 10, height: 10)
-      let eventView = EventView(frame: eventRect)
+      let eventView = EventView(frame: CGRect.zero)
       eventView.updateWithDescriptor(event: eventDescriptor)
+      eventView.heightAnchor.constraint(equalToConstant: allDayEventHeight).isActive = true
       
       // create horz stack view if index % 2 == 0
       if index % 2 == 0 {
@@ -77,31 +78,35 @@ public class AllDayView: UIView {
       horizontalStackView.addArrangedSubview(eventView)
     }
     
-    let nHorizontalStackViews: Int = nEventDescriptors / 2
+//    let nHorizontalStackViews: Int = nEventDescriptors / 2
     
     // create scroll view, vert. stack view inside, pin vert. stack view, update content view by the number of horz. stack views
-    let scrollViewHeight = min(eventViewHeight * 2 + eventViewHeight * 0.5, CGFloat(nHorizontalStackViews) * eventViewHeight)
-    let scrollview = UIScrollView(frame: CGRect(x: allDayLabelWidth, y: 0, width: scrollViewWidth, height: scrollViewHeight))
+    let scrollview = UIScrollView(frame: CGRect.zero)
     scrollview.isScrollEnabled = true
     scrollview.alwaysBounceVertical = true
+    scrollview.clipsToBounds = false
     scrollview.addSubview(verticalStackView)
+    
     verticalStackView.translatesAutoresizingMaskIntoConstraints = false
     verticalStackView.trailingAnchor.constraint(equalTo: scrollview.trailingAnchor, constant: 0).isActive = true
     verticalStackView.topAnchor.constraint(equalTo: scrollview.topAnchor, constant: 0).isActive = true
     verticalStackView.leadingAnchor.constraint(equalTo: scrollview.leadingAnchor, constant: 0).isActive = true
     verticalStackView.bottomAnchor.constraint(equalTo: scrollview.bottomAnchor, constant: 0).isActive = true
     verticalStackView.widthAnchor.constraint(equalTo: scrollview.widthAnchor, multiplier: 1).isActive = true
-    verticalStackView.heightAnchor.constraint(equalToConstant: CGFloat(nHorizontalStackViews) * (eventViewHeight + 1))
-    scrollview.heightAnchor.constraint(equalTo: verticalStackView.heightAnchor, multiplier: 1).isActive = true
-//    verticalStackView.heightAnchor.constraint(equalTo: scrollview.heightAnchor, multiplier: 1).isActive = true
-//    scrollview.contentSize = CGSize(width: scrollViewWidth, height: )
+    let verticalStackViewHeightConstraint = verticalStackView.heightAnchor.constraint(equalTo: scrollview.heightAnchor, multiplier: 1)
+    verticalStackViewHeightConstraint.priority = UILayoutPriority(rawValue: 999)
+    verticalStackViewHeightConstraint.isActive = true
     
     addSubview(scrollview)
+    
     scrollview.translatesAutoresizingMaskIntoConstraints = false
     scrollview.leftAnchor.constraint(equalTo: leftAnchor, constant: allDayLabelWidth).isActive = true
-    scrollview.topAnchor.constraint(equalTo: topAnchor, constant: 0.0).isActive = true
+    scrollview.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
     scrollview.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-    scrollview.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+    bottomAnchor.constraint(equalTo: scrollview.bottomAnchor, constant: 2).isActive = true
+    
+    let maxAllDayViewHeight = allDayEventHeight * 2 + allDayEventHeight * 0.5
+    heightAnchor.constraint(lessThanOrEqualToConstant: maxAllDayViewHeight).isActive = true
   }
   
   // MARK: - IBACTIONS/IBOUTLETS
