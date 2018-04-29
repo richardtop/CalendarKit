@@ -23,17 +23,36 @@ public class TimelineView: UIView, ReusableView {
   }
 
   var eventViews = [EventView]()
-  public var layoutAttributes = [EventLayoutAttributes]() {
-    didSet {
+  public private(set) var regularLayoutAttributes = [EventLayoutAttributes]()
+  public private(set) var allDayLayoutAttributes = [EventLayoutAttributes]()
+  
+  public var layoutAttributes: [EventLayoutAttributes] {
+    set {
+      
+      // update layout attributes by separating allday from non all day events
+      allDayLayoutAttributes.removeAll()
+      regularLayoutAttributes.removeAll()
+      for anEventLayoutAttribute in newValue {
+        let eventDescriptor = anEventLayoutAttribute.descriptor
+        if eventDescriptor.isAllDay {
+          allDayLayoutAttributes.append(anEventLayoutAttribute)
+        } else {
+          regularLayoutAttributes.append(anEventLayoutAttribute)
+        }
+      }
+      
       recalculateEventLayout()
       prepareEventViews()
       setNeedsLayout()
+    }
+    get {
+      return allDayLayoutAttributes + regularLayoutAttributes
     }
   }
   var pool = ReusePool<EventView>()
 
   var firstEventYPosition: CGFloat? {
-    return layoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}
+    return regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}
       .first?.frame.origin.y
   }
 
@@ -205,8 +224,8 @@ public class TimelineView: UIView, ReusableView {
 
   func layoutEvents() {
     if eventViews.isEmpty {return}
-
-    for (idx, attributes) in layoutAttributes.enumerated() {
+    
+    for (idx, attributes) in regularLayoutAttributes.enumerated() {
       let descriptor = attributes.descriptor
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
@@ -215,7 +234,9 @@ public class TimelineView: UIView, ReusableView {
   }
 
   func recalculateEventLayout() {
-    let sortedEvents = layoutAttributes.sorted { (attr1, attr2) -> Bool in
+    
+    // only non allDay events need their frames to be set
+    let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
       let start1 = attr1.descriptor.startDate
       let start2 = attr2.descriptor.startDate
       return start1.isEarlier(than: start2)
@@ -268,7 +289,7 @@ public class TimelineView: UIView, ReusableView {
   func prepareEventViews() {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
-    for _ in 0...layoutAttributes.endIndex {
+    for _ in 0...regularLayoutAttributes.endIndex {
       let newView = pool.dequeue()
       newView.delegate = eventViewDelegate
       if newView.superview == nil {
