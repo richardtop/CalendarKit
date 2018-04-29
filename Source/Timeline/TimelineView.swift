@@ -59,7 +59,7 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
   
   lazy var allDayView: AllDayView = {
-    let allDayView = AllDayView(frame: CGRect(x: 0, y: 0, width: bounds.width, height: 64.0))
+    let allDayView = AllDayView(frame: CGRect.zero)
     allDayView.dataSource = self
     
     return allDayView
@@ -71,9 +71,11 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
     allDayView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
     allDayView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-    layoutIfNeeded()
     
     allDayView.reloadData()
+    layoutIfNeeded()
+    
+    allDayView.scrollToBottom()
   }
 
   var style = TimelineStyle()
@@ -325,7 +327,12 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
   }
   
   public func numberOfAllDayEvents(in allDayView: AllDayView) -> Int {
-    return allDayLayoutAttributes.count
+    let count = allDayLayoutAttributes.count
+    
+    //TODO: resize to height of zero vs using hidden
+    allDayView.isHidden = count == 0
+    
+    return count
   }
   
   public func allDayView(_ allDayView: AllDayView, eventDescriptorFor index: Int) -> EventDescriptor {

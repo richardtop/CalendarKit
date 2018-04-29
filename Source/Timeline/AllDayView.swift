@@ -8,7 +8,30 @@ public protocol AllDayViewDataSource {
 
 public class AllDayView: UIView {
   
+  let allDayLabelWidth: CGFloat = 53.0
+  let allDayEventHeight: CGFloat = 24.0
+  
   public var dataSource: AllDayViewDataSource?
+  
+  private(set) lazy var scrollView: UIScrollView = {
+    let sv = UIScrollView(frame: CGRect.zero)
+    addSubview(sv)
+    
+    sv.isScrollEnabled = true
+    sv.alwaysBounceVertical = true
+    sv.clipsToBounds = false
+    
+    sv.translatesAutoresizingMaskIntoConstraints = false
+    sv.leftAnchor.constraint(equalTo: leftAnchor, constant: allDayLabelWidth).isActive = true
+    sv.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
+    sv.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
+    bottomAnchor.constraint(equalTo: sv.bottomAnchor, constant: 2).isActive = true
+    
+    let maxAllDayViewHeight = allDayEventHeight * 2 + allDayEventHeight * 0.5
+    heightAnchor.constraint(lessThanOrEqualToConstant: maxAllDayViewHeight).isActive = true
+    
+    return sv
+  }()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -38,17 +61,12 @@ public class AllDayView: UIView {
     }
     
     // clear subviews TODO: clear out only contents of scroll view
-    subviews.forEach { $0.removeFromSuperview() }
+    scrollView.subviews.forEach { $0.removeFromSuperview() }
     
     let nEventDescriptors = dataSource.numberOfAllDayEvents(in: self)
     if nEventDescriptors == 0 || nEventDescriptors < 0 { return }
     
     //TODO: add All-Day UILabel
-    
-    //TODO: remove local vars by using properties
-    let allDayLabelWidth: CGFloat = 53.0
-//    let scrollViewWidth: CGFloat = bounds.width - allDayLabelWidth
-    let allDayEventHeight: CGFloat = 24.0
     
     // create vertical stack view
     let verticalStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
@@ -78,35 +96,23 @@ public class AllDayView: UIView {
       horizontalStackView.addArrangedSubview(eventView)
     }
     
-//    let nHorizontalStackViews: Int = nEventDescriptors / 2
-    
-    // create scroll view, vert. stack view inside, pin vert. stack view, update content view by the number of horz. stack views
-    let scrollview = UIScrollView(frame: CGRect.zero)
-    scrollview.isScrollEnabled = true
-    scrollview.alwaysBounceVertical = true
-    scrollview.clipsToBounds = false
-    scrollview.addSubview(verticalStackView)
+    // add vert. stack view inside, pin vert. stack view, update content view by the number of horz. stack views
+    scrollView.addSubview(verticalStackView)
     
     verticalStackView.translatesAutoresizingMaskIntoConstraints = false
-    verticalStackView.trailingAnchor.constraint(equalTo: scrollview.trailingAnchor, constant: 0).isActive = true
-    verticalStackView.topAnchor.constraint(equalTo: scrollview.topAnchor, constant: 0).isActive = true
-    verticalStackView.leadingAnchor.constraint(equalTo: scrollview.leadingAnchor, constant: 0).isActive = true
-    verticalStackView.bottomAnchor.constraint(equalTo: scrollview.bottomAnchor, constant: 0).isActive = true
-    verticalStackView.widthAnchor.constraint(equalTo: scrollview.widthAnchor, multiplier: 1).isActive = true
-    let verticalStackViewHeightConstraint = verticalStackView.heightAnchor.constraint(equalTo: scrollview.heightAnchor, multiplier: 1)
+    verticalStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0).isActive = true
+    verticalStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0).isActive = true
+    verticalStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0).isActive = true
+    verticalStackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 0).isActive = true
+    verticalStackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, multiplier: 1).isActive = true
+    let verticalStackViewHeightConstraint = verticalStackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1)
     verticalStackViewHeightConstraint.priority = UILayoutPriority(rawValue: 999)
     verticalStackViewHeightConstraint.isActive = true
-    
-    addSubview(scrollview)
-    
-    scrollview.translatesAutoresizingMaskIntoConstraints = false
-    scrollview.leftAnchor.constraint(equalTo: leftAnchor, constant: allDayLabelWidth).isActive = true
-    scrollview.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
-    scrollview.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-    bottomAnchor.constraint(equalTo: scrollview.bottomAnchor, constant: 2).isActive = true
-    
-    let maxAllDayViewHeight = allDayEventHeight * 2 + allDayEventHeight * 0.5
-    heightAnchor.constraint(lessThanOrEqualToConstant: maxAllDayViewHeight).isActive = true
+  }
+  
+  public func scrollToBottom() {
+    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height);
+    scrollView.setContentOffset(bottomOffset, animated: false)
   }
   
   // MARK: - IBACTIONS/IBOUTLETS
