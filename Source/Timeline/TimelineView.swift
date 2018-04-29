@@ -6,7 +6,7 @@ public protocol TimelineViewDelegate: class {
   func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
 }
 
-public class TimelineView: UIView, ReusableView {
+public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
 
   public weak var delegate: TimelineViewDelegate?
 
@@ -57,6 +57,15 @@ public class TimelineView: UIView, ReusableView {
   }
 
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
+  
+  lazy var allDayView: AllDayView = {
+    let allDayView = AllDayView(frame: CGRect())
+    allDayView.dataSource = self
+    
+    addSubview(allDayView)
+    
+    return allDayView
+  }()
 
   var style = TimelineStyle()
 
@@ -204,6 +213,7 @@ public class TimelineView: UIView, ReusableView {
   override public func layoutSubviews() {
     super.layoutSubviews()
     recalculateEventLayout()
+    layoutAllDayEvents()
     layoutEvents()
     layoutNowLine()
   }
@@ -231,6 +241,10 @@ public class TimelineView: UIView, ReusableView {
       eventView.frame = attributes.frame
       eventView.updateWithDescriptor(event: descriptor)
     }
+  }
+  
+  func layoutAllDayEvents() {
+    
   }
 
   func recalculateEventLayout() {
@@ -303,6 +317,16 @@ public class TimelineView: UIView, ReusableView {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
     setNeedsDisplay()
+  }
+  
+  public func numberOfAllDayEvents(in allDayView: AllDayView) -> Int {
+    return allDayLayoutAttributes.count
+  }
+  
+  public func allDayView(_ allDayView: AllDayView, eventDescriptorFor index: Int) -> EventDescriptor {
+    let eventDescriptor = allDayLayoutAttributes[index].descriptor
+    
+    return eventDescriptor
   }
 
   // MARK: - Helpers
