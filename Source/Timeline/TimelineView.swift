@@ -43,6 +43,7 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
       
       recalculateEventLayout()
       prepareEventViews()
+      layoutAllDayEvents()
       setNeedsLayout()
     }
     get {
@@ -62,21 +63,17 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     let allDayView = AllDayView(frame: CGRect.zero)
     allDayView.dataSource = self
     
-    return allDayView
-  }()
-  
-  func layoutAllDayEvents() {
-    addSubview(allDayView)
+    insertSubview(allDayView, aboveSubview: nowLine)
+    
     allDayView.translatesAutoresizingMaskIntoConstraints = false
-    allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0).isActive = true
+    self.allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
+    self.allDayViewTopConstraint!.isActive = true
+    
     allDayView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
     allDayView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
     
-    allDayView.reloadData()
-    layoutIfNeeded()
-    
-    allDayView.scrollToBottom()
-  }
+    return allDayView
+  }()
 
   var style = TimelineStyle()
 
@@ -224,7 +221,6 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
   override public func layoutSubviews() {
     super.layoutSubviews()
     recalculateEventLayout()
-    layoutAllDayEvents()
     layoutEvents()
     layoutNowLine()
   }
@@ -251,6 +247,19 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
       eventView.updateWithDescriptor(event: descriptor)
+    }
+  }
+  
+  private var allDayViewTopConstraint: NSLayoutConstraint?
+  func layoutAllDayEvents() {
+    allDayView.reloadData()
+    allDayView.scrollToBottom()
+  }
+  
+  func updateAllDayView(by yValue: CGFloat) {
+    if let topConstraint = self.allDayViewTopConstraint {
+      topConstraint.constant = yValue
+      layoutIfNeeded()
     }
   }
 
