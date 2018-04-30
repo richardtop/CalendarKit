@@ -63,9 +63,9 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     let allDayView = AllDayView(frame: CGRect.zero)
     allDayView.dataSource = self
     
+    allDayView.translatesAutoresizingMaskIntoConstraints = false
     insertSubview(allDayView, aboveSubview: nowLine)
     
-    allDayView.translatesAutoresizingMaskIntoConstraints = false
     self.allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
     self.allDayViewTopConstraint!.isActive = true
     
@@ -131,7 +131,7 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     layer.contentsScale = 1
     contentMode = .redraw
     backgroundColor = .white
-    addSubview(nowLine)
+    insertSubview(nowLine, belowSubview: allDayView)
     
     // Add long press gesture recognizer
     addGestureRecognizer(longPressGestureRecognizer)
@@ -230,6 +230,7 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
       nowLine.alpha = 0
     } else {
       bringSubview(toFront: nowLine)
+      bringSubview(toFront: allDayView)
       nowLine.alpha = 1
       let size = CGSize(width: bounds.size.width, height: 20)
       let rect = CGRect(origin: CGPoint.zero, size: size)
