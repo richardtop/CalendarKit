@@ -15,16 +15,16 @@ public class AllDayView: UIView {
   
   private(set) lazy var scrollView: UIScrollView = {
     let sv = UIScrollView(frame: CGRect.zero)
+    sv.translatesAutoresizingMaskIntoConstraints = false
     addSubview(sv)
     
     sv.isScrollEnabled = true
     sv.alwaysBounceVertical = true
     sv.clipsToBounds = false
     
-    sv.translatesAutoresizingMaskIntoConstraints = false
-    sv.leftAnchor.constraint(equalTo: leftAnchor, constant: allDayLabelWidth).isActive = true
+    sv.leadingAnchor.constraint(equalTo: leadingAnchor, constant: allDayLabelWidth).isActive = true
     sv.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
-    sv.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
+    sv.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
     bottomAnchor.constraint(equalTo: sv.bottomAnchor, constant: 2).isActive = true
     
     let maxAllDayViewHeight = allDayEventHeight * 2 + allDayEventHeight * 0.5
@@ -58,6 +58,10 @@ public class AllDayView: UIView {
   public func reloadData() {
     guard let dataSource = self.dataSource else {
       return
+    }
+    
+    defer {
+      layoutIfNeeded()
     }
     
     // clear subviews TODO: clear out only contents of scroll view
