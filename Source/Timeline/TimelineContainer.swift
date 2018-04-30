@@ -15,6 +15,7 @@ public class TimelineContainer: UIScrollView, ReusableView {
   
   override public func layoutSubviews() {
     timeline.frame = CGRect(x: 0, y: 0, width: width, height: timeline.fullHeight)
+    timeline.updateAllDayView(by: contentOffset.y)
   }
   
   public func prepareForReuse() {
