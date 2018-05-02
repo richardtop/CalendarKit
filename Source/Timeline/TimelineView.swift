@@ -41,12 +41,12 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
         }
       }
       
-      allDayView.reloadData()
-      allDayView.scrollToBottom()
-      
       recalculateEventLayout()
       prepareEventViews()
       setNeedsLayout()
+      
+      allDayView.reloadData()
+      allDayView.scrollToBottom()
     }
     get {
       return allDayLayoutAttributes + regularLayoutAttributes
@@ -134,7 +134,7 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     layer.contentsScale = 1
     contentMode = .redraw
     backgroundColor = .white
-    insertSubview(nowLine, belowSubview: allDayView)
+    addSubview(nowLine)
     
     // Add long press gesture recognizer
     addGestureRecognizer(longPressGestureRecognizer)
