@@ -14,7 +14,7 @@ public class AllDayView: UIView {
   public var dataSource: AllDayViewDataSource?
   
   private(set) lazy var scrollView: UIScrollView = {
-    let sv = UIScrollView(frame: CGRect.zero)
+    let sv = UIScrollView()
     sv.translatesAutoresizingMaskIntoConstraints = false
     addSubview(sv)
     
@@ -24,7 +24,7 @@ public class AllDayView: UIView {
     
     sv.leadingAnchor.constraint(equalTo: leadingAnchor, constant: allDayLabelWidth).isActive = true
     sv.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
-    sv.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+    sv.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     bottomAnchor.constraint(equalTo: sv.bottomAnchor, constant: 2).isActive = true
     
     let maxAllDayViewHeight = allDayEventHeight * 2 + allDayEventHeight * 0.5
@@ -60,10 +60,6 @@ public class AllDayView: UIView {
       return
     }
     
-    defer {
-      layoutIfNeeded()
-    }
-    
     // clear subviews TODO: clear out only contents of scroll view
     scrollView.subviews.forEach { $0.removeFromSuperview() }
     
@@ -73,7 +69,7 @@ public class AllDayView: UIView {
     //TODO: add All-Day UILabel
     
     // create vertical stack view
-    let verticalStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+    let verticalStackView = UIStackView(frame: CGRect.zero)
     verticalStackView.distribution = .fillEqually
     verticalStackView.axis = .vertical
     verticalStackView.spacing = 1.0
@@ -89,7 +85,8 @@ public class AllDayView: UIView {
       
       // create horz stack view if index % 2 == 0
       if index % 2 == 0 {
-        horizontalStackView = UIStackView(frame: CGRect(x: 0, y: 0, width: 10, height: 10))
+        horizontalStackView = UIStackView(frame: CGRect.zero)
+        horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
         horizontalStackView.axis = .horizontal
         horizontalStackView.distribution = .fillEqually
         horizontalStackView.spacing = 1.0
@@ -101,9 +98,9 @@ public class AllDayView: UIView {
     }
     
     // add vert. stack view inside, pin vert. stack view, update content view by the number of horz. stack views
+    verticalStackView.translatesAutoresizingMaskIntoConstraints = false
     scrollView.addSubview(verticalStackView)
     
-    verticalStackView.translatesAutoresizingMaskIntoConstraints = false
     verticalStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0).isActive = true
     verticalStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0).isActive = true
     verticalStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0).isActive = true

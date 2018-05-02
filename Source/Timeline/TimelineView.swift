@@ -41,9 +41,11 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
         }
       }
       
+      allDayView.reloadData()
+      allDayView.scrollToBottom()
+      
       recalculateEventLayout()
       prepareEventViews()
-      layoutAllDayEvents()
       setNeedsLayout()
     }
     get {
@@ -59,19 +61,20 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
 
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
   
+  private var allDayViewTopConstraint: NSLayoutConstraint?
   lazy var allDayView: AllDayView = {
     let allDayView = AllDayView(frame: CGRect.zero)
     allDayView.dataSource = self
     
+    addSubview(allDayView)
+
     allDayView.translatesAutoresizingMaskIntoConstraints = false
-    insertSubview(allDayView, aboveSubview: nowLine)
-    
     self.allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
     self.allDayViewTopConstraint!.isActive = true
-    
-    allDayView.leftAnchor.constraint(equalTo: leftAnchor, constant: 0).isActive = true
-    allDayView.rightAnchor.constraint(equalTo: rightAnchor, constant: 0).isActive = true
-    
+
+    allDayView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+    allDayView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+
     return allDayView
   }()
 
@@ -223,6 +226,7 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     recalculateEventLayout()
     layoutEvents()
     layoutNowLine()
+    layoutAllDayEvents()
   }
 
   func layoutNowLine() {
@@ -230,7 +234,6 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
       nowLine.alpha = 0
     } else {
       bringSubview(toFront: nowLine)
-      bringSubview(toFront: allDayView)
       nowLine.alpha = 1
       let size = CGSize(width: bounds.size.width, height: 20)
       let rect = CGRect(origin: CGPoint.zero, size: size)
@@ -251,10 +254,8 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     }
   }
   
-  private var allDayViewTopConstraint: NSLayoutConstraint?
   func layoutAllDayEvents() {
-    allDayView.reloadData()
-    allDayView.scrollToBottom()
+    bringSubview(toFront: allDayView)
   }
   
   func updateAllDayView(by yValue: CGFloat) {
