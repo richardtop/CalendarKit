@@ -22,7 +22,43 @@ public class AllDayView: UIView {
     sv.alwaysBounceVertical = true
     sv.clipsToBounds = false
     
-    sv.leadingAnchor.constraint(equalTo: leadingAnchor, constant: allDayLabelWidth).isActive = true
+    let svLeftConstraint = sv.leadingAnchor.constraint(equalTo: leadingAnchor, constant: allDayLabelWidth)
+    
+    /**
+     Why is this constraint 999?
+     
+     Since AllDayView and its constraints are set to its superview and layed out
+     before the superview's width is updated from 0 to it's computed width (screen width),
+     this constraint produces conflicts. Thus, allowing this constraint to be broken
+     prevents conflicts trying to layout this view with the superview.width = 0
+     
+     More on this:
+     this scope of code is first invoked here:
+     
+     ````
+     @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
+     ...
+     public var layoutAttributes: [EventLayoutAttributes] {
+        ...
+        allDayView.reloadData()
+        ...
+     }
+     ````
+     
+     the superview.width is calcuated here:
+     
+     ````
+     @@ public class TimelineContainer: UIScrollView, ReusableView {
+     ...
+     override public func layoutSubviews() {
+        timeline.frame = CGRect(x: 0, y: 0, width: width, height: timeline.fullHeight)
+        ...
+     }
+     ````
+     */
+    svLeftConstraint.priority = UILayoutPriority(rawValue: 999)
+    
+    svLeftConstraint.isActive = true
     sv.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
     sv.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
     bottomAnchor.constraint(equalTo: sv.bottomAnchor, constant: 2).isActive = true
@@ -58,6 +94,10 @@ public class AllDayView: UIView {
   public func reloadData() {
     guard let dataSource = self.dataSource else {
       return
+    }
+    
+    defer {
+      layoutIfNeeded()
     }
     
     // clear subviews TODO: clear out only contents of scroll view
@@ -112,7 +152,7 @@ public class AllDayView: UIView {
   }
   
   public func scrollToBottom() {
-    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height);
+    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height)
     scrollView.setContentOffset(bottomOffset, animated: false)
   }
   
