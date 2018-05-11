@@ -68,6 +68,8 @@ public class AllDayView: UIView {
     return sv
   }()
   
+  // MARK: - RETURN VALUES
+  
   override init(frame: CGRect) {
     super.init(frame: frame)
     
@@ -79,8 +81,6 @@ public class AllDayView: UIView {
     
     configure()
   }
-  
-  // MARK: - RETURN VALUES
   
   // MARK: - METHODS
   
@@ -102,10 +102,10 @@ public class AllDayView: UIView {
     //TODO: add All-Day UILabel
     
     // create vertical stack view
-    let verticalStackView = UIStackView(frame: CGRect.zero)
-    verticalStackView.distribution = .fillEqually
-    verticalStackView.axis = .vertical
-    verticalStackView.spacing = 1.0
+    let verticalStackView = UIStackView(
+      distribution: .fillEqually,
+      spacing: 1.0
+    )
     var horizontalStackView: UIStackView! = nil
     
     for (index, anEventDescriptor) in self.events.enumerated() {
@@ -117,11 +117,12 @@ public class AllDayView: UIView {
       
       // create horz stack view if index % 2 == 0
       if index % 2 == 0 {
-        horizontalStackView = UIStackView(frame: CGRect.zero)
+        horizontalStackView = UIStackView(
+          axis: .horizontal,
+          distribution: .fillEqually,
+          spacing: 1.0
+        )
         horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
-        horizontalStackView.axis = .horizontal
-        horizontalStackView.distribution = .fillEqually
-        horizontalStackView.spacing = 1.0
         verticalStackView.addArrangedSubview(horizontalStackView)
       }
       

@@ -260,7 +260,13 @@ public class TimelineView: UIView, ReusableView {
     bringSubview(toFront: allDayView)
   }
   
-  func updateAllDayView(by yValue: CGFloat) {
+  /**
+   This will keep the allDayView as a staionary view in its superview
+   
+   - parameter yValue: since the superview is a scrollView, `yValue` is the
+   `contentOffset.y` of the scroll view
+   */
+  func offsetAllDayView(by yValue: CGFloat) {
     if let topConstraint = self.allDayViewTopConstraint {
       topConstraint.constant = yValue
       layoutIfNeeded()
