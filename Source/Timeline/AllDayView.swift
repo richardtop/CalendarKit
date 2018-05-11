@@ -87,6 +87,14 @@ public class AllDayView: UIView {
   private func configure() {
     backgroundColor = UIColor.lightGray
     clipsToBounds = true
+    
+    //add All-Day UILabel
+    let textLayer = CATextLayer()
+    textLayer.string = "all-day"
+    textLayer.frame = CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 28.0)
+    textLayer.foregroundColor = UIColor.black.cgColor
+    textLayer.fontSize = 12.0
+    layer.addSublayer(textLayer)
   }
   
   public func reloadData() {
@@ -98,8 +106,6 @@ public class AllDayView: UIView {
     scrollView.subviews.forEach { $0.removeFromSuperview() }
     
     if self.events.count == 0 { return }
-    
-    //TODO: add All-Day UILabel
     
     // create vertical stack view
     let verticalStackView = UIStackView(
