@@ -44,7 +44,11 @@ public class TimelineView: UIView, ReusableView {
       recalculateEventLayout()
       prepareEventViews()
       allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
+      
+      //TODO: resize to height of zero if count is zero vs using hidden
+      allDayView.isHidden = allDayLayoutAttributes.count == 0
       allDayView.scrollToBottom()
+      
       setNeedsLayout()
     }
     get {
