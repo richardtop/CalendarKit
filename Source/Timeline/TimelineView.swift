@@ -10,7 +10,11 @@ public class TimelineView: UIView, ReusableView {
 
   public weak var delegate: TimelineViewDelegate?
 
-  public weak var eventViewDelegate: EventViewDelegate?
+  public weak var eventViewDelegate: EventViewDelegate? {
+    didSet {
+      self.allDayView.eventViewDelegate = eventViewDelegate
+    }
+  }
 
   public var date = Date() {
     didSet {

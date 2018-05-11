@@ -3,6 +3,8 @@ import UIKit
 
 public class AllDayView: UIView {
   
+  internal weak var eventViewDelegate: EventViewDelegate?
+  
   let allDayLabelWidth: CGFloat = 53.0
   let allDayEventHeight: CGFloat = 24.0
   
@@ -94,6 +96,7 @@ public class AllDayView: UIView {
     textLayer.frame = CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 28.0)
     textLayer.foregroundColor = UIColor.black.cgColor
     textLayer.fontSize = 12.0
+    textLayer.contentsScale = UIScreen.main.scale
     layer.addSublayer(textLayer)
   }
   
@@ -102,7 +105,7 @@ public class AllDayView: UIView {
       layoutIfNeeded()
     }
     
-    // clear subviews TODO: clear out only contents of scroll view
+    // clear event views from scroll view
     scrollView.subviews.forEach { $0.removeFromSuperview() }
     
     if self.events.count == 0 { return }
@@ -116,9 +119,10 @@ public class AllDayView: UIView {
     
     for (index, anEventDescriptor) in self.events.enumerated() {
       
-      // create event TODO: reuse event views
+      // create event
       let eventView = EventView(frame: CGRect.zero)
       eventView.updateWithDescriptor(event: anEventDescriptor)
+      eventView.delegate = self.eventViewDelegate
       eventView.heightAnchor.constraint(equalToConstant: allDayEventHeight).isActive = true
       
       // create horz stack view if index % 2 == 0
