@@ -9,13 +9,6 @@ import UIKit
 
 extension UIStackView {
   
-  /**
-   <#Lorem ipsum dolor sit amet.#>
-   
-   - parameter <#bar#>: <#Consectetur adipisicing elit.#>
-   
-   - returns: <#Sed do eiusmod tempor.#>
-   */
   convenience init(axis: UILayoutConstraintAxis = .vertical,
                    distribution: UIStackViewDistribution = .fill,
                    alignment: UIStackViewAlignment = .fill,
