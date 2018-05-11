@@ -13,7 +13,10 @@ public class AllDayView: UIView {
       self.reloadData()
     }
   }
-  
+  /**
+   vertical scroll view that contains the all day events in rows with only 2
+   columns at most
+   */
   private(set) lazy var scrollView: UIScrollView = {
     let sv = UIScrollView()
     sv.translatesAutoresizingMaskIntoConstraints = false
@@ -154,9 +157,13 @@ public class AllDayView: UIView {
     verticalStackViewHeightConstraint.isActive = true
   }
   
-  public func scrollToBottom() {
+  /**
+   scrolls the contentOffset of the scroll view containg the event views to the
+   bottom
+   */
+  public func scrollToBottom(animated: Bool = false) {
     let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height)
-    scrollView.setContentOffset(bottomOffset, animated: false)
+    scrollView.setContentOffset(bottomOffset, animated: animated)
   }
   
   // MARK: - LIFE CYCLE
