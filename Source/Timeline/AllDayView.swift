@@ -1,17 +1,16 @@
 
 import UIKit
 
-public protocol AllDayViewDataSource {
-  func numberOfAllDayEvents(in allDayView: AllDayView) -> Int
-  func allDayView(_ allDayView: AllDayView, eventDescriptorFor index: Int) -> EventDescriptor
-}
-
 public class AllDayView: UIView {
   
   let allDayLabelWidth: CGFloat = 53.0
   let allDayEventHeight: CGFloat = 24.0
   
-  public var dataSource: AllDayViewDataSource?
+  public var events: [EventDescriptor] = [] {
+    didSet {
+      self.reloadData()
+    }
+  }
   
   private(set) lazy var scrollView: UIScrollView = {
     let sv = UIScrollView()
@@ -68,7 +67,7 @@ public class AllDayView: UIView {
     
     return sv
   }()
-
+  
   override init(frame: CGRect) {
     super.init(frame: frame)
     
@@ -88,14 +87,9 @@ public class AllDayView: UIView {
   private func configure() {
     backgroundColor = UIColor.lightGray
     clipsToBounds = true
-    reloadData()
   }
   
   public func reloadData() {
-    guard let dataSource = self.dataSource else {
-      return
-    }
-    
     defer {
       layoutIfNeeded()
     }
@@ -103,8 +97,7 @@ public class AllDayView: UIView {
     // clear subviews TODO: clear out only contents of scroll view
     scrollView.subviews.forEach { $0.removeFromSuperview() }
     
-    let nEventDescriptors = dataSource.numberOfAllDayEvents(in: self)
-    if nEventDescriptors == 0 || nEventDescriptors < 0 { return }
+    if self.events.count == 0 { return }
     
     //TODO: add All-Day UILabel
     
@@ -115,12 +108,11 @@ public class AllDayView: UIView {
     verticalStackView.spacing = 1.0
     var horizontalStackView: UIStackView! = nil
     
-    for index in 0...nEventDescriptors - 1 {
-      let eventDescriptor = dataSource.allDayView(self, eventDescriptorFor: index)
+    for (index, anEventDescriptor) in self.events.enumerated() {
       
       // create event TODO: reuse event views
       let eventView = EventView(frame: CGRect.zero)
-      eventView.updateWithDescriptor(event: eventDescriptor)
+      eventView.updateWithDescriptor(event: anEventDescriptor)
       eventView.heightAnchor.constraint(equalToConstant: allDayEventHeight).isActive = true
       
       // create horz stack view if index % 2 == 0
@@ -156,8 +148,7 @@ public class AllDayView: UIView {
     scrollView.setContentOffset(bottomOffset, animated: false)
   }
   
-  // MARK: - IBACTIONS/IBOUTLETS
-  
   // MARK: - LIFE CYCLE
-
+  
 }
+

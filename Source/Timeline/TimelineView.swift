@@ -6,7 +6,7 @@ public protocol TimelineViewDelegate: class {
   func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
 }
 
-public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
+public class TimelineView: UIView, ReusableView {
 
   public weak var delegate: TimelineViewDelegate?
 
@@ -43,10 +43,9 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
       
       recalculateEventLayout()
       prepareEventViews()
-      setNeedsLayout()
-      
-      allDayView.reloadData()
+      allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
       allDayView.scrollToBottom()
+      setNeedsLayout()
     }
     get {
       return allDayLayoutAttributes + regularLayoutAttributes
@@ -64,11 +63,10 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
   private var allDayViewTopConstraint: NSLayoutConstraint?
   lazy var allDayView: AllDayView = {
     let allDayView = AllDayView(frame: CGRect.zero)
-    allDayView.dataSource = self
     
+    allDayView.translatesAutoresizingMaskIntoConstraints = false
     addSubview(allDayView)
 
-    allDayView.translatesAutoresizingMaskIntoConstraints = false
     self.allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
     self.allDayViewTopConstraint!.isActive = true
 
@@ -335,21 +333,6 @@ public class TimelineView: UIView, ReusableView, AllDayViewDataSource {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
     setNeedsDisplay()
-  }
-  
-  public func numberOfAllDayEvents(in allDayView: AllDayView) -> Int {
-    let count = allDayLayoutAttributes.count
-    
-    //TODO: resize to height of zero vs using hidden
-    allDayView.isHidden = count == 0
-    
-    return count
-  }
-  
-  public func allDayView(_ allDayView: AllDayView, eventDescriptorFor index: Int) -> EventDescriptor {
-    let eventDescriptor = allDayLayoutAttributes[index].descriptor
-    
-    return eventDescriptor
   }
 
   // MARK: - Helpers
