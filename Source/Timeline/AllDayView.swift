@@ -94,13 +94,12 @@ public class AllDayView: UIView {
     clipsToBounds = true
     
     //add All-Day UILabel
-    let textLayer = CATextLayer()
-    textLayer.string = "all-day"
-    textLayer.frame = CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 28.0)
-    textLayer.foregroundColor = UIColor.black.cgColor
-    textLayer.fontSize = 12.0
-    textLayer.contentsScale = UIScreen.main.scale
-    layer.addSublayer(textLayer)
+    let textLabel = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
+    textLabel.text = "all-day"
+    textLabel.font = UIFont.systemFont(ofSize: 12.0)
+    
+    textLabel.autoresizingMask = [.flexibleWidth]
+    addSubview(textLabel)
   }
   
   public func reloadData() {
