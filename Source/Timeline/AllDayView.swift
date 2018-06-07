@@ -15,6 +15,14 @@ public class AllDayView: UIView {
       self.reloadData()
     }
   }
+  
+  private lazy var textLabel: UILabel = {
+    let label = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
+    label.text = "all-day"
+    label.autoresizingMask = [.flexibleWidth]
+    
+    return label
+  }()
 
   /**
    vertical scroll view that contains the all day events in rows with only 2
@@ -101,22 +109,21 @@ public class AllDayView: UIView {
     scrollView.setContentOffset(bottomOffset, animated: animated)
   }
   
-  public func updateStyle(_ newStyle: TimelineStyle) {
+  public func updateStyle(_ newStyle: AllDayStyle) {
+    style = newStyle.copy() as! AllDayStyle
     
+    backgroundColor = style.backgroundColor
+    textLabel.font = style.allDayFont
+    textLabel.textColor = style.allDayColor
   }
   
   private func configure() {
-    backgroundColor = style.backgroundColor
     clipsToBounds = true
     
     //add All-Day UILabel
-    let textLabel = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
-    textLabel.text = "all-day"
-    textLabel.font = style.allDayFont
-    textLabel.textColor = style.allDayColor
-    
-    textLabel.autoresizingMask = [.flexibleWidth]
     addSubview(textLabel)
+    
+    updateStyle(self.style)
   }
   
   public func reloadData() {
