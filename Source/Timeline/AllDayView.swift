@@ -5,6 +5,8 @@ public class AllDayView: UIView {
   
   internal weak var eventViewDelegate: EventViewDelegate?
   
+  var style = AllDayStyle()
+  
   let allDayLabelWidth: CGFloat = 53.0
   let allDayEventHeight: CGFloat = 24.0
   
@@ -13,6 +15,7 @@ public class AllDayView: UIView {
       self.reloadData()
     }
   }
+
   /**
    vertical scroll view that contains the all day events in rows with only 2
    columns at most
@@ -89,14 +92,28 @@ public class AllDayView: UIView {
   
   // MARK: - METHODS
   
+  /**
+   scrolls the contentOffset of the scroll view containg the event views to the
+   bottom
+   */
+  public func scrollToBottom(animated: Bool = false) {
+    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height)
+    scrollView.setContentOffset(bottomOffset, animated: animated)
+  }
+  
+  public func updateStyle(_ newStyle: TimelineStyle) {
+    
+  }
+  
   private func configure() {
-    backgroundColor = UIColor.lightGray
+    backgroundColor = style.backgroundColor
     clipsToBounds = true
     
     //add All-Day UILabel
     let textLabel = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
     textLabel.text = "all-day"
-    textLabel.font = UIFont.systemFont(ofSize: 12.0)
+    textLabel.font = style.allDayFont
+    textLabel.textColor = style.allDayColor
     
     textLabel.autoresizingMask = [.flexibleWidth]
     addSubview(textLabel)
@@ -154,15 +171,6 @@ public class AllDayView: UIView {
     let verticalStackViewHeightConstraint = verticalStackView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1)
     verticalStackViewHeightConstraint.priority = UILayoutPriority(rawValue: 999)
     verticalStackViewHeightConstraint.isActive = true
-  }
-  
-  /**
-   scrolls the contentOffset of the scroll view containg the event views to the
-   bottom
-   */
-  public func scrollToBottom(animated: Bool = false) {
-    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height)
-    scrollView.setContentOffset(bottomOffset, animated: animated)
   }
   
   // MARK: - LIFE CYCLE
