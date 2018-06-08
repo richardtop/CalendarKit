@@ -16,6 +16,18 @@ public class TimelineContainer: UIScrollView, ReusableView {
   override public func layoutSubviews() {
     timeline.frame = CGRect(x: 0, y: 0, width: width, height: timeline.fullHeight)
     timeline.offsetAllDayView(by: contentOffset.y)
+    
+    
+    //adjust the scroll insets
+    let allDayViewHeight = timeline.allDayViewHeight
+    let bottomSafeInset: CGFloat
+    if #available(iOS 11.0, *) {
+      bottomSafeInset = window?.safeAreaInsets.bottom ?? 0
+    } else {
+      bottomSafeInset = 0
+    }
+    scrollIndicatorInsets = UIEdgeInsets(top: allDayViewHeight, left: 0, bottom: bottomSafeInset, right: 0)
+    contentInset = UIEdgeInsets(top: allDayViewHeight, left: 0, bottom: bottomSafeInset, right: 0)
   }
   
   public func prepareForReuse() {
