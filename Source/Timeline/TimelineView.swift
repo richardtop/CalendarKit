@@ -48,8 +48,6 @@ public class TimelineView: UIView, ReusableView {
       recalculateEventLayout()
       prepareEventViews()
       allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
-      
-      //TODO: resize to height of zero if count is zero vs using hidden
       allDayView.isHidden = allDayLayoutAttributes.count == 0
       allDayView.scrollToBottom()
       
@@ -76,13 +74,17 @@ public class TimelineView: UIView, ReusableView {
     addSubview(allDayView)
 
     self.allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
-    self.allDayViewTopConstraint!.isActive = true
+    self.allDayViewTopConstraint?.isActive = true
 
     allDayView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
     allDayView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
 
     return allDayView
   }()
+  
+  var allDayViewHeight: CGFloat {
+    return allDayView.bounds.height
+  }
 
   var style = TimelineStyle()
 
@@ -261,6 +263,8 @@ public class TimelineView: UIView, ReusableView {
   }
   
   func layoutAllDayEvents() {
+    
+    //add day view needs to be in front of the nowLine
     bringSubview(toFront: allDayView)
   }
   
