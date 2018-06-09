@@ -107,7 +107,7 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
     var date = date.add(TimeChunk.dateComponents(hours: Int(arc4random_uniform(10) + 5)))
     var events = [Event]()
 
-    for i in 0...5 {
+    for i in 0...4 {
       let event = Event()
       let duration = Int(arc4random_uniform(160) + 60)
       let datePeriod = TimePeriod(beginning: date,
@@ -121,6 +121,7 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
       info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
+      event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
       
       // Event styles are updated independently from CalendarStyle
       // hence the need to specify exact colors in case of Dark style

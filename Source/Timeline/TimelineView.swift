@@ -10,7 +10,11 @@ public class TimelineView: UIView, ReusableView {
 
   public weak var delegate: TimelineViewDelegate?
 
-  public weak var eventViewDelegate: EventViewDelegate?
+  public weak var eventViewDelegate: EventViewDelegate? {
+    didSet {
+      self.allDayView.eventViewDelegate = eventViewDelegate
+    }
+  }
 
   public var date = Date() {
     didSet {
@@ -23,21 +27,64 @@ public class TimelineView: UIView, ReusableView {
   }
 
   var eventViews = [EventView]()
-  public var layoutAttributes = [EventLayoutAttributes]() {
-    didSet {
+  public private(set) var regularLayoutAttributes = [EventLayoutAttributes]()
+  public private(set) var allDayLayoutAttributes = [EventLayoutAttributes]()
+  
+  public var layoutAttributes: [EventLayoutAttributes] {
+    set {
+      
+      // update layout attributes by separating allday from non all day events
+      allDayLayoutAttributes.removeAll()
+      regularLayoutAttributes.removeAll()
+      for anEventLayoutAttribute in newValue {
+        let eventDescriptor = anEventLayoutAttribute.descriptor
+        if eventDescriptor.isAllDay {
+          allDayLayoutAttributes.append(anEventLayoutAttribute)
+        } else {
+          regularLayoutAttributes.append(anEventLayoutAttribute)
+        }
+      }
+      
       recalculateEventLayout()
       prepareEventViews()
+      allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
+      allDayView.isHidden = allDayLayoutAttributes.count == 0
+      allDayView.scrollToBottom()
+      
       setNeedsLayout()
+    }
+    get {
+      return allDayLayoutAttributes + regularLayoutAttributes
     }
   }
   var pool = ReusePool<EventView>()
 
   var firstEventYPosition: CGFloat? {
-    return layoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}
+    return regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}
       .first?.frame.origin.y
   }
 
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
+  
+  private var allDayViewTopConstraint: NSLayoutConstraint?
+  lazy var allDayView: AllDayView = {
+    let allDayView = AllDayView(frame: CGRect.zero)
+    
+    allDayView.translatesAutoresizingMaskIntoConstraints = false
+    addSubview(allDayView)
+
+    self.allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
+    self.allDayViewTopConstraint?.isActive = true
+
+    allDayView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
+    allDayView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
+
+    return allDayView
+  }()
+  
+  var allDayViewHeight: CGFloat {
+    return allDayView.bounds.height
+  }
 
   var style = TimelineStyle()
 
@@ -187,6 +234,7 @@ public class TimelineView: UIView, ReusableView {
     recalculateEventLayout()
     layoutEvents()
     layoutNowLine()
+    layoutAllDayEvents()
   }
 
   func layoutNowLine() {
@@ -205,17 +253,38 @@ public class TimelineView: UIView, ReusableView {
 
   func layoutEvents() {
     if eventViews.isEmpty {return}
-
-    for (idx, attributes) in layoutAttributes.enumerated() {
+    
+    for (idx, attributes) in regularLayoutAttributes.enumerated() {
       let descriptor = attributes.descriptor
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
       eventView.updateWithDescriptor(event: descriptor)
     }
   }
+  
+  func layoutAllDayEvents() {
+    
+    //add day view needs to be in front of the nowLine
+    bringSubview(toFront: allDayView)
+  }
+  
+  /**
+   This will keep the allDayView as a staionary view in its superview
+   
+   - parameter yValue: since the superview is a scrollView, `yValue` is the
+   `contentOffset.y` of the scroll view
+   */
+  func offsetAllDayView(by yValue: CGFloat) {
+    if let topConstraint = self.allDayViewTopConstraint {
+      topConstraint.constant = yValue
+      layoutIfNeeded()
+    }
+  }
 
   func recalculateEventLayout() {
-    let sortedEvents = layoutAttributes.sorted { (attr1, attr2) -> Bool in
+    
+    // only non allDay events need their frames to be set
+    let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
       let start1 = attr1.descriptor.startDate
       let start2 = attr2.descriptor.startDate
       return start1.isEarlier(than: start2)
@@ -268,7 +337,7 @@ public class TimelineView: UIView, ReusableView {
   func prepareEventViews() {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
-    for _ in 0...layoutAttributes.endIndex {
+    for _ in 0...regularLayoutAttributes.endIndex {
       let newView = pool.dequeue()
       newView.delegate = eventViewDelegate
       if newView.superview == nil {

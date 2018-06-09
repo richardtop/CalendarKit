@@ -129,3 +129,18 @@ public class CurrentTimeIndicatorStyle: NSCopying {
     return copy
   }
 }
+
+public class AllDayStyle: NSCopying {
+  public var backgroundColor: UIColor = UIColor.lightGray
+  public var allDayFont = UIFont.systemFont(ofSize: 12.0)
+  public var allDayColor: UIColor = UIColor.black
+  
+  public func copy(with zone: NSZone? = nil) -> Any {
+    let copy = AllDayStyle()
+    copy.allDayColor = allDayColor
+    copy.backgroundColor = backgroundColor
+    copy.allDayFont = allDayFont
+    
+    return copy
+  }
+}

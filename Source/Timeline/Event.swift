@@ -3,6 +3,7 @@ import UIKit
 open class Event: EventDescriptor {
   public var startDate = Date()
   public var endDate = Date()
+  public var isAllDay = false
   public var text = ""
   public var attributedText: NSAttributedString?
   public var color = UIColor.blue {
