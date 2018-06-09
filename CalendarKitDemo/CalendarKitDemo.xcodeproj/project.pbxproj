@@ -105,7 +105,6 @@
 				793B14D71BD6815D00961414 /* Frameworks */,
 				793B14D81BD6815D00961414 /* Resources */,
 				B3053EC9A1E73CA47634FC5A /* [CP] Embed Pods Frameworks */,
-				7862427F75AE95B15AE69F50 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -127,7 +126,7 @@
 				TargetAttributes = {
 					793B14D91BD6815D00961414 = {
 						CreatedOnToolsVersion = 7.0;
-						DevelopmentTeam = 38LX96JV5Y;
+						DevelopmentTeam = 8U3L6K9JA6;
 						LastSwiftMigration = 0900;
 					};
 				};
@@ -162,21 +161,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		7862427F75AE95B15AE69F50 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-CalendarKitDemo/Pods-CalendarKitDemo-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		B3053EC9A1E73CA47634FC5A /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -345,7 +329,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 38LX96JV5Y;
+				DEVELOPMENT_TEAM = 8U3L6K9JA6;
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -362,7 +346,7 @@
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 38LX96JV5Y;
+				DEVELOPMENT_TEAM = 8U3L6K9JA6;
 				INFOPLIST_FILE = CalendarKitDemo/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
