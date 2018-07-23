@@ -58,7 +58,8 @@ class CurrentTimeIndicator: UIView {
     
   func updateDate() {
     let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
-    timeLabel.text = date.format(with: dateFormat)
+    let timezone = TimeZone.ReferenceType.default
+    timeLabel.text = date.format(with: dateFormat, timeZone: timezone)
     timeLabel.sizeToFit()
     setNeedsLayout()
   }
