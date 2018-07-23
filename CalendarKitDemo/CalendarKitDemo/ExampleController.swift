@@ -117,8 +117,10 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
       event.endDate = datePeriod.end!
 
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
-      info.append("\(datePeriod.beginning!.format(with: "dd.MM.YYYY"))")
-      info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
+      
+      let timezone = TimeZone.ReferenceType.default
+      info.append(datePeriod.beginning!.format(with: "dd.MM.YYYY", timeZone: timezone))
+      info.append("\(datePeriod.beginning!.format(with: "HH:mm", timeZone: timezone)) - \(datePeriod.end!.format(with: "HH:mm", timeZone: timezone))")
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
