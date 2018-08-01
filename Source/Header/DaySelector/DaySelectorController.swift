@@ -49,4 +49,12 @@ class DaySelectorController: UIViewController {
   override func loadView() {
     view = daySelector
   }
+  
+  func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+    daySelector.transitionToHorizontalSizeClass(sizeClass)
+  }
+  
+  func updateStyle(_ newStyle: DaySelectorStyle) {
+    daySelector.updateStyle(newStyle)
+  }
 }

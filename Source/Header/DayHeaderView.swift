@@ -8,6 +8,7 @@ public class DayHeaderView: UIView {
   public var calendar = Calendar.autoupdatingCurrent
 
   var style = DayHeaderStyle()
+  var currentSizeClass = UIUserInterfaceSizeClass.compact
 
   weak var state: DayViewState? {
     willSet(newValue) {
@@ -29,8 +30,6 @@ public class DayHeaderView: UIView {
   var pagingViewController = UIPageViewController(transitionStyle: .scroll,
                                                        navigationOrientation: .horizontal,
                                                        options: nil)
-  
-  
   lazy var swipeLabelView: SwipeLabelView = SwipeLabelView()
 
   override init(frame: CGRect) {
@@ -63,6 +62,8 @@ public class DayHeaderView: UIView {
   
   func makeSelectorController(startDate: Date) -> DaySelectorController {
     let new = DaySelectorController()
+    new.transitionToHorizontalSizeClass(currentSizeClass)
+    new.updateStyle(style.daySelector)
     new.startDate = startDate
     new.delegate = self
     return new
@@ -79,9 +80,7 @@ public class DayHeaderView: UIView {
     style = newStyle.copy() as! DayHeaderStyle
     daySymbolsView.updateStyle(style.daySymbols)
     swipeLabelView.updateStyle(style.swipeLabel)
-//    pagingScrollView.reusableViews.forEach { daySelector in
-//      daySelector.updateStyle(style.daySelector)
-//    }
+    (pagingViewController.viewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(newStyle.daySelector)}
     backgroundColor = style.backgroundColor
   }
 
@@ -93,8 +92,9 @@ public class DayHeaderView: UIView {
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+    currentSizeClass = sizeClass
     daySymbolsView.isHidden = sizeClass == .regular
-//    pagingScrollView.reusableViews.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
+    (pagingViewController.childViewControllers as? [DaySelectorController])?.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
   }
 }
 
@@ -152,11 +152,18 @@ extension DayHeaderView: UIPageViewControllerDataSource {
 
 extension DayHeaderView: UIPageViewControllerDelegate {
   public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    guard completed else {return}
     if let selector = pageViewController.viewControllers?.first as? DaySelectorController {
       selector.selectedIndex = currentWeekdayIndex
       if let selectedDate = selector.selectedDate {
         state?.client(client: self, didMoveTo: selectedDate)
       }
     }
+    // Deselect all the views but the currently visible one
+    (previousViewControllers as? [DaySelectorController])?.forEach{$0.selectedIndex = -1}
+  }
+  
+  public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+    (pendingViewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(style.daySelector)}
   }
 }
