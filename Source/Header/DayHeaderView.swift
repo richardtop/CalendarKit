@@ -26,41 +26,46 @@ public class DayHeaderView: UIView {
   var swipeLabelViewHeight: CGFloat = 20
 
   lazy var daySymbolsView: DaySymbolsView = DaySymbolsView(daysInWeek: self.daysInWeek)
-  let pagingScrollView = PagingScrollView<DaySelector>()
+  var pagingViewController = UIPageViewController(transitionStyle: .scroll,
+                                                       navigationOrientation: .horizontal,
+                                                       options: nil)
+  
+  
   lazy var swipeLabelView: SwipeLabelView = SwipeLabelView()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
-    configurePages()
   }
 
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
-    configurePages()
   }
 
   func configure() {
-    [daySymbolsView, pagingScrollView, swipeLabelView].forEach {
-      addSubview($0)
-    }
-    pagingScrollView.viewDelegate = self
+    [daySymbolsView, swipeLabelView].forEach(addSubview)
     backgroundColor = style.backgroundColor
+    configurePagingViewController()
   }
-
-  func configurePages(_ selectedDate: Date = Date()) {
-    for i in -1...1 {
-      let daySelector = DaySelector(daysInWeek: daysInWeek)
-      let date = selectedDate.add(TimeChunk.dateComponents(weeks: i))
-      daySelector.startDate = beginningOfWeek(date)
-      pagingScrollView.reusableViews.append(daySelector)
-      pagingScrollView.addSubview(daySelector)
-      daySelector.delegate = self
-    }
-    let centerDaySelector = pagingScrollView.reusableViews[1]
-    centerDaySelector.selectedDate = selectedDate
-    currentWeekdayIndex = centerDaySelector.selectedIndex
+  
+  func configurePagingViewController() {
+    // TODO: propagate selected date
+    let selectedDate = Date()
+    let vc = makeSelectorController(startDate: beginningOfWeek(selectedDate))
+    vc.selectedDate = selectedDate
+    currentWeekdayIndex = vc.selectedIndex
+    pagingViewController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)
+    pagingViewController.dataSource = self
+    pagingViewController.delegate = self
+    addSubview(pagingViewController.view!)
+  }
+  
+  func makeSelectorController(startDate: Date) -> DaySelectorController {
+    let new = DaySelectorController()
+    new.startDate = startDate
+    new.delegate = self
+    return new
   }
   
   func beginningOfWeek(_ date: Date) -> Date {
@@ -74,24 +79,22 @@ public class DayHeaderView: UIView {
     style = newStyle.copy() as! DayHeaderStyle
     daySymbolsView.updateStyle(style.daySymbols)
     swipeLabelView.updateStyle(style.swipeLabel)
-    pagingScrollView.reusableViews.forEach { daySelector in
-      daySelector.updateStyle(style.daySelector)
-    }
+//    pagingScrollView.reusableViews.forEach { daySelector in
+//      daySelector.updateStyle(style.daySelector)
+//    }
     backgroundColor = style.backgroundColor
   }
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    pagingScrollView.contentOffset = CGPoint(x: bounds.width, y: 0)
-    pagingScrollView.contentSize = CGSize(width: bounds.size.width * CGFloat(pagingScrollView.reusableViews.count), height: 0)
     daySymbolsView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
-    pagingScrollView.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
+    pagingViewController.view?.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
     swipeLabelView.anchorAndFillEdge(.bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     daySymbolsView.isHidden = sizeClass == .regular
-    pagingScrollView.reusableViews.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
+//    pagingScrollView.reusableViews.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
   }
 }
 
@@ -104,26 +107,23 @@ extension DayHeaderView: DaySelectorDelegate {
 extension DayHeaderView: DayViewStateUpdating {
   public func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly()
-    let centerView = pagingScrollView.reusableViews[1]
+    
+    let centerView = pagingViewController.viewControllers![0] as! DaySelectorController
     let startDate = centerView.startDate.dateOnly()
-
+    
     let daysFrom = newDate.days(from: startDate, calendar: calendar)
     let newStartDate = beginningOfWeek(newDate)
 
-    let leftView = pagingScrollView.reusableViews[0]
-    let rightView = pagingScrollView.reusableViews[2]
+    let new = makeSelectorController(startDate: newStartDate)
+    
     if daysFrom < 0 {
       currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
-      centerView.startDate = newStartDate
-      centerView.selectedIndex = currentWeekdayIndex
-      leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
-      rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+      new.selectedIndex = currentWeekdayIndex
+      pagingViewController.setViewControllers([new], direction: .reverse, animated: true, completion: nil)
     } else if daysFrom > daysInWeek - 1 {
       currentWeekdayIndex = daysFrom % daysInWeek
-      centerView.startDate = newStartDate
-      centerView.selectedIndex = currentWeekdayIndex
-      leftView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: -1))
-      rightView.startDate = centerView.startDate.add(TimeChunk.dateComponents(weeks: 1))
+      new.selectedIndex = currentWeekdayIndex
+      pagingViewController.setViewControllers([new], direction: .forward, animated: true, completion: nil)
     } else {
       currentWeekdayIndex = daysFrom
       centerView.selectedDate = newDate
@@ -132,17 +132,31 @@ extension DayHeaderView: DayViewStateUpdating {
   }
 }
 
-extension DayHeaderView: PagingScrollViewDelegate {
-  func scrollviewDidScrollToViewAtIndex(_ index: Int) {
-    let activeView = pagingScrollView.reusableViews[index]
-    activeView.selectedIndex = currentWeekdayIndex
+extension DayHeaderView: UIPageViewControllerDataSource {
+  public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+    if let selector = viewController as? DaySelectorController {
+      let previousDate = selector.startDate.add(TimeChunk.dateComponents(weeks: -1))
+      return makeSelectorController(startDate: previousDate)
+    }
+    return nil
+  }
+  
+  public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+    if let selector = viewController as? DaySelectorController {
+      let nextDate = selector.startDate.add(TimeChunk.dateComponents(weeks: 1))
+      return makeSelectorController(startDate: nextDate)
+    }
+    return nil
+  }
+}
 
-    let leftView = pagingScrollView.reusableViews[0]
-    let rightView = pagingScrollView.reusableViews[2]
-
-    leftView.startDate = activeView.startDate.add(TimeChunk.dateComponents(weeks: -1))
-    rightView.startDate = activeView.startDate.add(TimeChunk.dateComponents(weeks: 1))
-
-    state?.client(client: self, didMoveTo: activeView.selectedDate!)
+extension DayHeaderView: UIPageViewControllerDelegate {
+  public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+    if let selector = pageViewController.viewControllers?.first as? DaySelectorController {
+      selector.selectedIndex = currentWeekdayIndex
+      if let selectedDate = selector.selectedDate {
+        state?.client(client: self, didMoveTo: selectedDate)
+      }
+    }
   }
 }
