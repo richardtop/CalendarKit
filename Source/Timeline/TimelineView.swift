@@ -26,6 +26,9 @@ public class TimelineView: UIView, ReusableView {
     return Date()
   }
 
+  var eventsWillOverlap = false
+  var splitMinuteInterval = 15
+
   var eventViews = [EventView]()
   public private(set) var regularLayoutAttributes = [EventLayoutAttributes]()
   public private(set) var allDayLayoutAttributes = [EventLayoutAttributes]()
@@ -306,16 +309,24 @@ public class TimelineView: UIView, ReusableView {
         }
         .first!
 
-      let lastEvent = overlappingEvents.last!
-      if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
-        lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
-        overlappingEvents.append(event)
-        continue
-      } else {
+        if eventsWillOverlap {
+            guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
+            let dateInterval = getDateInterval(date: earliestEvent)
+            if event.descriptor.datePeriod.relation(to: dateInterval) == Relation.startInside {
+                overlappingEvents.append(event)
+                continue
+            }
+        } else {
+            let lastEvent = overlappingEvents.last!
+            if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
+                lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
+                overlappingEvents.append(event)
+                continue
+            }
+        }
         groupsOfEvents.append(overlappingEvents)
         overlappingEvents.removeAll()
         overlappingEvents.append(event)
-      }
     }
 
     groupsOfEvents.append(overlappingEvents)
@@ -371,5 +382,13 @@ public class TimelineView: UIView, ReusableView {
       let minuteY = CGFloat(date.minute) * verticalDiff / 60
       return hourY + minuteY
     }
+  }
+
+  fileprivate func getDateInterval(date: Date) -> TimePeriod {
+    let earliestEventMintues = date.minute
+    let minuteRange = ((date.minute / splitMinuteInterval) ) * splitMinuteInterval
+    let beginningRange = Calendar.current.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
+    let endRange = Calendar.current.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
+    return TimePeriod.init(beginning: beginningRange, end: endRange)
   }
 }
