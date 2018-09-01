@@ -88,18 +88,14 @@ public class TimelineView: UIView, ReusableView {
 
   var style = TimelineStyle()
 
-  var verticalDiff: CGFloat = 45
-  var verticalInset: CGFloat = 10
-  var leftInset: CGFloat = 53
-
   var horizontalEventInset: CGFloat = 3
 
   public var fullHeight: CGFloat {
-    return verticalInset * 2 + verticalDiff * 24
+    return style.verticalInset * 2 + style.verticalDiff * 24
   }
 
   var calendarWidth: CGFloat {
-    return bounds.width - leftInset
+    return bounds.width - style.leftInset
   }
     
   var is24hClock = true {
@@ -152,7 +148,7 @@ public class TimelineView: UIView, ReusableView {
     if (gestureRecognizer.state == .began) {
       // Get timeslot of gesture location
       let pressedLocation = gestureRecognizer.location(in: self)
-      let percentOfHeight = (pressedLocation.y - verticalInset) / (bounds.height - (verticalInset * 2))
+      let percentOfHeight = (pressedLocation.y - style.verticalInset) / (bounds.height - (style.verticalInset * 2))
       let pressedAtHour: Int = Int(24 * percentOfHeight)
       delegate?.timelineView(self, didLongPressAt: pressedAtHour)
     }
@@ -210,7 +206,7 @@ public class TimelineView: UIView, ReusableView {
       context?.setLineWidth(onePixel)
       context?.translateBy(x: 0, y: 0.5)
       let x: CGFloat = 53
-      let y = verticalInset + iFloat * verticalDiff
+      let y = style.verticalInset + iFloat * style.verticalDiff
       context?.beginPath()
       context?.move(to: CGPoint(x: x, y: y))
       context?.addLine(to: CGPoint(x: (bounds).width, y: y))
@@ -220,8 +216,8 @@ public class TimelineView: UIView, ReusableView {
       if i == hourToRemoveIndex { continue }
         
       let fontSize = style.font.pointSize
-      let timeRect = CGRect(x: 2, y: iFloat * verticalDiff + verticalInset - 7,
-                            width: leftInset - 8, height: fontSize + 2)
+      let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7,
+                            width: style.leftInset - 8, height: fontSize + 2)
 
       let timeString = NSString(string: time)
 
@@ -327,7 +323,7 @@ public class TimelineView: UIView, ReusableView {
         let startY = dateToY(event.descriptor.datePeriod.beginning!)
         let endY = dateToY(event.descriptor.datePeriod.end!)
         let floatIndex = CGFloat(index)
-        let x = leftInset + floatIndex / totalCount * calendarWidth
+        let x = style.leftInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
@@ -362,13 +358,13 @@ public class TimelineView: UIView, ReusableView {
   fileprivate func dateToY(_ date: Date) -> CGFloat {
     if date.dateOnly() > self.date.dateOnly() {
       // Event ending the next day
-      return 24 * verticalDiff + verticalInset
+      return 24 * style.verticalDiff + style.verticalInset
     } else if date.dateOnly() < self.date.dateOnly() {
       // Event starting the previous day
-      return verticalInset
+      return style.verticalInset
     } else {
-      let hourY = CGFloat(date.hour) * verticalDiff + verticalInset
-      let minuteY = CGFloat(date.minute) * verticalDiff / 60
+      let hourY = CGFloat(date.hour) * style.verticalDiff + style.verticalInset
+      let minuteY = CGFloat(date.minute) * style.verticalDiff / 60
       return hourY + minuteY
     }
   }
