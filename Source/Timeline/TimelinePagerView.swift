@@ -21,8 +21,6 @@ public class TimelinePagerView: UIView {
   }
 
   open var autoScrollToFirstEvent = false
-  open var eventsWillOverlap = false
-  open var splitMinuteInterval = 15
 
   let timelinePager = PagingScrollView<TimelineContainer>()
   var timelineSynchronizer: ScrollSynchronizer?
@@ -79,8 +77,6 @@ public class TimelinePagerView: UIView {
       timeline.eventViewDelegate = self
       timeline.frame.size.height = timeline.fullHeight
       timeline.date = Date().add(TimeChunk.dateComponents(days: i))
-      timeline.eventsWillOverlap = eventsWillOverlap
-      timeline.splitMinuteInterval = splitMinuteInterval
 
       let verticalScrollView = TimelineContainer(timeline)
       verticalScrollView.addSubview(timeline)
@@ -117,8 +113,6 @@ public class TimelinePagerView: UIView {
     let day = TimePeriod(beginning: date,
                          chunk: TimeChunk.dateComponents(days: 1))
     let validEvents = events.filter{$0.datePeriod.overlaps(with: day)}
-    timeline.splitMinuteInterval = splitMinuteInterval
-    timeline.eventsWillOverlap = eventsWillOverlap
     timeline.layoutAttributes = validEvents.map(EventLayoutAttributes.init)
   }
 }

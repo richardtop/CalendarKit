@@ -103,6 +103,8 @@ public class TimelineStyle: NSCopying {
   public var backgroundColor = UIColor.white
   public var font = UIFont.boldSystemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
+  public var eventsWillOverlap: Bool = false
+  public var splitMinuteInterval: Int = 15
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = TimelineStyle()
@@ -112,6 +114,8 @@ public class TimelineStyle: NSCopying {
     copy.backgroundColor = backgroundColor
     copy.font = font
     copy.dateStyle = dateStyle
+    copy.eventsWillOverlap = eventsWillOverlap
+    copy.splitMinuteInterval = splitMinuteInterval
     return copy
   }
 }

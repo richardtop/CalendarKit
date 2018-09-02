@@ -60,24 +60,6 @@ public class DayView: UIView {
 
   var style = CalendarStyle()
 
-  public var eventsWillOverlap: Bool {
-    get {
-        return timelinePagerView.eventsWillOverlap
-    }
-    set (value) {
-        timelinePagerView.eventsWillOverlap = value
-    }
-  }
-
-  public var splitMinuteInterval: Int {
-    get {
-        return timelinePagerView.splitMinuteInterval
-    }
-    set (value) {
-        timelinePagerView.splitMinuteInterval = value
-    }
-  }
-
   public init(state: DayViewState) {
     super.init(frame: .zero)
     self.state = state

@@ -26,9 +26,6 @@ public class TimelineView: UIView, ReusableView {
     return Date()
   }
 
-  var eventsWillOverlap = false
-  var splitMinuteInterval = 15
-
   var eventViews = [EventView]()
   public private(set) var regularLayoutAttributes = [EventLayoutAttributes]()
   public private(set) var allDayLayoutAttributes = [EventLayoutAttributes]()
@@ -309,7 +306,7 @@ public class TimelineView: UIView, ReusableView {
         }
         .first!
 
-        if eventsWillOverlap {
+        if style.eventsWillOverlap {
             guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
             let dateInterval = getDateInterval(date: earliestEvent)
             if event.descriptor.datePeriod.relation(to: dateInterval) == Relation.startInside {
@@ -386,6 +383,7 @@ public class TimelineView: UIView, ReusableView {
 
   fileprivate func getDateInterval(date: Date) -> TimePeriod {
     let earliestEventMintues = date.minute
+    let splitMinuteInterval = style.splitMinuteInterval
     let minuteRange = ((date.minute / splitMinuteInterval) ) * splitMinuteInterval
     let beginningRange = Calendar.current.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
     let endRange = Calendar.current.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
