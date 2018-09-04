@@ -322,8 +322,7 @@ public class TimelineView: UIView, ReusableView {
             }
         }
         groupsOfEvents.append(overlappingEvents)
-        overlappingEvents.removeAll()
-        overlappingEvents.append(event)
+        overlappingEvents = [event]
     }
 
     groupsOfEvents.append(overlappingEvents)
@@ -384,7 +383,7 @@ public class TimelineView: UIView, ReusableView {
   fileprivate func getDateInterval(date: Date) -> TimePeriod {
     let earliestEventMintues = date.minute
     let splitMinuteInterval = style.splitMinuteInterval
-    let minuteRange = ((date.minute / splitMinuteInterval) ) * splitMinuteInterval
+    let minuteRange = (date.minute / splitMinuteInterval) * splitMinuteInterval
     let beginningRange = Calendar.current.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
     let endRange = Calendar.current.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
     return TimePeriod.init(beginning: beginningRange, end: endRange)
