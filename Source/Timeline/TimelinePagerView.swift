@@ -53,7 +53,10 @@ public class TimelinePagerView: UIView {
   public func updateStyle(_ newStyle: TimelineStyle) {
     style = newStyle.copy() as! TimelineStyle
     timelinePager.reusableViews.forEach{ timelineContainer in
-      timelineContainer.timeline.updateStyle(style)
+      let timeline = timelineContainer.timeline
+      timeline.updateStyle(style)
+      timeline.frame.size.height = timeline.fullHeight
+      timelineContainer.contentSize = timeline.frame.size
       timelineContainer.backgroundColor = style.backgroundColor
     }
   }
