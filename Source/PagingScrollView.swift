@@ -1,10 +1,10 @@
 import UIKit
 
-protocol PagingScrollViewDelegate: class {
+protocol PagingScrollViewDelegate: AnyObject {
   func scrollviewDidScrollToViewAtIndex(_ index: Int)
 }
 
-protocol ReusableView: class {
+protocol ReusableView: AnyObject {
   func prepareForReuse()
 }
 
