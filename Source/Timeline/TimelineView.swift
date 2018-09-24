@@ -193,9 +193,9 @@ public class TimelineView: UIView, ReusableView {
     mutableParagraphStyle.alignment = .right
     let paragraphStyle = mutableParagraphStyle.copy() as! NSParagraphStyle
     
-    let attributes = [NSAttributedStringKey.paragraphStyle: paragraphStyle,
-                      NSAttributedStringKey.foregroundColor: self.style.timeColor,
-                      NSAttributedStringKey.font: style.font] as [NSAttributedStringKey : Any]
+    let attributes = [NSAttributedString.Key.paragraphStyle: paragraphStyle,
+					  NSAttributedString.Key.foregroundColor: self.style.timeColor,
+					  NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
 
     for (i, time) in times.enumerated() {
       let iFloat = CGFloat(i)
@@ -237,7 +237,7 @@ public class TimelineView: UIView, ReusableView {
     if !isToday {
       nowLine.alpha = 0
     } else {
-      bringSubview(toFront: nowLine)
+		bringSubviewToFront(nowLine)
       nowLine.alpha = 1
       let size = CGSize(width: bounds.size.width, height: 20)
       let rect = CGRect(origin: CGPoint.zero, size: size)
@@ -261,7 +261,7 @@ public class TimelineView: UIView, ReusableView {
   func layoutAllDayEvents() {
     
     //add day view needs to be in front of the nowLine
-    bringSubview(toFront: allDayView)
+	bringSubviewToFront(allDayView)
   }
   
   /**

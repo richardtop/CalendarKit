@@ -60,7 +60,7 @@ class PagingScrollView<T: UIView>: UIScrollView, UIScrollViewDelegate where T: R
 
     let distanceFromCenter = contentOffset.x - centerOffsetX
 
-    if fabs(distanceFromCenter) > (contentWidth / 3) {
+	if abs(distanceFromCenter) > (contentWidth / 3) {
       recenter()
     }
   }

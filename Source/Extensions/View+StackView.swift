@@ -9,9 +9,9 @@ import UIKit
 
 extension UIStackView {
   
-  convenience init(axis: UILayoutConstraintAxis = .vertical,
-                   distribution: UIStackViewDistribution = .fill,
-                   alignment: UIStackViewAlignment = .fill,
+	convenience init(axis: NSLayoutConstraint.Axis = .vertical,
+				   distribution: UIStackView.Distribution = .fill,
+				   alignment: UIStackView.Alignment = .fill,
                    spacing: CGFloat = 0,
                    subviews: [UIView] = []) {
     self.init(arrangedSubviews: subviews)
