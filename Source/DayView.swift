@@ -2,7 +2,7 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-public protocol DayViewDelegate: class {
+public protocol DayViewDelegate: AnyObject {
   func dayViewDidSelectEventView(_ eventView: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
   func dayViewDidLongPressTimelineAtHour(_ hour: Int)
