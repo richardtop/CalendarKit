@@ -82,7 +82,7 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
     updateStyle(style)
     navigationItem.rightBarButtonItem!.title = title
     navigationController?.navigationBar.barTintColor = style.header.backgroundColor
-    navigationController?.navigationBar.titleTextAttributes = [NSAttributedStringKey.foregroundColor:style.header.swipeLabel.textColor]
+    navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:style.header.swipeLabel.textColor]
     reloadData()
   }
 
