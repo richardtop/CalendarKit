@@ -1,6 +1,6 @@
 import Foundation
 
-public protocol DayViewStateUpdating: class {
+public protocol DayViewStateUpdating: AnyObject {
   func move(from oldDate: Date, to newDate: Date)
 }
 
