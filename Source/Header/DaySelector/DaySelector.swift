@@ -2,13 +2,13 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-public protocol DaySelectorItemProtocol: class {
+public protocol DaySelectorItemProtocol: AnyObject {
   var date: Date {get set}
   var selected: Bool {get set}
   func updateStyle(_ newStyle: DaySelectorStyle)
 }
 
-protocol DaySelectorDelegate: class {
+protocol DaySelectorDelegate: AnyObject {
   func dateSelectorDidSelectDate(_ date: Date)
 }
 
