@@ -96,7 +96,7 @@ dayView.updateStyle(style)
 ## Requirements
 
 - iOS 9.0+
-- Swift 4.1+
+- Swift 4.2+
 
 ## Dependencies
 - **[Neon](https://github.com/mamaral/Neon)** is used for declarative layout
