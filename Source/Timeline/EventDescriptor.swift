@@ -10,5 +10,5 @@ public protocol EventDescriptor {
   var color: UIColor {get}
   var textColor: UIColor {get}
   var backgroundColor: UIColor {get}
-  var eventInfo: Any {get}
+  var eventInfo: Any? {get}
 }
