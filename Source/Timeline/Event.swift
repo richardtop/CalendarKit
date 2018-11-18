@@ -18,5 +18,6 @@ open class Event: EventDescriptor {
   public var textColor = UIColor.black
   public var font = UIFont.boldSystemFont(ofSize: 12)
   public var userInfo: Any?
+  public var eventInfo: Any? 
   public init() {}
 }
