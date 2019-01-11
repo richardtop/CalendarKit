@@ -108,6 +108,7 @@ public class TimelineStyle: NSCopying {
   public var verticalDiff: CGFloat = 45
   public var verticalInset: CGFloat = 10
   public var leftInset: CGFloat = 53
+  public var eventGap: CGFloat = 0
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = TimelineStyle()
@@ -121,6 +122,7 @@ public class TimelineStyle: NSCopying {
     copy.splitMinuteInterval = splitMinuteInterval
     copy.verticalDiff = verticalDiff
     copy.verticalInset = verticalInset
+    copy.eventGap = eventGap
     return copy
   }
 }

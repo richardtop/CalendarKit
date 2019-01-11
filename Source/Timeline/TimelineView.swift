@@ -254,6 +254,10 @@ public class TimelineView: UIView, ReusableView {
       let descriptor = attributes.descriptor
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
+      eventView.frame = CGRect(x: attributes.frame.minX,
+                               y: attributes.frame.minY,
+                               width: attributes.frame.width - style.eventGap,
+                               height: attributes.frame.height - style.eventGap)
       eventView.updateWithDescriptor(event: descriptor)
     }
   }
