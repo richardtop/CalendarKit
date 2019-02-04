@@ -105,9 +105,9 @@ public class TimelineStyle: NSCopying {
   public var dateStyle : DateStyle = .system
   public var eventsWillOverlap: Bool = false
   public var splitMinuteInterval: Int = 15
-  public var verticalDiff: CGFloat = 90
-  public var verticalInset: CGFloat = 20
-  public var leftInset: CGFloat = 106
+  public var verticalDiff: CGFloat = 160
+  public var verticalInset: CGFloat = 40
+  public var leftInset: CGFloat = 54
   public var eventGap: CGFloat = 0
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
