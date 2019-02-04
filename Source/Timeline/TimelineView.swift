@@ -237,7 +237,7 @@ public class TimelineView: UIView, ReusableView {
     if !isToday {
       nowLine.alpha = 0
     } else {
-		bringSubviewToFront(nowLine)
+		bringSubview(toFront: nowLine)
       nowLine.alpha = 1
       let size = CGSize(width: bounds.size.width, height: 20)
       let rect = CGRect(origin: CGPoint.zero, size: size)
@@ -265,7 +265,8 @@ public class TimelineView: UIView, ReusableView {
   func layoutAllDayEvents() {
     
     //add day view needs to be in front of the nowLine
-	bringSubviewToFront(allDayView)
+	
+	  bringSubview(toFront: allDayView)
   }
   
   /**
