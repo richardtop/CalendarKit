@@ -94,7 +94,7 @@ public class DayHeaderView: UIView {
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     currentSizeClass = sizeClass
     daySymbolsView.isHidden = sizeClass == .regular
-    (pagingViewController.childViewControllers as? [DaySelectorController])?.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
+    (pagingViewController.children as? [DaySelectorController])?.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
   }
 }
 
