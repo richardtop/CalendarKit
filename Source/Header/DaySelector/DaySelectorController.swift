@@ -1,10 +1,3 @@
-//
-//  DaySelectorController.swift
-//  CalendarKit
-//
-//  Created by Richard Topchii on 01/08/2018.
-//
-
 import UIKit
 
 class DaySelectorController: UIViewController {
