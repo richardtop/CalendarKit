@@ -23,6 +23,9 @@ public class TimelinePagerView: UIView {
   open var autoScrollToFirstEvent = false
 
   let timelinePager = PagingScrollView<TimelineContainer>()
+  var pagingViewController = UIPageViewController(transitionStyle: .scroll,
+                                                  navigationOrientation: .horizontal,
+                                                  options: nil)
   var timelineSynchronizer: ScrollSynchronizer?
 
   var style = TimelineStyle()
