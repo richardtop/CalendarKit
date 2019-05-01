@@ -49,7 +49,6 @@ public class DayHeaderView: UIView {
   }
   
   func configurePagingViewController() {
-    // TODO: propagate selected date
     let selectedDate = Date()
     let vc = makeSelectorController(startDate: beginningOfWeek(selectedDate))
     vc.selectedDate = selectedDate
