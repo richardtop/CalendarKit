@@ -2,7 +2,7 @@ import UIKit
 import Neon
 import DateToolsSwift
 
-public protocol TimelinePagerViewDelegate: class {
+public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePagerDidSelectEventView(_ eventView: EventView)
   func timelinePagerDidLongPressEventView(_ eventView: EventView)
   func timelinePagerDidLongPressTimelineAtHour(_ hour: Int)

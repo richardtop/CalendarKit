@@ -3,11 +3,6 @@
 [![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![License](https://img.shields.io/cocoapods/l/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![Platform](https://img.shields.io/cocoapods/p/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
-[![Apps Using](https://img.shields.io/cocoapods/at/CalendarKit.svg?label=Apps%20Using%20CalendarKit)](http://cocoapods.org/pods/CalendarKit)
-[![Downloads](https://img.shields.io/cocoapods/dt/CalendarKit.svg?label=Total%20Downloads)](http://cocoapods.org/pods/CalendarKit)
- <a href="http://starveller.sigsev.io/richardtop/CalendarKit">
-    <img src="http://starveller.sigsev.io/api/repos/richardtop/CalendarKit/badge" alt="stars" />
-  </a>
 
 # CalendarKit
 **CalendarKit** is a fully customizable calendar library written in Swift. It was designed to look similar to iOS Calendar app out-of-the-box, but allow complete customization when needed. To make modifications easy, CalendarKit is composed of multiple small modules. They can be used together, or on their own.
@@ -96,7 +91,7 @@ dayView.updateStyle(style)
 ## Requirements
 
 - iOS 9.0+
-- Swift 4.1+
+- Swift 5+
 
 ## Dependencies
 - **[Neon](https://github.com/mamaral/Neon)** is used for declarative layout
