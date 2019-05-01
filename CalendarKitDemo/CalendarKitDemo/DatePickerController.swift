@@ -1,6 +1,6 @@
 import UIKit
 
-protocol DatePickerControllerDelegate: class {
+protocol DatePickerControllerDelegate: AnyObject {
   func datePicker(controller: DatePickerController, didSelect date: Date?)
 }
 

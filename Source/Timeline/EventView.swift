@@ -2,7 +2,7 @@ import UIKit
 import DateToolsSwift
 import Neon
 
-public protocol EventViewDelegate: class {
+public protocol EventViewDelegate: AnyObject {
   func eventViewDidTap(_ eventView: EventView)
   func eventViewDidLongPress(_ eventview: EventView)
 }
