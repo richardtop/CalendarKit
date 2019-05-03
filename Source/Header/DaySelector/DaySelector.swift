@@ -12,7 +12,7 @@ protocol DaySelectorDelegate: AnyObject {
   func dateSelectorDidSelectDate(_ date: Date)
 }
 
-class DaySelector: UIView, ReusableView {
+class DaySelector: UIView {
 
   weak var delegate: DaySelectorDelegate?
 

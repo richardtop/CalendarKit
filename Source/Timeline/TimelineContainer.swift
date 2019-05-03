@@ -1,6 +1,6 @@
 import UIKit
 
-public class TimelineContainer: UIScrollView, ReusableView {
+public class TimelineContainer: UIScrollView {
   
   public let timeline: TimelineView
   
@@ -14,6 +14,7 @@ public class TimelineContainer: UIScrollView, ReusableView {
   }
   
   override public func layoutSubviews() {
+    super.layoutSubviews()
     timeline.frame = CGRect(x: 0, y: 0, width: width, height: timeline.fullHeight)
     timeline.offsetAllDayView(by: contentOffset.y)
     

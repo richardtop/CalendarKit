@@ -6,7 +6,7 @@ public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
 }
 
-public class TimelineView: UIView, ReusableView {
+public class TimelineView: UIView {
 
   public weak var delegate: TimelineViewDelegate?
 

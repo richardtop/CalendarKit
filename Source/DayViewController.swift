@@ -21,8 +21,8 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     configureDayViewLayoutForHorizontalSizeClass(sizeClass)
   }
 
-  open override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
+  open override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
     dayView.scrollToFirstEventIfNeeded()
   }
 
