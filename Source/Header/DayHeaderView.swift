@@ -4,8 +4,7 @@ import DateToolsSwift
 public class DayHeaderView: UIView {
 
   public var daysInWeek = 7
-
-  public var calendar = Calendar.autoupdatingCurrent
+  public let calendar: Calendar
 
   var style = DayHeaderStyle()
   var currentSizeClass = UIUserInterfaceSizeClass.compact
@@ -26,20 +25,24 @@ public class DayHeaderView: UIView {
   var pagingScrollViewHeight: CGFloat = 40
   var swipeLabelViewHeight: CGFloat = 20
 
-  lazy var daySymbolsView: DaySymbolsView = DaySymbolsView(daysInWeek: self.daysInWeek)
+  let daySymbolsView: DaySymbolsView
   var pagingViewController = UIPageViewController(transitionStyle: .scroll,
                                                        navigationOrientation: .horizontal,
                                                        options: nil)
-  lazy var swipeLabelView: SwipeLabelView = SwipeLabelView()
+  let swipeLabelView: SwipeLabelView
 
-  override init(frame: CGRect) {
-    super.init(frame: frame)
+  init(calendar: Calendar) {
+    self.calendar = calendar
+    let symbols = DaySymbolsView(calendar: calendar)
+    let swipeLabel = SwipeLabelView(calendar: calendar)
+    self.swipeLabelView = swipeLabel
+    self.daySymbolsView = symbols
+    super.init(frame: .zero)
     configure()
   }
 
   required public init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    configure()
+    fatalError("init(coder:) has not been implemented")
   }
 
   func configure() {
@@ -61,6 +64,7 @@ public class DayHeaderView: UIView {
   
   func makeSelectorController(startDate: Date) -> DaySelectorController {
     let new = DaySelectorController()
+    new.calendar = calendar
     new.transitionToHorizontalSizeClass(currentSizeClass)
     new.updateStyle(style.daySelector)
     new.startDate = startDate
@@ -69,10 +73,16 @@ public class DayHeaderView: UIView {
   }
   
   func beginningOfWeek(_ date: Date) -> Date {
+    let weekOfYear = component(component: .weekOfYear, from: date)
+    let yearForWeekOfYear = component(component: .yearForWeekOfYear, from: date)
     return calendar.date(from: DateComponents(calendar: calendar,
                                               weekday: calendar.firstWeekday,
-                                              weekOfYear: date.weekOfYear,
-                                              yearForWeekOfYear: date.yearForWeekOfYear))!
+                                              weekOfYear: weekOfYear,
+                                              yearForWeekOfYear: yearForWeekOfYear))!
+  }
+
+  private func component(component: Calendar.Component, from date: Date) -> Int {
+    return calendar.component(component, from: date)
   }
   
   public func updateStyle(_ newStyle: DayHeaderStyle) {
@@ -105,10 +115,10 @@ extension DayHeaderView: DaySelectorDelegate {
 
 extension DayHeaderView: DayViewStateUpdating {
   public func move(from oldDate: Date, to newDate: Date) {
-    let newDate = newDate.dateOnly()
+    let newDate = newDate.dateOnly(calendar: calendar)
     
     let centerView = pagingViewController.viewControllers![0] as! DaySelectorController
-    let startDate = centerView.startDate.dateOnly()
+    let startDate = centerView.startDate.dateOnly(calendar: calendar)
     
     let daysFrom = newDate.days(from: startDate, calendar: calendar)
     let newStartDate = beginningOfWeek(newDate)

@@ -2,12 +2,21 @@ import UIKit
 import DateToolsSwift
 
 class DateLabel: UILabel, DaySelectorItemProtocol {
-  
+  var calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      updateState()
+    }
+  }
+
   var date = Date() {
     didSet {
       text = String(date.day)
       updateState()
     }
+  }
+
+  private var isToday: Bool {
+    return calendar.isDateInToday(date)
   }
 
   var selected: Bool = false {
@@ -27,7 +36,7 @@ class DateLabel: UILabel, DaySelectorItemProtocol {
     configure()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
   }
@@ -44,17 +53,30 @@ class DateLabel: UILabel, DaySelectorItemProtocol {
   }
 
   func updateState() {
-    let today = date.isToday
+    text = String(component(component: .day, from: date))
+    let today = isToday
     if selected {
       font = style.todayFont
       textColor = style.activeTextColor
       backgroundColor = today ? style.todayActiveBackgroundColor : style.selectedBackgroundColor
     } else {
-      let notTodayColor = date.isWeekend ? style.weekendTextColor : style.inactiveTextColor
+      let notTodayColor = isAWeekend(date: date) ? style.weekendTextColor : style.inactiveTextColor
       font = style.font
       textColor = today ? style.todayInactiveTextColor : notTodayColor
       backgroundColor = style.inactiveBackgroundColor
     }
+  }
+
+  private func component(component: Calendar.Component, from date: Date) -> Int {
+    return calendar.component(component, from: date)
+  }
+
+  private func isAWeekend(date: Date) -> Bool {
+    let weekday = component(component: .weekday, from: date)
+    if weekday == 7 || weekday == 1 {
+      return true
+    }
+    return false
   }
 
   func animate(){

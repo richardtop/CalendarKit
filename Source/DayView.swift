@@ -48,8 +48,8 @@ public class DayView: UIView {
     }
   }
 
-  let dayHeaderView = DayHeaderView()
-  let timelinePagerView = TimelinePagerView()
+  let dayHeaderView: DayHeaderView
+  let timelinePagerView: TimelinePagerView
 
   public var state: DayViewState? {
     didSet {
@@ -58,20 +58,28 @@ public class DayView: UIView {
     }
   }
 
+  public var calendar: Calendar = Calendar.autoupdatingCurrent
+
   var style = CalendarStyle()
 
-  public init(state: DayViewState) {
+  public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
+    self.calendar = calendar
+    self.dayHeaderView = DayHeaderView(calendar: calendar)
+    self.timelinePagerView = TimelinePagerView(calendar: calendar)
     super.init(frame: .zero)
-    self.state = state
     configure()
   }
 
   override public init(frame: CGRect) {
+    self.dayHeaderView = DayHeaderView(calendar: calendar)
+    self.timelinePagerView = TimelinePagerView(calendar: calendar)
     super.init(frame: frame)
     configure()
   }
 
   required public init?(coder aDecoder: NSCoder) {
+    self.dayHeaderView = DayHeaderView(calendar: calendar)
+    self.timelinePagerView = TimelinePagerView(calendar: calendar)
     super.init(coder: aDecoder)
     configure()
   }
@@ -82,7 +90,10 @@ public class DayView: UIView {
     timelinePagerView.delegate = self
 
     if state == nil {
-      state = DayViewState()
+      let newState = DayViewState()
+      newState.calendar = calendar
+      newState.move(to: Date())
+      state = newState
     }
   }
 

@@ -104,6 +104,14 @@ public class TimelineView: UIView {
     }
   }
 
+  public var calendar: Calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      nowLine.calendar = calendar
+      setNeedsLayout()
+    }
+  }
+
+
   init() {
     super.init(frame: .zero)
     frame.size.height = fullHeight
@@ -120,7 +128,7 @@ public class TimelineView: UIView {
   fileprivate lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
 
   var isToday: Bool {
-    return date.isToday
+    return calendar.isDateInToday(date)
   }
 
   override init(frame: CGRect) {
@@ -166,7 +174,7 @@ public class TimelineView: UIView {
         is24hClock = true
         break
       default:
-        is24hClock = Locale.autoupdatingCurrent.uses24hClock()
+        is24hClock = calendar.locale?.uses24hClock() ?? Locale.autoupdatingCurrent.uses24hClock()
         break
     }
     
@@ -180,11 +188,12 @@ public class TimelineView: UIView {
     var hourToRemoveIndex = -1
 
     if isToday {
-      let minute = currentTime.minute
+      let minute = component(component: .minute, from: currentTime)
+      let hour = component(component: .hour, from: currentTime)
       if minute > 39 {
-        hourToRemoveIndex = currentTime.hour + 1
+        hourToRemoveIndex = hour + 1
       } else if minute < 21 {
-        hourToRemoveIndex = currentTime.hour
+        hourToRemoveIndex = hour
       }
     }
 
@@ -192,10 +201,10 @@ public class TimelineView: UIView {
     mutableParagraphStyle.lineBreakMode = .byWordWrapping
     mutableParagraphStyle.alignment = .right
     let paragraphStyle = mutableParagraphStyle.copy() as! NSParagraphStyle
-    
+
     let attributes = [NSAttributedString.Key.paragraphStyle: paragraphStyle,
-					  NSAttributedString.Key.foregroundColor: self.style.timeColor,
-					  NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
+                      NSAttributedString.Key.foregroundColor: self.style.timeColor,
+                      NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
 
     for (i, time) in times.enumerated() {
       let iFloat = CGFloat(i)
@@ -214,7 +223,7 @@ public class TimelineView: UIView {
       context?.restoreGState()
 
       if i == hourToRemoveIndex { continue }
-        
+
       let fontSize = style.font.pointSize
       let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7,
                             width: style.leftInset - 8, height: fontSize + 2)
@@ -282,7 +291,7 @@ public class TimelineView: UIView {
   }
 
   func recalculateEventLayout() {
-    
+
     // only non allDay events need their frames to be set
     let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
       let start1 = attr1.descriptor.startDate
@@ -306,23 +315,23 @@ public class TimelineView: UIView {
         }
         .first!
 
-        if style.eventsWillOverlap {
-            guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
-            let dateInterval = getDateInterval(date: earliestEvent)
-            if event.descriptor.datePeriod.relation(to: dateInterval) == Relation.startInside {
-                overlappingEvents.append(event)
-                continue
-            }
-        } else {
-            let lastEvent = overlappingEvents.last!
-            if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
-                lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
-                overlappingEvents.append(event)
-                continue
-            }
+      if style.eventsWillOverlap {
+        guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
+        let dateInterval = getDateInterval(date: earliestEvent)
+        if event.descriptor.datePeriod.relation(to: dateInterval) == Relation.startInside {
+          overlappingEvents.append(event)
+          continue
         }
-        groupsOfEvents.append(overlappingEvents)
-        overlappingEvents = [event]
+      } else {
+        let lastEvent = overlappingEvents.last!
+        if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
+          lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
+          overlappingEvents.append(event)
+          continue
+        }
+      }
+      groupsOfEvents.append(overlappingEvents)
+      overlappingEvents = [event]
     }
 
     groupsOfEvents.append(overlappingEvents)
@@ -367,25 +376,34 @@ public class TimelineView: UIView {
   }
 
   fileprivate func dateToY(_ date: Date) -> CGFloat {
-    if date.dateOnly() > self.date.dateOnly() {
+    let provisionedDate = date.dateOnly(calendar: calendar)
+    let timelineDate = self.date.dateOnly(calendar: calendar)
+    if provisionedDate > timelineDate {
       // Event ending the next day
       return 24 * style.verticalDiff + style.verticalInset
-    } else if date.dateOnly() < self.date.dateOnly() {
+    } else if provisionedDate < timelineDate {
       // Event starting the previous day
       return style.verticalInset
     } else {
-      let hourY = CGFloat(date.hour) * style.verticalDiff + style.verticalInset
-      let minuteY = CGFloat(date.minute) * style.verticalDiff / 60
+      let hour = component(component: .hour, from: date)
+      let minute = component(component: .minute, from: date)
+      let hourY = CGFloat(hour) * style.verticalDiff + style.verticalInset
+      let minuteY = CGFloat(minute) * style.verticalDiff / 60
       return hourY + minuteY
     }
   }
 
-  fileprivate func getDateInterval(date: Date) -> TimePeriod {
-    let earliestEventMintues = date.minute
+  private func component(component: Calendar.Component, from date: Date) -> Int {
+    return calendar.component(component, from: date)
+  }
+  
+  private func getDateInterval(date: Date) -> TimePeriod {
+    let earliestEventMintues = component(component: .minute, from: date)
     let splitMinuteInterval = style.splitMinuteInterval
-    let minuteRange = (date.minute / splitMinuteInterval) * splitMinuteInterval
-    let beginningRange = Calendar.current.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
-    let endRange = Calendar.current.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
+    let minute = component(component: .minute, from: date)
+    let minuteRange = (minute / splitMinuteInterval) * splitMinuteInterval
+    let beginningRange = calendar.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
+    let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
     return TimePeriod.init(beginning: beginningRange, end: endRange)
   }
 }

@@ -11,6 +11,15 @@ class DaySelectorController: UIViewController {
       daySelector.delegate = newValue
     }
   }
+
+  public var calendar: Calendar {
+    get {
+      return daySelector.calendar
+    }
+    set(newValue) {
+      daySelector.calendar = newValue
+    }
+  }
   
   var startDate: Date {
     get {

@@ -5,6 +5,7 @@ import DateToolsSwift
 public protocol DaySelectorItemProtocol: AnyObject {
   var date: Date {get set}
   var selected: Bool {get set}
+  var calendar: Calendar {get set}
   func updateStyle(_ newStyle: DaySelectorStyle)
 }
 
@@ -16,7 +17,17 @@ class DaySelector: UIView {
 
   weak var delegate: DaySelectorDelegate?
 
-  var calendar = Calendar.autoupdatingCurrent
+  public var calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      updateItemsCalendar()
+    }
+  }
+
+  private func updateItemsCalendar() {
+    items.forEach { (item) in
+      item.calendar = calendar
+    }
+  }
 
   var style = DaySelectorStyle()
 
@@ -52,7 +63,7 @@ class DaySelector: UIView {
   var items = [UIView & DaySelectorItemProtocol]()
 
   init(startDate: Date = Date(), daysInWeek: Int = 7) {
-    self.startDate = startDate.dateOnly()
+    self.startDate = startDate.dateOnly(calendar: calendar)
     self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
     initializeViews(viewType: DateLabel.self)
@@ -60,13 +71,13 @@ class DaySelector: UIView {
   }
 
   override init(frame: CGRect) {
-    startDate = Date().dateOnly()
+    startDate = Date().dateOnly(calendar: calendar)
     super.init(frame: frame)
     initializeViews(viewType: DateLabel.self)
   }
 
-  required init?(coder aDecoder: NSCoder) {
-    startDate = Date().dateOnly()
+  required public init?(coder aDecoder: NSCoder) {
+    startDate = Date().dateOnly(calendar: calendar)
     super.init(coder: aDecoder)
     initializeViews(viewType: DateLabel.self)
   }
@@ -90,14 +101,14 @@ class DaySelector: UIView {
       label.addGestureRecognizer(recognizer)
     }
     configure()
-
+    updateItemsCalendar()
     // Restore last date
     selectedDate = lastSelectedDate
   }
 
   func configure() {
     for (increment, label) in items.enumerated() {
-      label.date = startDate.add(TimeChunk.dateComponents(days: increment))
+      label.date = startDate.add(TimeChunk.dateComponents(days: increment), calendar: calendar)
     }
   }
 
