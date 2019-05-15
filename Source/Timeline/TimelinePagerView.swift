@@ -15,6 +15,8 @@ public class TimelinePagerView: UIView {
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
 
+  public var calendar: Calendar = Calendar.autoupdatingCurrent
+
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
     let offset = (pagingViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
@@ -35,6 +37,12 @@ public class TimelinePagerView: UIView {
     didSet {
       state?.subscribe(client: self)
     }
+  }
+
+  init(calendar: Calendar) {
+    self.calendar = calendar
+    super.init(frame: .zero)
+    configure()
   }
 
   override public init(frame: CGRect) {
@@ -94,7 +102,8 @@ public class TimelinePagerView: UIView {
     let timeline = controller.timeline
     timeline.delegate = self
     timeline.eventViewDelegate = self
-    timeline.date = date.dateOnly()
+    timeline.calendar = calendar
+    timeline.date = date.dateOnly(calendar: calendar)
     updateTimeline(timeline)
     return controller
   }
@@ -114,7 +123,7 @@ public class TimelinePagerView: UIView {
 
   func updateTimeline(_ timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
-    let date = timeline.date.dateOnly()
+    let date = timeline.date.dateOnly(calendar: calendar)
     let events = dataSource.eventsForDate(date)
     let day = TimePeriod(beginning: date,
                          chunk: TimeChunk.dateComponents(days: 1))
@@ -133,8 +142,8 @@ public class TimelinePagerView: UIView {
 
 extension TimelinePagerView: DayViewStateUpdating {
   public func move(from oldDate: Date, to newDate: Date) {
-    let oldDate = oldDate.dateOnly()
-    let newDate = newDate.dateOnly()
+    let oldDate = oldDate.dateOnly(calendar: calendar)
+    let newDate = newDate.dateOnly(calendar: calendar)
     let newController = configureTimelineController(date: newDate)
     if newDate.isEarlier(than: oldDate) {
       pagingViewController.setViewControllers([newController], direction: .reverse, animated: true, completion: nil)
@@ -147,7 +156,7 @@ extension TimelinePagerView: DayViewStateUpdating {
 extension TimelinePagerView: UIPageViewControllerDataSource {
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     guard let containerController = viewController as? TimelineContainerController  else {return nil}
-    let previousDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: -1))
+    let previousDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: -1), calendar: calendar)
     let vc = configureTimelineController(date: previousDate)
     let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
     vc.pendingContentOffset = offset
@@ -156,7 +165,7 @@ extension TimelinePagerView: UIPageViewControllerDataSource {
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
     guard let containerController = viewController as? TimelineContainerController  else {return nil}
-    let nextDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: 1))
+    let nextDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: 1), calendar: calendar)
     let vc = configureTimelineController(date: nextDate)
     let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
     vc.pendingContentOffset = offset

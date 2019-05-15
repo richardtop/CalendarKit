@@ -7,14 +7,19 @@ class SwipeLabelView: UIView {
     case Backward
   }
 
+  var calendar = Calendar.autoupdatingCurrent
   weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)
     }
     didSet {
       state?.subscribe(client: self)
-      labels.first!.text = state?.selectedDate.format(with: .full)
+      updateLabelText()
     }
+  }
+
+  private func updateLabelText() {
+    labels.first!.text = formattedDate(date: state!.selectedDate)
   }
 
   var firstLabel: UILabel {
@@ -29,7 +34,8 @@ class SwipeLabelView: UIView {
 
   var style = SwipeLabelStyle()
 
-  init() {
+  init(calendar: Calendar = Calendar.autoupdatingCurrent) {
+    self.calendar = calendar
     super.init(frame: .zero)
     configure()
   }
@@ -39,7 +45,7 @@ class SwipeLabelView: UIView {
     configure()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     configure()
   }
@@ -92,8 +98,17 @@ extension SwipeLabelView: DayViewStateUpdating {
   func move(from oldDate: Date, to newDate: Date) {
     guard newDate != oldDate
       else { return }
-    labels.last!.text = newDate.format(with: .full)
+    labels.last!.text = formattedDate(date: newDate)
     let direction: AnimationDirection = newDate.isLater(than: oldDate) ? .Forward : .Backward
     animate(direction)
+  }
+
+  private func formattedDate(date: Date) -> String {
+    let timezone = calendar.timeZone
+    let formatter = DateFormatter()
+    formatter.dateStyle = .full
+    formatter.timeStyle = .none
+    formatter.timeZone = timezone
+    return formatter.string(from: date)
   }
 }

@@ -12,14 +12,15 @@ class DaySymbolsView: UIView {
     initializeViews()
   }
 
-  required init?(coder aDecoder: NSCoder) {
+  required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
     initializeViews()
   }
 
-  init(daysInWeek: Int = 7) {
-    super.init(frame: CGRect.zero)
+  init(daysInWeek: Int = 7, calendar: Calendar = Calendar.autoupdatingCurrent) {
+    self.calendar = calendar
     self.daysInWeek = daysInWeek
+    super.init(frame: CGRect.zero)
     initializeViews()
   }
 
