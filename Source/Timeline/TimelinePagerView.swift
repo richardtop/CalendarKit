@@ -139,6 +139,31 @@ public class TimelinePagerView: UIView {
       }
     }
   }
+
+  public func create(event: EventDescriptor) {
+    let eventView = EventView()
+    eventView.updateWithDescriptor(event: event)
+    let recognizer = UIPanGestureRecognizer(target: self, action: #selector(newEventDidPan(_:)))
+    eventView.addGestureRecognizer(recognizer)
+    addSubview(eventView)
+    // layout algo
+    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+      let timeline = currentTimeline.timeline
+      let offset = currentTimeline.container.contentOffset.y
+      let yStart = timeline.dateToY(event.startDate) - offset
+      let yEnd = timeline.dateToY(event.endDate) - offset
+
+      let newRect = CGRect(x: timeline.style.leftInset,
+                           y: yStart,
+                           width: timeline.calendarWidth,
+                           height: yEnd - yStart)
+      eventView.frame = newRect
+    }
+  }
+
+  @objc private func newEventDidPan(_ sender: UIPanGestureRecognizer){
+    print("event did pan")
+  }
 }
 
 extension TimelinePagerView: DayViewStateUpdating {

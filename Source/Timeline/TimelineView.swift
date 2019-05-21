@@ -378,7 +378,7 @@ public class TimelineView: UIView {
     return 1 / UIScreen.main.scale
   }
 
-  fileprivate func dateToY(_ date: Date) -> CGFloat {
+  public func dateToY(_ date: Date) -> CGFloat {
     let provisionedDate = date.dateOnly(calendar: calendar)
     let timelineDate = self.date.dateOnly(calendar: calendar)
     if provisionedDate > timelineDate {

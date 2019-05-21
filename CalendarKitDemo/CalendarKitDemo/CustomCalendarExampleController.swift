@@ -216,5 +216,29 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
   override func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
     print("Did long press timeline at date \(date)")
+
+    let startDate = date
+      let event = Event()
+      let duration = Int(arc4random_uniform(160) + 60)
+      let datePeriod = TimePeriod(beginning: startDate,
+                                  chunk: TimeChunk.dateComponents(minutes: duration))
+      event.startDate = datePeriod.beginning!
+      event.endDate = datePeriod.end!
+
+      var info = data[Int(arc4random_uniform(UInt32(data.count)))]
+      let timezone = dayView.calendar.timeZone
+      info.append(datePeriod.beginning!.format(with: "dd.MM.YYYY", timeZone: timezone))
+      info.append("\(datePeriod.beginning!.format(with: "HH:mm", timeZone: timezone)) - \(datePeriod.end!.format(with: "HH:mm", timeZone: timezone))")
+      event.text = info.reduce("", {$0 + $1 + "\n"})
+      event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
+
+      // Event styles are updated independently from CalendarStyle
+      // hence the need to specify exact colors in case of Dark style
+      if currentStyle == .Dark {
+        event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
+        event.backgroundColor = event.color.withAlphaComponent(0.6)
+      }
+
+    dayView.create(event: event)
   }
 }
