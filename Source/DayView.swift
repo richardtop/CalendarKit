@@ -161,13 +161,3 @@ extension DayView: TimelinePagerViewDelegate {
     delegate?.dayView(dayView: self, didLongPressTimelineAt: date)
   }
 }
-
-extension DayView: TimelineViewDelegate {
-  public func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date) {
-    
-  }
-
-  public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
-    delegate?.dayViewDidLongPressTimelineAtHour(hour)
-  }
-}
