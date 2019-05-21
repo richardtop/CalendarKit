@@ -4,6 +4,7 @@ import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
+  func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
 }
 
 public class TimelineView: UIView {
@@ -158,7 +159,9 @@ public class TimelineView: UIView {
       let pressedLocation = gestureRecognizer.location(in: self)
       let percentOfHeight = (pressedLocation.y - style.verticalInset) / (bounds.height - (style.verticalInset * 2))
       let pressedAtHour: Int = Int(24 * percentOfHeight)
+
       delegate?.timelineView(self, didLongPressAt: pressedAtHour)
+      delegate?.timelineView(self, didLongPressAt: Date())
     }
   }
 
