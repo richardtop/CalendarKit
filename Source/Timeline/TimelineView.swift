@@ -161,7 +161,7 @@ public class TimelineView: UIView {
       let pressedAtHour: Int = Int(24 * percentOfHeight)
 
       delegate?.timelineView(self, didLongPressAt: pressedAtHour)
-      delegate?.timelineView(self, didLongPressAt: Date())
+      delegate?.timelineView(self, didLongPressAt: yToDate(pressedLocation.y))
     }
   }
 
@@ -394,6 +394,14 @@ public class TimelineView: UIView {
       let minuteY = CGFloat(minute) * style.verticalDiff / 60
       return hourY + minuteY
     }
+  }
+
+  private func yToDate(_ y: CGFloat) -> Date {
+    let timeValue = y - style.verticalInset
+    let hour = Int(timeValue / style.verticalDiff)
+    let minute = Int(timeValue - CGFloat(hour) * style.verticalDiff)
+    let newDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: date)
+    return newDate!
   }
 
   private func component(component: Calendar.Component, from date: Date) -> Int {
