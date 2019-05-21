@@ -130,6 +130,10 @@ public class DayView: UIView {
     dayHeaderView.transitionToHorizontalSizeClass(sizeClass)
     updateStyle(style)
   }
+
+  public func create(event: EventDescriptor) {
+    
+  }
 }
 
 extension DayView: EventViewDelegate {
