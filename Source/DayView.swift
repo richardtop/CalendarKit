@@ -132,7 +132,7 @@ public class DayView: UIView {
   }
 
   public func create(event: EventDescriptor) {
-    
+    timelinePagerView.create(event: event)
   }
 }
 
