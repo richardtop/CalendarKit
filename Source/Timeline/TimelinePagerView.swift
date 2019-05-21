@@ -8,6 +8,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePagerDidLongPressTimelineAtHour(_ hour: Int)
   func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date)
+  func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
 }
 
 public class TimelinePagerView: UIView {
@@ -189,6 +190,9 @@ extension TimelinePagerView: UIPageViewControllerDelegate {
 extension TimelinePagerView: TimelineViewDelegate {
   public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
     delegate?.timelinePagerDidLongPressTimelineAtHour(hour)
+  }
+  public func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date) {
+    delegate?.timelinePager(timelinePager: self, didLongPressTimelineAt: date)
   }
 }
 
