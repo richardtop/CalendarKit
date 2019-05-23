@@ -185,10 +185,21 @@ public class TimelineView: UIView {
     setNeedsDisplay()
   }
 
+  public var accentedDate: Date?
+
   override public func draw(_ rect: CGRect) {
     super.draw(rect)
 
     var hourToRemoveIndex = -1
+
+    var accentedHour = -1
+    var accentedMinute = -1
+
+    if let accentedDate = accentedDate {
+      accentedHour = component(component: .hour, from: accentedDate)
+      let minute = component(component: .minute, from: accentedDate)
+      accentedMinute = minute
+    }
 
     if isToday {
       let minute = component(component: .minute, from: currentTime)
@@ -234,6 +245,27 @@ public class TimelineView: UIView {
       let timeString = NSString(string: time)
 
       timeString.draw(in: timeRect, withAttributes: attributes)
+
+      guard 5...55 ~= accentedMinute else {continue}
+
+      // refactor :)
+
+      if 0...20 ~= accentedMinute {
+        accentedMinute = 15
+      } else if 21...35 ~= accentedMinute {
+        accentedMinute = 30
+      } else {
+        accentedMinute = 45
+      }
+
+      if i == accentedHour {
+        print("accented hour is : \(accentedHour)")
+        print("accented minute is  : \(accentedMinute)")
+        let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7 + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+                              width: style.leftInset - 8, height: fontSize + 2)
+        let timeString = NSString(string: ":\(accentedMinute)")
+        timeString.draw(in: timeRect, withAttributes: attributes)
+      }
     }
   }
 
@@ -396,7 +428,7 @@ public class TimelineView: UIView {
     }
   }
 
-  private func yToDate(_ y: CGFloat) -> Date {
+  public func yToDate(_ y: CGFloat) -> Date {
     let timeValue = y - style.verticalInset
     let hour = Int(timeValue / style.verticalDiff)
     let minute = Int(timeValue - CGFloat(hour) * style.verticalDiff)

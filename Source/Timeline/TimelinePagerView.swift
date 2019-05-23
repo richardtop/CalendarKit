@@ -185,10 +185,25 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
       pendingEvent.frame.origin.x += diff.x
       pendingEvent.frame.origin.y += diff.y
       prevOffset = newCoord
+      if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+        let timeline = currentTimeline.timeline
+        let orig = pendingEvent.frame.origin
+        let converted = timeline.convert(CGPoint.zero, from: pendingEvent)
+        let date = timeline.yToDate(converted.y)
+        print(date)
+        timeline.accentedDate = date
+        timeline.setNeedsDisplay()
+      }
+
     }
     print("pan gesture")
 
     if sender.state == .ended {
+      if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+        let timeline = currentTimeline.timeline
+        timeline.accentedDate = nil
+        setNeedsDisplay()
+      }
       prevOffset = .zero
       pendingEvent = nil
       print("ENDED!!! velocity: \(sender.velocity(in: self))")
