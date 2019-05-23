@@ -11,7 +11,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
 }
 
-public class TimelinePagerView: UIView {
+public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
@@ -30,6 +30,11 @@ public class TimelinePagerView: UIView {
                                                   navigationOrientation: .horizontal,
                                                   options: nil)
   var style = TimelineStyle()
+
+  lazy var panGestureRecoognizer: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+  public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    return true
+  }
 
   weak var state: DayViewState? {
     willSet(newValue) {
@@ -62,6 +67,8 @@ public class TimelinePagerView: UIView {
     pagingViewController.dataSource = self
     pagingViewController.delegate = self
     addSubview(pagingViewController.view!)
+    addGestureRecognizer(panGestureRecoognizer)
+    panGestureRecoognizer.delegate = self
   }
 
   public func updateStyle(_ newStyle: TimelineStyle) {
@@ -140,16 +147,19 @@ public class TimelinePagerView: UIView {
     }
   }
 
+
+  // Event creation prototype
+  var pendingEvent: EventView?
+
   public func create(event: EventDescriptor) {
     let eventView = EventView()
     eventView.updateWithDescriptor(event: event)
-    let recognizer = UIPanGestureRecognizer(target: self, action: #selector(newEventDidPan(_:)))
-    eventView.addGestureRecognizer(recognizer)
     addSubview(eventView)
     // layout algo
     if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
       let timeline = currentTimeline.timeline
       let offset = currentTimeline.container.contentOffset.y
+      // algo needs to be extracted to a separate object
       let yStart = timeline.dateToY(event.startDate) - offset
       let yEnd = timeline.dateToY(event.endDate) - offset
 
@@ -159,10 +169,30 @@ public class TimelinePagerView: UIView {
                            height: yEnd - yStart)
       eventView.frame = newRect
     }
+    pendingEvent = eventView
   }
 
-  @objc private func newEventDidPan(_ sender: UIPanGestureRecognizer){
-    print("event did pan")
+
+  var prevOffset: CGPoint = .zero
+  @objc func pan(_ sender: UIPanGestureRecognizer) {
+    if let pendingEvent = pendingEvent {
+      let newCoord = sender.translation(in: pendingEvent)
+      if sender.state == .began {
+        prevOffset = newCoord
+      }
+
+      let diff = CGPoint(x: newCoord.x - prevOffset.x, y: newCoord.y - prevOffset.y)
+      pendingEvent.frame.origin.x += diff.x
+      pendingEvent.frame.origin.y += diff.y
+      prevOffset = newCoord
+    }
+    print("pan gesture")
+
+    if sender.state == .ended {
+      prevOffset = .zero
+      pendingEvent = nil
+      print("ENDED!!! velocity: \(sender.velocity(in: self))")
+    }
   }
 }
 
