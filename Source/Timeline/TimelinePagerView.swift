@@ -197,11 +197,9 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
         let orig = pendingEvent.frame.origin
         let converted = timeline.convert(CGPoint.zero, from: pendingEvent)
         let date = timeline.yToDate(converted.y)
-        print(date)
         timeline.accentedDate = date
         timeline.setNeedsDisplay()
       }
-
     }
     print("pan gesture")
 
@@ -221,6 +219,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
       }
 
       prevOffset = .zero
+      pendingEvent?.removeFromSuperview()
       pendingEvent = nil
     }
   }
