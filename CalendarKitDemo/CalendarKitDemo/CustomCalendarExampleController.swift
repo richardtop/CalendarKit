@@ -239,6 +239,10 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
         event.backgroundColor = event.color.withAlphaComponent(0.6)
       }
 
-    dayView.create(event: event)
+    dayView.create(event: event, animated: true)
+  }
+
+  override func dayView(dayView: DayView, didFinishEditing event: EventDescriptor) {
+    print("did finish editing \(event)")
   }
 }

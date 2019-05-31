@@ -91,4 +91,19 @@ open class EventView: UIView {
     super.layoutSubviews()
     textView.fillSuperview()
   }
+
+  public func animateCreation() {
+    transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+    func scaleAnimation() {
+      transform = .identity
+    }
+    UIView.animate(withDuration: 0.2,
+                   delay: 0,
+                   usingSpringWithDamping: 0.2,
+                   initialSpringVelocity: 10,
+                   options: [],
+                   animations: scaleAnimation,
+                   completion: nil)
+  }
 }
+

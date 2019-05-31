@@ -9,6 +9,9 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
+
+  // Editing
+  func timelinePager(timelinePager: TimelinePagerView, didFinishEditing event: EventDescriptor)
 }
 
 public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
@@ -151,7 +154,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
   // Event creation prototype
   var pendingEvent: EventView?
 
-  public func create(event: EventDescriptor) {
+  public func create(event: EventDescriptor, animated: Bool) {
     let eventView = EventView()
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
@@ -168,6 +171,10 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
                            width: timeline.calendarWidth,
                            height: yEnd - yStart)
       eventView.frame = newRect
+
+      if animated {
+        eventView.animateCreation()
+      }
     }
     pendingEvent = eventView
   }
@@ -204,9 +211,17 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
         timeline.accentedDate = nil
         setNeedsDisplay()
       }
+
+      print("ENDED!!! velocity: \(sender.velocity(in: self))")
+
+      // TODO: Animate cancellation
+
+      if let descriptor = pendingEvent?.descriptor {
+        delegate?.timelinePager(timelinePager: self, didFinishEditing: descriptor)
+      }
+
       prevOffset = .zero
       pendingEvent = nil
-      print("ENDED!!! velocity: \(sender.velocity(in: self))")
     }
   }
 }
