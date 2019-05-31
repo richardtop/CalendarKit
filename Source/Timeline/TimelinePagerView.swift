@@ -219,9 +219,13 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
       }
 
       prevOffset = .zero
-      pendingEvent?.removeFromSuperview()
-      pendingEvent = nil
     }
+  }
+
+  public func cancelPendingEventCreation() {
+    prevOffset = .zero
+    pendingEvent?.removeFromSuperview()
+    pendingEvent = nil
   }
 }
 
