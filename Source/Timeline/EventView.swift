@@ -61,7 +61,10 @@ open class EventView: UIView {
     descriptor = event
     backgroundColor = event.backgroundColor
     color = event.color
-    eventResizeHandles.forEach{$0.borderColor = event.color}
+    eventResizeHandles.forEach{
+      $0.borderColor = event.color
+      $0.isHidden = !event.isEditing
+    }
     setNeedsDisplay()
     setNeedsLayout()
   }
