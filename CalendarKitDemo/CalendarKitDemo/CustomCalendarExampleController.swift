@@ -217,6 +217,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   override func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
     print("Did long press timeline at date \(date)")
 
+
     let startDate = date
       let event = Event()
       let duration = Int(arc4random_uniform(160) + 60)
@@ -239,7 +240,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
         event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
         event.backgroundColor = event.color.withAlphaComponent(0.6)
       }
-
+    print("Creating a new event")
     dayView.create(event: event, animated: true)
   }
 
