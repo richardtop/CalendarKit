@@ -260,8 +260,6 @@ public class TimelineView: UIView {
       }
 
       if i == accentedHour {
-        print("accented hour is : \(accentedHour)")
-        print("accented minute is  : \(accentedMinute)")
         let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7 + style.verticalDiff * (CGFloat(accentedMinute) / 60),
                               width: style.leftInset - 8, height: fontSize + 2)
         let timeString = NSString(string: ":\(accentedMinute)")
