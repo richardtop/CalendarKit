@@ -126,7 +126,8 @@ public class TimelineView: UIView {
   fileprivate lazy var _12hTimes: [String] = Generator.timeStrings12H()
   fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
   
-  fileprivate lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+  public lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                            action: #selector(longPress(_:)))
 
   var isToday: Bool {
     return calendar.isDateInToday(date)

@@ -34,7 +34,8 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
                                                   options: nil)
   var style = TimelineStyle()
 
-  lazy var panGestureRecoognizer: UIPanGestureRecognizer = UIPanGestureRecognizer(target: self, action: #selector(pan(_:)))
+  lazy var panGestureRecoognizer = UIPanGestureRecognizer(target: self,
+                                                          action: #selector(handlePanGesture(_:)))
   public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     return true
   }
@@ -111,6 +112,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
     let controller = TimelineContainerController()
     updateStyleOfTimelineContainer(controller: controller)
     let timeline = controller.timeline
+    timeline.longPressGestureRecognizer.addTarget(self, action: #selector(timelineDidLongPress(_:)))
     timeline.delegate = self
     timeline.eventViewDelegate = self
     timeline.calendar = calendar
@@ -152,7 +154,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
 
 
   // Event creation prototype
-  var pendingEvent: EventView?
+  private var pendingEvent: EventView?
 
   public func create(event: EventDescriptor, animated: Bool) {
     let eventView = EventView()
@@ -180,8 +182,8 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
   }
 
 
-  var prevOffset: CGPoint = .zero
-  @objc func pan(_ sender: UIPanGestureRecognizer) {
+  private var prevOffset: CGPoint = .zero
+  @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
     if let pendingEvent = pendingEvent {
       let newCoord = sender.translation(in: pendingEvent)
       if sender.state == .began {
@@ -194,38 +196,43 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
       prevOffset = newCoord
       if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
         let timeline = currentTimeline.timeline
-        let orig = pendingEvent.frame.origin
         let converted = timeline.convert(CGPoint.zero, from: pendingEvent)
         let date = timeline.yToDate(converted.y)
         timeline.accentedDate = date
         timeline.setNeedsDisplay()
       }
     }
-    print("pan gesture")
 
     if sender.state == .ended {
-      if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
-        let timeline = currentTimeline.timeline
-        timeline.accentedDate = nil
-        setNeedsDisplay()
-      }
-
-      print("ENDED!!! velocity: \(sender.velocity(in: self))")
-
-      // TODO: Animate cancellation
-
-      if let descriptor = pendingEvent?.descriptor {
-        delegate?.timelinePager(timelinePager: self, didFinishEditing: descriptor)
-      }
-
-      prevOffset = .zero
+      commitEditing()
     }
+  }
+
+  private func commitEditing() {
+    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+      let timeline = currentTimeline.timeline
+      timeline.accentedDate = nil
+      setNeedsDisplay()
+    }
+    // TODO: Animate cancellation
+
+    if let descriptor = pendingEvent?.descriptor {
+      delegate?.timelinePager(timelinePager: self, didFinishEditing: descriptor)
+    }
+
+    prevOffset = .zero
   }
 
   public func cancelPendingEventCreation() {
     prevOffset = .zero
     pendingEvent?.removeFromSuperview()
     pendingEvent = nil
+  }
+
+  @objc private func timelineDidLongPress(_ sender: UILongPressGestureRecognizer) {
+    if sender.state == .ended {
+      commitEditing()
+    }
   }
 }
 
