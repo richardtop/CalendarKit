@@ -216,7 +216,9 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
     }
     // TODO: Animate cancellation
 
-    if let descriptor = pendingEvent?.descriptor {
+    if let editedEventView = pendingEvent,
+      let descriptor = editedEventView.descriptor {
+      update(descriptor: descriptor, with: editedEventView)
       delegate?.timelinePager(timelinePager: self, didFinishEditing: descriptor)
     }
 
@@ -232,6 +234,20 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
   @objc private func timelineDidLongPress(_ sender: UILongPressGestureRecognizer) {
     if sender.state == .ended {
       commitEditing()
+    }
+  }
+
+  private func update(descriptor: EventDescriptor, with eventView: EventView) {
+    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+      let timeline = currentTimeline.timeline
+      let eventFrame = eventView.frame
+      let converted = convert(eventFrame, to: timeline)
+      let beginningY = converted.minY
+      let endY = converted.maxY
+      let beginning = timeline.yToDate(beginningY)
+      let end = timeline.yToDate(endY)
+      descriptor.startDate = beginning
+      descriptor.endDate = end
     }
   }
 }
