@@ -217,7 +217,6 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   override func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
     print("Did long press timeline at date \(date)")
 
-
     let startDate = date
       let event = Event()
       let duration = Int(arc4random_uniform(160) + 60)
@@ -246,6 +245,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
   override func dayView(dayView: DayView, didFinishEditing event: EventDescriptor) {
     print("did finish editing \(event)")
+    print("new startDate: \(event.startDate) new endDate: \(event.endDate)")
     dayView.cancelPendingEventCreation()
   }
 }
