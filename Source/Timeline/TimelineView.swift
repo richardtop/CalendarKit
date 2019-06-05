@@ -387,7 +387,7 @@ public class TimelineView: UIView {
   func prepareEventViews() {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
-    for _ in 0...regularLayoutAttributes.endIndex {
+    for _ in regularLayoutAttributes {
       let newView = pool.dequeue()
       newView.delegate = eventViewDelegate
       if newView.superview == nil {
