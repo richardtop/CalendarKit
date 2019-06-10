@@ -1,7 +1,7 @@
 import UIKit
 import Neon
 
-class CurrentTimeIndicator: UIView {
+@objc class CurrentTimeIndicator: UIView {
     
   let padding : CGFloat = 5
   var leftInset: CGFloat = 53
@@ -9,6 +9,16 @@ class CurrentTimeIndicator: UIView {
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
       updateDate()
+    }
+  }
+
+  private var timer: Timer?
+  @objc private func timerDidFire(_ sender: Timer) {
+    let currentDate = Date()
+    let currentMinute = calendar.component(.minute, from: currentDate)
+    let displayedMinute = calendar.component(.minute, from: date)
+    if currentMinute != displayedMinute {
+      date = currentDate
     }
   }
 
@@ -60,6 +70,12 @@ class CurrentTimeIndicator: UIView {
     timeLabel.baselineAdjustment = .alignCenters
     
     updateStyle(style)
+    timer = Timer(timeInterval: 1,
+                  target: self,
+                  selector: #selector(timerDidFire(_:)),
+                  userInfo: nil,
+                  repeats: true)
+    RunLoop.current.add(timer!, forMode: .common)
   }
     
   func updateDate() {
