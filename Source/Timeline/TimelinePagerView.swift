@@ -179,6 +179,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
       }
     }
     pendingEvent = eventView
+    accentDateForPendingEvent()
   }
 
 
@@ -194,17 +195,21 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
       pendingEvent.frame.origin.x += diff.x
       pendingEvent.frame.origin.y += diff.y
       prevOffset = newCoord
-      if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
-        let timeline = currentTimeline.timeline
-        let converted = timeline.convert(CGPoint.zero, from: pendingEvent)
-        let date = timeline.yToDate(converted.y)
-        timeline.accentedDate = date
-        timeline.setNeedsDisplay()
-      }
+      accentDateForPendingEvent()
     }
 
     if sender.state == .ended {
       commitEditing()
+    }
+  }
+
+  private func accentDateForPendingEvent() {
+    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+      let timeline = currentTimeline.timeline
+      let converted = timeline.convert(CGPoint.zero, from: pendingEvent)
+      let date = timeline.yToDate(converted.y)
+      timeline.accentedDate = date
+      timeline.setNeedsDisplay()
     }
   }
 
