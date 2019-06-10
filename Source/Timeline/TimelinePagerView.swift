@@ -145,10 +145,19 @@ extension TimelinePagerView: DayViewStateUpdating {
     let oldDate = oldDate.dateOnly(calendar: calendar)
     let newDate = newDate.dateOnly(calendar: calendar)
     let newController = configureTimelineController(date: newDate)
+
+    delegate?.timelinePager(timelinePager: self, willMoveTo: newDate)
+
+    func completionHandler(_ completion: Bool) {
+      pagingViewController.viewControllers?.first?.view.setNeedsLayout()
+      scrollToFirstEventIfNeeded()
+      delegate?.timelinePager(timelinePager: self, willMoveTo: newDate)
+    }
+
     if newDate.isEarlier(than: oldDate) {
-      pagingViewController.setViewControllers([newController], direction: .reverse, animated: true, completion: nil)
+      pagingViewController.setViewControllers([newController], direction: .reverse, animated: true, completion: completionHandler(_:))
     } else if newDate.isLater(than: oldDate) {
-      pagingViewController.setViewControllers([newController], direction: .forward, animated: true, completion: nil)
+      pagingViewController.setViewControllers([newController], direction: .forward, animated: true, completion: completionHandler(_:))
     }
   }
 }
