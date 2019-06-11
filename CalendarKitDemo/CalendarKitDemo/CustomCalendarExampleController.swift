@@ -243,7 +243,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     dayView.create(event: event, animated: true)
   }
 
-  override func dayView(dayView: DayView, didFinishEditing event: EventDescriptor) {
+  override func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
     print("did finish editing \(event)")
     print("new startDate: \(event.startDate) new endDate: \(event.endDate)")
     dayView.cancelPendingEventCreation()

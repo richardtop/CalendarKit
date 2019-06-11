@@ -11,7 +11,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
 
   // Editing
-  func timelinePager(timelinePager: TimelinePagerView, didFinishEditing event: EventDescriptor)
+  func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
 public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
@@ -224,7 +224,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
     if let editedEventView = pendingEvent,
       let descriptor = editedEventView.descriptor {
       update(descriptor: descriptor, with: editedEventView)
-      delegate?.timelinePager(timelinePager: self, didFinishEditing: descriptor)
+      delegate?.timelinePager(timelinePager: self, didUpdate: descriptor)
     }
 
     prevOffset = .zero
