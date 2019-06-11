@@ -3,6 +3,7 @@ import Neon
 import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
+  func timelineViewDidTap(_ timelineView: TimelineView)
   func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
   func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
 }
@@ -129,6 +130,9 @@ public class TimelineView: UIView {
   public lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
                                                                             action: #selector(longPress(_:)))
 
+  public lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                action: #selector(tap(_:)))
+
   var isToday: Bool {
     return calendar.isDateInToday(date)
   }
@@ -152,6 +156,7 @@ public class TimelineView: UIView {
     
     // Add long press gesture recognizer
     addGestureRecognizer(longPressGestureRecognizer)
+    addGestureRecognizer(tapGestureRecognizer)
   }
   
   @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
@@ -164,6 +169,10 @@ public class TimelineView: UIView {
       delegate?.timelineView(self, didLongPressAt: pressedAtHour)
       delegate?.timelineView(self, didLongPressAt: yToDate(pressedLocation.y))
     }
+  }
+
+  @objc func tap(_ sender: UITapGestureRecognizer) {
+    delegate?.timelineViewDidTap(self)
   }
 
   public func updateStyle(_ newStyle: TimelineStyle) {
