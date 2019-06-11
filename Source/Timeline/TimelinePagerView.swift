@@ -6,6 +6,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePagerDidSelectEventView(_ eventView: EventView)
   func timelinePagerDidLongPressEventView(_ eventView: EventView)
   func timelinePagerDidLongPressTimelineAtHour(_ hour: Int)
+  func timelinePagerDidTap(timelinePager: TimelinePagerView)
   func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
@@ -218,16 +219,39 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
       let timeline = currentTimeline.timeline
       timeline.accentedDate = nil
       setNeedsDisplay()
-    }
-    // TODO: Animate cancellation
 
-    if let editedEventView = pendingEvent,
-      let descriptor = editedEventView.descriptor {
-      update(descriptor: descriptor, with: editedEventView)
-      delegate?.timelinePager(timelinePager: self, didUpdate: descriptor)
-    }
+      // TODO: Animate cancellation
 
-    prevOffset = .zero
+      if let editedEventView = pendingEvent,
+        let descriptor = editedEventView.descriptor {
+
+        let startY = timeline.dateToY(descriptor.datePeriod.beginning!)
+        let calendarWidth = timeline.calendarWidth
+        let x = style.leftInset
+
+        var eventFrame = editedEventView.frame
+        eventFrame.origin.x = x
+
+        func animateEventSnap() {
+          editedEventView.frame = eventFrame
+        }
+
+        func completionHandler(_ completion: Bool) {
+          update(descriptor: descriptor, with: editedEventView)
+          delegate?.timelinePager(timelinePager: self, didUpdate: descriptor)
+        }
+
+        UIView.animate(withDuration: 0.2,
+                       delay: 0,
+                       usingSpringWithDamping: 0.8,
+                       initialSpringVelocity: 5,
+                       options: [],
+                       animations: animateEventSnap,
+                       completion: completionHandler(_:))
+      }
+
+      prevOffset = .zero
+    }
   }
 
   public func cancelPendingEventCreation() {
@@ -313,6 +337,9 @@ extension TimelinePagerView: UIPageViewControllerDelegate {
 }
 
 extension TimelinePagerView: TimelineViewDelegate {
+  public func timelineViewDidTap(_ timelineView: TimelineView) {
+    delegate?.timelinePagerDidTap(timelinePager: self)
+  }
   public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
     delegate?.timelinePagerDidLongPressTimelineAtHour(hour)
   }
