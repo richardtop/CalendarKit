@@ -66,6 +66,11 @@ override func dayViewDidLongPressEventView(_ eventView: EventView) {
   print("Event has been longPressed: \(eventView.data)")
 }
 ```
+
+## Questions
+If you have a specific programming **question** related to the library, please ask it on StackOverflow using the ['CalendarKit' tag](https://stackoverflow.com/questions/tagged/calendarkit). For **bug reports** and **feature requests** create a new [GitHub Issue](https://github.com/richardtop/CalendarKit/issues).
+
+
 ## Localization
 CalendarKit supports localization and uses iOS default locale to display month and day names. First day of the week is also selected according to iOS locale. Here are few examples:
 

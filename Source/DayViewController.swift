@@ -2,8 +2,24 @@ import UIKit
 import DateToolsSwift
 
 open class DayViewController: UIViewController, EventDataSource, DayViewDelegate {
-
   public lazy var dayView: DayView = DayView()
+  public var dataSource: EventDataSource? {
+    get {
+      return dayView.dataSource
+    }
+    set(value) {
+      dayView.dataSource = value
+    }
+  }
+
+  public var delegate: DayViewDelegate? {
+    get {
+      return dayView.delegate
+    }
+    set(value) {
+      dayView.delegate = value
+    }
+  }
 
   public var calendar = Calendar.autoupdatingCurrent {
     didSet {
@@ -19,8 +35,8 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     super.viewDidLoad()
     edgesForExtendedLayout = []
     view.tintColor = UIColor.red
-    dayView.dataSource = self
-    dayView.delegate = self
+    dataSource = self
+    delegate = self
     dayView.reloadData()
 
     let sizeClass = traitCollection.horizontalSizeClass
