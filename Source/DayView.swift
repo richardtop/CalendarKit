@@ -123,7 +123,7 @@ public class DayView: UIView {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: headerHeight)
+    dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: layoutMargins.top, otherSize: headerHeight)
     timelinePagerView.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
   }
 

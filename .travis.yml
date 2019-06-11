@@ -5,6 +5,7 @@ before_install:
 - travis_wait 35; cd CalendarKitDemo; pod update
 
 script:
+- set -o pipefail
 - xcodebuild build -workspace CalendarKitDemo.xcworkspace -scheme "CalendarKitDemo" -sdk iphonesimulator | xcpretty
 
 notifications:
