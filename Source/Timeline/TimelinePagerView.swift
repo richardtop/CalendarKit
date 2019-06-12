@@ -15,7 +15,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
-public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
+public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate {
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
@@ -39,6 +39,17 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
                                                           action: #selector(handlePanGesture(_:)))
   public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
     return true
+  }
+
+  public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+    guard gestureRecognizer == panGestureRecoognizer else {
+      return super.gestureRecognizerShouldBegin(gestureRecognizer)
+    }
+    guard let pendingEvent = pendingEvent else {return true}
+    let eventFrame = pendingEvent.frame
+    let position = panGestureRecoognizer.location(in: self)
+    let contains = eventFrame.contains(position)
+    return contains
   }
 
   weak var state: DayViewState? {
@@ -118,8 +129,25 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate {
     timeline.eventViewDelegate = self
     timeline.calendar = calendar
     timeline.date = date.dateOnly(calendar: calendar)
+    controller.container.delegate = self
     updateTimeline(timeline)
     return controller
+  }
+
+  private var initialContentOffset = CGPoint.zero
+  public func scrollViewWillBeginDragging(_ scrollView: UIScrollView) {
+    initialContentOffset = scrollView.contentOffset
+  }
+
+  public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    let offset = scrollView.contentOffset
+    let diff = offset.y - initialContentOffset.y
+    if let event = pendingEvent {
+      var frame = event.frame
+      frame.origin.y -= diff
+      event.frame = frame
+      initialContentOffset = offset
+    }
   }
 
   public func reloadData() {
