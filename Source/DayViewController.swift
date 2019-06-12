@@ -77,9 +77,6 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
   }
 
-  open func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
-  }
-
   open func dayViewDidTapTimeline(dayView: DayView) {
   }
 

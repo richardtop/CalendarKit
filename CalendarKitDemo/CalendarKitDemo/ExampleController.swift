@@ -172,10 +172,6 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
     print("DayView = \(dayView) did move to: \(date)")
   }
 
-  override func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
-    print("Did long press timeline at hour \(hour)")
-  }
-
   override func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
     print("Did long press timeline at date \(date)")
   }
