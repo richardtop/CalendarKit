@@ -11,13 +11,34 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.backgroundColor = UIColor.white
     window?.makeKeyAndVisible()
 
-    let dayViewController = ExampleController()
-    // This is how a customPagerView is provided.
-    // dayViewController.customPagerView = UITableView()
+    let dayViewController = getDayViewController(.standard)
+    //    let dayViewController = getDayViewController(.notification)
+    //    let dayViewController = getDayViewController(.customView)
 
     let navigationController = UINavigationController(rootViewController: dayViewController)
     window?.rootViewController = navigationController
 
     return true
   }
+
+  func getDayViewController(_ example: Example) -> UIViewController {
+
+    switch example {
+    case .standard:
+      return ExampleController()
+    case .notification:
+      return ExampleNotificationController()
+    case .customView:
+      let customViewController = ExampleCustomTimeLineController()
+      // Here we are using a regular UIView but we could set any subclass of UIView
+      customViewController.customTimelineView = UIView()
+      return customViewController
+    }
+  }
+}
+
+enum Example {
+  case standard
+  case notification
+  case customView
 }
