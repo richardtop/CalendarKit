@@ -9,6 +9,12 @@ enum SelectedStyle {
 
 class ExampleController: DayViewController, DatePickerControllerDelegate {
 
+  var customPagerView: UIView? = nil {
+    didSet {
+      dayView = DayView(customView: customPagerView)
+    }
+  }
+
   var data = [["Breakfast at Tiffany's",
                "New York, 5th avenue"],
 

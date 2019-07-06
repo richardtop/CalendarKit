@@ -12,6 +12,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.makeKeyAndVisible()
 
     let dayViewController = ExampleController()
+    // This is how a customPagerView is provided.
+    // dayViewController.customPagerView = UITableView()
+
     let navigationController = UINavigationController(rootViewController: dayViewController)
     window?.rootViewController = navigationController
 
