@@ -50,6 +50,7 @@ public class DayView: UIView {
 
   let dayHeaderView: DayHeaderView
   let timelinePagerView: TimelinePagerView
+  let customView: UIView?
 
   public var state: DayViewState? {
     didSet {
@@ -62,10 +63,11 @@ public class DayView: UIView {
 
   var style = CalendarStyle()
 
-  public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
+  public init(calendar: Calendar = Calendar.autoupdatingCurrent, customView: UIView? = nil) {
     self.calendar = calendar
     self.dayHeaderView = DayHeaderView(calendar: calendar)
     self.timelinePagerView = TimelinePagerView(calendar: calendar)
+    self.customView = customView
     super.init(frame: .zero)
     configure()
   }
@@ -73,6 +75,7 @@ public class DayView: UIView {
   override public init(frame: CGRect) {
     self.dayHeaderView = DayHeaderView(calendar: calendar)
     self.timelinePagerView = TimelinePagerView(calendar: calendar)
+    self.customView = nil
     super.init(frame: frame)
     configure()
   }
@@ -80,14 +83,19 @@ public class DayView: UIView {
   required public init?(coder aDecoder: NSCoder) {
     self.dayHeaderView = DayHeaderView(calendar: calendar)
     self.timelinePagerView = TimelinePagerView(calendar: calendar)
+    self.customView = nil
     super.init(coder: aDecoder)
     configure()
   }
 
   func configure() {
-    addSubview(timelinePagerView)
+    if let customView = customView {
+      addCustomPagerView(customView)
+    } else {
+      addSubview(timelinePagerView)
+      timelinePagerView.delegate = self
+    }
     addSubview(dayHeaderView)
-    timelinePagerView.delegate = self
 
     if state == nil {
       let newState = DayViewState()
@@ -95,6 +103,48 @@ public class DayView: UIView {
       newState.move(to: Date())
       state = newState
     }
+  }
+
+  private func addCustomPagerView(_ customView: UIView) {
+    customView.translatesAutoresizingMaskIntoConstraints = false
+    let trailling = NSLayoutConstraint(item: customView,
+                                       attribute: .trailing,
+                                       relatedBy: .equal,
+                                       toItem: self,
+                                       attribute: .trailing,
+                                       multiplier: 1,
+                                       constant: 0)
+
+    let leading = NSLayoutConstraint(item: customView,
+                                     attribute: .leading,
+                                     relatedBy: .equal,
+                                     toItem: self,
+                                     attribute: .leading,
+                                     multiplier: 1,
+                                     constant: 0)
+
+    let top = NSLayoutConstraint(item: customView,
+                                 attribute: .top,
+                                 relatedBy: .equal,
+                                 toItem: dayHeaderView,
+                                 attribute: .bottom,
+                                 multiplier: 1,
+                                 constant: 0)
+
+    let bottom = NSLayoutConstraint(item: customView,
+                                    attribute: .bottom,
+                                    relatedBy: .equal,
+                                    toItem: self,
+                                    attribute: .bottom,
+                                    multiplier: 1,
+                                    constant: 0)
+
+    self.addConstraint(trailling)
+    self.addConstraint(leading)
+    self.addConstraint(top)
+    self.addConstraint(bottom)
+
+    addSubview(customView)
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
