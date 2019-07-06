@@ -50,7 +50,7 @@ public class DayView: UIView {
 
   let dayHeaderView: DayHeaderView
   let timelinePagerView: TimelinePagerView
-  let customView: UIView?
+  public let customView: UIView?
 
   public var state: DayViewState? {
     didSet {
