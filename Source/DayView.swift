@@ -22,6 +22,13 @@ public class DayView: UIView {
   }
 
   public weak var delegate: DayViewDelegate?
+  public weak var stateDelegate: DayViewStateUpdating? {
+    didSet {
+      if let dayViewStateDelegate = stateDelegate {
+        state?.subscribe(client: dayViewStateDelegate)
+      }
+    }
+  }
 
   /// Hides or shows header view
   public var isHeaderViewVisible = true {
