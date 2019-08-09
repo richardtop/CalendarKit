@@ -3,7 +3,8 @@ import Neon
 import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
-  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
+  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int, minute: Int)
+  func timelineView(_ timelineView: TimelineView, didTapAt hour: Int, minute: Int)
 }
 
 public class TimelineView: UIView {
@@ -126,6 +127,7 @@ public class TimelineView: UIView {
   fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
   
   fileprivate lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+  fileprivate lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped(_:)))
 
   var isToday: Bool {
     return calendar.isDateInToday(date)
@@ -150,15 +152,31 @@ public class TimelineView: UIView {
     
     // Add long press gesture recognizer
     addGestureRecognizer(longPressGestureRecognizer)
+    addGestureRecognizer(tapGestureRecognizer)
   }
   
+  private func getTimeFrom(location: CGFloat) -> (hour: Int, minute: Int) {
+    let percentOfHeight = (location - style.verticalInset) / (bounds.height - (style.verticalInset * 2))
+    let pressedAtHour: Int = Int(24 * percentOfHeight)
+    let pressedAtMinute: Int = Int(60 * ((24 * percentOfHeight) - trunc(24 * percentOfHeight)))
+    return (pressedAtHour, pressedAtMinute)
+  }
+    
+  @objc func tapped(_ gestureRecognizer: UITapGestureRecognizer) {
+    if (gestureRecognizer.state == .ended) {
+        // Get timeslot of gesture location
+        let pressedLocation = gestureRecognizer.location(in: self)
+        let time = getTimeFrom(location: pressedLocation.y)
+        delegate?.timelineView(self, didTapAt: time.hour, minute: time.minute)
+    }
+  }
+    
   @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     if (gestureRecognizer.state == .began) {
       // Get timeslot of gesture location
       let pressedLocation = gestureRecognizer.location(in: self)
-      let percentOfHeight = (pressedLocation.y - style.verticalInset) / (bounds.height - (style.verticalInset * 2))
-      let pressedAtHour: Int = Int(24 * percentOfHeight)
-      delegate?.timelineView(self, didLongPressAt: pressedAtHour)
+      let time = getTimeFrom(location: pressedLocation.y)
+      delegate?.timelineView(self, didLongPressAt: time.hour, minute: time.minute)
     }
   }
 

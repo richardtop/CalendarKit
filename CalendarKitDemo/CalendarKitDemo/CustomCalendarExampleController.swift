@@ -201,6 +201,14 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     }
     print("Event has been longPressed: \(descriptor) \(String(describing: descriptor.userInfo))")
   }
+    
+  override func dayViewDidLongPressTimelineAtHour(_ hour: Int, minute: Int) {
+    print("Timeline has been longPressed at hour: \(hour):\(minute)")
+  }
+    
+  override func dayViewDidTapTimelineAtHour(_ hour: Int, minute: Int) {
+    print("Timeline has been tapped at hour: \(hour):\(minute)")
+  }
 
   override func dayView(dayView: DayView, willMoveTo date: Date) {
     print("DayView = \(dayView) will move to: \(date)")
