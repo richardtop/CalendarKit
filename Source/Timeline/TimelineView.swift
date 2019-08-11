@@ -435,7 +435,11 @@ public class TimelineView: UIView {
     let timeValue = y - style.verticalInset
     let hour = Int(timeValue / style.verticalDiff)
     let minute = Int(timeValue - CGFloat(hour) * style.verticalDiff)
-    let newDate = calendar.date(bySettingHour: hour, minute: minute, second: 0, of: date)
+
+    let cHour = min(max(0, hour), 23)
+    let cMinute = min(max(0, minute), 59)
+
+    let newDate = calendar.date(bySettingHour: cHour, minute: cMinute, second: 0, of: date)
     return newDate!
   }
 
