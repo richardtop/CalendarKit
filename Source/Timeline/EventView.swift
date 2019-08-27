@@ -74,8 +74,10 @@ open class EventView: UIView {
     delegate?.eventViewDidTap(self)
   }
 
-  @objc func longPress() {
-    delegate?.eventViewDidLongPress(self)
+  @objc func longPress(_ sender: UILongPressGestureRecognizer) {
+    if sender.state == .began {
+      delegate?.eventViewDidLongPress(self)
+    }
   }
 
   override open func draw(_ rect: CGRect) {
