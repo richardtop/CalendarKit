@@ -38,6 +38,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
               ]
 
+  var generatedEvents = [Date:[EventDescriptor]]()
+
   var colors = [UIColor.blue,
                 UIColor.yellow,
                 UIColor.green,
@@ -140,6 +142,11 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
   override func eventsForDate(_ date: Date) -> [EventDescriptor] {
     var workingDate = date.add(TimeChunk.dateComponents(hours: Int(arc4random_uniform(10) + 5)))
+
+    if let storedEvents = generatedEvents[date], !storedEvents.isEmpty {
+      return storedEvents
+    }
+
     var events = [Event]()
 
     for i in 0...4 {
@@ -175,6 +182,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       event.userInfo = String(i)
     }
 
+    generatedEvents[date] = events
+
     print("Events for \(date)")
 
     return events
@@ -199,7 +208,15 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     guard let descriptor = eventView.descriptor as? Event else {
       return
     }
+
     print("Event has been longPressed: \(descriptor) \(String(describing: descriptor.userInfo))")
+    dayView.beginEditing(event: descriptor, animated: true)
+    print(Date())
+  }
+
+  override func dayViewDidTapTimeline(dayView: DayView) {
+    dayView.cancelPendingEventCreation()
+    print("Did Tap")
   }
 
   override func dayView(dayView: DayView, willMoveTo date: Date) {
@@ -242,6 +259,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   override func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
     print("did finish editing \(event)")
     print("new startDate: \(event.startDate) new endDate: \(event.endDate)")
-    dayView.cancelPendingEventCreation()
+
+    dayView.reloadData()
+//    dayView.cancelPendingEventCreation()
   }
 }

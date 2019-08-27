@@ -185,6 +185,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   private var pendingEvent: EventView?
 
   public func create(event: EventDescriptor, animated: Bool) {
+    event.isEditing = true
     let eventView = EventView()
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
@@ -210,6 +211,11 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     accentDateForPendingEvent()
   }
 
+  public func beginEditing(event: EventDescriptor, animated: Bool = false) {
+    if pendingEvent == nil {
+      create(event: event, animated: animated)
+    }
+  }
 
   private var prevOffset: CGPoint = .zero
   @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
