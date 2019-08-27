@@ -136,6 +136,10 @@ public class DayView: UIView {
     timelinePagerView.create(event: event, animated: animated)
   }
 
+  public func beginEditing(event: EventDescriptor, animated: Bool = false) {
+    timelinePagerView.beginEditing(event: event, animated: animated)
+  }
+
   public func cancelPendingEventCreation() {
     timelinePagerView.cancelPendingEventCreation()
   }
