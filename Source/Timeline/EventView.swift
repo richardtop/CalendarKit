@@ -47,7 +47,7 @@ open class EventView: UIView {
 
     color = tintColor
     addSubview(textView)
-    eventResizeHandles.forEach{addSubview($0)}
+//    eventResizeHandles.forEach{addSubview($0)}
   }
 
   func updateWithDescriptor(event: EventDescriptor) {
