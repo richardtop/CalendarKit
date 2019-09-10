@@ -38,6 +38,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
               ]
 
+  var generatedEvents = [Date:[EventDescriptor]]()
+
   var colors = [UIColor.blue,
                 UIColor.yellow,
                 UIColor.green,
@@ -140,6 +142,11 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
   override func eventsForDate(_ date: Date) -> [EventDescriptor] {
     var workingDate = date.add(TimeChunk.dateComponents(hours: Int(arc4random_uniform(10) + 5)))
+
+    if let storedEvents = generatedEvents[date], !storedEvents.isEmpty {
+      return storedEvents
+    }
+
     var events = [Event]()
 
     for i in 0...4 {
@@ -175,6 +182,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       event.userInfo = String(i)
     }
 
+    generatedEvents[date] = events
+
     print("Events for \(date)")
 
     return events
@@ -199,7 +208,15 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     guard let descriptor = eventView.descriptor as? Event else {
       return
     }
+
     print("Event has been longPressed: \(descriptor) \(String(describing: descriptor.userInfo))")
+    dayView.beginEditing(event: descriptor, animated: true)
+    print(Date())
+  }
+
+  override func dayViewDidTapTimeline(dayView: DayView) {
+    dayView.cancelPendingEventCreation()
+    print("Did Tap")
   }
 
   override func dayView(dayView: DayView, willMoveTo date: Date) {
@@ -208,5 +225,46 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
   override func dayView(dayView: DayView, didMoveTo date: Date) {
     print("DayView = \(dayView) did move to: \(date)")
+  }
+
+  override func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
+    print("Did long press timeline at date \(date)")
+
+    let startDate = date
+      let event = Event()
+      let duration = Int(arc4random_uniform(160) + 60)
+      let datePeriod = TimePeriod(beginning: startDate,
+                                  chunk: TimeChunk.dateComponents(minutes: duration))
+      event.startDate = datePeriod.beginning!
+      event.endDate = datePeriod.end!
+
+      var info = data[Int(arc4random_uniform(UInt32(data.count)))]
+      let timezone = dayView.calendar.timeZone
+      info.append(datePeriod.beginning!.format(with: "dd.MM.YYYY", timeZone: timezone))
+      info.append("\(datePeriod.beginning!.format(with: "HH:mm", timeZone: timezone)) - \(datePeriod.end!.format(with: "HH:mm", timeZone: timezone))")
+      event.text = info.reduce("", {$0 + $1 + "\n"})
+      event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
+      event.editedEvent = event
+
+      // Event styles are updated independently from CalendarStyle
+      // hence the need to specify exact colors in case of Dark style
+      if currentStyle == .Dark {
+        event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
+        event.backgroundColor = event.color.withAlphaComponent(0.6)
+      }
+    print("Creating a new event")
+    dayView.create(event: event, animated: true)
+  }
+
+  override func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
+    print("did finish editing \(event)")
+    print("new startDate: \(event.startDate) new endDate: \(event.endDate)")
+
+    if let edited = event.editedEvent {
+      event.commitEditing()
+    }
+
+    dayView.reloadData()
+//    dayView.cancelPendingEventCreation()
   }
 }

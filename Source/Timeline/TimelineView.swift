@@ -3,7 +3,8 @@ import Neon
 import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
-  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
+  func timelineViewDidTap(_ timelineView: TimelineView)
+  func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
 }
 
 public class TimelineView: UIView {
@@ -125,7 +126,11 @@ public class TimelineView: UIView {
   fileprivate lazy var _12hTimes: [String] = Generator.timeStrings12H()
   fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
   
-  fileprivate lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+  public lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                            action: #selector(longPress(_:)))
+
+  public lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                action: #selector(tap(_:)))
 
   var isToday: Bool {
     return calendar.isDateInToday(date)
@@ -150,16 +155,19 @@ public class TimelineView: UIView {
     
     // Add long press gesture recognizer
     addGestureRecognizer(longPressGestureRecognizer)
+    addGestureRecognizer(tapGestureRecognizer)
   }
   
   @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     if (gestureRecognizer.state == .began) {
       // Get timeslot of gesture location
       let pressedLocation = gestureRecognizer.location(in: self)
-      let percentOfHeight = (pressedLocation.y - style.verticalInset) / (bounds.height - (style.verticalInset * 2))
-      let pressedAtHour: Int = Int(24 * percentOfHeight)
-      delegate?.timelineView(self, didLongPressAt: pressedAtHour)
+      delegate?.timelineView(self, didLongPressAt: yToDate(pressedLocation.y))
     }
+  }
+
+  @objc func tap(_ sender: UITapGestureRecognizer) {
+    delegate?.timelineViewDidTap(self)
   }
 
   public func updateStyle(_ newStyle: TimelineStyle) {
@@ -182,10 +190,21 @@ public class TimelineView: UIView {
     setNeedsDisplay()
   }
 
+  public var accentedDate: Date?
+
   override public func draw(_ rect: CGRect) {
     super.draw(rect)
 
     var hourToRemoveIndex = -1
+
+    var accentedHour = -1
+    var accentedMinute = -1
+
+    if let accentedDate = accentedDate {
+      accentedHour = component(component: .hour, from: accentedDate)
+      let minute = component(component: .minute, from: accentedDate)
+      accentedMinute = minute
+    }
 
     if isToday {
       let minute = component(component: .minute, from: currentTime)
@@ -231,6 +250,25 @@ public class TimelineView: UIView {
       let timeString = NSString(string: time)
 
       timeString.draw(in: timeRect, withAttributes: attributes)
+
+      guard 5...55 ~= accentedMinute else {continue}
+
+      // refactor :)
+
+      if 0...20 ~= accentedMinute {
+        accentedMinute = 15
+      } else if 21...35 ~= accentedMinute {
+        accentedMinute = 30
+      } else {
+        accentedMinute = 45
+      }
+
+      if i == accentedHour {
+        let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7 + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+                              width: style.leftInset - 8, height: fontSize + 2)
+        let timeString = NSString(string: ":\(accentedMinute)")
+        timeString.draw(in: timeRect, withAttributes: attributes)
+      }
     }
   }
 
@@ -353,7 +391,7 @@ public class TimelineView: UIView {
   func prepareEventViews() {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
-    for _ in 0...regularLayoutAttributes.endIndex {
+    for _ in regularLayoutAttributes {
       let newView = pool.dequeue()
       newView.delegate = eventViewDelegate
       if newView.superview == nil {
@@ -375,7 +413,7 @@ public class TimelineView: UIView {
     return 1 / UIScreen.main.scale
   }
 
-  fileprivate func dateToY(_ date: Date) -> CGFloat {
+  public func dateToY(_ date: Date) -> CGFloat {
     let provisionedDate = date.dateOnly(calendar: calendar)
     let timelineDate = self.date.dateOnly(calendar: calendar)
     if provisionedDate > timelineDate {
@@ -391,6 +429,18 @@ public class TimelineView: UIView {
       let minuteY = CGFloat(minute) * style.verticalDiff / 60
       return hourY + minuteY
     }
+  }
+
+  public func yToDate(_ y: CGFloat) -> Date {
+    let timeValue = y - style.verticalInset
+    let hour = Int(timeValue / style.verticalDiff)
+    let minute = Int(timeValue - CGFloat(hour) * style.verticalDiff)
+
+    let cHour = min(max(0, hour), 23)
+    let cMinute = min(max(0, minute), 59)
+
+    let newDate = calendar.date(bySettingHour: cHour, minute: cMinute, second: 0, of: date)
+    return newDate!
   }
 
   private func component(component: Calendar.Component, from date: Date) -> Int {
