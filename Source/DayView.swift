@@ -5,9 +5,11 @@ import DateToolsSwift
 public protocol DayViewDelegate: AnyObject {
   func dayViewDidSelectEventView(_ eventView: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
-  func dayViewDidLongPressTimelineAtHour(_ hour: Int)
+  func dayViewDidTapTimeline(dayView: DayView)
+  func dayView(dayView: DayView, didLongPressTimelineAt date: Date)
   func dayView(dayView: DayView, willMoveTo date: Date)
   func dayView(dayView: DayView, didMoveTo  date: Date)
+  func dayView(dayView: DayView, didUpdate event: EventDescriptor)
 }
 
 public class DayView: UIView {
@@ -129,6 +131,18 @@ public class DayView: UIView {
     dayHeaderView.transitionToHorizontalSizeClass(sizeClass)
     updateStyle(style)
   }
+
+  public func create(event: EventDescriptor, animated: Bool = false) {
+    timelinePagerView.create(event: event, animated: animated)
+  }
+
+  public func beginEditing(event: EventDescriptor, animated: Bool = false) {
+    timelinePagerView.beginEditing(event: event, animated: animated)
+  }
+
+  public func cancelPendingEventCreation() {
+    timelinePagerView.cancelPendingEventCreation()
+  }
 }
 
 extension DayView: EventViewDelegate {
@@ -147,19 +161,19 @@ extension DayView: TimelinePagerViewDelegate {
   public func timelinePagerDidLongPressEventView(_ eventView: EventView) {
     delegate?.dayViewDidLongPressEventView(eventView)
   }
-  public func timelinePagerDidLongPressTimelineAtHour(_ hour: Int) {
-    delegate?.dayViewDidLongPressTimelineAtHour(hour)
-  }
   public func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date) {
     delegate?.dayView(dayView: self, willMoveTo: date)
   }
   public func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date) {
     delegate?.dayView(dayView: self, didMoveTo: date)
   }
-}
-
-extension DayView: TimelineViewDelegate {
-  public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
-    delegate?.dayViewDidLongPressTimelineAtHour(hour)
+  public func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date) {
+    delegate?.dayView(dayView: self, didLongPressTimelineAt: date)
+  }
+  public func timelinePagerDidTap(timelinePager: TimelinePagerView) {
+    delegate?.dayViewDidTapTimeline(dayView: self)
+  }
+  public func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor) {
+    delegate?.dayView(dayView: self, didUpdate: event)
   }
 }
