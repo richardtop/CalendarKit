@@ -63,9 +63,9 @@ open class EventView: UIView {
     color = event.color
     eventResizeHandles.forEach{
       $0.borderColor = event.color
-      $0.isHidden = !event.isEditing
+      $0.isHidden = event.editedEvent == nil
     }
-    drawsShadow = event.isEditing
+    drawsShadow = event.editedEvent != nil
     setNeedsDisplay()
     setNeedsLayout()
   }
