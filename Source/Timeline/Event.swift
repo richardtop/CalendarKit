@@ -15,15 +15,39 @@ open class Event: EventDescriptor {
   public var textColor = UIColor.black
   public var font = UIFont.boldSystemFont(ofSize: 12)
   public var userInfo: Any?
-  public var isEditing: Bool = false {
+  public weak var editedEvent: EventDescriptor? {
     didSet {
       updateColors()
     }
   }
+
   public init() {}
 
+  public func makeEditable() -> EventDescriptor {
+    let cloned = Event()
+    cloned.startDate = startDate
+    cloned.endDate = endDate
+    cloned.isAllDay = isAllDay
+    cloned.text = text
+    cloned.attributedText = attributedText
+    cloned.color = color
+    cloned.backgroundColor = backgroundColor
+    cloned.textColor = textColor
+    cloned.userInfo = userInfo
+    cloned.editedEvent = self
+    return cloned
+  }
+
+  public func commitEditing() {
+
+    
+    guard let edited = editedEvent else {return}
+    edited.startDate = startDate
+    edited.endDate = endDate
+  }
+
   private func updateColors() {
-    isEditing ? applyEditingColors() : applyStandardColors()
+    (editedEvent != nil) ? applyEditingColors() : applyStandardColors()
   }
 
   private func applyStandardColors() {

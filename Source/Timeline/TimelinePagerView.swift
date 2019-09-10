@@ -185,7 +185,6 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   private var pendingEvent: EventView?
 
   public func create(event: EventDescriptor, animated: Bool) {
-    event.isEditing = true
     let eventView = EventView()
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
@@ -213,7 +212,8 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
   public func beginEditing(event: EventDescriptor, animated: Bool = false) {
     if pendingEvent == nil {
-      create(event: event, animated: animated)
+      let edited = event.makeEditable()
+      create(event: edited, animated: animated)
     }
   }
 
