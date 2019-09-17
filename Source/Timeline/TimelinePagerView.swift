@@ -14,7 +14,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
-public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate {
+public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate, EventViewDelegate {
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
@@ -312,9 +312,9 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
       descriptor.endDate = end
     }
   }
-}
 
-extension TimelinePagerView: DayViewStateUpdating {
+  // MARK: DayViewStateUpdating
+
   public func move(from oldDate: Date, to newDate: Date) {
     let oldDate = oldDate.dateOnly(calendar: calendar)
     let newDate = newDate.dateOnly(calendar: calendar)
@@ -334,9 +334,9 @@ extension TimelinePagerView: DayViewStateUpdating {
       pagingViewController.setViewControllers([newController], direction: .forward, animated: true, completion: completionHandler(_:))
     }
   }
-}
 
-extension TimelinePagerView: UIPageViewControllerDataSource {
+  // MARK: UIPageViewControllerDataSource
+
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     guard let containerController = viewController as? TimelineContainerController  else {return nil}
     let previousDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: -1), calendar: calendar)
@@ -354,9 +354,9 @@ extension TimelinePagerView: UIPageViewControllerDataSource {
     vc.pendingContentOffset = offset
     return vc
   }
-}
 
-extension TimelinePagerView: UIPageViewControllerDelegate {
+  // MARK: UIPageViewControllerDelegate
+
   public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
     guard completed else {return}
     if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
@@ -367,18 +367,18 @@ extension TimelinePagerView: UIPageViewControllerDelegate {
       delegate?.timelinePager(timelinePager: self, didMoveTo: selectedDate)
     }
   }
-}
 
-extension TimelinePagerView: TimelineViewDelegate {
+  // MARK: TimelineViewDelegate
+
   public func timelineViewDidTap(_ timelineView: TimelineView) {
     delegate?.timelinePagerDidTap(timelinePager: self)
   }
   public func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date) {
     delegate?.timelinePager(timelinePager: self, didLongPressTimelineAt: date)
   }
-}
 
-extension TimelinePagerView: EventViewDelegate {
+  // MARK: EventViewDelegate
+
   public func eventViewDidTap(_ eventView: EventView) {
     delegate?.timelinePagerDidSelectEventView(eventView)
   }

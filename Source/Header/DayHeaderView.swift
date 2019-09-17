@@ -1,7 +1,7 @@
 import UIKit
 import DateToolsSwift
 
-public class DayHeaderView: UIView {
+public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
 
   public var daysInWeek = 7
   public let calendar: Calendar
@@ -105,26 +105,26 @@ public class DayHeaderView: UIView {
     daySymbolsView.isHidden = sizeClass == .regular
     (pagingViewController.children as? [DaySelectorController])?.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
   }
-}
 
-extension DayHeaderView: DaySelectorDelegate {
+  // MARK: DaySelectorDelegate
+
   func dateSelectorDidSelectDate(_ date: Date) {
     state?.move(to: date)
   }
-}
 
-extension DayHeaderView: DayViewStateUpdating {
+  // MARK: DayViewStateUpdating
+
   public func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly(calendar: calendar)
-    
+
     let centerView = pagingViewController.viewControllers![0] as! DaySelectorController
     let startDate = centerView.startDate.dateOnly(calendar: calendar)
-    
+
     let daysFrom = newDate.days(from: startDate, calendar: calendar)
     let newStartDate = beginningOfWeek(newDate)
 
     let new = makeSelectorController(startDate: newStartDate)
-    
+
     if daysFrom < 0 {
       currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
       new.selectedIndex = currentWeekdayIndex
@@ -139,9 +139,9 @@ extension DayHeaderView: DayViewStateUpdating {
       centerView.selectedIndex = currentWeekdayIndex
     }
   }
-}
 
-extension DayHeaderView: UIPageViewControllerDataSource {
+  // MARK: UIPageViewControllerDataSource
+
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     if let selector = viewController as? DaySelectorController {
       let previousDate = selector.startDate.add(TimeChunk.dateComponents(weeks: -1))
@@ -149,7 +149,7 @@ extension DayHeaderView: UIPageViewControllerDataSource {
     }
     return nil
   }
-  
+
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
     if let selector = viewController as? DaySelectorController {
       let nextDate = selector.startDate.add(TimeChunk.dateComponents(weeks: 1))
@@ -157,9 +157,9 @@ extension DayHeaderView: UIPageViewControllerDataSource {
     }
     return nil
   }
-}
 
-extension DayHeaderView: UIPageViewControllerDelegate {
+  // MARK: UIPageViewControllerDelegate
+
   public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
     guard completed else {return}
     if let selector = pageViewController.viewControllers?.first as? DaySelectorController {
@@ -171,7 +171,7 @@ extension DayHeaderView: UIPageViewControllerDelegate {
     // Deselect all the views but the currently visible one
     (previousViewControllers as? [DaySelectorController])?.forEach{$0.selectedIndex = -1}
   }
-  
+
   public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
     (pendingViewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(style.daySelector)}
   }

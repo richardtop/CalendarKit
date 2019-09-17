@@ -1,6 +1,6 @@
 import UIKit
 
-class SwipeLabelView: UIView {
+class SwipeLabelView: UIView, DayViewStateUpdating {
 
   enum AnimationDirection {
     case Forward
@@ -92,9 +92,9 @@ class SwipeLabelView: UIView {
       subview.frame = bounds
     }
   }
-}
 
-extension SwipeLabelView: DayViewStateUpdating {
+  // MARK: DayViewStateUpdating
+
   func move(from oldDate: Date, to newDate: Date) {
     guard newDate != oldDate
       else { return }
