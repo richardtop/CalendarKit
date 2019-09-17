@@ -1,4 +1,4 @@
-osx_image: xcode10.2
+osx_image: xcode10.3
 language: objective-c
 
 before_install:
@@ -10,3 +10,9 @@ script:
 
 notifications:
   email: false
+
+deploy:
+  provider: script
+  script: ./push.sh
+  on:
+    tags: true
