@@ -14,5 +14,7 @@ notifications:
 deploy:
   provider: script
   script: ./push.sh
+  skip_cleanup: true
+  skip_existing: true
   on:
     tags: true
