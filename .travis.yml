@@ -5,19 +5,14 @@ before_install:
 - travis_wait 35; cd CalendarKitDemo; pod update
 
 script:
-#- set -o pipefail
-#- xcodebuild build -workspace CalendarKitDemo.xcworkspace -scheme "CalendarKitDemo" -sdk iphonesimulator | xcpretty
+- set -o pipefail
+- xcodebuild build -workspace CalendarKitDemo.xcworkspace -scheme "CalendarKitDemo" -sdk iphonesimulator | xcpretty
 
 notifications:
   email: false
 
 deploy:
-  provider: script
-  script:
-  - source ~/.rvm/scripts/rvm
-  - rvm use default
-  - pod trunk push --allow-warnings
-  skip_cleanup: true
-  skip_existing: true
-  on:
-    tags: true
+provider: script
+script: ../push.sh
+on:
+  tags: true
