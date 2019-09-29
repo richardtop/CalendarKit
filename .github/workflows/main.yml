@@ -1,4 +1,5 @@
 name: CI
+
 on:
   push:
     branches:
@@ -6,7 +7,8 @@ on:
     
 jobs:
   build:
-  runs-on: macOS-latest
+
+    runs-on: macOS-latest
     
     steps:
     - uses: actions/checkout@v1
@@ -14,4 +16,4 @@ jobs:
       env:
         COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
       run: |
-        pod trunk push CalendarKit.podspec --allow-warnings
+        pod trunk push CalendarKit.podspec --skip-import-validation --allow-warnings
