@@ -1,6 +1,6 @@
 import UIKit
 
-open class Event: EventDescriptor {
+public final class Event: EventDescriptor {
   public var startDate = Date()
   public var endDate = Date()
   public var isAllDay = false
@@ -23,7 +23,7 @@ open class Event: EventDescriptor {
 
   public init() {}
 
-  public func makeEditable() -> EventDescriptor {
+  public func makeEditable() -> Event {
     let cloned = Event()
     cloned.startDate = startDate
     cloned.endDate = endDate
@@ -39,8 +39,6 @@ open class Event: EventDescriptor {
   }
 
   public func commitEditing() {
-
-    
     guard let edited = editedEvent else {return}
     edited.startDate = startDate
     edited.endDate = endDate
