@@ -112,10 +112,10 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     }
   }
 
-  public func scrollTo(hour24: Float) {
+  public func scrollTo(hour24: Float, animated: Bool = true) {
     // Any view is fine as they are all synchronized
     if let controller = pagingViewController.viewControllers?.first as? TimelineContainerController {
-      controller.container.scrollTo(hour24: hour24)
+      controller.container.scrollTo(hour24: hour24, animated: animated)
     }
   }
 
