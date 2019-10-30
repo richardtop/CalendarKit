@@ -9,7 +9,7 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
   var style = DayHeaderStyle()
   var currentSizeClass = UIUserInterfaceSizeClass.compact
 
-  weak var state: DayViewState? {
+  public weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)
     }
@@ -31,7 +31,7 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
                                                        options: nil)
   let swipeLabelView: SwipeLabelView
 
-  init(calendar: Calendar) {
+  public init(calendar: Calendar) {
     self.calendar = calendar
     let symbols = DaySymbolsView(calendar: calendar)
     let swipeLabel = SwipeLabelView(calendar: calendar)
