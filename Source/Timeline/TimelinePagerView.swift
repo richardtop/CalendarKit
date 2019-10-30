@@ -51,7 +51,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     return contains
   }
 
-  weak var state: DayViewState? {
+  public weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)
     }
@@ -60,7 +60,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     }
   }
 
-  init(calendar: Calendar) {
+  public init(calendar: Calendar) {
     self.calendar = calendar
     super.init(frame: .zero)
     configure()
@@ -172,7 +172,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     timeline.layoutAttributes = validEvents.map(EventLayoutAttributes.init)
   }
 
-  func scrollToFirstEventIfNeeded() {
+  public func scrollToFirstEventIfNeeded() {
     if autoScrollToFirstEvent {
       if let controller = pagingViewController.viewControllers?.first as? TimelineContainerController {
         controller.container.scrollToFirstEvent()
