@@ -6,21 +6,19 @@ struct StyleGenerator {
   }
 
   static func darkStyle() -> CalendarStyle {
-    let orange = UIColor.orange
-    let dark = UIColor(white: 0.1, alpha: 1)
-    let light = UIColor.lightGray
+    let black = UIColor.black
+    let darkGray = UIColor(white: 0.15, alpha: 1)
+    let lightGray = UIColor.lightGray
     let white = UIColor.white
 
     let selector = DaySelectorStyle()
-    selector.activeTextColor = white
+    selector.activeTextColor = black
     selector.inactiveTextColor = white
-    selector.selectedBackgroundColor = light
-    selector.todayActiveBackgroundColor = orange
-    selector.todayInactiveTextColor = orange
+    selector.selectedBackgroundColor = white
 
     let daySymbols = DaySymbolsStyle()
     daySymbols.weekDayColor = white
-    daySymbols.weekendColor = light
+    daySymbols.weekendColor = lightGray
 
     let swipeLabel = SwipeLabelStyle()
     swipeLabel.textColor = white
@@ -29,13 +27,14 @@ struct StyleGenerator {
     header.daySelector = selector
     header.daySymbols = daySymbols
     header.swipeLabel = swipeLabel
-    header.backgroundColor = dark
+    header.backgroundColor = black
 
     let timeline = TimelineStyle()
-    timeline.timeIndicator.color = orange
-    timeline.lineColor = light
-    timeline.timeColor = light
-    timeline.backgroundColor = dark
+    timeline.lineColor = lightGray
+    timeline.timeColor = lightGray
+    timeline.backgroundColor = black
+    timeline.allDayStyle.backgroundColor = darkGray
+    timeline.allDayStyle.allDayColor = white
 
     let style = CalendarStyle()
     style.header = header

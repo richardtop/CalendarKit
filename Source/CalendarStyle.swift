@@ -48,6 +48,7 @@ public class DaySelectorStyle: NSCopying {
   public var inactiveBackgroundColor = UIColor.clear
 
   public var todayInactiveTextColor = UIColor.red
+  public var todayActiveTextColor = UIColor.white
   public var todayActiveBackgroundColor = UIColor.red
     
   public var font = UIFont.systemFont(ofSize: 18)
@@ -63,6 +64,7 @@ public class DaySelectorStyle: NSCopying {
     copy.inactiveTextColor = inactiveTextColor
     copy.inactiveBackgroundColor = inactiveBackgroundColor
     copy.todayInactiveTextColor = todayInactiveTextColor
+    copy.todayActiveTextColor = todayActiveTextColor
     copy.todayActiveBackgroundColor = todayActiveBackgroundColor
     copy.font = font
     copy.todayFont = todayFont
@@ -97,6 +99,7 @@ public class SwipeLabelStyle: NSCopying {
 }
 
 public class TimelineStyle: NSCopying {
+  public var allDayStyle = AllDayStyle()
   public var timeIndicator = CurrentTimeIndicatorStyle()
   public var timeColor = UIColor.lightGray
   public var lineColor = UIColor.lightGray
@@ -112,6 +115,7 @@ public class TimelineStyle: NSCopying {
   public init() {}
   public func copy(with zone: NSZone? = nil) -> Any {
     let copy = TimelineStyle()
+    copy.allDayStyle = allDayStyle.copy() as! AllDayStyle
     copy.timeIndicator = timeIndicator.copy() as! CurrentTimeIndicatorStyle
     copy.timeColor = timeColor
     copy.lineColor = lineColor
