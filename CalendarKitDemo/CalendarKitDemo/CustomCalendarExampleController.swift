@@ -229,10 +229,9 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
   override func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
     print("Did long press timeline at date \(date)")
-
-    let startDate = date
-      let event = Event()
       let duration = Int(arc4random_uniform(160) + 60)
+      let startDate = date.subtract(TimeChunk.dateComponents(minutes: Int(CGFloat(duration) / 2)))
+      let event = Event()
       let datePeriod = TimePeriod(beginning: startDate,
                                   chunk: TimeChunk.dateComponents(minutes: duration))
       event.startDate = datePeriod.beginning!
