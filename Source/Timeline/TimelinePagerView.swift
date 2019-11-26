@@ -274,9 +274,9 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
           delegate?.timelinePager(timelinePager: self, didUpdate: descriptor)
         }
 
-        UIView.animate(withDuration: 0.2,
+        UIView.animate(withDuration: 0.3,
                        delay: 0,
-                       usingSpringWithDamping: 0.8,
+                       usingSpringWithDamping: 0.6,
                        initialSpringVelocity: 5,
                        options: [],
                        animations: animateEventSnap,
