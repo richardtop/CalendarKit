@@ -107,14 +107,15 @@ public class TimelineView: UIView {
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
-      snappingBehavior = editingSnapBehaviorType.init(calendar)
+      snappingBehavior = snappingBehaviorType.init(calendar)
       nowLine.calendar = calendar
       setNeedsLayout()
     }
   }
   
-  var editingSnapBehaviorType: TimelineEditingSnapBehavior.Type = TimelineEditingSnapBehaviorDefault.self
-  lazy var snappingBehavior: TimelineEditingSnapBehavior = editingSnapBehaviorType.init(calendar)
+  // TODO: Make a public API
+  var snappingBehaviorType: EventEditingSnappingBehavior.Type = TimelineEditingSnapBehaviorDefault.self
+  lazy var snappingBehavior: EventEditingSnappingBehavior = snappingBehaviorType.init(calendar)
 
   init() {
     super.init(frame: .zero)
