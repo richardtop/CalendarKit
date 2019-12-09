@@ -107,11 +107,14 @@ public class TimelineView: UIView {
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
+      snappingBehavior = editingSnapBehaviorType.init(calendar)
       nowLine.calendar = calendar
       setNeedsLayout()
     }
   }
-
+  
+  var editingSnapBehaviorType: TimelineEditingSnapBehavior.Type = TimelineEditingSnapBehaviorDefault.self
+  lazy var snappingBehavior: TimelineEditingSnapBehavior = editingSnapBehaviorType.init(calendar)
 
   init() {
     super.init(frame: .zero)
@@ -202,9 +205,8 @@ public class TimelineView: UIView {
     var accentedMinute = -1
 
     if let accentedDate = accentedDate {
-      accentedHour = component(component: .hour, from: accentedDate)
-      let minute = component(component: .minute, from: accentedDate)
-      accentedMinute = minute
+      accentedHour = snappingBehavior.accentedHour(for: accentedDate)
+      accentedMinute = snappingBehavior.accentedMinute(for: accentedDate)
     }
 
     if isToday {
@@ -249,19 +251,10 @@ public class TimelineView: UIView {
                             width: style.leftInset - 8, height: fontSize + 2)
 
       let timeString = NSString(string: time)
-
       timeString.draw(in: timeRect, withAttributes: attributes)
 
-      guard 5...55 ~= accentedMinute else {continue}
-
-      // refactor :)
-
-      if 0...20 ~= accentedMinute {
-        accentedMinute = 15
-      } else if 21...35 ~= accentedMinute {
-        accentedMinute = 30
-      } else {
-        accentedMinute = 45
+      if accentedMinute == 0 {
+        continue
       }
 
       if i == accentedHour {
@@ -435,12 +428,13 @@ public class TimelineView: UIView {
   public func yToDate(_ y: CGFloat) -> Date {
     let timeValue = y - style.verticalInset
     let hour = Int(timeValue / style.verticalDiff)
-    let minute = Int(timeValue - CGFloat(hour) * style.verticalDiff)
-
-    let cHour = min(max(0, hour), 23)
-    let cMinute = min(max(0, minute), 59)
-
-    let newDate = calendar.date(bySettingHour: cHour, minute: cMinute, second: 0, of: date)
+    let fullHourPoints = CGFloat(hour) * style.verticalDiff
+    let minuteDiff = timeValue - fullHourPoints
+    let minute = Int(minuteDiff / style.verticalDiff * 60)
+    let newDate = calendar.date(bySettingHour: hour.clamped(to: 0...23),
+                                minute: minute.clamped(to: 0...59),
+                                second: 0,
+                                of: date)
     return newDate!
   }
 
