@@ -1,6 +1,6 @@
 import Foundation
 
-final class TimelineEditingSnapBehaviorDefault: EventEditingSnappingBehavior {
+final class SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
   private let calendar: Calendar
   private let unit: Double = (60 / 4) / 2
 

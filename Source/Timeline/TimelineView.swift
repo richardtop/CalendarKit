@@ -114,7 +114,7 @@ public class TimelineView: UIView {
   }
   
   // TODO: Make a public API
-  var snappingBehaviorType: EventEditingSnappingBehavior.Type = TimelineEditingSnapBehaviorDefault.self
+  var snappingBehaviorType: EventEditingSnappingBehavior.Type = SnapTo15MinuteIntervals.self
   lazy var snappingBehavior: EventEditingSnappingBehavior = snappingBehaviorType.init(calendar)
 
   init() {
