@@ -257,13 +257,18 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
       if let editedEventView = pendingEvent,
         let descriptor = editedEventView.descriptor {
+        update(descriptor: descriptor, with: editedEventView)
+        
+        let ytd = yToDate(y: editedEventView.frame.origin.y,
+                          timeline: timeline)
+        let snapped = timeline.snappingBehavior.nearestDate(to: ytd)
 
-        let startY = timeline.dateToY(descriptor.datePeriod.beginning!)
         let calendarWidth = timeline.calendarWidth
         let x = style.leftInset
 
         var eventFrame = editedEventView.frame
         eventFrame.origin.x = x
+        eventFrame.origin.y = timeline.dateToY(snapped) - currentTimeline.container.contentOffset.y
 
         func animateEventSnap() {
           editedEventView.frame = eventFrame
@@ -274,9 +279,9 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
           delegate?.timelinePager(timelinePager: self, didUpdate: descriptor)
         }
 
-        UIView.animate(withDuration: 0.2,
+        UIView.animate(withDuration: 0.3,
                        delay: 0,
-                       usingSpringWithDamping: 0.8,
+                       usingSpringWithDamping: 0.6,
                        initialSpringVelocity: 5,
                        options: [],
                        animations: animateEventSnap,
@@ -297,6 +302,13 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     if sender.state == .ended {
       commitEditing()
     }
+  }
+  
+  private func yToDate(y: CGFloat, timeline: TimelineView) -> Date {
+    let point = CGPoint(x: 0, y: y)
+    let converted = convert(point, to: timeline).y
+    let date = timeline.yToDate(converted)
+    return date
   }
 
   private func update(descriptor: EventDescriptor, with eventView: EventView) {
