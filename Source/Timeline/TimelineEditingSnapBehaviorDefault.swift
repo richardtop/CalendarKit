@@ -1,6 +1,6 @@
 import Foundation
 
-final class TimelineEditingSnapBehaviorDefault: TimelineEditingSnapBehavior {
+final class TimelineEditingSnapBehaviorDefault: EventEditingSnappingBehavior {
   private let calendar: Calendar
   private let unit: Double = (60 / 4) / 2
 
