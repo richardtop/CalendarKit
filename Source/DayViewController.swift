@@ -77,7 +77,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
   }
 
-  open func dayViewDidTapTimeline(dayView: DayView) {
+  open func dayView(dayView: DayView, didTapTimelineAt date: Date) {
   }
 
   open func dayView(dayView: DayView, willMoveTo date: Date) {
