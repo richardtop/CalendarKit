@@ -213,10 +213,10 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     dayView.beginEditing(event: descriptor, animated: true)
     print(Date())
   }
-
-  override func dayViewDidTapTimeline(dayView: DayView) {
+  
+  override func dayView(dayView: DayView, didTapTimelineAt date: Date) {
     dayView.cancelPendingEventCreation()
-    print("Did Tap")
+    print("Did Tap at date: \(date)")
   }
 
   override func dayView(dayView: DayView, willMoveTo date: Date) {

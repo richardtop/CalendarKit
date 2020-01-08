@@ -3,7 +3,7 @@ import Neon
 import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
-  func timelineViewDidTap(_ timelineView: TimelineView)
+  func timelineView(_ timelineView: TimelineView, didTapAt date: Date)
   func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
 }
 
@@ -173,7 +173,8 @@ public class TimelineView: UIView {
   }
 
   @objc func tap(_ sender: UITapGestureRecognizer) {
-    delegate?.timelineViewDidTap(self)
+    let pressedLocation = sender.location(in: self)
+    delegate?.timelineView(self, didTapAt: yToDate(pressedLocation.y))
   }
   
   public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
