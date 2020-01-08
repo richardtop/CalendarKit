@@ -76,6 +76,7 @@ import Neon
                   userInfo: nil,
                   repeats: true)
     RunLoop.current.add(timer!, forMode: .common)
+    isUserInteractionEnabled = false
   }
     
   func updateDate() {
