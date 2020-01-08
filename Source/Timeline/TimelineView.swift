@@ -8,9 +8,7 @@ public protocol TimelineViewDelegate: AnyObject {
 }
 
 public class TimelineView: UIView {
-
   public weak var delegate: TimelineViewDelegate?
-
   public weak var eventViewDelegate: EventViewDelegate? {
     didSet {
       self.allDayView.eventViewDelegate = eventViewDelegate
@@ -139,6 +137,8 @@ public class TimelineView: UIView {
   var isToday: Bool {
     return calendar.isDateInToday(date)
   }
+  
+  // MARK: - Initialization
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -162,6 +162,8 @@ public class TimelineView: UIView {
     addGestureRecognizer(tapGestureRecognizer)
   }
   
+  // MARK: - Event Handling
+  
   @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     if (gestureRecognizer.state == .began) {
       // Get timeslot of gesture location
@@ -173,6 +175,17 @@ public class TimelineView: UIView {
   @objc func tap(_ sender: UITapGestureRecognizer) {
     delegate?.timelineViewDidTap(self)
   }
+  
+  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    for subview in subviews {
+      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
+        return subSubView
+      }
+    }
+    return super.hitTest(point, with: event)
+  }
+  
+  // MARK: - Style
 
   public func updateStyle(_ newStyle: TimelineStyle) {
     style = newStyle.copy() as! TimelineStyle
@@ -194,6 +207,8 @@ public class TimelineView: UIView {
     backgroundColor = style.backgroundColor
     setNeedsDisplay()
   }
+  
+  // MARK: - Background Pattern
 
   public var accentedDate: Date?
 
@@ -266,6 +281,8 @@ public class TimelineView: UIView {
       }
     }
   }
+  
+  // MARK: - Layout
 
   override public func layoutSubviews() {
     super.layoutSubviews()
