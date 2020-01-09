@@ -38,7 +38,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
 
               ]
 
-  var generatedEvents = [Date:[EventDescriptor]]()
+  var generatedEvents = [EventDescriptor]()
+  var alreadyGeneratedSet = Set<Date>()
 
   var colors = [UIColor.blue,
                 UIColor.yellow,
@@ -143,8 +144,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   override func eventsForDate(_ date: Date) -> [EventDescriptor] {
     var workingDate = date.add(TimeChunk.dateComponents(hours: Int(arc4random_uniform(10) + 5)))
 
-    if let storedEvents = generatedEvents[date], !storedEvents.isEmpty {
-      return storedEvents
+    if alreadyGeneratedSet.contains(date) {
+      return generatedEvents
     }
 
     var events = [Event]()
@@ -182,8 +183,9 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       event.userInfo = String(i)
     }
 
-    generatedEvents[date] = events
-
+    alreadyGeneratedSet.insert(date)
+    generatedEvents.append(contentsOf: events)
+    
     print("Events for \(date)")
 
     return events
