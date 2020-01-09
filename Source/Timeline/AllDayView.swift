@@ -5,7 +5,7 @@ public class AllDayView: UIView {
   
   internal weak var eventViewDelegate: EventViewDelegate?
   
-  var style = AllDayStyle()
+  var style = AllDayViewStyle()
   
   let allDayLabelWidth: CGFloat = 53.0
   let allDayEventHeight: CGFloat = 24.0
@@ -109,7 +109,7 @@ public class AllDayView: UIView {
     scrollView.setContentOffset(bottomOffset, animated: animated)
   }
   
-  public func updateStyle(_ newStyle: AllDayStyle) {
+  public func updateStyle(_ newStyle: AllDayViewStyle) {
     style = newStyle
     backgroundColor = style.backgroundColor
     textLabel.font = style.allDayFont

@@ -323,9 +323,8 @@ public class TimelineView: UIView {
   }
   
   func layoutAllDayEvents() {
-    
     //add day view needs to be in front of the nowLine
-	bringSubviewToFront(allDayView)
+    bringSubviewToFront(allDayView)
   }
   
   /**

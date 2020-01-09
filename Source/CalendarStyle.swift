@@ -57,7 +57,7 @@ public struct SwipeLabelStyle {
 }
 
 public struct TimelineStyle {
-  public var allDayStyle = AllDayStyle()
+  public var allDayStyle = AllDayViewStyle()
   public var timeIndicator = CurrentTimeIndicatorStyle()
   public var timeColor = UIColor.lightGray
   public var lineColor = UIColor.lightGray
@@ -80,7 +80,7 @@ public struct CurrentTimeIndicatorStyle {
   public init() {}
 }
 
-public struct AllDayStyle {
+public struct AllDayViewStyle {
   public var backgroundColor: UIColor = UIColor.lightGray
   public var allDayFont = UIFont.systemFont(ofSize: 12.0)
   public var allDayColor: UIColor = UIColor.black
