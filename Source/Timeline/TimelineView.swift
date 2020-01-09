@@ -204,13 +204,10 @@ public class TimelineView: UIView {
     switch style.dateStyle {
       case .twelveHour:
         is24hClock = false
-        break
       case .twentyFourHour:
         is24hClock = true
-        break
       default:
         is24hClock = calendar.locale?.uses24hClock() ?? Locale.autoupdatingCurrent.uses24hClock()
-        break
     }
     
     backgroundColor = style.backgroundColor

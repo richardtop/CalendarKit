@@ -180,7 +180,6 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     }
   }
 
-
   // Event creation prototype
   private var pendingEvent: EventView?
 
