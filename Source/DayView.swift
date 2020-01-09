@@ -100,7 +100,7 @@ public class DayView: UIView, EventViewDelegate, TimelinePagerViewDelegate {
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
-    style = newStyle.copy() as! CalendarStyle
+    style = newStyle
     dayHeaderView.updateStyle(style.header)
     timelinePagerView.updateStyle(style.timeline)
   }

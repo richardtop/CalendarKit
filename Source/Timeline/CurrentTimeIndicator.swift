@@ -96,7 +96,7 @@ import Neon
   }
 
   func updateStyle(_ newStyle: CurrentTimeIndicatorStyle) {
-    style = newStyle.copy() as! CurrentTimeIndicatorStyle
+    style = newStyle
     timeLabel.textColor = style.color
     timeLabel.font = style.font
     circle.backgroundColor = style.color

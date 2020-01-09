@@ -189,7 +189,7 @@ public class TimelineView: UIView {
   // MARK: - Style
 
   public func updateStyle(_ newStyle: TimelineStyle) {
-    style = newStyle.copy() as! TimelineStyle
+    style = newStyle
     allDayView.updateStyle(style.allDayStyle)
     nowLine.updateStyle(style.timeIndicator)
     

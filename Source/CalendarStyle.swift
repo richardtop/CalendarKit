@@ -11,35 +11,21 @@ public enum DateStyle {
     case system
 }
 
-public class CalendarStyle: NSCopying {
+public struct CalendarStyle {
   public var header = DayHeaderStyle()
   public var timeline = TimelineStyle()
   public init() {}
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = CalendarStyle()
-    copy.header = header.copy() as! DayHeaderStyle
-    copy.timeline = timeline.copy() as! TimelineStyle
-    return copy
-  }
 }
 
-public class DayHeaderStyle: NSCopying {
+public struct DayHeaderStyle {
   public var daySymbols = DaySymbolsStyle()
   public var daySelector = DaySelectorStyle()
   public var swipeLabel = SwipeLabelStyle()
   public var backgroundColor = UIColor(white: 247/255, alpha: 1)
   public init() {}
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = DayHeaderStyle()
-    copy.daySymbols = daySymbols.copy() as! DaySymbolsStyle
-    copy.daySelector = daySelector.copy() as! DaySelectorStyle
-    copy.swipeLabel = swipeLabel.copy() as! SwipeLabelStyle
-    copy.backgroundColor = backgroundColor
-    return copy
-  }
 }
 
-public class DaySelectorStyle: NSCopying {
+public struct DaySelectorStyle {
   public var activeTextColor = UIColor.white
   public var selectedBackgroundColor = UIColor.black
 
@@ -53,52 +39,24 @@ public class DaySelectorStyle: NSCopying {
     
   public var font = UIFont.systemFont(ofSize: 18)
   public var todayFont = UIFont.boldSystemFont(ofSize: 18)
-
+  
   public init() {}
-
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = DaySelectorStyle()
-    copy.activeTextColor = activeTextColor
-    copy.selectedBackgroundColor = selectedBackgroundColor
-    copy.weekendTextColor = weekendTextColor
-    copy.inactiveTextColor = inactiveTextColor
-    copy.inactiveBackgroundColor = inactiveBackgroundColor
-    copy.todayInactiveTextColor = todayInactiveTextColor
-    copy.todayActiveTextColor = todayActiveTextColor
-    copy.todayActiveBackgroundColor = todayActiveBackgroundColor
-    copy.font = font
-    copy.todayFont = todayFont
-    return copy
-  }
 }
 
-public class DaySymbolsStyle: NSCopying {
+public struct DaySymbolsStyle {
   public var weekendColor = UIColor.lightGray
   public var weekDayColor = UIColor.black
   public var font = UIFont.systemFont(ofSize: 10)
   public init() {}
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = DaySymbolsStyle()
-    copy.weekendColor = weekendColor
-    copy.weekDayColor = weekDayColor
-    copy.font = font
-    return copy
-  }
 }
 
-public class SwipeLabelStyle: NSCopying {
+public struct SwipeLabelStyle {
   public var textColor = UIColor.black
   public var font = UIFont.systemFont(ofSize: 15)
   public init() {}
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = SwipeLabelStyle()
-    copy.textColor = textColor
-    copy.font = font
-    return copy
-  }
 }
 
-public class TimelineStyle: NSCopying {
+public struct TimelineStyle {
   public var allDayStyle = AllDayStyle()
   public var timeIndicator = CurrentTimeIndicatorStyle()
   public var timeColor = UIColor.lightGray
@@ -113,49 +71,18 @@ public class TimelineStyle: NSCopying {
   public var leftInset: CGFloat = 53
   public var eventGap: CGFloat = 0
   public init() {}
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = TimelineStyle()
-    copy.allDayStyle = allDayStyle.copy() as! AllDayStyle
-    copy.timeIndicator = timeIndicator.copy() as! CurrentTimeIndicatorStyle
-    copy.timeColor = timeColor
-    copy.lineColor = lineColor
-    copy.backgroundColor = backgroundColor
-    copy.font = font
-    copy.dateStyle = dateStyle
-    copy.eventsWillOverlap = eventsWillOverlap
-    copy.splitMinuteInterval = splitMinuteInterval
-    copy.verticalDiff = verticalDiff
-    copy.verticalInset = verticalInset
-    copy.eventGap = eventGap
-    return copy
-  }
 }
 
-public class CurrentTimeIndicatorStyle: NSCopying {
+public struct CurrentTimeIndicatorStyle {
   public var color = UIColor.red
   public var font = UIFont.systemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
   public init() {}
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = CurrentTimeIndicatorStyle()
-    copy.color = color
-    copy.font = font
-    copy.dateStyle = dateStyle
-    return copy
-  }
 }
 
-public class AllDayStyle: NSCopying {
+public struct AllDayStyle {
   public var backgroundColor: UIColor = UIColor.lightGray
   public var allDayFont = UIFont.systemFont(ofSize: 12.0)
   public var allDayColor: UIColor = UIColor.black
-  
-  public func copy(with zone: NSZone? = nil) -> Any {
-    let copy = AllDayStyle()
-    copy.allDayColor = allDayColor
-    copy.backgroundColor = backgroundColor
-    copy.allDayFont = allDayFont
-    
-    return copy
-  }
+  public init() {}
 }
