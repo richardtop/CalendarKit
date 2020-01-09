@@ -11,32 +11,32 @@ struct StyleGenerator {
     let lightGray = UIColor.lightGray
     let white = UIColor.white
 
-    let selector = DaySelectorStyle()
+    var selector = DaySelectorStyle()
     selector.activeTextColor = black
     selector.inactiveTextColor = white
     selector.selectedBackgroundColor = white
 
-    let daySymbols = DaySymbolsStyle()
+    var daySymbols = DaySymbolsStyle()
     daySymbols.weekDayColor = white
     daySymbols.weekendColor = lightGray
 
-    let swipeLabel = SwipeLabelStyle()
+    var swipeLabel = SwipeLabelStyle()
     swipeLabel.textColor = white
 
-    let header = DayHeaderStyle()
+    var header = DayHeaderStyle()
     header.daySelector = selector
     header.daySymbols = daySymbols
     header.swipeLabel = swipeLabel
     header.backgroundColor = black
 
-    let timeline = TimelineStyle()
+    var timeline = TimelineStyle()
     timeline.lineColor = lightGray
     timeline.timeColor = lightGray
     timeline.backgroundColor = black
     timeline.allDayStyle.backgroundColor = darkGray
     timeline.allDayStyle.allDayColor = white
 
-    let style = CalendarStyle()
+    var style = CalendarStyle()
     style.header = header
     style.timeline = timeline
 

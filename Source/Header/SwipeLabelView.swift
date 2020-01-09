@@ -61,7 +61,7 @@ class SwipeLabelView: UIView, DayViewStateUpdating {
   }
 
   func updateStyle(_ newStyle: SwipeLabelStyle) {
-    style = newStyle.copy() as! SwipeLabelStyle
+    style = newStyle
     labels.forEach { label in
       label.textColor = style.textColor
       label.font = style.font

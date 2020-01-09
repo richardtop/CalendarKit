@@ -86,7 +86,7 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
   }
   
   public func updateStyle(_ newStyle: DayHeaderStyle) {
-    style = newStyle.copy() as! DayHeaderStyle
+    style = newStyle
     daySymbolsView.updateStyle(style.daySymbols)
     swipeLabelView.updateStyle(style.swipeLabel)
     (pagingViewController.viewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(newStyle.daySelector)}

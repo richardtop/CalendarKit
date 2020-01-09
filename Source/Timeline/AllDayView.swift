@@ -110,8 +110,7 @@ public class AllDayView: UIView {
   }
   
   public func updateStyle(_ newStyle: AllDayStyle) {
-    style = newStyle.copy() as! AllDayStyle
-    
+    style = newStyle
     backgroundColor = style.backgroundColor
     textLabel.font = style.allDayFont
     textLabel.textColor = style.allDayColor

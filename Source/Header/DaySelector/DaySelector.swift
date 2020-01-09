@@ -113,7 +113,7 @@ class DaySelector: UIView {
   }
 
   func updateStyle(_ newStyle: DaySelectorStyle) {
-    style = newStyle.copy() as! DaySelectorStyle
+    style = newStyle
     items.forEach{$0.updateStyle(style)}
   }
 

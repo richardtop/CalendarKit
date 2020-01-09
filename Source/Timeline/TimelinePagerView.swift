@@ -87,7 +87,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   }
 
   public func updateStyle(_ newStyle: TimelineStyle) {
-    style = newStyle.copy() as! TimelineStyle
+    style = newStyle
     pagingViewController.viewControllers?.forEach({ (timelineContainer) in
       if let controller = timelineContainer as? TimelineContainerController {
         self.updateStyleOfTimelineContainer(controller: controller)
