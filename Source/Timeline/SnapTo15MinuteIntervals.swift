@@ -14,6 +14,17 @@ final class SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
     if (60 - unit)...59 ~= minute {
       accHour += 1
     }
+
+    var dayOffset = 0
+    if accHour > 23 {
+      accHour -= 24
+      dayOffset += 1
+    } else if accHour < 0 {
+      accHour += 24
+      dayOffset -= 1
+    }
+    
+    let date = calendar.date(byAdding: DateComponents(day: dayOffset), to: date)!
     return calendar.date(bySettingHour: accHour,
                          minute: accentedMinute(for: date),
                          second: 0,

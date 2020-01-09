@@ -433,31 +433,42 @@ public class TimelineView: UIView {
   public func dateToY(_ date: Date) -> CGFloat {
     let provisionedDate = date.dateOnly(calendar: calendar)
     let timelineDate = self.date.dateOnly(calendar: calendar)
+    var dayOffset: CGFloat = 0
     if provisionedDate > timelineDate {
       // Event ending the next day
-      return 24 * style.verticalDiff + style.verticalInset
+      dayOffset += 1
     } else if provisionedDate < timelineDate {
       // Event starting the previous day
-      return style.verticalInset
-    } else {
-      let hour = component(component: .hour, from: date)
-      let minute = component(component: .minute, from: date)
-      let hourY = CGFloat(hour) * style.verticalDiff + style.verticalInset
-      let minuteY = CGFloat(minute) * style.verticalDiff / 60
-      return hourY + minuteY
+      dayOffset -= 1
     }
+    let fullTimelineHeight = 24 * style.verticalDiff
+    let hour = component(component: .hour, from: date)
+    let minute = component(component: .minute, from: date)
+    let hourY = CGFloat(hour) * style.verticalDiff + style.verticalInset
+    let minuteY = CGFloat(minute) * style.verticalDiff / 60
+    return hourY + minuteY + fullTimelineHeight * dayOffset
   }
 
   public func yToDate(_ y: CGFloat) -> Date {
     let timeValue = y - style.verticalInset
-    let hour = Int(timeValue / style.verticalDiff)
+    var hour = Int(timeValue / style.verticalDiff)
     let fullHourPoints = CGFloat(hour) * style.verticalDiff
     let minuteDiff = timeValue - fullHourPoints
     let minute = Int(minuteDiff / style.verticalDiff * 60)
-    let newDate = calendar.date(bySettingHour: hour.clamped(to: 0...23),
+    var dayOffset = 0
+    if hour > 23 {
+      dayOffset += 1
+      hour -= 24
+    } else if hour < 0 {
+      dayOffset -= 1
+      hour += 24
+    }
+    let offsetDate = calendar.date(byAdding: DateComponents(day: dayOffset),
+                                   to: date)!
+    let newDate = calendar.date(bySettingHour: hour,
                                 minute: minute.clamped(to: 0...59),
                                 second: 0,
-                                of: date)
+                                of: offsetDate)
     return newDate!
   }
 
