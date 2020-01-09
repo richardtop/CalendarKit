@@ -177,6 +177,14 @@ public class TimelineView: UIView {
     delegate?.timelineView(self, didTapAt: yToDate(pressedLocation.y))
   }
   
+  /**
+   Custom implementation of the hitTest method is needed for the tap gesture recognizers
+   located in the AllDayView to work.
+   Since the AllDayView could be outside of the Timeline's bounds, the touches to the EventViews
+   are ignored.
+   In the custom implementation the method is recursively invoked for all of the subviews,
+   regardless of their position in relation to the Timeline's bounds.
+   */
   public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
     for subview in subviews {
       if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
