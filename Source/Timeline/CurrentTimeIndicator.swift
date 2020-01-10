@@ -14,12 +14,7 @@ import Neon
 
   private var timer: Timer?
   @objc private func timerDidFire(_ sender: Timer) {
-    let currentDate = Date()
-    let currentMinute = calendar.component(.minute, from: currentDate)
-    let displayedMinute = calendar.component(.minute, from: date)
-    if currentMinute != displayedMinute {
-      date = currentDate
-    }
+    date = Date()
   }
 
   /// Determines if times should be displayed in a 24 hour format. Defaults to the current locale's setting
@@ -70,13 +65,23 @@ import Neon
     timeLabel.baselineAdjustment = .alignCenters
     
     updateStyle(style)
-    timer = Timer(timeInterval: 1,
+    configureTimer()
+    isUserInteractionEnabled = false
+  }
+  
+  private func configureTimer() {
+    timer?.invalidate()
+    let date = Date()
+    var components = calendar.dateComponents(Set([.era, .year, .month, .day, .hour, .minute]), from: date)
+    components.minute! += 1
+    let timerDate = calendar.date(from: components)!
+    timer = Timer(fireAt: timerDate,
+                  interval: 60,
                   target: self,
                   selector: #selector(timerDidFire(_:)),
                   userInfo: nil,
                   repeats: true)
     RunLoop.current.add(timer!, forMode: .common)
-    isUserInteractionEnabled = false
   }
     
   func updateDate() {
@@ -85,6 +90,7 @@ import Neon
     timeLabel.text = date.format(with: dateFormat, timeZone: timezone)
     timeLabel.sizeToFit()
     setNeedsLayout()
+    configureTimer()
   }
 
   override func layoutSubviews() {
