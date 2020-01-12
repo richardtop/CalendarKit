@@ -110,6 +110,7 @@ public class TimelineView: UIView {
     didSet {
       snappingBehavior = snappingBehaviorType.init(calendar)
       nowLine.calendar = calendar
+      regenerateTimeStrings()
       setNeedsLayout()
     }
   }
@@ -128,8 +129,14 @@ public class TimelineView: UIView {
     return is24hClock ? _24hTimes : _12hTimes
   }
 
-  fileprivate lazy var _12hTimes: [String] = Generator.timeStrings12H()
-  fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
+  private lazy var _12hTimes: [String] = TimeStringsFactory(calendar).make12hStrings()
+  private lazy var _24hTimes: [String] = TimeStringsFactory(calendar).make24hStrings()
+  
+  private func regenerateTimeStrings() {
+    let factory = TimeStringsFactory(calendar)
+    _12hTimes = factory.make12hStrings()
+    _24hTimes = factory.make24hStrings()
+  }
   
   public lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
                                                                             action: #selector(longPress(_:)))
