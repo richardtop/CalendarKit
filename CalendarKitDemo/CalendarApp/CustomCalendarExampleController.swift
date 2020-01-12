@@ -198,6 +198,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   
   // MARK: DayViewDelegate
   
+  private var createdEvent: EventDescriptor?
+  
   override func dayViewDidSelectEventView(_ eventView: EventView) {
     guard let descriptor = eventView.descriptor as? Event else {
       return
@@ -255,6 +257,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     }
     print("Creating a new event")
     dayView.create(event: event, animated: true)
+    createdEvent = event
   }
   
   override func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
@@ -265,7 +268,13 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       event.commitEditing()
     }
     
+    if let createdEvent = createdEvent {
+      createdEvent.editedEvent = nil
+      generatedEvents.append(createdEvent)
+      self.createdEvent = nil
+      dayView.cancelPendingEventCreation()
+    }
+    
     dayView.reloadData()
-    //    dayView.cancelPendingEventCreation()
   }
 }
