@@ -211,14 +211,14 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     guard let descriptor = eventView.descriptor as? Event else {
       return
     }
-    dayView.endEventEditing()
+    endEventEditing()
     print("Event has been longPressed: \(descriptor) \(String(describing: descriptor.userInfo))")
-    dayView.beginEditing(event: descriptor, animated: true)
+    beginEditing(event: descriptor, animated: true)
     print(Date())
   }
   
   override func dayView(dayView: DayView, didTapTimelineAt date: Date) {
-    dayView.endEventEditing()
+    endEventEditing()
     print("Did Tap at date: \(date)")
   }
   
@@ -233,10 +233,10 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   override func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
     print("Did long press timeline at date \(date)")
     // Cancel editing current event and start creating a new one
-    dayView.endEventEditing()
+    endEventEditing()
     let event = generateEventNearDate(date)
     print("Creating a new event")
-    dayView.create(event: event, animated: true)
+    create(event: event, animated: true)
     createdEvent = event
   }
   
@@ -278,9 +278,9 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       createdEvent.editedEvent = nil
       generatedEvents.append(createdEvent)
       self.createdEvent = nil
-      dayView.endEventEditing()
+      endEventEditing()
     }
     
-    dayView.reloadData()
+    reloadData()
   }
 }

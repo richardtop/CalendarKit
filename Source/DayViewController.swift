@@ -69,7 +69,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     return [Event]()
   }
 
-  // MARK: DayViewDelegate
+  // MARK: - DayViewDelegate
 
   open func dayViewDidSelectEventView(_ eventView: EventView) {
   }
@@ -90,5 +90,19 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   }
 
   open func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
+  }
+  
+  // MARK: - Editing
+  
+  open func create(event: EventDescriptor, animated: Bool = false) {
+    dayView.create(event: event, animated: animated)
+  }
+
+  open func beginEditing(event: EventDescriptor, animated: Bool = false) {
+    dayView.beginEditing(event: event, animated: animated)
+  }
+  
+  open func endEventEditing() {
+    dayView.endEventEditing()
   }
 }
