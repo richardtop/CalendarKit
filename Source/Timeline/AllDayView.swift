@@ -18,9 +18,8 @@ public class AllDayView: UIView {
   
   private lazy var textLabel: UILabel = {
     let label = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
-    label.text = "all-day"
+    label.text = localizedString("allday")
     label.autoresizingMask = [.flexibleWidth]
-    
     return label
   }()
 
