@@ -59,8 +59,11 @@ public class TimelineView: UIView {
   var pool = ReusePool<EventView>()
 
   var firstEventYPosition: CGFloat? {
-    return regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}
-      .first?.frame.origin.y
+    let first = regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}.first
+    guard let firstEvent = first else {return nil}
+    let firstEventPosition = firstEvent.frame.origin.y
+    let beginningOfDayPosition = dateToY(date)
+    return max(firstEventPosition, beginningOfDayPosition)
   }
 
   lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
