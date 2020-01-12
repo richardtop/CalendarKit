@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		75776AF58133F6BBDDCF1CE7 /* Pods_CalendarApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A223D8E39EB8C7A25F4E823A /* Pods_CalendarApp.framework */; };
 		7924834B23CB7B57003E3D27 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7924834923CB7B57003E3D27 /* Main.storyboard */; };
 		7924834D23CB7B58003E3D27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7924834C23CB7B58003E3D27 /* Assets.xcassets */; };
 		7924835023CB7B58003E3D27 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7924834E23CB7B58003E3D27 /* LaunchScreen.storyboard */; };
@@ -16,7 +17,6 @@
 		7924836C23CB7BFE003E3D27 /* CustomCalendarExampleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7924836623CB7BFE003E3D27 /* CustomCalendarExampleController.swift */; };
 		7924836D23CB7BFE003E3D27 /* ExampleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7924836723CB7BFE003E3D27 /* ExampleController.swift */; };
 		7924836E23CB7BFE003E3D27 /* ExampleNotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7924836823CB7BFE003E3D27 /* ExampleNotificationController.swift */; };
-		DFA7CAE4CAC5C89EE8AF6696 /* Pods_CalendarApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A05C820D1C9D1BE2E012F4DF /* Pods_CalendarApp.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,7 +32,7 @@
 		7924836623CB7BFE003E3D27 /* CustomCalendarExampleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCalendarExampleController.swift; sourceTree = "<group>"; };
 		7924836723CB7BFE003E3D27 /* ExampleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleController.swift; sourceTree = "<group>"; };
 		7924836823CB7BFE003E3D27 /* ExampleNotificationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleNotificationController.swift; sourceTree = "<group>"; };
-		A05C820D1C9D1BE2E012F4DF /* Pods_CalendarApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CalendarApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A223D8E39EB8C7A25F4E823A /* Pods_CalendarApp.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_CalendarApp.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		FEBA81B9D67F9FBBA5381D09 /* Pods-CalendarApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CalendarApp.debug.xcconfig"; path = "Target Support Files/Pods-CalendarApp/Pods-CalendarApp.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -41,7 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DFA7CAE4CAC5C89EE8AF6696 /* Pods_CalendarApp.framework in Frameworks */,
+				75776AF58133F6BBDDCF1CE7 /* Pods_CalendarApp.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,7 +96,7 @@
 		D2B9A4777F5DB09BCFA26C1E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				A05C820D1C9D1BE2E012F4DF /* Pods_CalendarApp.framework */,
+				A223D8E39EB8C7A25F4E823A /* Pods_CalendarApp.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -112,7 +112,7 @@
 				7924833C23CB7B57003E3D27 /* Sources */,
 				7924833D23CB7B57003E3D27 /* Frameworks */,
 				7924833E23CB7B57003E3D27 /* Resources */,
-				7016FF6EA52C87C95AE483A7 /* [CP] Embed Pods Frameworks */,
+				5A00DDEECC79568B66DC9F20 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -193,7 +193,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		7016FF6EA52C87C95AE483A7 /* [CP] Embed Pods Frameworks */ = {
+		5A00DDEECC79568B66DC9F20 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
