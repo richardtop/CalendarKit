@@ -291,7 +291,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     }
   }
 
-  public func cancelPendingEventCreation() {
+  public func endEventEditing() {
     prevOffset = .zero
     pendingEvent?.removeFromSuperview()
     pendingEvent = nil

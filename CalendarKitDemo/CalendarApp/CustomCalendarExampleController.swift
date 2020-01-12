@@ -218,7 +218,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   }
   
   override func dayView(dayView: DayView, didTapTimelineAt date: Date) {
-    dayView.cancelPendingEventCreation()
+    dayView.endEventEditing()
     print("Did Tap at date: \(date)")
   }
   
@@ -272,7 +272,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       createdEvent.editedEvent = nil
       generatedEvents.append(createdEvent)
       self.createdEvent = nil
-      dayView.cancelPendingEventCreation()
+      dayView.endEventEditing()
     }
     
     dayView.reloadData()
