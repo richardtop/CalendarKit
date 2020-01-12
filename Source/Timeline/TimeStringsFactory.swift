@@ -1,7 +1,13 @@
 import Foundation
 
-enum Generator {
-  static func timeStrings24H() -> [String] {
+struct TimeStringsFactory {
+  private let calendar: Calendar
+  
+  init(_ calendar: Calendar = Calendar.autoupdatingCurrent) {
+    self.calendar = calendar
+  }
+  
+  func make24hStrings() -> [String] {
     var numbers = [String]()
     numbers.append("00:00")
 
@@ -15,7 +21,7 @@ enum Generator {
     return numbers
   }
 
-  static func timeStrings12H() -> [String] {
+  func make12hStrings() -> [String] {
     var numbers = [String]()
     numbers.append("12")
 
@@ -24,9 +30,10 @@ enum Generator {
       numbers.append(string)
     }
 
-    var am = numbers.map { $0 + " AM" }
-    var pm = numbers.map { $0 + " PM" }
-    am.append("Noon")
+    var am = numbers.map { $0 + " " + calendar.amSymbol}
+    var pm = numbers.map { $0 + " " + calendar.pmSymbol}
+    
+    am.append(localizedString("12:00"))
     pm.removeFirst()
     pm.append(am.first!)
     return am + pm
