@@ -139,9 +139,9 @@ public class DayView: UIView, EventViewDelegate, TimelinePagerViewDelegate {
   public func beginEditing(event: EventDescriptor, animated: Bool = false) {
     timelinePagerView.beginEditing(event: event, animated: animated)
   }
-
-  public func cancelPendingEventCreation() {
-    timelinePagerView.cancelPendingEventCreation()
+  
+  public func endEventEditing() {
+    timelinePagerView.endEventEditing()
   }
 
   // MARK: EventViewDelegate
