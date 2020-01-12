@@ -12,8 +12,8 @@ extension Bundle {
   }
 }
 
-func localizedString(_ key: String) -> String? {
+func localizedString(_ key: String) -> String {
   return Bundle.localizationBundle?.localizedString(forKey: key,
                                                     value: nil,
-                                                    table: nil)
+                                                    table: nil) ?? key
 }
