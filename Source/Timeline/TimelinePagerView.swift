@@ -14,7 +14,10 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
-public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate, EventViewDelegate {
+public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating,
+//UIPageViewControllerDataSource,
+//UIPageViewControllerDelegate,
+TimelineViewDelegate, EventViewDelegate {
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
@@ -79,8 +82,8 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   func configure() {
     let vc = configureTimelineController(date: Date())
     pagingViewController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)
-    pagingViewController.dataSource = self
-    pagingViewController.delegate = self
+    pagingViewController.dataSource = nil
+    pagingViewController.delegate = nil
     addSubview(pagingViewController.view!)
     addGestureRecognizer(panGestureRecoognizer)
     panGestureRecoognizer.delegate = self
@@ -218,22 +221,22 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
   private var prevOffset: CGPoint = .zero
   @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
-    if let pendingEvent = pendingEvent {
-      let newCoord = sender.translation(in: pendingEvent)
-      if sender.state == .began {
-        prevOffset = newCoord
-      }
-
-      let diff = CGPoint(x: newCoord.x - prevOffset.x, y: newCoord.y - prevOffset.y)
-      pendingEvent.frame.origin.x += diff.x
-      pendingEvent.frame.origin.y += diff.y
-      prevOffset = newCoord
-      accentDateForPendingEvent()
-    }
-
-    if sender.state == .ended {
-      commitEditing()
-    }
+//    if let pendingEvent = pendingEvent {
+//      let newCoord = sender.translation(in: pendingEvent)
+//      if sender.state == .began {
+//        prevOffset = newCoord
+//      }
+//
+//      let diff = CGPoint(x: newCoord.x - prevOffset.x, y: newCoord.y - prevOffset.y)
+//      pendingEvent.frame.origin.x += diff.x
+//      pendingEvent.frame.origin.y += diff.y
+//      prevOffset = newCoord
+//      accentDateForPendingEvent()
+//    }
+//
+//    if sender.state == .ended {
+//      commitEditing()
+//    }
   }
 
   private func accentDateForPendingEvent() {
@@ -348,36 +351,36 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
   // MARK: UIPageViewControllerDataSource
 
-  public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-    guard let containerController = viewController as? TimelineContainerController  else {return nil}
-    let previousDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: -1), calendar: calendar)
-    let vc = configureTimelineController(date: previousDate)
-    let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
-    vc.pendingContentOffset = offset
-    return vc
-  }
-
-  public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-    guard let containerController = viewController as? TimelineContainerController  else {return nil}
-    let nextDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: 1), calendar: calendar)
-    let vc = configureTimelineController(date: nextDate)
-    let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
-    vc.pendingContentOffset = offset
-    return vc
-  }
-
-  // MARK: UIPageViewControllerDelegate
-
-  public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-    guard completed else {return}
-    if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
-      let selectedDate = timelineContainerController.timeline.date
-      delegate?.timelinePager(timelinePager: self, willMoveTo: selectedDate)
-      state?.client(client: self, didMoveTo: selectedDate)
-      scrollToFirstEventIfNeeded()
-      delegate?.timelinePager(timelinePager: self, didMoveTo: selectedDate)
-    }
-  }
+//  public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+//    guard let containerController = viewController as? TimelineContainerController  else {return nil}
+//    let previousDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: -1), calendar: calendar)
+//    let vc = configureTimelineController(date: previousDate)
+//    let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
+//    vc.pendingContentOffset = offset
+//    return vc
+//  }
+//
+//  public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+//    guard let containerController = viewController as? TimelineContainerController  else {return nil}
+//    let nextDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: 1), calendar: calendar)
+//    let vc = configureTimelineController(date: nextDate)
+//    let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
+//    vc.pendingContentOffset = offset
+//    return vc
+//  }
+//
+//  // MARK: UIPageViewControllerDelegate
+//
+//  public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+//    guard completed else {return}
+//    if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
+//      let selectedDate = timelineContainerController.timeline.date
+//      delegate?.timelinePager(timelinePager: self, willMoveTo: selectedDate)
+//      state?.client(client: self, didMoveTo: selectedDate)
+//      scrollToFirstEventIfNeeded()
+//      delegate?.timelinePager(timelinePager: self, didMoveTo: selectedDate)
+//    }
+//  }
 
   // MARK: TimelineViewDelegate
   
