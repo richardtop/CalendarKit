@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -54,7 +54,6 @@
 				FEBA81B9D67F9FBBA5381D09 /* Pods-CalendarApp.debug.xcconfig */,
 				786F0C3439DCA027A1D04664 /* Pods-CalendarApp.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -140,7 +139,7 @@
 				};
 			};
 			buildConfigurationList = 7924833B23CB7B57003E3D27 /* Build configuration list for PBXProject "CalendarApp" */;
-			compatibilityVersion = "Xcode 9.3";
+			compatibilityVersion = "Xcode 11.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
