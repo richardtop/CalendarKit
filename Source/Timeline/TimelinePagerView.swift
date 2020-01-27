@@ -36,7 +36,12 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
   lazy var panGestureRecoognizer = UIPanGestureRecognizer(target: self,
                                                           action: #selector(handlePanGesture(_:)))
-  public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+  
+  public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
+                                shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+    if otherGestureRecognizer.view is EventResizeHandleView {
+      return false
+    }
     return true
   }
 
@@ -183,12 +188,23 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   // Event creation prototype
   private var pendingEvent: EventView?
 
+  /// Creates an EventView and places it on the Timeline
+  /// - Parameter event: the EventDescriptor based on which an EventView will be placed on the Timeline
+  /// - Parameter animated: if true, CalendarKit animates event creation
   public func create(event: EventDescriptor, animated: Bool) {
     let eventView = EventView()
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
     // layout algo
     if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+      
+      for handle in eventView.eventResizeHandles {
+        let panGestureRecognizer = handle.panGestureRecognizer
+        panGestureRecognizer.addTarget(self, action: #selector(handleResizeHandlePanGesture(_:)))
+        panGestureRecognizer.cancelsTouchesInView = true
+        
+      }
+      
       let timeline = currentTimeline.timeline
       let offset = currentTimeline.container.contentOffset.y
       // algo needs to be extracted to a separate object
@@ -208,7 +224,10 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     pendingEvent = eventView
     accentDateForPendingEvent()
   }
-
+  
+  /// Puts timeline in the editing mode and highlights a single event as being edited.
+  /// - Parameter event: the `EventDescriptor` to be edited. An editable copy of the `EventDescriptor` is created by calling `makeEditable()` method on the passed value
+  /// - Parameter animated: if true, CalendarKit animates beginning of the editing
   public func beginEditing(event: EventDescriptor, animated: Bool = false) {
     if pendingEvent == nil {
       let edited = event.makeEditable()
@@ -218,6 +237,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
   private var prevOffset: CGPoint = .zero
   @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
+    
     if let pendingEvent = pendingEvent {
       let newCoord = sender.translation(in: pendingEvent)
       if sender.state == .began {
@@ -234,6 +254,36 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     if sender.state == .ended {
       commitEditing()
     }
+  }
+  
+  @objc func handleResizeHandlePanGesture(_ sender: UIPanGestureRecognizer) {
+    if let pendingEvent = pendingEvent {
+      let newCoord = sender.translation(in: pendingEvent)
+      if sender.state == .began {
+        prevOffset = newCoord
+      }
+      guard let tag = sender.view?.tag else {
+        return
+      }
+      
+      let diff = CGPoint(x: newCoord.x - prevOffset.x, y: newCoord.y - prevOffset.y)
+      
+      if tag == 0 { // Top handle
+        pendingEvent.frame.origin.y += diff.y
+        pendingEvent.frame.size.height -= diff.y
+        print("Top Handle")
+      } else { // Bottom handle
+        pendingEvent.frame.size.height += diff.y
+      }
+      
+      prevOffset = newCoord
+      accentDateForPendingEvent()
+    }
+    
+    if sender.state == .ended {
+      commitEditing()
+    }
+    
   }
 
   private func accentDateForPendingEvent() {
@@ -291,8 +341,10 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     }
   }
 
+  /// Ends editing mode
   public func endEventEditing() {
     prevOffset = .zero
+    pendingEvent?.eventResizeHandles.forEach{$0.panGestureRecognizer.removeTarget(self, action: nil)}
     pendingEvent?.removeFromSuperview()
     pendingEvent = nil
   }
