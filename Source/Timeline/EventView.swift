@@ -26,9 +26,14 @@ open class EventView: UIView {
     return view
   }()
 
-  lazy var tapGestureRecognizer: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tap))
-  lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress))
+  lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                         action: #selector(tap))
+  
+  lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                     action: #selector(longPress))
 
+  /// Resize Handle views showing up when editing the event.
+  /// The top handle has a tag of `0` and the bottom has a tag of `1`
   public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
 
   override init(frame: CGRect) {
@@ -47,7 +52,11 @@ open class EventView: UIView {
 
     color = tintColor
     addSubview(textView)
-//    eventResizeHandles.forEach{addSubview($0)}
+    
+    for (idx, handle) in eventResizeHandles.enumerated() {
+      handle.tag = idx
+      addSubview(handle)
+    }
   }
 
   func updateWithDescriptor(event: EventDescriptor) {
@@ -80,21 +89,40 @@ open class EventView: UIView {
     }
   }
 
+  /**
+   Custom implementation of the hitTest method is needed for the tap gesture recognizers
+   located in the ResizeHandleView to work.
+   Since the ResizeHandleView could be outside of the EventView's bounds, the touches to the ResizeHandleView
+   are ignored.
+   In the custom implementation the method is recursively invoked for all of the subviews,
+   regardless of their position in relation to the Timeline's bounds.
+   */
+  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    for subview in subviews {
+      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
+        return subSubView
+      }
+    }
+    return super.hitTest(point, with: event)
+  }
+
   override open func draw(_ rect: CGRect) {
     super.draw(rect)
-    let context = UIGraphicsGetCurrentContext()
-    context!.interpolationQuality = .none
-    context?.saveGState()
-    context?.setStrokeColor(color.cgColor)
-    context?.setLineWidth(3)
-    context?.translateBy(x: 0, y: 0.5)
+    guard let context = UIGraphicsGetCurrentContext() else {
+      return
+    }
+    context.interpolationQuality = .none
+    context.saveGState()
+    context.setStrokeColor(color.cgColor)
+    context.setLineWidth(3)
+    context.translateBy(x: 0, y: 0.5)
     let x: CGFloat = 0
     let y: CGFloat = 0
-    context?.beginPath()
-    context?.move(to: CGPoint(x: x, y: y))
-    context?.addLine(to: CGPoint(x: x, y: (bounds).height))
-    context?.strokePath()
-    context?.restoreGState()
+    context.beginPath()
+    context.move(to: CGPoint(x: x, y: y))
+    context.addLine(to: CGPoint(x: x, y: (bounds).height))
+    context.strokePath()
+    context.restoreGState()
   }
 
   private var drawsShadow = false
