@@ -271,7 +271,6 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
       if tag == 0 { // Top handle
         pendingEvent.frame.origin.y += diff.y
         pendingEvent.frame.size.height -= diff.y
-        print("Top Handle")
       } else { // Bottom handle
         pendingEvent.frame.size.height += diff.y
       }
