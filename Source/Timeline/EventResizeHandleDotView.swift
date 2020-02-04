@@ -23,7 +23,7 @@ public class EventResizeHandleDotView: UIView {
   private func configure() {
     clipsToBounds = true
     backgroundColor = .white
-    layer.borderWidth = 1
+    layer.borderWidth = 2
   }
 
   public override func layoutSubviews() {
