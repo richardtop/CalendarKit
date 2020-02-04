@@ -31,7 +31,7 @@ public class EventResizeHandleView: UIView {
 
   public override func layoutSubviews() {
     super.layoutSubviews()
-    let radius: CGFloat = 7
+    let radius: CGFloat = 10
     let centerD = (width - radius) / 2
     let origin = CGPoint(x: centerD, y: centerD)
     let dotSize = CGSize(width: radius, height: radius)
