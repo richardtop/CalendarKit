@@ -65,6 +65,7 @@ public struct TimelineStyle {
   public var font = UIFont.boldSystemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
   public var eventsWillOverlap: Bool = false
+  public var minimumEventDurationInMinutesWhileEditing: Int = 30
   public var splitMinuteInterval: Int = 15
   public var verticalDiff: CGFloat = 50
   public var verticalInset: CGFloat = 10

@@ -21,7 +21,6 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   public weak var delegate: TimelinePagerViewDelegate?
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent
-  public var minimumMinutesEventDurationWhileEditing = 30
 
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
@@ -282,8 +281,8 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
       } else { // Bottom handle
         suggestedEventFrame.size.height += diff.y
       }
-      
-      let minimumEventHeight = CGFloat(minimumMinutesEventDurationWhileEditing) * style.verticalDiff / 60
+      let minimumMinutesEventDurationWhileEditing = CGFloat(style.minimumEventDurationInMinutesWhileEditing)
+      let minimumEventHeight = minimumMinutesEventDurationWhileEditing * style.verticalDiff / 60
       let suggestedEventHeight = suggestedEventFrame.size.height
       
       if suggestedEventHeight > minimumEventHeight {
