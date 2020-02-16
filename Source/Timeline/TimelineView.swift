@@ -196,7 +196,7 @@ public class TimelineView: UIView {
    regardless of their position in relation to the Timeline's bounds.
    */
   public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-    for subview in subviews {
+    for subview in allDayView.subviews {
       if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
         return subSubView
       }

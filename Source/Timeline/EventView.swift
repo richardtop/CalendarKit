@@ -98,8 +98,8 @@ open class EventView: UIView {
    regardless of their position in relation to the Timeline's bounds.
    */
   public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-    for subview in subviews {
-      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
+    for resizeHandle in eventResizeHandles {
+      if let subSubView = resizeHandle.hitTest(convert(point, to: resizeHandle), with: event) {
         return subSubView
       }
     }
