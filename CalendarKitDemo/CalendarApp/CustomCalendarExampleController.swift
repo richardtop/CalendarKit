@@ -222,6 +222,10 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     print("Did Tap at date: \(date)")
   }
   
+  override func dayViewDidBeginDragging(dayView: DayView) {
+    print("DayView did begin dragging")
+  }
+  
   override func dayView(dayView: DayView, willMoveTo date: Date) {
     print("DayView = \(dayView) will move to: \(date)")
   }
