@@ -6,6 +6,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePagerDidSelectEventView(_ eventView: EventView)
   func timelinePagerDidLongPressEventView(_ eventView: EventView)
   func timelinePager(timelinePager: TimelinePagerView, didTapTimelineAt date: Date)
+  func timelinePagerDidBeginDragging(timelinePager: TimelinePagerView)
   func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
@@ -428,6 +429,10 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
       scrollToFirstEventIfNeeded()
       delegate?.timelinePager(timelinePager: self, didMoveTo: selectedDate)
     }
+  }
+  
+  public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+    delegate?.timelinePagerDidBeginDragging(timelinePager: self)
   }
 
   // MARK: TimelineViewDelegate

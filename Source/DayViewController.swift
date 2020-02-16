@@ -79,6 +79,9 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
 
   open func dayView(dayView: DayView, didTapTimelineAt date: Date) {
   }
+  
+  open func dayViewDidBeginDragging(dayView: DayView) { 
+  }
 
   open func dayView(dayView: DayView, willMoveTo date: Date) {
   }
