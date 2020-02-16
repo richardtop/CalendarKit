@@ -15,7 +15,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
-public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate, EventViewDelegate {
+public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate {
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
@@ -135,7 +135,6 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     let timeline = controller.timeline
     timeline.longPressGestureRecognizer.addTarget(self, action: #selector(timelineDidLongPress(_:)))
     timeline.delegate = self
-    timeline.eventViewDelegate = self
     timeline.calendar = calendar
     timeline.date = date.dateOnly(calendar: calendar)
     controller.container.delegate = self
@@ -455,13 +454,12 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   public func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date) {
     delegate?.timelinePager(timelinePager: self, didLongPressTimelineAt: date)
   }
-
-  // MARK: EventViewDelegate
-
-  public func eventViewDidTap(_ eventView: EventView) {
-    delegate?.timelinePagerDidSelectEventView(eventView)
+  
+  public func timelineView(_ timelineView: TimelineView, didTap event: EventView) {
+    delegate?.timelinePagerDidSelectEventView(event)
   }
-  public func eventViewDidLongPress(_ eventview: EventView) {
-    delegate?.timelinePagerDidLongPressEventView(eventview)
+  
+  public func timelineView(_ timelineView: TimelineView, didLongPress event: EventView) {
+    delegate?.timelinePagerDidLongPressEventView(event)
   }
 }
