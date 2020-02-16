@@ -5,15 +5,12 @@ import DateToolsSwift
 public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didTapAt date: Date)
   func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
+  func timelineView(_ timelineView: TimelineView, didTap event: EventView)
+  func timelineView(_ timelineView: TimelineView, didLongPress event: EventView)
 }
 
 public class TimelineView: UIView {
   public weak var delegate: TimelineViewDelegate?
-  public weak var eventViewDelegate: EventViewDelegate? {
-    didSet {
-      self.allDayView.eventViewDelegate = eventViewDelegate
-    }
-  }
 
   public var date = Date() {
     didSet {
@@ -174,18 +171,44 @@ public class TimelineView: UIView {
   
   // MARK: - Event Handling
   
-  @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+  @objc private func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     if (gestureRecognizer.state == .began) {
       // Get timeslot of gesture location
       let pressedLocation = gestureRecognizer.location(in: self)
-      delegate?.timelineView(self, didLongPressAt: yToDate(pressedLocation.y))
+      if let eventView = findEventView(at: pressedLocation) {
+        delegate?.timelineView(self, didLongPress: eventView)
+      } else {
+        delegate?.timelineView(self, didLongPressAt: yToDate(pressedLocation.y))
+      }
     }
   }
-
-  @objc func tap(_ sender: UITapGestureRecognizer) {
+  
+  @objc private func tap(_ sender: UITapGestureRecognizer) {
     let pressedLocation = sender.location(in: self)
-    delegate?.timelineView(self, didTapAt: yToDate(pressedLocation.y))
+    if let eventView = findEventView(at: pressedLocation) {
+      delegate?.timelineView(self, didTap: eventView)
+    } else {
+      delegate?.timelineView(self, didTapAt: yToDate(pressedLocation.y))
+    }
   }
+  
+  private func findEventView(at point: CGPoint) -> EventView? {
+    for eventView in eventViews {
+      let frame = eventView.frame
+      if frame.contains(point) {
+        return eventView
+      }
+    }
+    
+    for eventView in allDayView.eventViews {
+      let frame = eventView.convert(eventView.bounds, to: self)
+      if frame.contains(point) {
+        return eventView
+      }
+    }
+    return nil
+  }
+  
   
   /**
    Custom implementation of the hitTest method is needed for the tap gesture recognizers
@@ -420,7 +443,6 @@ public class TimelineView: UIView {
     eventViews.removeAll()
     for _ in regularLayoutAttributes {
       let newView = pool.dequeue()
-      newView.delegate = eventViewDelegate
       if newView.superview == nil {
         addSubview(newView)
       }

@@ -2,14 +2,7 @@ import UIKit
 import DateToolsSwift
 import Neon
 
-public protocol EventViewDelegate: AnyObject {
-  func eventViewDidTap(_ eventView: EventView)
-  func eventViewDidLongPress(_ eventview: EventView)
-}
-
 open class EventView: UIView {
-
-  weak var delegate: EventViewDelegate?
   public var descriptor: EventDescriptor?
 
   public var color = UIColor.lightGray
@@ -25,12 +18,6 @@ open class EventView: UIView {
     view.isScrollEnabled = false
     return view
   }()
-
-  lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                         action: #selector(tap))
-  
-  lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
-                                                                     action: #selector(longPress))
 
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
@@ -48,8 +35,6 @@ open class EventView: UIView {
 
   func configure() {
     clipsToBounds = false
-    [tapGestureRecognizer, longPressGestureRecognizer].forEach {addGestureRecognizer($0)}
-
     color = tintColor
     addSubview(textView)
     
@@ -77,16 +62,6 @@ open class EventView: UIView {
     drawsShadow = event.editedEvent != nil
     setNeedsDisplay()
     setNeedsLayout()
-  }
-
-  @objc func tap() {
-    delegate?.eventViewDidTap(self)
-  }
-
-  @objc func longPress(_ sender: UILongPressGestureRecognizer) {
-    if sender.state == .began {
-      delegate?.eventViewDidLongPress(self)
-    }
   }
 
   /**
@@ -186,4 +161,3 @@ open class EventView: UIView {
                    completion: nil)
   }
 }
-

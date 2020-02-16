@@ -2,9 +2,6 @@
 import UIKit
 
 public class AllDayView: UIView {
-  
-  internal weak var eventViewDelegate: EventViewDelegate?
-  
   var style = AllDayViewStyle()
   
   let allDayLabelWidth: CGFloat = 53.0
@@ -15,6 +12,8 @@ public class AllDayView: UIView {
       self.reloadData()
     }
   }
+  
+  public private(set) var eventViews = [EventView]()
   
   private lazy var textLabel: UILabel = {
     let label = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
@@ -87,13 +86,11 @@ public class AllDayView: UIView {
   
   override init(frame: CGRect) {
     super.init(frame: frame)
-    
     configure()
   }
   
   required public init?(coder aDecoder: NSCoder) {
     super.init(coder: aDecoder)
-    
     configure()
   }
   
@@ -130,6 +127,7 @@ public class AllDayView: UIView {
     }
     
     // clear event views from scroll view
+    eventViews.removeAll()
     scrollView.subviews.forEach { $0.removeFromSuperview() }
     
     if self.events.count == 0 { return }
@@ -146,7 +144,6 @@ public class AllDayView: UIView {
       // create event
       let eventView = EventView(frame: CGRect.zero)
       eventView.updateWithDescriptor(event: anEventDescriptor)
-      eventView.delegate = self.eventViewDelegate
       eventView.heightAnchor.constraint(equalToConstant: allDayEventHeight).isActive = true
       
       // create horz stack view if index % 2 == 0
@@ -162,6 +159,7 @@ public class AllDayView: UIView {
       
       // add eventView to horz. stack view
       horizontalStackView.addArrangedSubview(eventView)
+      eventViews.append(eventView)
     }
     
     // add vert. stack view inside, pin vert. stack view, update content view by the number of horz. stack views
@@ -177,8 +175,4 @@ public class AllDayView: UIView {
     verticalStackViewHeightConstraint.priority = UILayoutPriority(rawValue: 999)
     verticalStackViewHeightConstraint.isActive = true
   }
-  
-  // MARK: - LIFE CYCLE
-  
 }
-

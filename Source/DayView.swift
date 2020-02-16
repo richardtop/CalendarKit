@@ -13,7 +13,7 @@ public protocol DayViewDelegate: AnyObject {
   func dayView(dayView: DayView, didUpdate event: EventDescriptor)
 }
 
-public class DayView: UIView, EventViewDelegate, TimelinePagerViewDelegate {
+public class DayView: UIView, TimelinePagerViewDelegate {
 
   public weak var dataSource: EventDataSource? {
     get {
@@ -143,15 +143,6 @@ public class DayView: UIView, EventViewDelegate, TimelinePagerViewDelegate {
   
   public func endEventEditing() {
     timelinePagerView.endEventEditing()
-  }
-
-  // MARK: EventViewDelegate
-
-  public func eventViewDidTap(_ eventView: EventView) {
-    delegate?.dayViewDidSelectEventView(eventView)
-  }
-  public func eventViewDidLongPress(_ eventview: EventView) {
-    delegate?.dayViewDidLongPressEventView(eventview)
   }
 
   // MARK: TimelinePagerViewDelegate
