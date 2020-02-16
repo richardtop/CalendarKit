@@ -21,11 +21,16 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   public weak var delegate: TimelinePagerViewDelegate?
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent
+  public var minimumMinutesEventDurationWhileEditing = 30
 
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
-    let offset = (pagingViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
+    let offset = (currentTimeline)?.container.contentOffset
     return offset ?? CGPoint()
+  }
+  
+  private var currentTimeline: TimelineContainerController? {
+    return pagingViewController.viewControllers?.first as? TimelineContainerController
   }
 
   open var autoScrollToFirstEvent = false
@@ -120,7 +125,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
   public func scrollTo(hour24: Float, animated: Bool = true) {
     // Any view is fine as they are all synchronized
-    if let controller = pagingViewController.viewControllers?.first as? TimelineContainerController {
+    if let controller = currentTimeline {
       controller.container.scrollTo(hour24: hour24, animated: animated)
     }
   }
@@ -180,7 +185,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
 
   public func scrollToFirstEventIfNeeded() {
     if autoScrollToFirstEvent {
-      if let controller = pagingViewController.viewControllers?.first as? TimelineContainerController {
+      if let controller = currentTimeline {
         controller.container.scrollToFirstEvent()
       }
     }
@@ -197,7 +202,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
     // layout algo
-    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+    if let currentTimeline = currentTimeline {
       
       for handle in eventView.eventResizeHandles {
         let panGestureRecognizer = handle.panGestureRecognizer
@@ -267,7 +272,8 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
         return
       }
       
-      let diff = CGPoint(x: newCoord.x - prevOffset.x, y: newCoord.y - prevOffset.y)
+      let diff = CGPoint(x: newCoord.x - prevOffset.x,
+                         y: newCoord.y - prevOffset.y)
       
       if tag == 0 { // Top handle
         pendingEvent.frame.origin.y += diff.y
@@ -287,7 +293,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   }
 
   private func accentDateForPendingEvent() {
-    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+    if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       let converted = timeline.convert(CGPoint.zero, from: pendingEvent)
       let date = timeline.yToDate(converted.y)
@@ -297,7 +303,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   }
 
   private func commitEditing() {
-    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+    if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       timeline.accentedDate = nil
       setNeedsDisplay()
@@ -363,7 +369,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
   }
 
   private func update(descriptor: EventDescriptor, with eventView: EventView) {
-    if let currentTimeline = pagingViewController.viewControllers?.first as? TimelineContainerController {
+    if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       let eventFrame = eventView.frame
       let converted = convert(eventFrame, to: timeline)
