@@ -274,22 +274,28 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
       
       let diff = CGPoint(x: newCoord.x - prevOffset.x,
                          y: newCoord.y - prevOffset.y)
-      
+      var suggestedEventFrame = pendingEvent.frame
+
       if tag == 0 { // Top handle
-        pendingEvent.frame.origin.y += diff.y
-        pendingEvent.frame.size.height -= diff.y
+        suggestedEventFrame.origin.y += diff.y
+        suggestedEventFrame.size.height -= diff.y
       } else { // Bottom handle
-        pendingEvent.frame.size.height += diff.y
+        suggestedEventFrame.size.height += diff.y
       }
       
-      prevOffset = newCoord
-      accentDateForPendingEvent()
+      let minimumEventHeight = CGFloat(minimumMinutesEventDurationWhileEditing) * style.verticalDiff / 60
+      let suggestedEventHeight = suggestedEventFrame.size.height
+      
+      if suggestedEventHeight > minimumEventHeight {
+        pendingEvent.frame = suggestedEventFrame
+        prevOffset = newCoord
+        accentDateForPendingEvent()
+      }
     }
     
     if sender.state == .ended {
       commitEditing()
     }
-    
   }
 
   private func accentDateForPendingEvent() {
