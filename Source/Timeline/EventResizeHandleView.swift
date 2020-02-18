@@ -1,6 +1,6 @@
 import Foundation
 
-public class EventResizeHandleView: UIView {
+public final class EventResizeHandleView: UIView {
   public lazy var panGestureRecognizer = UIPanGestureRecognizer()
   public lazy var dotView = EventResizeHandleDotView()
 
@@ -22,13 +22,6 @@ public class EventResizeHandleView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
 
-  private func configure() {
-    addSubview(dotView)
-    clipsToBounds = false
-    backgroundColor = .clear
-    addGestureRecognizer(panGestureRecognizer)
-  }
-
   public override func layoutSubviews() {
     super.layoutSubviews()
     let radius: CGFloat = 10
@@ -37,4 +30,12 @@ public class EventResizeHandleView: UIView {
     let dotSize = CGSize(width: radius, height: radius)
     dotView.frame = CGRect(origin: origin, size: dotSize)
   }
+  
+  private func configure() {
+    addSubview(dotView)
+    clipsToBounds = false
+    backgroundColor = .clear
+    addGestureRecognizer(panGestureRecognizer)
+  }
+
 }

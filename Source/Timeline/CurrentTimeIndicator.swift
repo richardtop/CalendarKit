@@ -1,10 +1,9 @@
 import UIKit
 import Neon
 
-@objc class CurrentTimeIndicator: UIView {
-    
-  let padding : CGFloat = 5
-  var leftInset: CGFloat = 53
+@objc public final class CurrentTimeIndicator: UIView {
+  private let padding : CGFloat = 5
+  private let leftInset: CGFloat = 53
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
@@ -18,23 +17,23 @@ import Neon
   }
 
   /// Determines if times should be displayed in a 24 hour format. Defaults to the current locale's setting
-  var is24hClock : Bool = true {
+  public var is24hClock : Bool = true {
     didSet {
       updateDate()
     }
   }
 
-  var date = Date() {
+  public var date = Date() {
     didSet {
       updateDate()
     }
   }
 
-  fileprivate var timeLabel = UILabel()
-  fileprivate var circle = UIView()
-  fileprivate var line = UIView()
+  private var timeLabel = UILabel()
+  private var circle = UIView()
+  private var line = UIView()
 
-  var style = CurrentTimeIndicatorStyle()
+  private var style = CurrentTimeIndicatorStyle()
 
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -46,7 +45,7 @@ import Neon
     configure()
   }
 
-  func configure() {
+  private func configure() {
     [timeLabel, circle, line].forEach {
       addSubview($0)
     }
@@ -84,7 +83,7 @@ import Neon
     RunLoop.current.add(timer!, forMode: .common)
   }
     
-  func updateDate() {
+  private func updateDate() {
     let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
     let timezone = calendar.timeZone
     timeLabel.text = date.format(with: dateFormat, timeZone: timezone)
@@ -93,7 +92,7 @@ import Neon
     configureTimer()
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     line.frame = CGRect(x: leftInset - padding, y: bounds.height / 2, width: bounds.width, height: 1)
 
     circle.frame = CGRect(x: leftInset + 1, y: 0, width: 6, height: 6)

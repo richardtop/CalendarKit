@@ -1,17 +1,15 @@
 import UIKit
-import DateToolsSwift
 import Neon
 
 open class EventView: UIView {
   public var descriptor: EventDescriptor?
-
   public var color = UIColor.lightGray
 
-  var contentHeight: CGFloat {
+  public var contentHeight: CGFloat {
     return textView.height
   }
 
-  lazy var textView: UITextView = {
+  public lazy var textView: UITextView = {
     let view = UITextView()
     view.isUserInteractionEnabled = false
     view.backgroundColor = .clear
@@ -23,7 +21,7 @@ open class EventView: UIView {
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
   public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
 
-  override init(frame: CGRect) {
+  override public init(frame: CGRect) {
     super.init(frame: frame)
     configure()
   }
@@ -33,7 +31,7 @@ open class EventView: UIView {
     configure()
   }
 
-  func configure() {
+  private func configure() {
     clipsToBounds = false
     color = tintColor
     addSubview(textView)
@@ -44,7 +42,7 @@ open class EventView: UIView {
     }
   }
 
-  func updateWithDescriptor(event: EventDescriptor) {
+  public func updateWithDescriptor(event: EventDescriptor) {
     if let attributedText = event.attributedText {
       textView.attributedText = attributedText
     } else {
@@ -62,6 +60,20 @@ open class EventView: UIView {
     drawsShadow = event.editedEvent != nil
     setNeedsDisplay()
     setNeedsLayout()
+  }
+  
+  public func animateCreation() {
+    transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+    func scaleAnimation() {
+      transform = .identity
+    }
+    UIView.animate(withDuration: 0.2,
+                   delay: 0,
+                   usingSpringWithDamping: 0.2,
+                   initialSpringVelocity: 10,
+                   options: [],
+                   animations: scaleAnimation,
+                   completion: nil)
   }
 
   /**
@@ -145,19 +157,5 @@ open class EventView: UIView {
       let rect = bounds.insetBy(dx: dx, dy: dx)
       layer.shadowPath = UIBezierPath(rect: rect).cgPath
     }
-  }
-
-  public func animateCreation() {
-    transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-    func scaleAnimation() {
-      transform = .identity
-    }
-    UIView.animate(withDuration: 0.2,
-                   delay: 0,
-                   usingSpringWithDamping: 0.2,
-                   initialSpringVelocity: 10,
-                   options: [],
-                   animations: scaleAnimation,
-                   completion: nil)
   }
 }

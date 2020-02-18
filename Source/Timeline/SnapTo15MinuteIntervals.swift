@@ -1,13 +1,13 @@
 import Foundation
 
-final class SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
+public final class SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
   private let calendar: Calendar
 
-  init(_ calendar: Calendar) {
+  public init(_ calendar: Calendar) {
     self.calendar = calendar
   }
 
-  func nearestDate(to date: Date) -> Date {
+  public func nearestDate(to date: Date) -> Date {
     let unit: Double = (60 / 4) / 2
     var accHour = Int(accentedHour(for: date))
     let minute = Double(component(component: .minute, from: date))
@@ -31,11 +31,11 @@ final class SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
                          of: date)!
   }
 
-  func accentedHour(for date: Date) -> Int {
+  public func accentedHour(for date: Date) -> Int {
     return Int(component(component: .hour, from: date))
   }
 
-  func accentedMinute(for date: Date) -> Int {
+  public func accentedMinute(for date: Date) -> Int {
     let accentedMinute = Double(component(component: .minute, from: date))
     return snapTo15Minute(accentedMinute)
   }
