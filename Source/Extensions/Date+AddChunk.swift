@@ -13,7 +13,7 @@ extension Date {
    *  - returns: A date with components increased by the values of the
    *  corresponding `TimeChunk` variables
    */
-  public func add(_ chunk: TimeChunk, calendar: Calendar) -> Date {
+  func add(_ chunk: TimeChunk, calendar: Calendar) -> Date {
     var components = DateComponents()
     components.year = chunk.years
     components.month = chunk.months
@@ -33,7 +33,7 @@ extension Date {
    *  - returns: A date with components decreased by the values of the
    *  corresponding `TimeChunk` variables
    */
-  public func subtract(_ chunk: TimeChunk, calendar: Calendar) -> Date {
+  func subtract(_ chunk: TimeChunk, calendar: Calendar) -> Date {
     var components = DateComponents()
     components.year = -chunk.years
     components.month = -chunk.months

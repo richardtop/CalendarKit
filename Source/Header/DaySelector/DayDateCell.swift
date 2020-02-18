@@ -2,21 +2,21 @@ import UIKit
 import DateToolsSwift
 import Neon
 
-class DayDateCell: UIView, DaySelectorItemProtocol {
+public final class DayDateCell: UIView, DaySelectorItemProtocol {
 
-  let dateLabel = DateLabel()
-  let dayLabel = UILabel()
+  private let dateLabel = DateLabel()
+  private let dayLabel = UILabel()
 
-  var regularSizeClassFontSize: CGFloat = 16
+  private var regularSizeClassFontSize: CGFloat = 16
 
-  var date = Date() {
+  public var date = Date() {
     didSet {
       dateLabel.date = date
       updateState()
     }
   }
 
-  var calendar = Calendar.autoupdatingCurrent {
+  public var calendar = Calendar.autoupdatingCurrent {
     didSet {
       dateLabel.calendar = calendar
       updateState()
@@ -24,7 +24,7 @@ class DayDateCell: UIView, DaySelectorItemProtocol {
   }
 
 
-  var selected: Bool {
+  public var selected: Bool {
     get {
       return dateLabel.selected
     }
@@ -35,7 +35,7 @@ class DayDateCell: UIView, DaySelectorItemProtocol {
 
   var style = DaySelectorStyle()
 
-  override var intrinsicContentSize: CGSize {
+  override public var intrinsicContentSize: CGSize {
     return CGSize(width: 75, height: 35)
   }
 
@@ -49,18 +49,18 @@ class DayDateCell: UIView, DaySelectorItemProtocol {
     configure()
   }
 
-  func configure() {
+  private func configure() {
     clipsToBounds = true
     [dayLabel, dateLabel].forEach(addSubview(_:))
   }
 
-  func updateStyle(_ newStyle: DaySelectorStyle) {
+  public func updateStyle(_ newStyle: DaySelectorStyle) {
     style = newStyle
     dateLabel.updateStyle(newStyle)
     updateState()
   }
 
-  func updateState() {
+  private func updateState() {
     let isWeekend = isAWeekend(date: date)
     dayLabel.font = UIFont.systemFont(ofSize: regularSizeClassFontSize)
     dayLabel.textColor = isWeekend ? style.weekendTextColor : style.inactiveTextColor
@@ -69,7 +69,7 @@ class DayDateCell: UIView, DaySelectorItemProtocol {
     setNeedsLayout()
   }
 
-  func updateDayLabel() {
+  private func updateDayLabel() {
     let daySymbols = calendar.shortWeekdaySymbols
     let weekendMask = [true] + [Bool](repeating: false, count: 5) + [true]
     var weekDays = Array(zip(daySymbols, weekendMask))
@@ -90,7 +90,7 @@ class DayDateCell: UIView, DaySelectorItemProtocol {
     return false
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     super.layoutSubviews()
     dayLabel.sizeToFit()
     dayLabel.center.y = center.y
@@ -106,7 +106,7 @@ class DayDateCell: UIView, DaySelectorItemProtocol {
       label.frame.origin.x += padding
     }
   }
-  override func tintColorDidChange() {
+  override public func tintColorDidChange() {
     updateState()
   }
 }

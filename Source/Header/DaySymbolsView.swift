@@ -1,13 +1,12 @@
 import UIKit
 
-class DaySymbolsView: UIView {
+public final class DaySymbolsView: UIView {
+  public private(set) var daysInWeek = 7
+  private var calendar = Calendar.autoupdatingCurrent
+  private var labels = [UILabel]()
+  private var style: DaySymbolsStyle = DaySymbolsStyle()
 
-  var daysInWeek = 7
-  var calendar = Calendar.autoupdatingCurrent
-  var labels = [UILabel]()
-  var style: DaySymbolsStyle = DaySymbolsStyle()
-
-  override init(frame: CGRect) {
+  override public init(frame: CGRect) {
     super.init(frame: frame)
     initializeViews()
   }
@@ -17,14 +16,14 @@ class DaySymbolsView: UIView {
     initializeViews()
   }
 
-  init(daysInWeek: Int = 7, calendar: Calendar = Calendar.autoupdatingCurrent) {
+  public init(daysInWeek: Int = 7, calendar: Calendar = Calendar.autoupdatingCurrent) {
     self.calendar = calendar
     self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
     initializeViews()
   }
 
-  func initializeViews() {
+  private func initializeViews() {
     for _ in 1...daysInWeek {
       let label = UILabel()
       label.textAlignment = .center
@@ -34,12 +33,12 @@ class DaySymbolsView: UIView {
     configure()
   }
 
-  func updateStyle(_ newStyle: DaySymbolsStyle) {
+  public func updateStyle(_ newStyle: DaySymbolsStyle) {
     style = newStyle
     configure()
   }
 
-  func configure() {
+  private func configure() {
     let daySymbols = calendar.veryShortWeekdaySymbols
     let weekendMask = [true] + [Bool](repeating: false, count: 5) + [true]
     var weekDays = Array(zip(daySymbols, weekendMask))
@@ -54,7 +53,7 @@ class DaySymbolsView: UIView {
   }
 
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     let labelsCount = CGFloat(labels.count)
 
     var per = bounds.width - bounds.height * labelsCount

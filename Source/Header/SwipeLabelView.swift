@@ -1,14 +1,13 @@
 import UIKit
 
-class SwipeLabelView: UIView, DayViewStateUpdating {
-
-  enum AnimationDirection {
+public final class SwipeLabelView: UIView, DayViewStateUpdating {
+  public enum AnimationDirection {
     case Forward
     case Backward
   }
 
-  var calendar = Calendar.autoupdatingCurrent
-  weak var state: DayViewState? {
+  public private(set) var calendar = Calendar.autoupdatingCurrent
+  public weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)
     }
@@ -22,25 +21,25 @@ class SwipeLabelView: UIView, DayViewStateUpdating {
     labels.first!.text = formattedDate(date: state!.selectedDate)
   }
 
-  var firstLabel: UILabel {
+  private var firstLabel: UILabel {
     return labels.first!
   }
 
-  var secondLabel: UILabel {
+  private var secondLabel: UILabel {
     return labels.last!
   }
 
-  var labels = [UILabel]()
+  private var labels = [UILabel]()
 
-  var style = SwipeLabelStyle()
+  private var style = SwipeLabelStyle()
 
-  init(calendar: Calendar = Calendar.autoupdatingCurrent) {
+  public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
     self.calendar = calendar
     super.init(frame: .zero)
     configure()
   }
 
-  override init(frame: CGRect) {
+  override public init(frame: CGRect) {
     super.init(frame: frame)
     configure()
   }
@@ -50,7 +49,7 @@ class SwipeLabelView: UIView, DayViewStateUpdating {
     configure()
   }
 
-  func configure() {
+  private func configure() {
     for _ in 0...1 {
       let label = UILabel()
       label.textAlignment = .center
@@ -60,7 +59,7 @@ class SwipeLabelView: UIView, DayViewStateUpdating {
     updateStyle(style)
   }
 
-  func updateStyle(_ newStyle: SwipeLabelStyle) {
+  public func updateStyle(_ newStyle: SwipeLabelStyle) {
     style = newStyle
     labels.forEach { label in
       label.textColor = style.textColor
@@ -68,7 +67,7 @@ class SwipeLabelView: UIView, DayViewStateUpdating {
     }
   }
 
-  func animate(_ direction: AnimationDirection) {
+  private func animate(_ direction: AnimationDirection) {
     let multiplier: CGFloat = direction == .Forward ? -1 : 1
     let shiftRatio: CGFloat = 30/375
     let screenWidth = bounds.width
@@ -87,7 +86,7 @@ class SwipeLabelView: UIView, DayViewStateUpdating {
     })
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     for subview in subviews {
       subview.frame = bounds
     }
@@ -95,7 +94,7 @@ class SwipeLabelView: UIView, DayViewStateUpdating {
 
   // MARK: DayViewStateUpdating
 
-  func move(from oldDate: Date, to newDate: Date) {
+  public func move(from oldDate: Date, to newDate: Date) {
     guard newDate != oldDate
       else { return }
     labels.last!.text = formattedDate(date: newDate)
