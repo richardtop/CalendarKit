@@ -1,9 +1,9 @@
 import UIKit
 
-class DaySelectorController: UIViewController {
-  lazy var daySelector = DaySelector()
+public final class DaySelectorController: UIViewController {
+  public private(set) lazy var daySelector = DaySelector()
   
-  var delegate: DaySelectorDelegate? {
+  public var delegate: DaySelectorDelegate? {
     get {
       return daySelector.delegate
     }
@@ -21,7 +21,7 @@ class DaySelectorController: UIViewController {
     }
   }
   
-  var startDate: Date {
+  public var startDate: Date {
     get {
       return daySelector.startDate!
     }
@@ -30,7 +30,7 @@ class DaySelectorController: UIViewController {
     }
   }
   
-  var selectedIndex: Int {
+  public var selectedIndex: Int {
     get {
       return daySelector.selectedIndex
     }
@@ -39,7 +39,7 @@ class DaySelectorController: UIViewController {
     }
   }
   
-  var selectedDate: Date? {
+  public var selectedDate: Date? {
     get {
       return daySelector.selectedDate
     }
@@ -48,7 +48,7 @@ class DaySelectorController: UIViewController {
     }
   }
   
-  override func loadView() {
+  override public func loadView() {
     view = daySelector
   }
   
@@ -56,7 +56,7 @@ class DaySelectorController: UIViewController {
     daySelector.transitionToHorizontalSizeClass(sizeClass)
   }
   
-  func updateStyle(_ newStyle: DaySelectorStyle) {
+  public func updateStyle(_ newStyle: DaySelectorStyle) {
     daySelector.updateStyle(newStyle)
   }
 }

@@ -1,13 +1,12 @@
 import UIKit
 import DateToolsSwift
 
-public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
-
-  public var daysInWeek = 7
+public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
+  public private(set) var daysInWeek = 7
   public let calendar: Calendar
 
-  var style = DayHeaderStyle()
-  var currentSizeClass = UIUserInterfaceSizeClass.compact
+  private var style = DayHeaderStyle()
+  private var currentSizeClass = UIUserInterfaceSizeClass.compact
 
   public weak var state: DayViewState? {
     willSet(newValue) {
@@ -19,17 +18,17 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
     }
   }
 
-  var currentWeekdayIndex = -1
+  private var currentWeekdayIndex = -1
 
-  var daySymbolsViewHeight: CGFloat = 20
-  var pagingScrollViewHeight: CGFloat = 40
-  var swipeLabelViewHeight: CGFloat = 20
+  private var daySymbolsViewHeight: CGFloat = 20
+  private var pagingScrollViewHeight: CGFloat = 40
+  private var swipeLabelViewHeight: CGFloat = 20
 
-  let daySymbolsView: DaySymbolsView
-  var pagingViewController = UIPageViewController(transitionStyle: .scroll,
+  private let daySymbolsView: DaySymbolsView
+  private var pagingViewController = UIPageViewController(transitionStyle: .scroll,
                                                        navigationOrientation: .horizontal,
                                                        options: nil)
-  let swipeLabelView: SwipeLabelView
+  private let swipeLabelView: SwipeLabelView
 
   public init(calendar: Calendar) {
     self.calendar = calendar
@@ -45,13 +44,13 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
     fatalError("init(coder:) has not been implemented")
   }
 
-  func configure() {
+  private func configure() {
     [daySymbolsView, swipeLabelView].forEach(addSubview)
     backgroundColor = style.backgroundColor
     configurePagingViewController()
   }
   
-  func configurePagingViewController() {
+  private func configurePagingViewController() {
     let selectedDate = Date()
     let vc = makeSelectorController(startDate: beginningOfWeek(selectedDate))
     vc.selectedDate = selectedDate
@@ -62,7 +61,7 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
     addSubview(pagingViewController.view!)
   }
   
-  func makeSelectorController(startDate: Date) -> DaySelectorController {
+  private func makeSelectorController(startDate: Date) -> DaySelectorController {
     let new = DaySelectorController()
     new.calendar = calendar
     new.transitionToHorizontalSizeClass(currentSizeClass)
@@ -72,7 +71,7 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
     return new
   }
   
-  func beginningOfWeek(_ date: Date) -> Date {
+  private func beginningOfWeek(_ date: Date) -> Date {
     let weekOfYear = component(component: .weekOfYear, from: date)
     let yearForWeekOfYear = component(component: .yearForWeekOfYear, from: date)
     return calendar.date(from: DateComponents(calendar: calendar,
@@ -108,7 +107,7 @@ public class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, U
 
   // MARK: DaySelectorDelegate
 
-  func dateSelectorDidSelectDate(_ date: Date) {
+  public func dateSelectorDidSelectDate(_ date: Date) {
     state?.move(to: date)
   }
 

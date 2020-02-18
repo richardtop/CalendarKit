@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		75776AF58133F6BBDDCF1CE7 /* Pods_CalendarApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A223D8E39EB8C7A25F4E823A /* Pods_CalendarApp.framework */; };
+		791ACF5023FC887D00B2D602 /* TimeChunk+DateComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 791ACF4F23FC887D00B2D602 /* TimeChunk+DateComponents.swift */; };
 		7924834B23CB7B57003E3D27 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7924834923CB7B57003E3D27 /* Main.storyboard */; };
 		7924834D23CB7B58003E3D27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7924834C23CB7B58003E3D27 /* Assets.xcassets */; };
 		7924835023CB7B58003E3D27 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7924834E23CB7B58003E3D27 /* LaunchScreen.storyboard */; };
@@ -21,6 +22,7 @@
 
 /* Begin PBXFileReference section */
 		786F0C3439DCA027A1D04664 /* Pods-CalendarApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CalendarApp.release.xcconfig"; path = "Target Support Files/Pods-CalendarApp/Pods-CalendarApp.release.xcconfig"; sourceTree = "<group>"; };
+		791ACF4F23FC887D00B2D602 /* TimeChunk+DateComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeChunk+DateComponents.swift"; sourceTree = "<group>"; };
 		7924834023CB7B57003E3D27 /* CalendarApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalendarApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7924834A23CB7B57003E3D27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		7924834C23CB7B58003E3D27 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -79,6 +81,7 @@
 			isa = PBXGroup;
 			children = (
 				7924836523CB7BFE003E3D27 /* AppDelegate.swift */,
+				791ACF4F23FC887D00B2D602 /* TimeChunk+DateComponents.swift */,
 				7924836623CB7BFE003E3D27 /* CustomCalendarExampleController.swift */,
 				7924836423CB7BFE003E3D27 /* DatePickerController.swift */,
 				7924836723CB7BFE003E3D27 /* ExampleController.swift */,
@@ -220,6 +223,7 @@
 				7924836E23CB7BFE003E3D27 /* ExampleNotificationController.swift in Sources */,
 				7924836C23CB7BFE003E3D27 /* CustomCalendarExampleController.swift in Sources */,
 				7924836923CB7BFE003E3D27 /* StyleGenerator.swift in Sources */,
+				791ACF5023FC887D00B2D602 /* TimeChunk+DateComponents.swift in Sources */,
 				7924836D23CB7BFE003E3D27 /* ExampleController.swift in Sources */,
 				7924836A23CB7BFE003E3D27 /* DatePickerController.swift in Sources */,
 			);

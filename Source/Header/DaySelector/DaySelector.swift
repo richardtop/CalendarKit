@@ -9,13 +9,12 @@ public protocol DaySelectorItemProtocol: AnyObject {
   func updateStyle(_ newStyle: DaySelectorStyle)
 }
 
-protocol DaySelectorDelegate: AnyObject {
+public protocol DaySelectorDelegate: AnyObject {
   func dateSelectorDidSelectDate(_ date: Date)
 }
 
-class DaySelector: UIView {
-
-  weak var delegate: DaySelectorDelegate?
+public final class DaySelector: UIView {
+  public weak var delegate: DaySelectorDelegate?
 
   public var calendar = Calendar.autoupdatingCurrent {
     didSet {
@@ -29,16 +28,16 @@ class DaySelector: UIView {
     }
   }
 
-  var style = DaySelectorStyle()
+  private var style = DaySelectorStyle()
 
-  var daysInWeek = 7
-  var startDate: Date! {
+  private var daysInWeek = 7
+  public var startDate: Date! {
     didSet {
       configure()
     }
   }
 
-  var selectedIndex = -1 {
+  public var selectedIndex = -1 {
     didSet {
       items.filter {$0.selected == true}
         .first?.selected = false
@@ -49,7 +48,7 @@ class DaySelector: UIView {
     }
   }
 
-  var selectedDate: Date? {
+  public var selectedDate: Date? {
     get {
       return items.filter{$0.selected == true}.first?.date as Date?
     }
@@ -60,9 +59,9 @@ class DaySelector: UIView {
     }
   }
 
-  var items = [UIView & DaySelectorItemProtocol]()
+  private var items = [UIView & DaySelectorItemProtocol]()
 
-  init(startDate: Date = Date(), daysInWeek: Int = 7) {
+  public init(startDate: Date = Date(), daysInWeek: Int = 7) {
     self.startDate = startDate.dateOnly(calendar: calendar)
     self.daysInWeek = daysInWeek
     super.init(frame: CGRect.zero)
@@ -70,7 +69,7 @@ class DaySelector: UIView {
     configure()
   }
 
-  override init(frame: CGRect) {
+  override public init(frame: CGRect) {
     startDate = Date().dateOnly(calendar: calendar)
     super.init(frame: frame)
     initializeViews(viewType: DateLabel.self)
@@ -82,7 +81,7 @@ class DaySelector: UIView {
     initializeViews(viewType: DateLabel.self)
   }
 
-  func initializeViews<T: UIView>(viewType: T.Type) where T: DaySelectorItemProtocol {
+  private func initializeViews<T: UIView>(viewType: T.Type) where T: DaySelectorItemProtocol {
     // Store last selected date
     let lastSelectedDate = selectedDate
 
@@ -106,22 +105,22 @@ class DaySelector: UIView {
     selectedDate = lastSelectedDate
   }
 
-  func configure() {
+  private func configure() {
     for (increment, label) in items.enumerated() {
       label.date = startDate.add(TimeChunk.dateComponents(days: increment), calendar: calendar)
     }
   }
 
-  func updateStyle(_ newStyle: DaySelectorStyle) {
+  public func updateStyle(_ newStyle: DaySelectorStyle) {
     style = newStyle
     items.forEach{$0.updateStyle(style)}
   }
 
-  func prepareForReuse() {
+  public func prepareForReuse() {
     items.forEach {$0.selected = false}
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     super.layoutSubviews()
 
     let itemCount = CGFloat(items.count)
@@ -142,7 +141,7 @@ class DaySelector: UIView {
     }
   }
 
-  func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+  public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     switch sizeClass {
     case .regular:
       initializeViews(viewType: DayDateCell.self)
@@ -151,7 +150,7 @@ class DaySelector: UIView {
     }
   }
 
-  @objc func dateLabelDidTap(_ sender: UITapGestureRecognizer) {
+  @objc private func dateLabelDidTap(_ sender: UITapGestureRecognizer) {
     if let item = sender.view as? DaySelectorItemProtocol {
       delegate?.dateSelectorDidSelectDate(item.date)
     }

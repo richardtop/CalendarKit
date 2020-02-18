@@ -1,14 +1,14 @@
 import UIKit
 import DateToolsSwift
 
-class DateLabel: UILabel, DaySelectorItemProtocol {
-  var calendar = Calendar.autoupdatingCurrent {
+public final class DateLabel: UILabel, DaySelectorItemProtocol {
+  public var calendar = Calendar.autoupdatingCurrent {
     didSet {
       updateState()
     }
   }
 
-  var date = Date() {
+  public var date = Date() {
     didSet {
       text = String(date.day)
       updateState()
@@ -19,15 +19,15 @@ class DateLabel: UILabel, DaySelectorItemProtocol {
     return calendar.isDateInToday(date)
   }
 
-  var selected: Bool = false {
+  public var selected: Bool = false {
     didSet {
       animate()
     }
   }
 
-  var style = DaySelectorStyle()
+  private var style = DaySelectorStyle()
 
-  override var intrinsicContentSize: CGSize {
+  override public var intrinsicContentSize: CGSize {
     return CGSize(width: 35, height: 35)
   }
 
@@ -41,13 +41,13 @@ class DateLabel: UILabel, DaySelectorItemProtocol {
     configure()
   }
 
-  func configure() {
+  private func configure() {
     isUserInteractionEnabled = true
     textAlignment = .center
     clipsToBounds = true
   }
 
-  func updateStyle(_ newStyle: DaySelectorStyle) {
+  public func updateStyle(_ newStyle: DaySelectorStyle) {
     style = newStyle
     updateState()
   }
@@ -79,7 +79,7 @@ class DateLabel: UILabel, DaySelectorItemProtocol {
     return false
   }
 
-  func animate(){
+  private func animate(){
     UIView.transition(with: self,
                       duration: 0.4,
                       options: .transitionCrossDissolve,
@@ -88,10 +88,10 @@ class DateLabel: UILabel, DaySelectorItemProtocol {
     }, completion: nil)
   }
 
-  override func layoutSubviews() {
+  override public func layoutSubviews() {
     layer.cornerRadius = bounds.height / 2
   }
-  override func tintColorDidChange() {
+  override public func tintColorDidChange() {
     updateState()
   }
 }
