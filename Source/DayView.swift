@@ -13,8 +13,7 @@ public protocol DayViewDelegate: AnyObject {
   func dayView(dayView: DayView, didUpdate event: EventDescriptor)
 }
 
-public class DayView: UIView, TimelinePagerViewDelegate {
-
+public final class DayView: UIView, TimelinePagerViewDelegate {
   public weak var dataSource: EventDataSource? {
     get {
       return timelinePagerView.dataSource
@@ -39,10 +38,10 @@ public class DayView: UIView, TimelinePagerViewDelegate {
     return timelinePagerView.timelineScrollOffset
   }
 
-  static let headerVisibleHeight: CGFloat = 88
-  var headerHeight: CGFloat = headerVisibleHeight
+  private static let headerVisibleHeight: CGFloat = 88
+  public var headerHeight: CGFloat = headerVisibleHeight
 
-  open var autoScrollToFirstEvent: Bool {
+  public var autoScrollToFirstEvent: Bool {
     get {
       return timelinePagerView.autoScrollToFirstEvent
     }
@@ -51,8 +50,8 @@ public class DayView: UIView, TimelinePagerViewDelegate {
     }
   }
 
-  let dayHeaderView: DayHeaderView
-  let timelinePagerView: TimelinePagerView
+  public let dayHeaderView: DayHeaderView
+  public let timelinePagerView: TimelinePagerView
 
   public var state: DayViewState? {
     didSet {
@@ -63,7 +62,7 @@ public class DayView: UIView, TimelinePagerViewDelegate {
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent
 
-  var style = CalendarStyle()
+  private var style = CalendarStyle()
 
   public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
     self.calendar = calendar
@@ -87,14 +86,13 @@ public class DayView: UIView, TimelinePagerViewDelegate {
     configure()
   }
 
-  func configure() {
+  private func configure() {
     addSubview(timelinePagerView)
     addSubview(dayHeaderView)
     timelinePagerView.delegate = self
 
     if state == nil {
-      let newState = DayViewState()
-      newState.calendar = calendar
+      let newState = DayViewState(date: Date(), calendar: calendar)
       newState.move(to: Date())
       state = newState
     }

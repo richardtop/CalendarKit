@@ -15,12 +15,12 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
-public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate {
+public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate {
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
 
-  public var calendar: Calendar = Calendar.autoupdatingCurrent
+  public private(set) var calendar: Calendar = Calendar.autoupdatingCurrent
 
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
@@ -32,14 +32,14 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     return pagingViewController.viewControllers?.first as? TimelineContainerController
   }
 
-  open var autoScrollToFirstEvent = false
+  public var autoScrollToFirstEvent = false
 
-  var pagingViewController = UIPageViewController(transitionStyle: .scroll,
+  private var pagingViewController = UIPageViewController(transitionStyle: .scroll,
                                                   navigationOrientation: .horizontal,
                                                   options: nil)
-  var style = TimelineStyle()
+  private var style = TimelineStyle()
 
-  lazy var panGestureRecoognizer = UIPanGestureRecognizer(target: self,
+  private lazy var panGestureRecoognizer = UIPanGestureRecognizer(target: self,
                                                           action: #selector(handlePanGesture(_:)))
   
   public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
@@ -86,7 +86,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     configure()
   }
 
-  func configure() {
+  private func configure() {
     let vc = configureTimelineController(date: Date())
     pagingViewController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)
     pagingViewController.dataSource = self
@@ -106,7 +106,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     pagingViewController.view.backgroundColor = style.backgroundColor
   }
 
-  func updateStyleOfTimelineContainer(controller: TimelineContainerController) {
+  private func updateStyleOfTimelineContainer(controller: TimelineContainerController) {
     let container = controller.container
     let timeline = controller.timeline
     timeline.updateStyle(style)
@@ -129,7 +129,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     }
   }
 
-  func configureTimelineController(date: Date) -> TimelineContainerController {
+  private func configureTimelineController(date: Date) -> TimelineContainerController {
     let controller = TimelineContainerController()
     updateStyleOfTimelineContainer(controller: controller)
     let timeline = controller.timeline
@@ -171,7 +171,7 @@ public class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollVie
     pagingViewController.view.fillSuperview()
   }
 
-  func updateTimeline(_ timeline: TimelineView) {
+  private func updateTimeline(_ timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
     let date = timeline.date.dateOnly(calendar: calendar)
     let events = dataSource.eventsForDate(date)

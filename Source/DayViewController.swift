@@ -53,7 +53,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     configureDayViewLayoutForHorizontalSizeClass(newCollection.horizontalSizeClass)
   }
 
-  func configureDayViewLayoutForHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+  open func configureDayViewLayoutForHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     dayView.transitionToHorizontalSizeClass(sizeClass)
   }
 

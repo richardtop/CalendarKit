@@ -1,6 +1,6 @@
 import Foundation
 
-public class EventResizeHandleDotView: UIView {
+public final class EventResizeHandleDotView: UIView {
   public var borderColor: UIColor? {
     get {
       guard let cgColor = layer.borderColor else {return nil}
@@ -20,14 +20,14 @@ public class EventResizeHandleDotView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
 
+  public override func layoutSubviews() {
+    super.layoutSubviews()
+    layer.cornerRadius = bounds.height / 2
+  }
+  
   private func configure() {
     clipsToBounds = true
     backgroundColor = .white
     layer.borderWidth = 2
-  }
-
-  public override func layoutSubviews() {
-    super.layoutSubviews()
-    layer.cornerRadius = bounds.height / 2
   }
 }

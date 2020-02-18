@@ -4,8 +4,8 @@ public protocol DayViewStateUpdating: AnyObject {
   func move(from oldDate: Date, to newDate: Date)
 }
 
-public class DayViewState {
-  public var calendar = Calendar.autoupdatingCurrent
+public final class DayViewState {
+  public private(set) var calendar: Calendar
   public private(set) var selectedDate: Date
   private var clients = [DayViewStateUpdating]()
 

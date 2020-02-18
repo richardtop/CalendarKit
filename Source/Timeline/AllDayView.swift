@@ -1,11 +1,11 @@
 
 import UIKit
 
-public class AllDayView: UIView {
-  var style = AllDayViewStyle()
+public final class AllDayView: UIView {
+  private var style = AllDayViewStyle()
   
-  let allDayLabelWidth: CGFloat = 53.0
-  let allDayEventHeight: CGFloat = 24.0
+  private let allDayLabelWidth: CGFloat = 53.0
+  private let allDayEventHeight: CGFloat = 24.0
   
   public var events: [EventDescriptor] = [] {
     didSet {
