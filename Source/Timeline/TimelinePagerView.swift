@@ -269,7 +269,9 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       guard let tag = sender.view?.tag else {
         return
       }
-      
+      if let currentTimeline = currentTimeline {
+        currentTimeline.container.tag = tag
+      }
       let diff = CGPoint(x: newCoord.x - prevOffset.x,
                          y: newCoord.y - prevOffset.y)
       var suggestedEventFrame = pendingEvent.frame
@@ -287,26 +289,27 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       if suggestedEventHeight > minimumEventHeight {
         pendingEvent.frame = suggestedEventFrame
         prevOffset = newCoord
-        accentDateForPendingEvent()
+        accentDateForPendingEvent(eventHeight: tag == 0 ? 0 : suggestedEventHeight)
       }
     }
     
     if sender.state == .ended {
-      commitEditing()
+      let currentTimelineTag = currentTimeline?.container.tag ?? 0
+      commitEditing(endGapFix: currentTimelineTag == 1)
     }
   }
 
-  private func accentDateForPendingEvent() {
+  private func accentDateForPendingEvent(eventHeight: CGFloat = 0) {
     if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       let converted = timeline.convert(CGPoint.zero, from: pendingEvent)
-      let date = timeline.yToDate(converted.y)
+      let date = timeline.yToDate(converted.y + eventHeight)
       timeline.accentedDate = date
       timeline.setNeedsDisplay()
     }
   }
 
-  private func commitEditing() {
+  private func commitEditing(endGapFix: Bool = false) {
     if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       timeline.accentedDate = nil
@@ -329,6 +332,12 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         eventFrame.origin.x = x
         eventFrame.origin.y = timeline.dateToY(snapped) - currentTimeline.container.contentOffset.y
 
+        if (endGapFix) {
+          let ytd2 = yToDate(y: editedEventView.frame.origin.y + editedEventView.frame.size.height, timeline: timeline)
+          let snapped2 = timeline.snappingBehavior.nearestDate(to: ytd2)
+          eventFrame.size.height = timeline.dateToY(snapped2) - timeline.dateToY(snapped)
+        }
+        
         func animateEventSnap() {
           editedEventView.frame = eventFrame
         }
