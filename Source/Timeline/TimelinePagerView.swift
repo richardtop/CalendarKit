@@ -191,6 +191,9 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   // Event creation prototype
   private var pendingEvent: EventView?
+  
+  /// Tag of the last used resize handle
+  private var resizeHandleTag: Int?
 
   /// Creates an EventView and places it on the Timeline
   /// - Parameter event: the EventDescriptor based on which an EventView will be placed on the Timeline
@@ -269,9 +272,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       guard let tag = sender.view?.tag else {
         return
       }
-      if let currentTimeline = currentTimeline {
-        currentTimeline.container.tag = tag
-      }
+      resizeHandleTag = tag
+
       let diff = CGPoint(x: newCoord.x - prevOffset.x,
                          y: newCoord.y - prevOffset.y)
       var suggestedEventFrame = pendingEvent.frame
@@ -294,8 +296,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
     
     if sender.state == .ended {
-      let currentTimelineTag = currentTimeline?.container.tag ?? 0
-      commitEditing(endGapFix: currentTimelineTag == 1)
+      commitEditing()
     }
   }
 
@@ -309,7 +310,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
   }
 
-  private func commitEditing(endGapFix: Bool = false) {
+  private func commitEditing() {
     if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       timeline.accentedDate = nil
@@ -324,18 +325,16 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         let ytd = yToDate(y: editedEventView.frame.origin.y,
                           timeline: timeline)
         let snapped = timeline.snappingBehavior.nearestDate(to: ytd)
-
-        let calendarWidth = timeline.calendarWidth
         let x = style.leftInset
-
+        
         var eventFrame = editedEventView.frame
         eventFrame.origin.x = x
         eventFrame.origin.y = timeline.dateToY(snapped) - currentTimeline.container.contentOffset.y
 
-        if (endGapFix) {
-          let ytd2 = yToDate(y: editedEventView.frame.origin.y + editedEventView.frame.size.height, timeline: timeline)
-          let snapped2 = timeline.snappingBehavior.nearestDate(to: ytd2)
-          eventFrame.size.height = timeline.dateToY(snapped2) - timeline.dateToY(snapped)
+        if (resizeHandleTag == 1) {
+          let bottomHandleYTD = yToDate(y: editedEventView.frame.origin.y + editedEventView.frame.size.height, timeline: timeline)
+          let bottomHandleSnappedDate = timeline.snappingBehavior.nearestDate(to: bottomHandleYTD)
+          eventFrame.size.height = timeline.dateToY(bottomHandleSnappedDate) - timeline.dateToY(snapped)
         }
         
         func animateEventSnap() {
@@ -355,7 +354,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
                        animations: animateEventSnap,
                        completion: completionHandler(_:))
       }
-
+      
+      resizeHandleTag = nil
       prevOffset = .zero
     }
   }
