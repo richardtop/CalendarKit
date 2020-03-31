@@ -87,8 +87,14 @@ open class EventView: UIView {
     }
     drawsShadow = event.editedEvent != nil
     
-    edit_btn.isHidden = !event.isEditable
-    delete_btn.isHidden = !event.isEditable
+    if event.isEditable && (event.startDate > Date() || Date() < event.endDate) {
+      edit_btn.isHidden = false
+      delete_btn.isHidden = false
+    } else {
+      edit_btn.isHidden = true
+      delete_btn.isHidden = true
+    }
+   
     
     setNeedsDisplay()
     setNeedsLayout()
@@ -116,22 +122,22 @@ open class EventView: UIView {
    In the custom implementation the method is recursively invoked for all of the subviews,
    regardless of their position in relation to the Timeline's bounds.
    */
-  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-    
-    
-//    for resizeHandle in eventResizeHandles {
-//      if let subSubView = resizeHandle.hitTest(convert(point, to: resizeHandle), with: event) {
-//        return subSubView
-//      }
+//  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//
+//
+////    for resizeHandle in eventResizeHandles {
+////      if let subSubView = resizeHandle.hitTest(convert(point, to: resizeHandle), with: event) {
+////        return subSubView
+////      }
+////    }
+//
+//    if descriptor?.isEditable == true {
+//      return super.hitTest(point, with: event)
+//    } else {
+//      return nil
 //    }
-    
-    if descriptor?.isEditable == true {
-      return super.hitTest(point, with: event)
-    } else {
-      return nil
-    }
-    
-  }
+//
+//  }
 
   override open func draw(_ rect: CGRect) {
     super.draw(rect)
