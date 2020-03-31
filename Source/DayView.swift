@@ -5,6 +5,8 @@ import DateToolsSwift
 public protocol DayViewDelegate: AnyObject {
   func dayViewDidSelectEventView(_ eventView: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
+  func dayViewDidClickOnEdit(_ eventView: EventView)
+  func dayViewDidClickOnDelete(_ eventView: EventView)
   func dayView(dayView: DayView, didTapTimelineAt date: Date)
   func dayView(dayView: DayView, didLongPressTimelineAt date: Date)
   func dayViewDidBeginDragging(dayView: DayView)
@@ -168,5 +170,11 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
   }
   public func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor) {
     delegate?.dayView(dayView: self, didUpdate: event)
+  }
+  public func timelinePagerDidClickOnEdit(_ eventView: EventView) {
+    delegate?.dayViewDidClickOnEdit(eventView)
+  }
+  public func timelinePagerDidClickOnDelete(_ eventView: EventView) {
+    delegate?.dayViewDidClickOnDelete(eventView)
   }
 }

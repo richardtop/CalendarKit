@@ -76,6 +76,12 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
 
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
   }
+  
+  open func dayViewDidClickOnEdit(_ eventView: EventView) {
+  }
+  
+  open func dayViewDidClickOnDelete(_ eventView: EventView) {
+  }
 
   open func dayView(dayView: DayView, didTapTimelineAt date: Date) {
   }
@@ -108,4 +114,6 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open func endEventEditing() {
     dayView.endEventEditing()
   }
+    
+    
 }

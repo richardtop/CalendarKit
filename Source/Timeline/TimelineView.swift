@@ -7,6 +7,8 @@ public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
   func timelineView(_ timelineView: TimelineView, didTap event: EventView)
   func timelineView(_ timelineView: TimelineView, didLongPress event: EventView)
+  func timelineView(_ timelineView: TimelineView, didTapEdit event: EventView)
+  func timelineView(_ timelineView: TimelineView, didTapDelete event: EventView)
 }
 
 public final class TimelineView: UIView {
@@ -217,14 +219,14 @@ public final class TimelineView: UIView {
    In the custom implementation the method is recursively invoked for all of the subviews,
    regardless of their position in relation to the Timeline's bounds.
    */
-  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-    for subview in allDayView.subviews {
-      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
-        return subSubView
-      }
-    }
-    return super.hitTest(point, with: event)
-  }
+//  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//    for subview in allDayView.subviews {
+//      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
+//        return subSubView
+//      }
+//    }
+//    return super.hitTest(point, with: event)
+//  }
   
   // MARK: - Style
 
@@ -442,6 +444,7 @@ public final class TimelineView: UIView {
     eventViews.removeAll()
     for _ in regularLayoutAttributes {
       let newView = pool.dequeue()
+      newView.delegate = self
       if newView.superview == nil {
         addSubview(newView)
       }
@@ -515,5 +518,15 @@ public final class TimelineView: UIView {
     let beginningRange = calendar.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
     let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
     return TimePeriod.init(beginning: beginningRange, end: endRange)
+  }
+}
+
+extension TimelineView: EventViewDelegate {
+  public func didClickOnEditButton(_ eventView: EventView) {
+    delegate?.timelineView(self, didTapEdit: eventView)
+  }
+  
+  public func didClickOnDeleteButton(_ eventView: EventView) {
+    delegate?.timelineView(self, didTapDelete: eventView)
   }
 }

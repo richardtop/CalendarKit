@@ -10,6 +10,9 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
+  func timelinePagerDidClickOnEdit(_ eventView: EventView)
+  func timelinePagerDidClickOnDelete(_ eventView: EventView)
+    
 
   // Editing
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
@@ -200,6 +203,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   /// - Parameter animated: if true, CalendarKit animates event creation
   public func create(event: EventDescriptor, animated: Bool) {
     let eventView = EventView()
+    eventView.delegate = self
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
     // layout algo
@@ -470,5 +474,23 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   
   public func timelineView(_ timelineView: TimelineView, didLongPress event: EventView) {
     delegate?.timelinePagerDidLongPressEventView(event)
+  }
+  
+  public func timelineView(_ timelineView: TimelineView, didTapEdit event: EventView) {
+    delegate?.timelinePagerDidClickOnEdit(event)
+  }
+  
+  public func timelineView(_ timelineView: TimelineView, didTapDelete event: EventView) {
+    delegate?.timelinePagerDidClickOnDelete(event)
+  }
+}
+
+extension TimelinePagerView: EventViewDelegate {
+  public func didClickOnEditButton(_ eventView: EventView) {
+    delegate?.timelinePagerDidClickOnEdit(eventView)
+  }
+  
+  public func didClickOnDeleteButton(_ eventView: EventView) {
+    delegate?.timelinePagerDidClickOnDelete(eventView)
   }
 }

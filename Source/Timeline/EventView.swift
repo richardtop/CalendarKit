@@ -1,10 +1,20 @@
 import UIKit
 import Neon
 
+public protocol EventViewDelegate: AnyObject {
+  func didClickOnEditButton(_ eventView: EventView)
+  func didClickOnDeleteButton(_ eventView: EventView)
+}
+
 open class EventView: UIView {
+  
+  let buttonWidth: CGFloat = 30
+  let buttonPadding: CGFloat = 8
+  
   public var descriptor: EventDescriptor?
   public var color = UIColor.lightGray
-
+  public weak var delegate: EventViewDelegate?
+  
   public var contentHeight: CGFloat {
     return textView.height
   }
@@ -20,6 +30,9 @@ open class EventView: UIView {
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
   public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
+  
+  var edit_btn: UIButton!
+  var delete_btn: UIButton!
 
   override public init(frame: CGRect) {
     super.init(frame: frame)
@@ -40,6 +53,21 @@ open class EventView: UIView {
       handle.tag = idx
       addSubview(handle)
     }
+    
+    let bundle = Bundle(for: EventView.self)
+    
+    edit_btn = UIButton(frame: CGRect(x: 0, y: 0, width: buttonWidth, height: buttonWidth))
+    edit_btn.setImage(UIImage(named: "edit", in: bundle, compatibleWith: nil), for: .normal)
+    edit_btn.addTarget(self, action: #selector(editAction), for: .touchUpInside)
+    edit_btn.isUserInteractionEnabled = true
+    addSubview(edit_btn)
+    
+    delete_btn = UIButton(frame: CGRect(x: 0, y: 0, width: buttonWidth, height: buttonWidth))
+    delete_btn.setImage(UIImage(named: "delete", in: bundle, compatibleWith: nil), for: .normal)
+    delete_btn.addTarget(self, action: #selector(deleteAction), for: .touchUpInside)
+    delete_btn.isUserInteractionEnabled = true
+    addSubview(delete_btn)
+    
   }
 
   public func updateWithDescriptor(event: EventDescriptor) {
@@ -58,6 +86,10 @@ open class EventView: UIView {
       $0.isHidden = event.editedEvent == nil
     }
     drawsShadow = event.editedEvent != nil
+    
+    edit_btn.isHidden = !event.isEditable
+    delete_btn.isHidden = !event.isEditable
+    
     setNeedsDisplay()
     setNeedsLayout()
   }
@@ -85,12 +117,20 @@ open class EventView: UIView {
    regardless of their position in relation to the Timeline's bounds.
    */
   public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-    for resizeHandle in eventResizeHandles {
-      if let subSubView = resizeHandle.hitTest(convert(point, to: resizeHandle), with: event) {
-        return subSubView
-      }
+    
+    
+//    for resizeHandle in eventResizeHandles {
+//      if let subSubView = resizeHandle.hitTest(convert(point, to: resizeHandle), with: event) {
+//        return subSubView
+//      }
+//    }
+    
+    if descriptor?.isEditable == true {
+      return super.hitTest(point, with: event)
+    } else {
+      return nil
     }
-    return super.hitTest(point, with: event)
+    
   }
 
   override open func draw(_ rect: CGRect) {
@@ -136,6 +176,10 @@ open class EventView: UIView {
       applySketchShadow(alpha: 0.13,
                         blur: 10)
     }
+    
+    edit_btn.frame = CGRect(x: bounds.width - 2 * (buttonPadding + buttonWidth), y: buttonPadding, width: buttonWidth, height: buttonWidth)
+    delete_btn.frame = CGRect(x: bounds.width - (buttonPadding + buttonWidth), y: buttonPadding, width: buttonWidth, height: buttonWidth)
+    
   }
 
   private func applySketchShadow(
@@ -157,5 +201,13 @@ open class EventView: UIView {
       let rect = bounds.insetBy(dx: dx, dy: dx)
       layer.shadowPath = UIBezierPath(rect: rect).cgPath
     }
+  }
+  
+  @objc func editAction() {
+    delegate?.didClickOnEditButton(self)
+  }
+  
+  @objc func deleteAction() {
+    delegate?.didClickOnDeleteButton(self)
   }
 }
