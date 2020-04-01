@@ -1,6 +1,7 @@
 import UIKit
 
 public final class Event: EventDescriptor {
+  public var isTappable: Bool = false
   public var isEditable: Bool = false
   public var startDate = Date()
   public var endDate = Date()

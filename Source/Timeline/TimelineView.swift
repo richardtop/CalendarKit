@@ -194,7 +194,7 @@ public final class TimelineView: UIView {
   }
   
   private func findEventView(at point: CGPoint) -> EventView? {
-    for eventView in eventViews {
+    for eventView in eventViews.filter({$0.descriptor?.isTappable == true}) {
       let frame = eventView.frame
       if frame.contains(point) {
         return eventView
@@ -219,14 +219,14 @@ public final class TimelineView: UIView {
    In the custom implementation the method is recursively invoked for all of the subviews,
    regardless of their position in relation to the Timeline's bounds.
    */
-//  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-//    for subview in allDayView.subviews {
-//      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
-//        return subSubView
-//      }
-//    }
-//    return super.hitTest(point, with: event)
-//  }
+  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    for subview in allDayView.subviews {
+      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
+        return subSubView
+      }
+    }
+    return super.hitTest(point, with: event)
+  }
   
   // MARK: - Style
 

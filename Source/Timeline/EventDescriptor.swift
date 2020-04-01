@@ -1,6 +1,7 @@
 import Foundation
 
 public protocol EventDescriptor: AnyObject {
+  var isTappable: Bool {get set}
   var isEditable: Bool {get set}
   var startDate: Date {get set}
   var endDate: Date {get set}
