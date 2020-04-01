@@ -117,6 +117,12 @@ open class EventView: UIView {
   override open func layoutSubviews() {
     super.layoutSubviews()
     textView.fillSuperview()
+    if frame.minY < 0 {
+      var textFrame = textView.frame;
+      textFrame.origin.y = frame.minY * -1;
+      textFrame.size.height += frame.minY;
+      textView.frame = textFrame;
+    }
     let first = eventResizeHandles.first
     let last = eventResizeHandles.last
     let radius: CGFloat = 40
