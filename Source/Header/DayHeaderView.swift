@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import DateToolsSwift
 
@@ -175,3 +176,4 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     (pendingViewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(style.daySelector)}
   }
 }
+#endif

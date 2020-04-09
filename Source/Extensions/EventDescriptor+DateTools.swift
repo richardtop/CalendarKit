@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 import DateToolsSwift
 
@@ -11,3 +12,4 @@ extension EventDescriptor {
     return TimePeriod(beginning: startDate, end: endDate)
   }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import Neon
 import DateToolsSwift
@@ -170,3 +171,4 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
     delegate?.dayView(dayView: self, didUpdate: event)
   }
 }
+#endif

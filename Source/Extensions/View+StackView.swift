@@ -5,6 +5,7 @@
 //  Created by Erick Sanchez on 5/10/18.
 //
 
+#if os(iOS)
 import UIKit
 
 extension UIStackView {
@@ -20,3 +21,4 @@ extension UIStackView {
     self.spacing = spacing
   }
 }
+#endif

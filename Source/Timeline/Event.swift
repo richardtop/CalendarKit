@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 public final class Event: EventDescriptor {
@@ -60,3 +61,4 @@ public final class Event: EventDescriptor {
     textColor = .white
   }
 }
+#endif

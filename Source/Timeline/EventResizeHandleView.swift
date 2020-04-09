@@ -1,4 +1,6 @@
+#if os(iOS)
 import Foundation
+import UIKit
 
 public final class EventResizeHandleView: UIView {
   public lazy var panGestureRecognizer = UIPanGestureRecognizer()
@@ -39,3 +41,4 @@ public final class EventResizeHandleView: UIView {
   }
 
 }
+#endif

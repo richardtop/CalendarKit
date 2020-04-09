@@ -1,4 +1,6 @@
+#if os(iOS)
 import Foundation
+import UIKit
 
 public final class EventResizeHandleDotView: UIView {
   public var borderColor: UIColor? {
@@ -31,3 +33,4 @@ public final class EventResizeHandleDotView: UIView {
     layer.borderWidth = 2
   }
 }
+#endif
