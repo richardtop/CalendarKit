@@ -1,3 +1,5 @@
+#if os(iOS)
+import Foundation
 import UIKit
 
 public enum DateStyle {
@@ -87,3 +89,4 @@ public struct AllDayViewStyle {
   public var allDayColor: UIColor = UIColor.black
   public init() {}
 }
+#endif

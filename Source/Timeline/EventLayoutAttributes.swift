@@ -1,4 +1,6 @@
+#if os(iOS)
 import Foundation
+import UIKit
 
 public final class EventLayoutAttributes {
   public let descriptor: EventDescriptor
@@ -8,3 +10,4 @@ public final class EventLayoutAttributes {
     self.descriptor = descriptor
   }
 }
+#endif

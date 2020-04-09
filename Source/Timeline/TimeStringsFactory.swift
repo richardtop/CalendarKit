@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 
 struct TimeStringsFactory {
@@ -39,3 +40,4 @@ struct TimeStringsFactory {
     return am + pm
   }
 }
+#endif

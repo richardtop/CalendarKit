@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import DateToolsSwift
 
@@ -95,3 +96,4 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
     updateState()
   }
 }
+#endif
