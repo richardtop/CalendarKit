@@ -1,4 +1,6 @@
+#if os(iOS)
 import Foundation
+import UIKit
 
 public protocol EventDescriptor: AnyObject {
   var startDate: Date {get set}
@@ -14,3 +16,4 @@ public protocol EventDescriptor: AnyObject {
   func makeEditable() -> Self
   func commitEditing()
 }
+#endif

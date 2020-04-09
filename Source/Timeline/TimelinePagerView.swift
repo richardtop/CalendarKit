@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import Neon
 import DateToolsSwift
@@ -472,3 +473,4 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     delegate?.timelinePagerDidLongPressEventView(event)
   }
 }
+#endif

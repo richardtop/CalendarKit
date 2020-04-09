@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 public final class TimelineContainer: UIScrollView {
@@ -56,3 +57,4 @@ public final class TimelineContainer: UIScrollView {
     setContentOffset(CGPoint(x: offset.x, y: newContentY), animated: animated)
   }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import Neon
 import DateToolsSwift
@@ -156,3 +157,4 @@ public final class DaySelector: UIView {
     }
   }
 }
+#endif

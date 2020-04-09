@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import Neon
 import DateToolsSwift
@@ -517,3 +518,4 @@ public final class TimelineView: UIView {
     return TimePeriod.init(beginning: beginningRange, end: endRange)
   }
 }
+#endif
