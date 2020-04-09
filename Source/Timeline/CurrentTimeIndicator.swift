@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import Neon
 
@@ -120,3 +121,4 @@ import Neon
     }
   }
 }
+#endif

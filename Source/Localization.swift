@@ -1,3 +1,4 @@
+#if os(iOS)
 import Foundation
 
 extension Bundle {
@@ -17,3 +18,4 @@ func localizedString(_ key: String) -> String {
                                                     value: nil,
                                                     table: nil) ?? key
 }
+#endif

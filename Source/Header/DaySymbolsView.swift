@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 
 public final class DaySymbolsView: UIView {
@@ -67,3 +68,4 @@ public final class DaySymbolsView: UIView {
     }
   }
 }
+#endif

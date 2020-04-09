@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import Neon
 
@@ -165,3 +166,4 @@ open class EventView: UIView {
     }
   }
 }
+#endif

@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import DateToolsSwift
 
@@ -109,3 +110,4 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     dayView.endEventEditing()
   }
 }
+#endif

@@ -1,4 +1,4 @@
-
+#if os(iOS)
 import UIKit
 
 public final class AllDayView: UIView {
@@ -176,3 +176,4 @@ public final class AllDayView: UIView {
     verticalStackViewHeightConstraint.isActive = true
   }
 }
+#endif

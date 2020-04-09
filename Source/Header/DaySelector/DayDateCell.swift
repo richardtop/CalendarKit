@@ -1,3 +1,4 @@
+#if os(iOS)
 import UIKit
 import DateToolsSwift
 import Neon
@@ -110,3 +111,4 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
     updateState()
   }
 }
+#endif
