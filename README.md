@@ -1,10 +1,20 @@
 ![CalendarKit](https://user-images.githubusercontent.com/8013017/78410561-617a0980-7615-11ea-9e83-82cd9981960c.jpg)
-[![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![License](https://img.shields.io/cocoapods/l/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![Platform](https://img.shields.io/cocoapods/p/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
+[![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
+[![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-orange.svg)](#swift-package-manager) 
+
+
 
 # CalendarKit
-**CalendarKit** is a fully customizable calendar library written in Swift. It was designed to look similar to iOS Calendar app out-of-the-box, but allow complete customization when needed. To make modifications easy, CalendarKit is composed of multiple small modules. They can be used together, or on their own.
+**CalendarKit** is a fully customizable calendar library written in Swift. It was designed to look similar to the iOS Calendar app, but allow customization if needed. To make modifications easier, CalendarKit is composed of multiple small modules. They can be used together, or on their own.
+
+
+## Need Help?
+If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow using the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag.
+
+Please, use [GitHub Issues](https://github.com/richardtop/CalendarKit/issues) only for reporting a **bug** or requesting a new **feature** in the library.
+
 
 ## Demo
 You can try CalendarKit with CocoaPods. Just enter in Terminal:
@@ -13,14 +23,20 @@ pod try CalendarKit
 ```
 [Watch demo video](https://streamable.com/zsnu1)
 
-[Try it live in your browser](https://appetize.io/app/15j0k57kfecrawvez76ex2p9j0)
+[Try it live in your browser](https://appetize.io/app/k85kqpdr1fp79e59f1c4ar8cx4)
 
 
 
 ## Installation
 
 
-**CalendarKit** is available through [CocoaPods](http://cocoapods.org) or Swift Package Manager (Xcode11+). 
+**CalendarKit** is available through [Swift Package Manager](https://swift.org/package-manager) or [CocoaPods](http://cocoapods.org).
+
+### Swift Package Manager (Xcode 11 or higher)
+
+Open your project, select `File > Swift Packages > Add Package Depedency` and copy the [repository URL](https://github.com/richardtop/CalendarKit.git) into the search bar.
+
+A more detailed guide can be found here: [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app)
 
 ### CocoaPods
 
@@ -30,11 +46,6 @@ To install it, add the following line to your Podfile:
 pod 'CalendarKit'
 ```
 
-### Swift Package Manager (Xcode 11+)
-
-Open your project, select `File > Swift Packages > Add Package Depedency` and copy the [repository URL](https://github.com/richardtop/CalendarKit.git) into the search bar.
-
-A more detailed guide can be found here: [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app)
 
 ## Usage
 Subclass DayViewController and implement `DayViewDataSource` protocol to show events.
@@ -77,10 +88,6 @@ override func dayViewDidLongPressEventView(_ eventView: EventView) {
 }
 ```
 
-## Questions
-If you have a specific programming **question** related to the library, please ask it on StackOverflow using the ['CalendarKit' tag](https://stackoverflow.com/questions/tagged/calendarkit). For **bug reports** and **feature requests** create a new [GitHub Issue](https://github.com/richardtop/CalendarKit/issues).
-
-
 ## Localization
 CalendarKit supports localization and uses iOS default locale to display month and day names. First day of the week is also selected according to iOS locale. Here are few examples:
 
@@ -113,9 +120,9 @@ dayView.updateStyle(style)
 - **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
 
 ## Contributing
-The list of features currently in development can be viewed at [issues](https://github.com/richardtop/CalendarKit/issues) page.
+The list of features currently in development can be viewed on the [issues](https://github.com/richardtop/CalendarKit/issues) page.
 
-Before contributing, it is highly recommended to review [guidelines and code style](https://github.com/richardtop/CalendarKit/blob/master/CONTRIBUTING.md).
+Before contributing, please review [guidelines and code style](https://github.com/richardtop/CalendarKit/blob/master/CONTRIBUTING.md).
 ## Author
 
 Richard Topchii
