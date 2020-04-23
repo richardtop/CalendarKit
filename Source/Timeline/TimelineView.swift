@@ -193,15 +193,15 @@ public final class TimelineView: UIView {
   }
   
   private func findEventView(at point: CGPoint) -> EventView? {
-    for eventView in eventViews {
-      let frame = eventView.frame
+    for eventView in allDayView.eventViews {
+      let frame = eventView.convert(eventView.bounds, to: self)
       if frame.contains(point) {
         return eventView
       }
     }
-    
-    for eventView in allDayView.eventViews {
-      let frame = eventView.convert(eventView.bounds, to: self)
+
+    for eventView in eventViews {
+      let frame = eventView.frame
       if frame.contains(point) {
         return eventView
       }
