@@ -57,6 +57,12 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open func configureDayViewLayoutForHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     dayView.transitionToHorizontalSizeClass(sizeClass)
   }
+  
+  // MARK: - CalendarKit API
+  
+  open func move(to date: Date) {
+    dayView.move(to: date)
+  }
 
   open func reloadData() {
     dayView.reloadData()

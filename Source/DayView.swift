@@ -120,6 +120,10 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
   public func reloadData() {
     timelinePagerView.reloadData()
   }
+  
+  public func move(to date: Date) {
+    state?.move(to: date)
+  }
 
   override public func layoutSubviews() {
     super.layoutSubviews()
