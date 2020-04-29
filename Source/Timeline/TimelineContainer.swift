@@ -15,7 +15,7 @@ public final class TimelineContainer: UIScrollView {
   
   override public func layoutSubviews() {
     super.layoutSubviews()
-    timeline.frame = CGRect(x: 0, y: 0, width: width, height: timeline.fullHeight)
+    timeline.frame = CGRect(x: 0, y: 0, width: bounds.width, height: timeline.fullHeight)
     timeline.offsetAllDayView(by: contentOffset.y)
     
     

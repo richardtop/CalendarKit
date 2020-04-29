@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import Neon
 
 @objc public final class CurrentTimeIndicator: UIView {
   private let padding : CGFloat = 5

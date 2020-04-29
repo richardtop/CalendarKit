@@ -95,9 +95,12 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    daySymbolsView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: daySymbolsViewHeight)
-    pagingViewController.view?.alignAndFillWidth(align: .underCentered, relativeTo: daySymbolsView, padding: 0, height: pagingScrollViewHeight)
-    swipeLabelView.anchorAndFillEdge(.bottom, xPad: 0, yPad: 10, otherSize: swipeLabelViewHeight)
+    daySymbolsView.frame = CGRect(origin: .zero,
+                                  size: CGSize(width: bounds.width, height: daySymbolsViewHeight))
+    pagingViewController.view?.frame = CGRect(origin: CGPoint(x: 0, y: daySymbolsViewHeight),
+                                              size: CGSize(width: bounds.width, height: pagingScrollViewHeight))
+    swipeLabelView.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - 10 - swipeLabelViewHeight),
+                                  size: CGSize(width: bounds.width, height: swipeLabelViewHeight))
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {

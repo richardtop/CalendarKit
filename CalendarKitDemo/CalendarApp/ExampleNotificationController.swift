@@ -39,8 +39,8 @@ class ExampleNotificationController: UIViewController {
 
   override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
-    let size = CGSize(width: view.width, height: 140)
-    let origin = CGPoint(x: 0, y: view.height/2)
+    let size = CGSize(width: view.bounds.width, height: 140)
+    let origin = CGPoint(x: 0, y: view.bounds.height/2)
     timelineContainer.frame = CGRect(origin: origin, size: size)
     timelineContainer.scrollTo(hour24: Float(max(Date().hour - 1, 0)))
     
