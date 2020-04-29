@@ -28,13 +28,16 @@ pod try CalendarKit
 
 
 ## Installation
-
-
-**CalendarKit** is available through [Swift Package Manager](https://swift.org/package-manager) or [CocoaPods](http://cocoapods.org).
-
 ### Swift Package Manager (Xcode 11 or higher)
 
-Open your project, select `File > Swift Packages > Add Package Depedency` and copy the [repository URL](https://github.com/richardtop/CalendarKit.git) into the search bar.
+The preferred way of installing CalendarKit is via the [Swift Package Manager](https://swift.org/package-manager/).
+
+>Xcode 11 integrates with libSwiftPM to provide support for iOS, watchOS, and tvOS platforms.
+
+1. In Xcode, open your project and navigate to **File** → **Swift Packages** → **Add Package Dependency...**
+2. Paste the repository URL (`https://github.com/richardtop/CalendarKit.git`) and click **Next**.
+3. For **Rules**, select **Branch** (with branch set to `master`).
+4. Click **Finish**.
 
 A more detailed guide can be found here: [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app)
 
