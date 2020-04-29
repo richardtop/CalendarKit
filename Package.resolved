@@ -9,15 +9,6 @@
           "revision": "4df71163e824b75476edd853a57dd4e33e0e618b",
           "version": null
         }
-      },
-      {
-        "package": "Neon",
-        "repositoryURL": "https://github.com/richardtop/Neon.git",
-        "state": {
-          "branch": "master",
-          "revision": "8afec45105a53b662ef041824d5a84380283f9ed",
-          "version": null
-        }
       }
     ]
   },

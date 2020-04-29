@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import Neon
 import DateToolsSwift
 
 public protocol DayViewDelegate: AnyObject {
@@ -127,8 +126,11 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: layoutMargins.top, otherSize: headerHeight)
-    timelinePagerView.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
+    dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
+                                 size: CGSize(width: bounds.width, height: headerHeight))
+    let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
+    timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
+                                     size: CGSize(width: bounds.width, height: timelinePagerHeight))
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {

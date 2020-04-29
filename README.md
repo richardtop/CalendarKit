@@ -116,7 +116,6 @@ dayView.updateStyle(style)
 - Swift 4+ (Library is written in Swift 5)
 
 ## Dependencies
-- **[Neon](https://github.com/mamaral/Neon)** is used for declarative layout
 - **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
 
 ## Contributing

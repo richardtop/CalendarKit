@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import Neon
 import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {

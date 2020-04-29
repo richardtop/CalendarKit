@@ -1,13 +1,12 @@
 #if os(iOS)
 import UIKit
-import Neon
 
 open class EventView: UIView {
   public var descriptor: EventDescriptor?
   public var color = UIColor.lightGray
 
   public var contentHeight: CGFloat {
-    return textView.height
+    return textView.frame.height
   }
 
   public lazy var textView: UITextView = {
@@ -117,7 +116,7 @@ open class EventView: UIView {
 
   override open func layoutSubviews() {
     super.layoutSubviews()
-    textView.fillSuperview()
+    textView.frame = bounds
     if frame.minY < 0 {
       var textFrame = textView.frame;
       textFrame.origin.y = frame.minY * -1;
@@ -128,17 +127,14 @@ open class EventView: UIView {
     let last = eventResizeHandles.last
     let radius: CGFloat = 40
     let yPad: CGFloat =  -radius / 2
-    first?.anchorInCorner(.topRight,
-                          xPad: layoutMargins.right * 2,
-                          yPad: yPad,
-                          width: radius,
-                          height: radius)
-    last?.anchorInCorner(.bottomLeft,
-                         xPad: layoutMargins.left * 2,
-                         yPad: yPad,
-                         width: radius,
-                         height: radius)
-
+    let width = bounds.width
+    let height = bounds.height
+    let size = CGSize(width: radius, height: radius)
+    first?.frame = CGRect(origin: CGPoint(x: width - radius - layoutMargins.right, y: yPad),
+                          size: size)
+    last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
+                         size: size)
+    
     if drawsShadow {
       applySketchShadow(alpha: 0.13,
                         blur: 10)

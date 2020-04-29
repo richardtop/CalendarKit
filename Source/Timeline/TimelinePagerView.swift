@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import Neon
 import DateToolsSwift
 
 public protocol TimelinePagerViewDelegate: AnyObject {
@@ -169,7 +168,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    pagingViewController.view.fillSuperview()
+    pagingViewController.view.frame = bounds
   }
 
   private func updateTimeline(_ timeline: TimelineView) {
