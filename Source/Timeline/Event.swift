@@ -7,13 +7,13 @@ public final class Event: EventDescriptor {
   public var isAllDay = false
   public var text = ""
   public var attributedText: NSAttributedString?
-  public var color = UIColor.blue {
+  public var color = SystemColors.systemBlue {
     didSet {
       updateColors()
     }
   }
-  public var backgroundColor = UIColor.blue.withAlphaComponent(0.3)
-  public var textColor = UIColor.black
+  public var backgroundColor = SystemColors.systemBlue.withAlphaComponent(0.3)
+  public var textColor = SystemColors.label
   public var font = UIFont.boldSystemFont(ofSize: 12)
   public var userInfo: Any?
   public weak var editedEvent: EventDescriptor? {

@@ -23,21 +23,21 @@ public struct DayHeaderStyle {
   public var daySymbols = DaySymbolsStyle()
   public var daySelector = DaySelectorStyle()
   public var swipeLabel = SwipeLabelStyle()
-  public var backgroundColor = UIColor(white: 247/255, alpha: 1)
+  public var backgroundColor = SystemColors.secondarySystemBackground
   public init() {}
 }
 
 public struct DaySelectorStyle {
-  public var activeTextColor = UIColor.white
-  public var selectedBackgroundColor = UIColor.black
+  public var activeTextColor = SystemColors.systemBackground
+  public var selectedBackgroundColor = SystemColors.label
 
-  public var weekendTextColor = UIColor.gray
-  public var inactiveTextColor = UIColor.black
+  public var weekendTextColor = SystemColors.secondaryLabel
+  public var inactiveTextColor = SystemColors.label
   public var inactiveBackgroundColor = UIColor.clear
 
-  public var todayInactiveTextColor = UIColor.red
-  public var todayActiveTextColor = UIColor.white
-  public var todayActiveBackgroundColor = UIColor.red
+  public var todayInactiveTextColor = SystemColors.systemRed
+  public var todayActiveTextColor = SystemColors.systemBackground
+  public var todayActiveBackgroundColor = SystemColors.systemRed
     
   public var font = UIFont.systemFont(ofSize: 18)
   public var todayFont = UIFont.boldSystemFont(ofSize: 18)
@@ -46,14 +46,14 @@ public struct DaySelectorStyle {
 }
 
 public struct DaySymbolsStyle {
-  public var weekendColor = UIColor.lightGray
-  public var weekDayColor = UIColor.black
+  public var weekendColor = SystemColors.secondaryLabel
+  public var weekDayColor = SystemColors.label
   public var font = UIFont.systemFont(ofSize: 10)
   public init() {}
 }
 
 public struct SwipeLabelStyle {
-  public var textColor = UIColor.black
+  public var textColor = SystemColors.label
   public var font = UIFont.systemFont(ofSize: 15)
   public init() {}
 }
@@ -61,9 +61,9 @@ public struct SwipeLabelStyle {
 public struct TimelineStyle {
   public var allDayStyle = AllDayViewStyle()
   public var timeIndicator = CurrentTimeIndicatorStyle()
-  public var timeColor = UIColor.lightGray
-  public var lineColor = UIColor.lightGray
-  public var backgroundColor = UIColor.white
+  public var timeColor = SystemColors.secondaryLabel
+  public var lineColor = SystemColors.secondaryLabel
+  public var backgroundColor = SystemColors.systemBackground
   public var font = UIFont.boldSystemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
   public var eventsWillOverlap: Bool = false
@@ -77,16 +77,16 @@ public struct TimelineStyle {
 }
 
 public struct CurrentTimeIndicatorStyle {
-  public var color = UIColor.red
+  public var color = SystemColors.systemRed
   public var font = UIFont.systemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
   public init() {}
 }
 
 public struct AllDayViewStyle {
-  public var backgroundColor: UIColor = UIColor.lightGray
+  public var backgroundColor: UIColor = SystemColors.systemBackground
   public var allDayFont = UIFont.systemFont(ofSize: 12.0)
-  public var allDayColor: UIColor = UIColor.black
+  public var allDayColor: UIColor = SystemColors.label
   public init() {}
 }
 #endif
