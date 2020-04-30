@@ -3,7 +3,7 @@ import UIKit
 
 open class EventView: UIView {
   public var descriptor: EventDescriptor?
-  public var color = UIColor.lightGray
+  public var color = SystemColors.label
 
   public var contentHeight: CGFloat {
     return textView.frame.height
