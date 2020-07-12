@@ -64,36 +64,12 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "CalendarKit Demo"
-    navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Dark",
-                                                        style: .done,
-                                                        target: self,
-                                                        action: #selector(ExampleController.changeStyle))
     navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Change Date",
                                                        style: .plain,
                                                        target: self,
                                                        action: #selector(ExampleController.presentDatePicker))
     navigationController?.navigationBar.isTranslucent = false
     dayView.autoScrollToFirstEvent = true
-    reloadData()
-  }
-  
-  @objc func changeStyle() {
-    var title: String!
-    var style: CalendarStyle!
-    
-    if currentStyle == .Dark {
-      currentStyle = .Light
-      title = "Dark"
-      style = StyleGenerator.defaultStyle()
-    } else {
-      title = "Light"
-      style = StyleGenerator.darkStyle()
-      currentStyle = .Dark
-    }
-    updateStyle(style)
-    navigationItem.rightBarButtonItem!.title = title
-    navigationController?.navigationBar.barTintColor = style.header.backgroundColor
-    navigationController?.navigationBar.titleTextAttributes = [NSAttributedString.Key.foregroundColor:style.header.swipeLabel.textColor]
     reloadData()
   }
   
@@ -174,9 +150,11 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       
       // Event styles are updated independently from CalendarStyle
       // hence the need to specify exact colors in case of Dark style
-      if currentStyle == .Dark {
-        event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
-        event.backgroundColor = event.color.withAlphaComponent(0.6)
+      if #available(iOS 12.0, *) {
+        if traitCollection.userInterfaceStyle == .dark {
+          event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
+          event.backgroundColor = event.color.withAlphaComponent(0.6)
+        }
       }
       
       events.append(event)

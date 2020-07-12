@@ -12,7 +12,6 @@
 		7924834B23CB7B57003E3D27 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7924834923CB7B57003E3D27 /* Main.storyboard */; };
 		7924834D23CB7B58003E3D27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7924834C23CB7B58003E3D27 /* Assets.xcassets */; };
 		7924835023CB7B58003E3D27 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 7924834E23CB7B58003E3D27 /* LaunchScreen.storyboard */; };
-		7924836923CB7BFE003E3D27 /* StyleGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7924836323CB7BFE003E3D27 /* StyleGenerator.swift */; };
 		7924836A23CB7BFE003E3D27 /* DatePickerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7924836423CB7BFE003E3D27 /* DatePickerController.swift */; };
 		7924836B23CB7BFE003E3D27 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7924836523CB7BFE003E3D27 /* AppDelegate.swift */; };
 		7924836C23CB7BFE003E3D27 /* CustomCalendarExampleController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7924836623CB7BFE003E3D27 /* CustomCalendarExampleController.swift */; };
@@ -28,7 +27,6 @@
 		7924834C23CB7B58003E3D27 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		7924834F23CB7B58003E3D27 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		7924835123CB7B58003E3D27 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		7924836323CB7BFE003E3D27 /* StyleGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StyleGenerator.swift; sourceTree = "<group>"; };
 		7924836423CB7BFE003E3D27 /* DatePickerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerController.swift; sourceTree = "<group>"; };
 		7924836523CB7BFE003E3D27 /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7924836623CB7BFE003E3D27 /* CustomCalendarExampleController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomCalendarExampleController.swift; sourceTree = "<group>"; };
@@ -86,7 +84,6 @@
 				7924836423CB7BFE003E3D27 /* DatePickerController.swift */,
 				7924836723CB7BFE003E3D27 /* ExampleController.swift */,
 				7924836823CB7BFE003E3D27 /* ExampleNotificationController.swift */,
-				7924836323CB7BFE003E3D27 /* StyleGenerator.swift */,
 				7924834923CB7B57003E3D27 /* Main.storyboard */,
 				7924834C23CB7B58003E3D27 /* Assets.xcassets */,
 				7924834E23CB7B58003E3D27 /* LaunchScreen.storyboard */,
@@ -222,7 +219,6 @@
 				7924836B23CB7BFE003E3D27 /* AppDelegate.swift in Sources */,
 				7924836E23CB7BFE003E3D27 /* ExampleNotificationController.swift in Sources */,
 				7924836C23CB7BFE003E3D27 /* CustomCalendarExampleController.swift in Sources */,
-				7924836923CB7BFE003E3D27 /* StyleGenerator.swift in Sources */,
 				791ACF5023FC887D00B2D602 /* TimeChunk+DateComponents.swift in Sources */,
 				7924836D23CB7BFE003E3D27 /* ExampleController.swift in Sources */,
 				7924836A23CB7BFE003E3D27 /* DatePickerController.swift in Sources */,
