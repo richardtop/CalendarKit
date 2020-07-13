@@ -2,11 +2,6 @@ import UIKit
 import CalendarKit
 import DateToolsSwift
 
-enum SelectedStyle {
-  case Dark
-  case Light
-}
-
 class ExampleController: DayViewController, DatePickerControllerDelegate {
 
   var data = [["Breakfast at Tiffany's",
@@ -47,8 +42,6 @@ class ExampleController: DayViewController, DatePickerControllerDelegate {
                 UIColor.yellow,
                 UIColor.green,
                 UIColor.red]
-
-  var currentStyle = SelectedStyle.Light
 
   override func viewDidLoad() {
     super.viewDidLoad()
