@@ -408,15 +408,29 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     delegate?.timelinePager(timelinePager: self, willMoveTo: newDate)
 
     func completionHandler(_ completion: Bool) {
-      pagingViewController.viewControllers?.first?.view.setNeedsLayout()
-      scrollToFirstEventIfNeeded()
-      delegate?.timelinePager(timelinePager: self, didMoveTo: newDate)
+      DispatchQueue.main.async {
+        // Fix for the UIPageViewController issue: https://stackoverflow.com/questions/12939280/uipageviewcontroller-navigates-to-wrong-page-with-scroll-transition-style
+        self.pagingViewController.setViewControllers([newController],
+                                                      direction: .reverse,
+                                                      animated: false,
+                                                      completion: nil)
+              
+        self.pagingViewController.viewControllers?.first?.view.setNeedsLayout()
+        self.scrollToFirstEventIfNeeded()
+        self.delegate?.timelinePager(timelinePager: self, didMoveTo: newDate)
+      }
     }
 
     if newDate.isEarlier(than: oldDate) {
-      pagingViewController.setViewControllers([newController], direction: .reverse, animated: true, completion: completionHandler(_:))
+      pagingViewController.setViewControllers([newController],
+                                              direction: .reverse,
+                                              animated: true,
+                                              completion: completionHandler(_:))
     } else if newDate.isLater(than: oldDate) {
-      pagingViewController.setViewControllers([newController], direction: .forward, animated: true, completion: completionHandler(_:))
+      pagingViewController.setViewControllers([newController],
+                                              direction: .forward,
+                                              animated: true,
+                                              completion: completionHandler(_:))
     }
   }
 
