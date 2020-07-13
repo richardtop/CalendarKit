@@ -37,4 +37,12 @@ public enum SystemColors {
     }
     return .blue
   }
+  public static var systemGray4: UIColor {
+    if #available(iOS 13, *) {
+      return .systemGray4
+    }
+    return UIColor(red: 209/255,
+                   green: 209/255,
+                   blue: 213/255, alpha: 1)
+  }
 }
