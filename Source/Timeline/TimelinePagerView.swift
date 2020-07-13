@@ -331,8 +331,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         eventFrame.origin.x = x
         eventFrame.origin.y = timeline.dateToY(snapped) - currentTimeline.container.contentOffset.y
 
-        if (resizeHandleTag == 1) {
-          let bottomHandleYTD = yToDate(y: editedEventView.frame.origin.y + editedEventView.frame.size.height, timeline: timeline)
+        if resizeHandleTag == 0 {
+          eventFrame.size.height = timeline.dateToY(descriptor.endDate) - timeline.dateToY(snapped)
+        } else if resizeHandleTag == 1 {
+          let bottomHandleYTD = yToDate(y: editedEventView.frame.origin.y + editedEventView.frame.size.height,
+                                        timeline: timeline)
           let bottomHandleSnappedDate = timeline.snappingBehavior.nearestDate(to: bottomHandleYTD)
           eventFrame.size.height = timeline.dateToY(bottomHandleSnappedDate) - timeline.dateToY(snapped)
         }
