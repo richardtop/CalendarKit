@@ -36,7 +36,7 @@ public struct DaySelectorStyle {
   public var inactiveBackgroundColor = UIColor.clear
 
   public var todayInactiveTextColor = SystemColors.systemRed
-  public var todayActiveTextColor = SystemColors.systemBackground
+  public var todayActiveTextColor = UIColor.white
   public var todayActiveBackgroundColor = SystemColors.systemRed
     
   public var font = UIFont.systemFont(ofSize: 18)
