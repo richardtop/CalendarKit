@@ -18,7 +18,7 @@ public final class AllDayView: UIView {
   private lazy var textLabel: UILabel = {
     let label = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
     label.text = localizedString("all-day")
-    label.autoresizingMask = [.flexibleWidth]
+    label.setContentCompressionResistancePriority(.required, for: .horizontal)
     return label
   }()
 
@@ -29,13 +29,49 @@ public final class AllDayView: UIView {
   private(set) lazy var scrollView: UIScrollView = {
     let sv = UIScrollView()
     sv.translatesAutoresizingMaskIntoConstraints = false
-    addSubview(sv)
-    
     sv.isScrollEnabled = true
     sv.alwaysBounceVertical = true
     sv.clipsToBounds = false
+    return sv
+  }()
+  
+  // MARK: - RETURN VALUES
+  
+  override init(frame: CGRect) {
+    super.init(frame: frame)
+    configure()
+  }
+  
+  required public init?(coder aDecoder: NSCoder) {
+    super.init(coder: aDecoder)
+    configure()
+  }
+  
+  // MARK: - METHODS
+  
+  /**
+   scrolls the contentOffset of the scroll view containg the event views to the
+   bottom
+   */
+  public func scrollToBottom(animated: Bool = false) {
+    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height)
+    scrollView.setContentOffset(bottomOffset, animated: animated)
+  }
+  
+  public func updateStyle(_ newStyle: AllDayViewStyle) {
+    style = newStyle
+    backgroundColor = style.backgroundColor
+    textLabel.font = style.allDayFont
+    textLabel.textColor = style.allDayColor
+  }
+  
+  private func configure() {
+    clipsToBounds = true
+    addSubview(scrollView)
+    //add All-Day UILabel
+    addSubview(textLabel)
     
-    let svLeftConstraint = sv.leadingAnchor.constraint(equalTo: leadingAnchor, constant: allDayLabelWidth)
+    let svLeftConstraint = scrollView.leadingAnchor.constraint(equalTo: textLabel.trailingAnchor, constant: 8)
     
     /**
      Why is this constraint 999?
@@ -72,57 +108,19 @@ public final class AllDayView: UIView {
     svLeftConstraint.priority = UILayoutPriority(rawValue: 999)
     
     svLeftConstraint.isActive = true
-    sv.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
-    sv.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
-    bottomAnchor.constraint(equalTo: sv.bottomAnchor, constant: 2).isActive = true
+    scrollView.topAnchor.constraint(equalTo: topAnchor, constant: 2).isActive = true
+    scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+    bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 2).isActive = true
     
     let maxAllDayViewHeight = allDayEventHeight * 2 + allDayEventHeight * 0.5
     heightAnchor.constraint(lessThanOrEqualToConstant: maxAllDayViewHeight).isActive = true
     
-    return sv
-  }()
-  
-  // MARK: - RETURN VALUES
-  
-  override init(frame: CGRect) {
-    super.init(frame: frame)
-    configure()
-  }
-  
-  required public init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    configure()
-  }
-  
-  // MARK: - METHODS
-  
-  /**
-   scrolls the contentOffset of the scroll view containg the event views to the
-   bottom
-   */
-  public func scrollToBottom(animated: Bool = false) {
-    let bottomOffset = CGPoint(x: 0, y: scrollView.contentSize.height - scrollView.bounds.size.height)
-    scrollView.setContentOffset(bottomOffset, animated: animated)
-  }
-  
-  public func updateStyle(_ newStyle: AllDayViewStyle) {
-    style = newStyle
-    backgroundColor = style.backgroundColor
-    textLabel.font = style.allDayFont
-    textLabel.textColor = style.allDayColor
-  }
-  
-  private func configure() {
-    clipsToBounds = true
-    
-    //add All-Day UILabel
-    addSubview(textLabel)
-    
-    updateStyle(self.style)
+    updateStyle(style)
   }
   
   public func reloadData() {
     defer {
+      textLabel.sizeToFit()
       layoutIfNeeded()
     }
     
