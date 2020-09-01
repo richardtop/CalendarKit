@@ -74,6 +74,10 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
                                                        action: #selector(ExampleController.presentDatePicker))
     navigationController?.navigationBar.isTranslucent = false
     dayView.autoScrollToFirstEvent = true
+    var timelineStyle = TimelineStyle()
+    timelineStyle.eventsWillOverlap = true
+    dayView.timelinePagerView.updateStyle(timelineStyle)
+    
     reloadData()
   }
   
@@ -159,6 +163,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
       let datePeriod = TimePeriod(beginning: workingDate,
                                   chunk: TimeChunk.dateComponents(minutes: duration))
       
+      event.isEditable = i % 2 == 0
       event.startDate = datePeriod.beginning!
       event.endDate = datePeriod.end!
       
@@ -207,6 +212,8 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     print("Event has been selected: \(descriptor) \(String(describing: descriptor.userInfo))")
   }
   
+  
+  
   override func dayViewDidLongPressEventView(_ eventView: EventView) {
     guard let descriptor = eventView.descriptor as? Event else {
       return
@@ -220,6 +227,20 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   override func dayView(dayView: DayView, didTapTimelineAt date: Date) {
     endEventEditing()
     print("Did Tap at date: \(date)")
+  }
+  
+  override func dayViewDidClickOnDelete(_ eventView: EventView) {
+    guard let descriptor = eventView.descriptor as? Event else {
+      return
+    }
+    print("Event has been deleted: \(descriptor) \(String(describing: descriptor.userInfo))")
+  }
+  
+  override func dayViewDidClickOnEdit(_ eventView: EventView) {
+    guard let descriptor = eventView.descriptor as? Event else {
+      return
+    }
+    print("Event has been edited: \(descriptor) \(String(describing: descriptor.userInfo))")
   }
   
   override func dayViewDidBeginDragging(dayView: DayView) {
@@ -287,4 +308,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     
     reloadData()
   }
+  
+  
+  
 }
