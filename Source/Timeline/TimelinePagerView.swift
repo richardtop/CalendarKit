@@ -201,7 +201,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   /// - Parameter event: the EventDescriptor based on which an EventView will be placed on the Timeline
   /// - Parameter animated: if true, CalendarKit animates event creation
   public func create(event: EventDescriptor, animated: Bool) {
-    let eventView = EventView()
+    // TODO: remove ! `from currentTimeline!.timeline`
+    let eventView = timelineViewAppearance?.timelineView(currentTimeline!.timeline) ?? DefaultEventView() // TODO: default appearance
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
     // layout algo

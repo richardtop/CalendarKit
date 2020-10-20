@@ -3,24 +3,11 @@ import UIKit
 
 open class EventView: UIView {
   public var descriptor: EventDescriptor?
-  public var color = SystemColors.label
-
-  public var contentHeight: CGFloat {
-    return textView.frame.height
-  }
-
-  public lazy var textView: UITextView = {
-    let view = UITextView()
-    view.isUserInteractionEnabled = false
-    view.backgroundColor = .clear
-    view.isScrollEnabled = false
-    return view
-  }()
-
+    
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
-  public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
-
+  public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()] // TODO: Возможность кастомизации
+    
   override public init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -31,51 +18,30 @@ open class EventView: UIView {
     configure()
   }
 
-  private func configure() {
+  open func configure() {
     clipsToBounds = false
-    color = tintColor
-    addSubview(textView)
     
     for (idx, handle) in eventResizeHandles.enumerated() {
       handle.tag = idx
       addSubview(handle)
     }
   }
-
-  open func updateWithDescriptor(event: EventDescriptor) {
-    if let attributedText = event.attributedText {
-      textView.attributedText = attributedText
-    } else {
-      textView.text = event.text
-      textView.textColor = event.textColor
-      textView.font = event.font
-    }
-    descriptor = event
-    backgroundColor = event.backgroundColor
-    color = event.color
-    eventResizeHandles.forEach{
-      $0.borderColor = event.color
-      $0.isHidden = event.editedEvent == nil
-    }
-    drawsShadow = event.editedEvent != nil
-    setNeedsDisplay()
-    setNeedsLayout()
+    
+  override open func layoutSubviews() {
+    super.layoutSubviews()
+    let first = eventResizeHandles.first
+    let last = eventResizeHandles.last
+    let radius: CGFloat = 40
+    let yPad: CGFloat =  -radius / 2
+    let width = bounds.width
+    let height = bounds.height
+    let size = CGSize(width: radius, height: radius)
+    first?.frame = CGRect(origin: CGPoint(x: width - radius - layoutMargins.right, y: yPad),
+                          size: size)
+    last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
+                         size: size)
   }
-  
-  public func animateCreation() {
-    transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
-    func scaleAnimation() {
-      transform = .identity
-    }
-    UIView.animate(withDuration: 0.2,
-                   delay: 0,
-                   usingSpringWithDamping: 0.2,
-                   initialSpringVelocity: 10,
-                   options: [],
-                   animations: scaleAnimation,
-                   completion: nil)
-  }
-
+    
   /**
    Custom implementation of the hitTest method is needed for the tap gesture recognizers
    located in the ResizeHandleView to work.
@@ -91,6 +57,67 @@ open class EventView: UIView {
       }
     }
     return super.hitTest(point, with: event)
+  }
+    
+  open func updateWithDescriptor(event: EventDescriptor) {
+    descriptor = event
+    eventResizeHandles.forEach{
+      $0.borderColor = event.color
+      $0.isHidden = event.editedEvent == nil
+    }
+    setNeedsDisplay()
+    setNeedsLayout()
+  }
+    
+  open func animateCreation() {
+    transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
+    func scaleAnimation() {
+      transform = .identity
+    }
+    UIView.animate(withDuration: 0.2,
+                   delay: 0,
+                   usingSpringWithDamping: 0.2,
+                   initialSpringVelocity: 10,
+                   options: [],
+                   animations: scaleAnimation,
+                   completion: nil)
+  }
+}
+
+class DefaultEventView: EventView {
+  public var color = SystemColors.label
+
+  public var contentHeight: CGFloat {
+    return textView.frame.height
+  }
+
+  public lazy var textView: UITextView = {
+    let view = UITextView()
+    view.isUserInteractionEnabled = false
+    view.backgroundColor = .clear
+    view.isScrollEnabled = false
+    return view
+  }()
+
+  override open func configure() {
+    super.configure()
+    color = tintColor
+    addSubview(textView)
+  }
+
+  override open func updateWithDescriptor(event: EventDescriptor) {
+    if let attributedText = event.attributedText {
+      textView.attributedText = attributedText
+    } else {
+      textView.text = event.text
+      textView.textColor = event.textColor
+      textView.font = event.font
+    }
+    backgroundColor = event.backgroundColor
+    color = event.color
+    drawsShadow = event.editedEvent != nil
+    
+    super.updateWithDescriptor(event: event)
   }
 
   override open func draw(_ rect: CGRect) {
@@ -123,17 +150,6 @@ open class EventView: UIView {
       textFrame.size.height += frame.minY;
       textView.frame = textFrame;
     }
-    let first = eventResizeHandles.first
-    let last = eventResizeHandles.last
-    let radius: CGFloat = 40
-    let yPad: CGFloat =  -radius / 2
-    let width = bounds.width
-    let height = bounds.height
-    let size = CGSize(width: radius, height: radius)
-    first?.frame = CGRect(origin: CGPoint(x: width - radius - layoutMargins.right, y: yPad),
-                          size: size)
-    last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
-                         size: size)
     
     if drawsShadow {
       applySketchShadow(alpha: 0.13,

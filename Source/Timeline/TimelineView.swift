@@ -66,7 +66,7 @@ public final class TimelineView: UIView {
   }
   func dequeue() -> EventView {
     guard !storage.isEmpty else {
-      return appearance?.timelineView(self) ?? EventView()
+      return appearance?.timelineView(self) ?? DefaultEventView() // TODO: default appearance
       }
     return storage.removeLast()
   }

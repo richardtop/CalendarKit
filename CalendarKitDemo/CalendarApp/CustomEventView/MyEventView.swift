@@ -11,20 +11,18 @@ import CalendarKit
 
 class MyEventView: EventView {
     
-    override public init(frame: CGRect) {
-      super.init(frame: frame)
+    override func configure() {
+        super.configure()
+        
         let v = Bundle.main.loadNibNamed("MyEventView", owner: self, options: nil)?.first as! UIView
         self.addSubview(v)
-    }
+          
+        v.translatesAutoresizingMaskIntoConstraints = false
+        let horizontalConstraint = v.topAnchor.constraint(equalTo: self.topAnchor)
+        let verticalConstraint = v.bottomAnchor.constraint(equalTo: self.bottomAnchor)
+        let widthConstraint = v.trailingAnchor.constraint(equalTo: self.trailingAnchor)
+        let heightConstraint = v.leadingAnchor.constraint(equalTo: self.leadingAnchor)
+        self.addConstraints([horizontalConstraint, verticalConstraint, widthConstraint, heightConstraint])
 
-    required public init?(coder aDecoder: NSCoder) {
-      super.init(coder: aDecoder)
-      let v = Bundle.main.loadNibNamed("MyEventView", owner: self, options: nil)?.first as! UIView
-      self.addSubview(v)
-    }
-    
-    override func updateWithDescriptor(event: EventDescriptor) {
-        super.updateWithDescriptor(event: event)
-        self.color = .black
     }
 }
