@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		397054E0253D390E00C33B44 /* MyEventView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 397054DF253D390E00C33B44 /* MyEventView.xib */; };
+		397054E2253D394100C33B44 /* MyEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397054E1253D394100C33B44 /* MyEventView.swift */; };
 		75776AF58133F6BBDDCF1CE7 /* Pods_CalendarApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A223D8E39EB8C7A25F4E823A /* Pods_CalendarApp.framework */; };
 		791ACF5023FC887D00B2D602 /* TimeChunk+DateComponents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 791ACF4F23FC887D00B2D602 /* TimeChunk+DateComponents.swift */; };
 		7924834D23CB7B58003E3D27 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7924834C23CB7B58003E3D27 /* Assets.xcassets */; };
@@ -19,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		397054DF253D390E00C33B44 /* MyEventView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyEventView.xib; sourceTree = "<group>"; };
+		397054E1253D394100C33B44 /* MyEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyEventView.swift; sourceTree = "<group>"; };
 		786F0C3439DCA027A1D04664 /* Pods-CalendarApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CalendarApp.release.xcconfig"; path = "Target Support Files/Pods-CalendarApp/Pods-CalendarApp.release.xcconfig"; sourceTree = "<group>"; };
 		791ACF4F23FC887D00B2D602 /* TimeChunk+DateComponents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeChunk+DateComponents.swift"; sourceTree = "<group>"; };
 		7924834023CB7B57003E3D27 /* CalendarApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CalendarApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,6 +50,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		397054DE253D38F000C33B44 /* CustomEventView */ = {
+			isa = PBXGroup;
+			children = (
+				397054DF253D390E00C33B44 /* MyEventView.xib */,
+				397054E1253D394100C33B44 /* MyEventView.swift */,
+			);
+			path = CustomEventView;
+			sourceTree = "<group>";
+		};
 		57CFFDE58D70A1545DA52F6E /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -76,6 +89,7 @@
 		7924834223CB7B57003E3D27 /* CalendarApp */ = {
 			isa = PBXGroup;
 			children = (
+				397054DE253D38F000C33B44 /* CustomEventView */,
 				7924836523CB7BFE003E3D27 /* AppDelegate.swift */,
 				791ACF4F23FC887D00B2D602 /* TimeChunk+DateComponents.swift */,
 				7924836623CB7BFE003E3D27 /* CustomCalendarExampleController.swift */,
@@ -159,6 +173,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				7924835023CB7B58003E3D27 /* LaunchScreen.storyboard in Resources */,
+				397054E0253D390E00C33B44 /* MyEventView.xib in Resources */,
 				7924834D23CB7B58003E3D27 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -212,6 +227,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				397054E2253D394100C33B44 /* MyEventView.swift in Sources */,
 				7924836B23CB7BFE003E3D27 /* AppDelegate.swift in Sources */,
 				7924836E23CB7BFE003E3D27 /* ExampleNotificationController.swift in Sources */,
 				7924836C23CB7BFE003E3D27 /* CustomCalendarExampleController.swift in Sources */,
@@ -356,13 +372,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H8S6FURL87;
 				INFOPLIST_FILE = CalendarApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = github.richardtop.CalendarApp;
+				PRODUCT_BUNDLE_IDENTIFIER = github.richardtop.CalendarApp1123;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -377,13 +394,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = H8S6FURL87;
 				INFOPLIST_FILE = CalendarApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = github.richardtop.CalendarApp;
+				PRODUCT_BUNDLE_IDENTIFIER = github.richardtop.CalendarApp1123;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";

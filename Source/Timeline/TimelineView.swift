@@ -9,8 +9,13 @@ public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didLongPress event: EventView)
 }
 
+public protocol TimelineViewAppearance: AnyObject {
+  func timelineView(_ timeloneView: TimelineView/*, viewFor event: EventDescriptor*/) -> EventView
+}
+
 public final class TimelineView: UIView {
   public weak var delegate: TimelineViewDelegate?
+  public weak var appearance: TimelineViewAppearance?
 
   public var date = Date() {
     didSet {
@@ -53,7 +58,18 @@ public final class TimelineView: UIView {
       return allDayLayoutAttributes + regularLayoutAttributes
     }
   }
-  private var pool = ReusePool<EventView>()
+
+  private var storage = [EventView]()
+  func enqueue(views: [EventView]) {
+    views.forEach{$0.frame = .zero}
+    storage.append(contentsOf: views)
+  }
+  func dequeue() -> EventView {
+    guard !storage.isEmpty else {
+      return appearance?.timelineView(self) ?? EventView()
+      }
+    return storage.removeLast()
+  }
 
   public var firstEventYPosition: CGFloat? {
     let first = regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}.first
@@ -438,10 +454,10 @@ public final class TimelineView: UIView {
   }
 
   private func prepareEventViews() {
-    pool.enqueue(views: eventViews)
+    enqueue(views: eventViews)
     eventViews.removeAll()
     for _ in regularLayoutAttributes {
-      let newView = pool.dequeue()
+      let newView = dequeue()
       if newView.superview == nil {
         addSubview(newView)
       }
@@ -450,7 +466,7 @@ public final class TimelineView: UIView {
   }
 
   public func prepareForReuse() {
-    pool.enqueue(views: eventViews)
+    enqueue(views: eventViews)
     eventViews.removeAll()
     setNeedsDisplay()
   }

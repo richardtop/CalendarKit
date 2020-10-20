@@ -2,8 +2,7 @@ import UIKit
 import CalendarKit
 import DateToolsSwift
 
-class CustomCalendarExampleController: DayViewController, DatePickerControllerDelegate {
-  
+class CustomCalendarExampleController: DayViewController, DatePickerControllerDelegate, TimelineViewAppearance {
   var data = [["Breakfast at Tiffany's",
                "New York, 5th avenue"],
               
@@ -68,6 +67,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
                                                        action: #selector(ExampleController.presentDatePicker))
     navigationController?.navigationBar.isTranslucent = false
     dayView.autoScrollToFirstEvent = true
+    dayView.timelinePagerView.timelineViewAppearance = self
     reloadData()
   }
   
@@ -170,6 +170,12 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
     var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
     baseColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
     return UIColor(hue: h, saturation: s * 0.3, brightness: b, alpha: a)
+  }
+    
+  // MARK: TimelineViewAppearance
+    
+  func timelineView(_ timeloneView: TimelineView) -> EventView {
+    MyEventView()
   }
   
   // MARK: DayViewDelegate

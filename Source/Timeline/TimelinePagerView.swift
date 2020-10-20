@@ -19,6 +19,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
+  public weak var timelineViewAppearance: TimelineViewAppearance?
 
   public private(set) var calendar: Calendar = Calendar.autoupdatingCurrent
 
@@ -135,6 +136,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     let timeline = controller.timeline
     timeline.longPressGestureRecognizer.addTarget(self, action: #selector(timelineDidLongPress(_:)))
     timeline.delegate = self
+    timeline.appearance = timelineViewAppearance
     timeline.calendar = calendar
     timeline.date = date.dateOnly(calendar: calendar)
     controller.container.delegate = self
