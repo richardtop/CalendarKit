@@ -84,7 +84,7 @@ open class EventView: UIView {
   }
 }
 
-class DefaultEventView: EventView {
+public class DefaultEventView: EventView { // TODO: should we return it to private?
   public var color = SystemColors.label
 
   public var contentHeight: CGFloat {

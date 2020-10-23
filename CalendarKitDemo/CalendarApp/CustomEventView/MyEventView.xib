@@ -9,6 +9,56 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="tJx-Da-DNp">
+            <rect key="frame" x="0.0" y="0.0" width="487" height="103"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="vqZ-1b-KXf">
+                    <rect key="frame" x="189" y="33" width="109" height="37.5"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Катя Иванова" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dqk-02-1go">
+                            <rect key="frame" x="0.0" y="0.0" width="109" height="20.5"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Дизайн Френч" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="WO9-3r-kqE">
+                            <rect key="frame" x="0.0" y="20.5" width="109" height="17"/>
+                            <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                            <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                </stackView>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="2000₽" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Qya-X6-C5g">
+                    <rect key="frame" x="427.5" y="41.5" width="51.5" height="20.5"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ymG-Co-yZX">
+                    <rect key="frame" x="418.5" y="31" width="1" height="41"/>
+                    <color key="backgroundColor" red="0.57820894299279446" green="0.68182538396524617" blue="0.85096406267512692" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <constraints>
+                        <constraint firstAttribute="width" constant="1" id="C5y-yN-0RW"/>
+                        <constraint firstAttribute="height" constant="41" id="c65-WB-E1a"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="0.1910511098128741" green="0.46278833306891665" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="vqZ-1b-KXf" firstAttribute="centerX" secondItem="tJx-Da-DNp" secondAttribute="centerX" id="32c-oU-Laa"/>
+                <constraint firstItem="vqZ-1b-KXf" firstAttribute="centerY" secondItem="tJx-Da-DNp" secondAttribute="centerY" id="GZ5-5d-4po"/>
+                <constraint firstItem="Qya-X6-C5g" firstAttribute="leading" secondItem="ymG-Co-yZX" secondAttribute="trailing" constant="8" id="K4W-Wx-OxI"/>
+                <constraint firstItem="ymG-Co-yZX" firstAttribute="centerY" secondItem="tJx-Da-DNp" secondAttribute="centerY" id="Yc0-gw-dBi"/>
+                <constraint firstItem="Qya-X6-C5g" firstAttribute="centerY" secondItem="tJx-Da-DNp" secondAttribute="centerY" id="a05-69-KUZ"/>
+                <constraint firstAttribute="trailing" secondItem="Qya-X6-C5g" secondAttribute="trailing" constant="8" id="vLD-if-bbA"/>
+            </constraints>
+            <nil key="simulatedTopBarMetrics"/>
+            <nil key="simulatedBottomBarMetrics"/>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="250.00000000000003" y="661.94196428571422"/>
+        </view>
         <view contentMode="scaleToFill" id="yxy-xl-A1n">
             <rect key="frame" x="0.0" y="0.0" width="382" height="80"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>

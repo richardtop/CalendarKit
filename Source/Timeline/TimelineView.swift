@@ -10,7 +10,7 @@ public protocol TimelineViewDelegate: AnyObject {
 }
 
 public protocol TimelineViewAppearance: AnyObject {
-  func timelineView(_ timeloneView: TimelineView/*, viewFor event: EventDescriptor*/) -> EventView
+  func timelineView(_ timeloneView: TimelineView, viewFor event: EventDescriptor) -> EventView
 }
 
 public final class TimelineView: UIView {
@@ -59,16 +59,24 @@ public final class TimelineView: UIView {
     }
   }
 
-  private var storage = [EventView]()
+  // EventDescriptor.Type -> array of reusable EventViews
+  private var storage = [String : Array<EventView>]()
   func enqueue(views: [EventView]) {
-    views.forEach{$0.frame = .zero}
-    storage.append(contentsOf: views)
-  }
-  func dequeue() -> EventView {
-    guard !storage.isEmpty else {
-      return appearance?.timelineView(self) ?? DefaultEventView() // TODO: default appearance
+    for v in views {
+      v.frame = .zero
+      let descriptorTypeName = String(reflecting: v.descriptor)
+      if (storage[descriptorTypeName] == nil) {
+        storage[descriptorTypeName] = [EventView]()
       }
-    return storage.removeLast()
+      storage[descriptorTypeName]!.append(v)
+    }
+  }
+  func dequeue(event: EventDescriptor) -> EventView {
+    let descriptorTypeName = String(reflecting: event)
+    guard (storage[descriptorTypeName]?.isEmpty) != nil else {
+      return appearance?.timelineView(self, viewFor: event) ?? DefaultEventView()
+    }
+    return storage[descriptorTypeName]!.removeLast()
   }
 
   public var firstEventYPosition: CGFloat? {
@@ -456,8 +464,8 @@ public final class TimelineView: UIView {
   private func prepareEventViews() {
     enqueue(views: eventViews)
     eventViews.removeAll()
-    for _ in regularLayoutAttributes {
-      let newView = dequeue()
+    for attr in regularLayoutAttributes {
+      let newView = dequeue(event: attr.descriptor)
       if newView.superview == nil {
         addSubview(newView)
       }

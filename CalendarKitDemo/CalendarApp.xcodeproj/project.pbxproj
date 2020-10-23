@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		391B6FA72541611500A49621 /* MyEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 391B6FA62541611500A49621 /* MyEvent.swift */; };
 		397054E0253D390E00C33B44 /* MyEventView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 397054DF253D390E00C33B44 /* MyEventView.xib */; };
 		397054E2253D394100C33B44 /* MyEventView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 397054E1253D394100C33B44 /* MyEventView.swift */; };
 		75776AF58133F6BBDDCF1CE7 /* Pods_CalendarApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A223D8E39EB8C7A25F4E823A /* Pods_CalendarApp.framework */; };
@@ -21,6 +22,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		391B6FA62541611500A49621 /* MyEvent.swift */ = {isa = PBXFileReference; indentWidth = 2; lastKnownFileType = sourcecode.swift; path = MyEvent.swift; sourceTree = "<group>"; };
 		397054DF253D390E00C33B44 /* MyEventView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MyEventView.xib; sourceTree = "<group>"; };
 		397054E1253D394100C33B44 /* MyEventView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MyEventView.swift; sourceTree = "<group>"; };
 		786F0C3439DCA027A1D04664 /* Pods-CalendarApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CalendarApp.release.xcconfig"; path = "Target Support Files/Pods-CalendarApp/Pods-CalendarApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -55,6 +57,7 @@
 			children = (
 				397054DF253D390E00C33B44 /* MyEventView.xib */,
 				397054E1253D394100C33B44 /* MyEventView.swift */,
+				391B6FA62541611500A49621 /* MyEvent.swift */,
 			);
 			path = CustomEventView;
 			sourceTree = "<group>";
@@ -227,6 +230,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				391B6FA72541611500A49621 /* MyEvent.swift in Sources */,
 				397054E2253D394100C33B44 /* MyEventView.swift in Sources */,
 				7924836B23CB7BFE003E3D27 /* AppDelegate.swift in Sources */,
 				7924836E23CB7BFE003E3D27 /* ExampleNotificationController.swift in Sources */,

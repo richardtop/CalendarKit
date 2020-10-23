@@ -180,6 +180,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     let day = TimePeriod(beginning: date,
                          chunk: TimeChunk.dateComponents(days: 1))
     let validEvents = events.filter{$0.datePeriod.overlaps(with: day)}
+    timeline.appearance = self.timelineViewAppearance // TODO: is this a propper place for setting the appearance?
     timeline.layoutAttributes = validEvents.map(EventLayoutAttributes.init)
   }
 
@@ -202,7 +203,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   /// - Parameter animated: if true, CalendarKit animates event creation
   public func create(event: EventDescriptor, animated: Bool) {
     // TODO: remove ! `from currentTimeline!.timeline`
-    let eventView = timelineViewAppearance?.timelineView(currentTimeline!.timeline) ?? DefaultEventView() // TODO: default appearance
+    let eventView = timelineViewAppearance?.timelineView(currentTimeline!.timeline, viewFor: event) ?? DefaultEventView() // TODO: default appearance
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
     // layout algo

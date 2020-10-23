@@ -16,7 +16,7 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
     }
   }
 
-  private var isToday: Bool {
+  public /*private*/ var isToday: Bool { // TODO: should we return it to private?
     return calendar.isDateInToday(date)
   }
 

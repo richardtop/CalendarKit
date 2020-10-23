@@ -23,6 +23,10 @@ class MyEventView: EventView {
         let widthConstraint = v.trailingAnchor.constraint(equalTo: self.trailingAnchor)
         let heightConstraint = v.leadingAnchor.constraint(equalTo: self.leadingAnchor)
         self.addConstraints([horizontalConstraint, verticalConstraint, widthConstraint, heightConstraint])
+    }
 
+    override open func updateWithDescriptor(event: EventDescriptor) {
+        super.updateWithDescriptor(event: event)
+        subviews[2].backgroundColor = event.color // TODO: should we do this before super?
     }
 }
