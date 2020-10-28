@@ -2,7 +2,8 @@
 import UIKit
 
 open class EventView: UIView {
-  public var descriptor: EventDescriptor?
+  // TODO: I think this must be non optional
+  public var descriptor: EventDescriptor? // TODO: for what purpose this field is?
     
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`

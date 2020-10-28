@@ -64,7 +64,7 @@ public final class TimelineView: UIView {
   func enqueue(views: [EventView]) {
     for v in views {
       v.frame = .zero
-      let descriptorTypeName = String(reflecting: v.descriptor)
+      let descriptorTypeName = String(reflecting: v.descriptor!) // TODO: Is it even possible to nil here? If so, where and what should we do with it? Request a view from the appearance?
       if (storage[descriptorTypeName] == nil) {
         storage[descriptorTypeName] = [EventView]()
       }
@@ -73,8 +73,11 @@ public final class TimelineView: UIView {
   }
   func dequeue(event: EventDescriptor) -> EventView {
     let descriptorTypeName = String(reflecting: event)
-    guard (storage[descriptorTypeName]?.isEmpty) != nil else {
-      return appearance?.timelineView(self, viewFor: event) ?? DefaultEventView()
+    guard storage[descriptorTypeName] != nil
+          && !storage[descriptorTypeName]!.isEmpty else {
+      let view = appearance?.timelineView(self, viewFor: event) ?? DefaultEventView()
+      view.updateWithDescriptor(event: event) // because eventDescriptor must be not nil when enqueu() will called for this view // TODO: I think here start a big problem
+      return view
     }
     return storage[descriptorTypeName]!.removeLast()
   }
