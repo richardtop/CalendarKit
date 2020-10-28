@@ -9,8 +9,13 @@ public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didLongPress event: EventView)
 }
 
+public protocol TimelineViewAppearance: AnyObject {
+  func timelineView(_ timeloneView: TimelineView, viewFor event: EventDescriptor) -> EventView
+}
+
 public final class TimelineView: UIView {
   public weak var delegate: TimelineViewDelegate?
+  public weak var appearance: TimelineViewAppearance?
 
   public var date = Date() {
     didSet {
@@ -53,7 +58,29 @@ public final class TimelineView: UIView {
       return allDayLayoutAttributes + regularLayoutAttributes
     }
   }
-  private var pool = ReusePool<EventView>()
+
+  // EventDescriptor.Type -> array of reusable EventViews
+  private var storage = [String : Array<EventView>]()
+  func enqueue(views: [EventView]) {
+    for v in views {
+      v.frame = .zero
+      let descriptorTypeName = String(reflecting: v.descriptor!) // TODO: Is it even possible to nil here? If so, where and what should we do with it? Request a view from the appearance?
+      if (storage[descriptorTypeName] == nil) {
+        storage[descriptorTypeName] = [EventView]()
+      }
+      storage[descriptorTypeName]!.append(v)
+    }
+  }
+  func dequeue(event: EventDescriptor) -> EventView {
+    let descriptorTypeName = String(reflecting: event)
+    guard storage[descriptorTypeName] != nil
+          && !storage[descriptorTypeName]!.isEmpty else {
+      let view = appearance?.timelineView(self, viewFor: event) ?? DefaultEventView()
+      view.updateWithDescriptor(event: event) // because eventDescriptor must be not nil when enqueu() will called for this view // TODO: I think here start a big problem
+      return view
+    }
+    return storage[descriptorTypeName]!.removeLast()
+  }
 
   public var firstEventYPosition: CGFloat? {
     let first = regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}.first
@@ -438,10 +465,10 @@ public final class TimelineView: UIView {
   }
 
   private func prepareEventViews() {
-    pool.enqueue(views: eventViews)
+    enqueue(views: eventViews)
     eventViews.removeAll()
-    for _ in regularLayoutAttributes {
-      let newView = pool.dequeue()
+    for attr in regularLayoutAttributes {
+      let newView = dequeue(event: attr.descriptor)
       if newView.superview == nil {
         addSubview(newView)
       }
@@ -450,7 +477,7 @@ public final class TimelineView: UIView {
   }
 
   public func prepareForReuse() {
-    pool.enqueue(views: eventViews)
+    enqueue(views: eventViews)
     eventViews.removeAll()
     setNeedsDisplay()
   }

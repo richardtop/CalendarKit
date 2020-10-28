@@ -19,6 +19,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
+  public weak var timelineViewAppearance: TimelineViewAppearance?
 
   public private(set) var calendar: Calendar = Calendar.autoupdatingCurrent
 
@@ -135,6 +136,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     let timeline = controller.timeline
     timeline.longPressGestureRecognizer.addTarget(self, action: #selector(timelineDidLongPress(_:)))
     timeline.delegate = self
+    timeline.appearance = timelineViewAppearance
     timeline.calendar = calendar
     timeline.date = date.dateOnly(calendar: calendar)
     controller.container.delegate = self
@@ -178,6 +180,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     let day = TimePeriod(beginning: date,
                          chunk: TimeChunk.dateComponents(days: 1))
     let validEvents = events.filter{$0.datePeriod.overlaps(with: day)}
+    timeline.appearance = self.timelineViewAppearance // TODO: is this a propper place for setting the appearance?
     timeline.layoutAttributes = validEvents.map(EventLayoutAttributes.init)
   }
 
@@ -199,7 +202,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   /// - Parameter event: the EventDescriptor based on which an EventView will be placed on the Timeline
   /// - Parameter animated: if true, CalendarKit animates event creation
   public func create(event: EventDescriptor, animated: Bool) {
-    let eventView = EventView()
+    // TODO: remove ! `from currentTimeline!.timeline`
+    let eventView = timelineViewAppearance?.timelineView(currentTimeline!.timeline, viewFor: event) ?? DefaultEventView() // TODO: default appearance
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
     // layout algo
