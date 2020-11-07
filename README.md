@@ -26,7 +26,6 @@ pod try CalendarKit
 [Try it live in your browser](https://appetize.io/app/k85kqpdr1fp79e59f1c4ar8cx4)
 
 
-
 ## Installation
 ### Swift Package Manager (Xcode 11 or higher)
 
@@ -51,8 +50,8 @@ pod 'CalendarKit'
 
 
 ## Usage
-Subclass DayViewController and implement `DayViewDataSource` protocol to show events.
-CalendarKit requires `DayViewDataSource` to return an array of objects conforming to `EventDescriptor` protocol, specifying all the information needed to display a particular event:
+Subclass `DayViewController` and implement `EventDataSource` protocol to show events.
+CalendarKit requires `EventDataSource` to return an array of objects conforming to `EventDescriptor` protocol, specifying all the information needed to display a particular event:
 
 ```swift
 // Return an array of EventDescriptors for particular date
@@ -77,12 +76,12 @@ override func eventsForDate(_ date: Date) -> [EventDescriptor] {
   return events
 }
 ```
-There is  no need to do layout, CalendarKit will take care of it. CalendarKit also creates `EventViews` for you and reuses them.
+There is  no need to do layout, CalendarKit will take care of it. CalendarKit also creates `EventView`s for you and reuses them.
 
 If needed, implement DayViewDelegate to handle user input
 
 ```swift
-override func dayViewDidSelectEventView(_ eventview: EventView) {
+override func dayViewDidSelectEventView(_ eventView: EventView) {
   print("Event has been selected: \(eventview.data)")
 }
 
@@ -91,9 +90,9 @@ override func dayViewDidLongPressEventView(_ eventView: EventView) {
 }
 ```
 
+
 ## Localization
 CalendarKit supports localization and uses iOS default locale to display month and day names. First day of the week is also selected according to iOS locale. Here are few examples:
-
 
 <img src="https://cloud.githubusercontent.com/assets/8013017/22315567/8ba5f9c2-e378-11e6-860d-b94e87a2a45c.PNG" alt="German" width="320"><img src="https://cloud.githubusercontent.com/assets/8013017/22315600/c87e826a-e378-11e6-9280-732982b42077.PNG" alt="Norwegian" width="320"><img src="https://cloud.githubusercontent.com/assets/8013017/22315259/bda72b46-e376-11e6-8d0b-20cb5fa2dc95.png" alt="Finnish" width="320">
 
@@ -113,21 +112,27 @@ dayView.updateStyle(style)
 ```
 <img src="https://cloud.githubusercontent.com/assets/8013017/22717896/a2a6c6f2-edae-11e6-8ac3-d9add3d61fb9.png" alt="Light theme" width="320"> <img src="https://user-images.githubusercontent.com/8013017/69188457-3dfe6880-0b25-11ea-9674-39b9f3c1cd00.png" alt="Dark theme" width="320"> 
 
+
 ## Requirements
 
 - iOS 9.0+
 - Swift 4+ (Library is written in Swift 5)
 
+
 ## Dependencies
 - **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
+
 
 ## Contributing
 The list of features currently in development can be viewed on the [issues](https://github.com/richardtop/CalendarKit/issues) page.
 
 Before contributing, please review [guidelines and code style](https://github.com/richardtop/CalendarKit/blob/master/CONTRIBUTING.md).
+
+
 ## Author
 
 Richard Topchii
+
 
 ## License
 
