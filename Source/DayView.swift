@@ -112,8 +112,8 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
     timelinePagerView.scrollTo(hour24: hour24, animated: animated)
   }
 
-  public func scrollToFirstEventIfNeeded() {
-    timelinePagerView.scrollToFirstEventIfNeeded()
+  public func scrollToFirstEventIfNeeded(animated: Bool = true) {
+    timelinePagerView.scrollToFirstEventIfNeeded(animated: animated)
   }
 
   public func reloadData() {
