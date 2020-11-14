@@ -408,7 +408,7 @@ public final class TimelineView: UIView {
       if style.eventsWillOverlap {
         guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
         let dateInterval = getDateInterval(date: earliestEvent)
-        if dateInterval.contains(dateInterval.lowerBound) {
+        if event.descriptor.datePeriod.contains(dateInterval.lowerBound) {
           overlappingEvents.append(event)
           continue
         }
