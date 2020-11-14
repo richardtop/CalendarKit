@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePagerDidSelectEventView(_ eventView: EventView)
@@ -175,9 +174,10 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     guard let dataSource = dataSource else {return}
     let date = timeline.date.dateOnly(calendar: calendar)
     let events = dataSource.eventsForDate(date)
-    let day = TimePeriod(beginning: date,
-                         chunk: TimeChunk.dateComponents(days: 1))
-    let validEvents = events.filter{$0.datePeriod.overlaps(with: day)}
+
+    let end = calendar.date(byAdding: .day, value: 1, to: date)!
+    let day = date ... end
+    let validEvents = events.filter{$0.datePeriod.overlaps(day)}
     timeline.layoutAttributes = validEvents.map(EventLayoutAttributes.init)
   }
 
@@ -421,12 +421,12 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       }
     }
 
-    if newDate.isEarlier(than: oldDate) {
+    if newDate < oldDate {
       pagingViewController.setViewControllers([newController],
                                               direction: .reverse,
                                               animated: true,
                                               completion: completionHandler(_:))
-    } else if newDate.isLater(than: oldDate) {
+    } else if newDate > oldDate {
       pagingViewController.setViewControllers([newController],
                                               direction: .forward,
                                               animated: true,
@@ -438,7 +438,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     guard let containerController = viewController as? TimelineContainerController  else {return nil}
-    let previousDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: -1), calendar: calendar)
+    let previousDate = calendar.date(byAdding: .day, value: -1, to: containerController.timeline.date)!
     let vc = configureTimelineController(date: previousDate)
     let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
     vc.pendingContentOffset = offset
@@ -447,7 +447,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
     guard let containerController = viewController as? TimelineContainerController  else {return nil}
-    let nextDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: 1), calendar: calendar)
+    let nextDate = calendar.date(byAdding: .day, value: 1, to: containerController.timeline.date)!
     let vc = configureTimelineController(date: nextDate)
     let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
     vc.pendingContentOffset = offset

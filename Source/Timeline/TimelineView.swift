@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didTapAt date: Date)
@@ -383,7 +382,7 @@ public final class TimelineView: UIView {
     let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
       let start1 = attr1.descriptor.startDate
       let start2 = attr2.descriptor.startDate
-      return start1.isEarlier(than: start2)
+      return start1 < start2
     }
 
     var groupsOfEvents = [[EventLayoutAttributes]]()
@@ -396,8 +395,12 @@ public final class TimelineView: UIView {
       }
 
       let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
-        let period1 = attr1.descriptor.datePeriod.seconds
-        let period2 = attr2.descriptor.datePeriod.seconds
+        var period = attr1.descriptor.datePeriod
+        let period1 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
+
+        period = attr2.descriptor.datePeriod
+        let period2 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
+
         return period1 > period2
         }
         .first!
@@ -405,14 +408,14 @@ public final class TimelineView: UIView {
       if style.eventsWillOverlap {
         guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
         let dateInterval = getDateInterval(date: earliestEvent)
-        if event.descriptor.datePeriod.relation(to: dateInterval) == Relation.startInside {
+        if dateInterval.contains(dateInterval.lowerBound) {
           overlappingEvents.append(event)
           continue
         }
       } else {
         let lastEvent = overlappingEvents.last!
-        if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
-          lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
+        if longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) ||
+          lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) {
           overlappingEvents.append(event)
           continue
         }
@@ -427,8 +430,8 @@ public final class TimelineView: UIView {
     for overlappingEvents in groupsOfEvents {
       let totalCount = CGFloat(overlappingEvents.count)
       for (index, event) in overlappingEvents.enumerated() {
-        let startY = dateToY(event.descriptor.datePeriod.beginning!)
-        let endY = dateToY(event.descriptor.datePeriod.end!)
+        let startY = dateToY(event.descriptor.datePeriod.lowerBound)
+        let endY = dateToY(event.descriptor.datePeriod.upperBound)
         let floatIndex = CGFloat(index)
         let x = style.leftInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
@@ -507,14 +510,14 @@ public final class TimelineView: UIView {
     return calendar.component(component, from: date)
   }
   
-  private func getDateInterval(date: Date) -> TimePeriod {
+  private func getDateInterval(date: Date) -> ClosedRange<Date> {
     let earliestEventMintues = component(component: .minute, from: date)
     let splitMinuteInterval = style.splitMinuteInterval
     let minute = component(component: .minute, from: date)
     let minuteRange = (minute / splitMinuteInterval) * splitMinuteInterval
     let beginningRange = calendar.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
-    let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
-    return TimePeriod.init(beginning: beginningRange, end: endRange)
+    let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)!
+    return beginningRange ... endRange
   }
 }
 #endif

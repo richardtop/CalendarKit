@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public protocol DaySelectorItemProtocol: AnyObject {
   var date: Date {get set}
@@ -54,7 +53,7 @@ public final class DaySelector: UIView {
     }
     set(newDate) {
       if let newDate = newDate {
-        selectedIndex = newDate.days(from: startDate, calendar: calendar)
+        selectedIndex = calendar.dateComponents([.day], from: startDate, to: newDate).day!
       }
     }
   }
@@ -107,7 +106,7 @@ public final class DaySelector: UIView {
 
   private func configure() {
     for (increment, label) in items.enumerated() {
-      label.date = startDate.add(TimeChunk.dateComponents(days: increment), calendar: calendar)
+      label.date = calendar.date(byAdding: .day, value: increment, to: startDate)!
     }
   }
 
