@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   public private(set) var daysInWeek = 7
@@ -123,7 +122,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     let centerView = pagingViewController.viewControllers![0] as! DaySelectorController
     let startDate = centerView.startDate.dateOnly(calendar: calendar)
 
-    let daysFrom = newDate.days(from: startDate, calendar: calendar)
+    let daysFrom = calendar.dateComponents([.day], from: startDate, to: newDate).day!
     let newStartDate = beginningOfWeek(newDate)
 
     let new = makeSelectorController(startDate: newStartDate)
@@ -147,7 +146,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     if let selector = viewController as? DaySelectorController {
-      let previousDate = selector.startDate.add(TimeChunk.dateComponents(weeks: -1))
+      let previousDate = calendar.date(byAdding: .weekOfYear, value: -1, to: selector.startDate)!
       return makeSelectorController(startDate: previousDate)
     }
     return nil
@@ -155,7 +154,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
     if let selector = viewController as? DaySelectorController {
-      let nextDate = selector.startDate.add(TimeChunk.dateComponents(weeks: 1))
+      let nextDate = calendar.date(byAdding: .weekOfYear, value: 1, to: selector.startDate)!
       return makeSelectorController(startDate: nextDate)
     }
     return nil

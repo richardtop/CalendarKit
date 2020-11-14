@@ -1,5 +1,4 @@
 import CalendarKit
-import DateToolsSwift
 
 class ExampleNotificationController: UIViewController {
   

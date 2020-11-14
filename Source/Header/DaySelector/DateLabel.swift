@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public final class DateLabel: UILabel, DaySelectorItemProtocol {
   public var calendar = Calendar.autoupdatingCurrent {

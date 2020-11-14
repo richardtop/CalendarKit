@@ -35,6 +35,14 @@ import UIKit
 
   private var style = CurrentTimeIndicatorStyle()
 
+  private lazy var dateFormatter: DateFormatter = {
+    let fmt = DateFormatter()
+    fmt.locale = calendar.locale
+    fmt.timeZone = calendar.timeZone
+
+    return fmt
+  }()
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -84,9 +92,8 @@ import UIKit
   }
     
   private func updateDate() {
-    let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
-    let timezone = calendar.timeZone
-    timeLabel.text = date.format(with: dateFormat, timeZone: timezone)
+    dateFormatter.dateFormat = is24hClock ? "HH:mm" : "h:mm a"
+    timeLabel.text = dateFormatter.string(from: date)
     timeLabel.sizeToFit()
     setNeedsLayout()
     configureTimer()
