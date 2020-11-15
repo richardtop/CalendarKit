@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public final class DateLabel: UILabel, DaySelectorItemProtocol {
   public var calendar = Calendar.autoupdatingCurrent {
@@ -11,7 +10,7 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
 
   public var date = Date() {
     didSet {
-      text = String(date.day)
+        text = String(calendar.dateComponents([.day], from: date).day!)
       updateState()
     }
   }
