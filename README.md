@@ -118,11 +118,6 @@ dayView.updateStyle(style)
 - iOS 9.0+
 - Swift 4+ (Library is written in Swift 5)
 
-
-## Dependencies
-- **[DateTools](https://github.com/MatthewYork/DateTools)** is used for date manipulation
-
-
 ## Contributing
 The list of features currently in development can be viewed on the [issues](https://github.com/richardtop/CalendarKit/issues) page.
 
