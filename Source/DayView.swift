@@ -1,6 +1,5 @@
 #if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public protocol DayViewDelegate: AnyObject {
   func dayViewDidSelectEventView(_ eventView: EventView)

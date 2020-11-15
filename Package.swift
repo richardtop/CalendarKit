@@ -17,12 +17,11 @@
      dependencies: [
          // Dependencies declare other packages that this package depends on.
          // .package(url: /* package url */, from: "1.0.0"),
-         .package(url: "https://github.com/maniramezan/DateTools.git", .branch("mani_swiftpm_5_3"))
      ],
      targets: [
          // Targets are the basic building blocks of a package. A target can define a module or a test suite.
          // Targets can depend on other targets in this package, and on products in packages which this package depends on.
-         .target(name: "CalendarKit", dependencies: ["DateToolsSwift"], path: "Source")
+         .target(name: "CalendarKit", dependencies: [], path: "Source")
      ],
      swiftLanguageVersions: [.version("5.1")]
  )
