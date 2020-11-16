@@ -199,6 +199,7 @@ class CustomCalendarExampleController: DayViewController, DatePickerControllerDe
   }
   
   override func dayViewDidBeginDragging(dayView: DayView) {
+    endEventEditing()
     print("DayView did begin dragging")
   }
   
