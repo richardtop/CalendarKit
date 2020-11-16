@@ -6,6 +6,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePagerDidLongPressEventView(_ eventView: EventView)
   func timelinePager(timelinePager: TimelinePagerView, didTapTimelineAt date: Date)
   func timelinePagerDidBeginDragging(timelinePager: TimelinePagerView)
+  func timelinePagerDidTransitionCancel(timelinePager: TimelinePagerView)
   func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
@@ -457,7 +458,10 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   // MARK: UIPageViewControllerDelegate
 
   public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
-    guard completed else {return}
+    guard completed else {
+      delegate?.timelinePagerDidTransitionCancel(timelinePager: self)
+      return
+    }
     if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
       let selectedDate = timelineContainerController.timeline.date
       delegate?.timelinePager(timelinePager: self, willMoveTo: selectedDate)
