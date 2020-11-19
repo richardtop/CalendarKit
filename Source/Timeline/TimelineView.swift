@@ -414,8 +414,8 @@ public final class TimelineView: UIView {
         }
       } else {
         let lastEvent = overlappingEvents.last!
-        if longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) ||
-          lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) {
+        if (longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (longestEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) ||
+          (lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (lastEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) {
           overlappingEvents.append(event)
           continue
         }
