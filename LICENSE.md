@@ -1,4 +1,4 @@
-Licensed under the MIT license
+MIT license
 
 Copyright (c) 2017 Richard Topchii
 
