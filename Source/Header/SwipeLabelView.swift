@@ -109,6 +109,7 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     formatter.dateStyle = .full
     formatter.timeStyle = .none
     formatter.timeZone = timezone
+    formatter.locale = Locale.init(identifier: Locale.preferredLanguages[0])
     return formatter.string(from: date)
   }
 }
