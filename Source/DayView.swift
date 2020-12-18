@@ -50,8 +50,8 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
     }
   }
 
-  public let dayHeaderView: DayHeaderView
-  public let timelinePagerView: TimelinePagerView
+  public private(set) var dayHeaderView: DayHeaderView
+  public private(set) var timelinePagerView: TimelinePagerView
 
   public var state: DayViewState? {
     didSet {
@@ -60,7 +60,22 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
     }
   }
 
-  public var calendar: Calendar = Calendar.autoupdatingCurrent
+  public var calendar: Calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      // TODO: Should we observe calendar in state rather then change it manualy?
+      dayHeaderView.calendar = self.calendar
+      timelinePagerView.calendar = self.calendar
+
+      let date = self.state?.selectedDate ?? Date()
+      let newState = DayViewState(date: date, calendar: calendar)
+      newState.move(to: date)
+      state = newState
+      
+      // TODO: Shound we redraw dayView and its subvies? Or we should do this when calendar in state was changed?
+//      setNeedsDisplay()
+//      self.subviews.forEach { $0.setNeedsDisplay() }
+    }
+  }
 
   private var style = CalendarStyle()
 

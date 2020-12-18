@@ -4,7 +4,7 @@ import DateToolsSwift
 
 public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   public private(set) var daysInWeek = 7
-  public let calendar: Calendar
+  public var calendar: Calendar
 
   private var style = DayHeaderStyle()
   private var currentSizeClass = UIUserInterfaceSizeClass.compact

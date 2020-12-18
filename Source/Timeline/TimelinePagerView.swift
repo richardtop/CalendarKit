@@ -20,7 +20,14 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
 
-  public private(set) var calendar: Calendar = Calendar.autoupdatingCurrent
+  public var calendar: Calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      pagingViewController.viewControllers?.forEach {
+        let vc = $0 as! TimelineContainerController
+        vc.timeline.calendar = calendar
+      }
+    }
+  }
 
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
