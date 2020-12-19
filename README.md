@@ -7,26 +7,26 @@
 
 
 # CalendarKit
-**CalendarKit** is a fully customizable calendar library written in Swift. It was designed to look similar to the iOS Calendar app, but allow customization if needed. To make modifications easier, CalendarKit is composed of multiple small modules. They can be used together, or on their own.
-
+**CalendarKit** is a Swift calendar UI library for iOS and iPadOS. It looks similar to the Apple Calendar app out-of-the-box, while allowing customization when needed. CalendarKit is composed of multiple modules which can be used together or independently.
 
 ## Need Help?
-If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow using the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag.
+If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow with the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag.
 
-Please, use [GitHub Issues](https://github.com/richardtop/CalendarKit/issues) only for reporting a **bug** or requesting a new **feature** in the library.
+Please, use [GitHub Issues](https://github.com/richardtop/CalendarKit/issues) only for reporting a bug or requesting a new feature.
 
 
-## Demo
-You can try CalendarKit with CocoaPods. Just enter in Terminal:
+## Examples
+[Video](https://streamable.com/zsnu1)
+
+[Try live in a browser](https://appetize.io/app/k85kqpdr1fp79e59f1c4ar8cx4)
+
+To try CalendarKit with CocoaPods issue the following command in the Terminal:
 ```ruby
 pod try CalendarKit
 ```
-[Watch demo video](https://streamable.com/zsnu1)
-
-[Try it live in your browser](https://appetize.io/app/k85kqpdr1fp79e59f1c4ar8cx4)
-
 
 ## Installation
+CalendarKit can be installed with Swift Package Manager or with CocoaPods.
 ### Swift Package Manager (Xcode 12 or higher)
 
 The preferred way of installing CalendarKit is via the [Swift Package Manager](https://swift.org/package-manager/).
@@ -36,7 +36,7 @@ The preferred way of installing CalendarKit is via the [Swift Package Manager](h
 3. For **Rules**, select **Version (Up to Next Major)** and click **Next**.
 4. Click **Finish**.
 
-A more detailed guide can be found here: [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app)
+[Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app)
 
 ### CocoaPods
 
@@ -45,16 +45,18 @@ To install it, add the following line to your Podfile:
 ```ruby
 pod 'CalendarKit'
 ```
-
+[Adding Pods to an Xcode project](https://guides.cocoapods.org/using/using-cocoapods.html)
 
 ## Usage
-Subclass `DayViewController` and implement `EventDataSource` protocol to show events.
-CalendarKit requires `EventDataSource` to return an array of objects conforming to `EventDescriptor` protocol, specifying all the information needed to display a particular event:
+1. Subclass `DayViewController`
+2. Implement `EventDataSource` protocol to show events.
+
+CalendarKit requires `EventDataSource` to return an array of objects conforming to `EventDescriptor` protocol, specifying all the information needed to display a particular event. You're free to use a default `Event` class as a model or create your own class conforming to the `EventDescriptor` protocol.
 
 ```swift
 // Return an array of EventDescriptors for particular date
 override func eventsForDate(_ date: Date) -> [EventDescriptor] {
-  var models = // Get events (models) from the storage / API
+  var models = myAppEventStore.getEventsForDate(date) // Get events (models) from the storage / API
 
   var events = [Event]()
 
@@ -74,9 +76,10 @@ override func eventsForDate(_ date: Date) -> [EventDescriptor] {
   return events
 }
 ```
-There is  no need to do layout, CalendarKit will take care of it. CalendarKit also creates `EventView`s for you and reuses them.
+After receiving an array of events for a particular day, CalendarKit will handle view layout and display.
 
-If needed, implement DayViewDelegate to handle user input
+### Usage
+To respond to the user input, override mehtods of `DayViewDelegate`, for example:
 
 ```swift
 override func dayViewDidSelectEventView(_ eventView: EventView) {
@@ -88,15 +91,14 @@ override func dayViewDidLongPressEventView(_ eventView: EventView) {
 }
 ```
 
-
 ## Localization
-CalendarKit supports localization and uses iOS default locale to display month and day names. First day of the week is also selected according to iOS locale. Here are few examples:
+CalendarKit supports localization and uses iOS default locale to display month and day names. First day of the week is also selected according to the iOS locale.
 
-<img src="https://cloud.githubusercontent.com/assets/8013017/22315567/8ba5f9c2-e378-11e6-860d-b94e87a2a45c.PNG" alt="German" width="320"><img src="https://cloud.githubusercontent.com/assets/8013017/22315600/c87e826a-e378-11e6-9280-732982b42077.PNG" alt="Norwegian" width="320"><img src="https://cloud.githubusercontent.com/assets/8013017/22315259/bda72b46-e376-11e6-8d0b-20cb5fa2dc95.png" alt="Finnish" width="320">
+<img src="https://cloud.githubusercontent.com/assets/8013017/22315567/8ba5f9c2-e378-11e6-860d-b94e87a2a45c.PNG" alt="German" width="320"><img src="https://cloud.githubusercontent.com/assets/8013017/22315600/c87e826a-e378-11e6-9280-732982b42077.PNG" alt="Norwegian" width="320">
 
 
 ## Styles
-CalendarKit's look can be easily customized. The steps needed for customizations are as follows:
+By default, CalendarKit looks similar to the Apple Calendar app and fully supports Dark Mode. If needed, CalendarKit's look can be easily customized. Steps to apply a custom style are as follows:
 
 1. Create a new `CalendarStyle` object (or copy existing one)
 2. Change style by updating the properties.

@@ -2,12 +2,12 @@
 
 ### New Issue Checklist
 
-- [ ] Use the latest version of CalendarKit
-- [ ] I've read the [Contribution Guidelines](https://github.com/richardtop/CalendarKit/blob/master/CONTRIBUTING.md)
-- [ ] I've searched for [existing GitHub issues](https://github.com/richardtop/CalendarKit/issues)
+- [x] Use the latest version of CalendarKit
+- [x] I've read the [Contribution Guidelines](https://github.com/richardtop/CalendarKit/blob/master/CONTRIBUTING.md)
+- [x] I've searched for [existing GitHub issues](https://github.com/richardtop/CalendarKit/issues)
 
 ### Issue Description
-
+<!-- Describe your issue, attach screenshots / videos if needed. -->
 
 ##### Code I'm using with CalendarKit
 <!-- Please, add all the relevant code you're using to interact with CalendarKit.
