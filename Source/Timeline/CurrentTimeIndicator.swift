@@ -2,7 +2,7 @@
 import UIKit
 
 @objc public final class CurrentTimeIndicator: UIView {
-  private let padding : CGFloat = 5
+  private let padding : CGFloat = 3
   private let leftInset: CGFloat = 53
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
@@ -60,6 +60,7 @@ import UIKit
     
     //Allow label to adjust so that am/pm can be displayed if format is changed.
     timeLabel.numberOfLines = 1
+    timeLabel.textAlignment = .right
     timeLabel.adjustsFontSizeToFitWidth = true
     timeLabel.minimumScaleFactor = 0.5
     
@@ -100,6 +101,7 @@ import UIKit
   }
 
   override public func layoutSubviews() {
+    super.layoutSubviews()
     line.frame = CGRect(x: leftInset - padding, y: bounds.height / 2, width: bounds.width, height: 1)
 
     circle.frame = CGRect(x: leftInset + 1, y: 0, width: 6, height: 6)
