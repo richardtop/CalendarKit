@@ -1,11 +1,14 @@
-GitHub Issues is for reporting bugs, discussing features and general feedback in **CalendarKit**. Be sure to check our [documentation](http://cocoadocs.org/docsets/CalendarKit) and [past issues](https://github.com/richardtop/CalendarKit/issues?state=closed) before opening any new issues.
+CalendarKit actively accepts contributions in a form of pull requests (code changes) and issues (bug reports and feature requests). If you wish to submit a pull request, feel free to raise an issue first to discuss the implementation details and your approach.
 
-Alternatively, you may ask questions related to this library on [StackOverflow](https://stackoverflow.com/questions/tagged/calendarkit), tag `CalendarKit`.
+If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow with the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag.
+
+Please, use [GitHub Issues](https://github.com/richardtop/CalendarKit/issues) only for reporting a bug or requesting a new feature.
 
 
-If you are posting about a crash in your application, a stack trace is helpful, but additional context, in the form of code and explanation, is necessary to be of any use.
 
 ## Code Style
+When submitting a pull request, adhering to the code style is recommended, although not compulsory.
+
 This project has the following code style:
 
 * Indent with spaces (not tabs)
