@@ -45,4 +45,12 @@ public enum SystemColors {
                    green: 209/255,
                    blue: 213/255, alpha: 1)
   }
+  public static var systemSeparator: UIColor {
+    if #available(iOS 13, *) {
+      return .opaqueSeparator
+    }
+    return UIColor(red: 198/255,
+                   green: 198/255,
+                   blue: 200/255, alpha: 1)
+  }
 }
