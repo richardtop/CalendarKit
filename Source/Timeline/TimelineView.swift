@@ -297,7 +297,7 @@ public final class TimelineView: UIView {
       let context = UIGraphicsGetCurrentContext()
       context!.interpolationQuality = .none
       context?.saveGState()
-      context?.setStrokeColor(style.lineColor.cgColor)
+      context?.setStrokeColor(style.separatorColor.cgColor)
       context?.setLineWidth(hourLineHeight)
       let x: CGFloat = 53
       let y = style.verticalInset + iFloat * style.verticalDiff + offset
