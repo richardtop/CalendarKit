@@ -1,4 +1,4 @@
-![CalendarKit](https://user-images.githubusercontent.com/8013017/102701944-4a438080-4265-11eb-8bc4-e7b2eeb76d0b.png)
+![CalendarKit](https://user-images.githubusercontent.com/8013017/102711359-c2d82a80-42c1-11eb-9a0d-962636dadce1.png)
 [![License](https://img.shields.io/cocoapods/l/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![Platform](https://img.shields.io/cocoapods/p/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
 [![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](http://cocoadocs.org/docsets/CalendarKit)
@@ -7,7 +7,7 @@
 
 
 # CalendarKit
-**CalendarKit** is a Swift calendar UI library for iOS and iPadOS. It looks similar to the Apple Calendar app out-of-the-box, while allowing customization when needed. CalendarKit is composed of multiple modules which can be used together or independently.
+**CalendarKit** is a Swift calendar UI library for iOS, iPadOS and Mac Catalyst. It looks similar to the Apple Calendar app out-of-the-box, while allowing customization when needed. CalendarKit is composed of multiple modules which can be used together or independently.
 
 ## Need Help?
 If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow with the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag.
