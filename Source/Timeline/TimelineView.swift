@@ -292,25 +292,25 @@ public final class TimelineView: UIView {
     
     let offset = 0.5 - center
     
-    for (i, time) in times.enumerated() {
-      let iFloat = CGFloat(i)
+    for (hour, time) in times.enumerated() {
+      let hourFloat = CGFloat(hour)
       let context = UIGraphicsGetCurrentContext()
       context!.interpolationQuality = .none
       context?.saveGState()
       context?.setStrokeColor(style.separatorColor.cgColor)
       context?.setLineWidth(hourLineHeight)
       let x: CGFloat = 53
-      let y = style.verticalInset + iFloat * style.verticalDiff + offset
+      let y = style.verticalInset + hourFloat * style.verticalDiff + offset
       context?.beginPath()
       context?.move(to: CGPoint(x: x, y: y))
       context?.addLine(to: CGPoint(x: (bounds).width, y: y))
       context?.strokePath()
       context?.restoreGState()
 
-      if i == hourToRemoveIndex { continue }
+      if hour == hourToRemoveIndex { continue }
 
       let fontSize = style.font.pointSize
-      let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7,
+      let timeRect = CGRect(x: 2, y: hourFloat * style.verticalDiff + style.verticalInset - 7,
                             width: style.leftInset - 8, height: fontSize + 2)
 
       let timeString = NSString(string: time)
@@ -320,8 +320,8 @@ public final class TimelineView: UIView {
         continue
       }
 
-      if i == accentedHour {
-        let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7 + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+      if hour == accentedHour {
+        let timeRect = CGRect(x: 2, y: hourFloat * style.verticalDiff + style.verticalInset - 7 + style.verticalDiff * (CGFloat(accentedMinute) / 60),
                               width: style.leftInset - 8, height: fontSize + 2)
         let timeString = NSString(string: ":\(accentedMinute)")
         timeString.draw(in: timeRect, withAttributes: attributes)
