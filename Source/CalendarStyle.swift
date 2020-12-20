@@ -61,7 +61,7 @@ public struct TimelineStyle {
   public var allDayStyle = AllDayViewStyle()
   public var timeIndicator = CurrentTimeIndicatorStyle()
   public var timeColor = SystemColors.secondaryLabel
-  public var lineColor = SystemColors.systemSeparator
+  public var separatorColor = SystemColors.systemSeparator
   public var backgroundColor = SystemColors.systemBackground
   public var font = UIFont.boldSystemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
