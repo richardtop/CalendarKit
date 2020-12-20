@@ -280,16 +280,27 @@ public final class TimelineView: UIView {
                       NSAttributedString.Key.foregroundColor: self.style.timeColor,
                       NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
 
+    let scale = UIScreen.main.scale
+    let hourLineHeight = 1 / UIScreen.main.scale
+
+    let center: CGFloat
+    if Int(scale) % 2 == 0 {
+        center = 1 / (scale * 2)
+    } else {
+        center = 0
+    }
+    
+    let offset = 0.5 - center
+    
     for (i, time) in times.enumerated() {
       let iFloat = CGFloat(i)
       let context = UIGraphicsGetCurrentContext()
       context!.interpolationQuality = .none
       context?.saveGState()
-      context?.setStrokeColor(self.style.lineColor.cgColor)
-      context?.setLineWidth(onePixel)
-      context?.translateBy(x: 0, y: 0.5)
+      context?.setStrokeColor(style.lineColor.cgColor)
+      context?.setLineWidth(hourLineHeight)
       let x: CGFloat = 53
-      let y = style.verticalInset + iFloat * style.verticalDiff
+      let y = style.verticalInset + iFloat * style.verticalDiff + offset
       context?.beginPath()
       context?.move(to: CGPoint(x: x, y: y))
       context?.addLine(to: CGPoint(x: (bounds).width, y: y))
@@ -458,10 +469,6 @@ public final class TimelineView: UIView {
   }
 
   // MARK: - Helpers
-
-  private var onePixel: CGFloat {
-    return 1 / UIScreen.main.scale
-  }
 
   public func dateToY(_ date: Date) -> CGFloat {
     let provisionedDate = date.dateOnly(calendar: calendar)
