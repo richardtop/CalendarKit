@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public protocol DaySelectorItemProtocol: AnyObject {
@@ -155,4 +154,3 @@ public final class DaySelector: UIView {
     }
   }
 }
-#endif

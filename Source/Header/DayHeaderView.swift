@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
@@ -178,4 +177,3 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     (pendingViewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(style.daySelector)}
   }
 }
-#endif

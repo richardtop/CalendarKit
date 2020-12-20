@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public protocol DayViewDelegate: AnyObject {
@@ -180,4 +179,3 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
     delegate?.dayView(dayView: self, didUpdate: event)
   }
 }
-#endif

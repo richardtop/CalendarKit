@@ -1,4 +1,3 @@
-#if os(iOS)
 import Foundation
 import UIKit
 
@@ -89,4 +88,3 @@ public struct AllDayViewStyle {
   public var allDayColor: UIColor = SystemColors.label
   public init() {}
 }
-#endif

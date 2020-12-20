@@ -1,4 +1,3 @@
-#if os(iOS)
 import Foundation
 
 /**
@@ -11,4 +10,3 @@ extension EventDescriptor {
     return startDate ... endDate
   }
 }
-#endif

@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 @objc public final class CurrentTimeIndicator: UIView {
@@ -129,4 +128,3 @@ import UIKit
     }
   }
 }
-#endif

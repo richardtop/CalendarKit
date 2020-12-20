@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 final class ReusePool<T: UIView> {
@@ -18,4 +17,3 @@ final class ReusePool<T: UIView> {
     return storage.removeLast()
   }
 }
-#endif
