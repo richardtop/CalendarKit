@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public final class DayDateCell: UIView, DaySelectorItemProtocol {
@@ -108,4 +107,3 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
     updateState()
   }
 }
-#endif

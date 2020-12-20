@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 open class DayViewController: UIViewController, EventDataSource, DayViewDelegate {
@@ -118,4 +117,3 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     dayView.endEventEditing()
   }
 }
-#endif

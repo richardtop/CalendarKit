@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public final class DaySelectorController: UIViewController {
@@ -61,4 +60,3 @@ public final class DaySelectorController: UIViewController {
     daySelector.updateStyle(newStyle)
   }
 }
-#endif

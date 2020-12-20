@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public protocol TimelineViewDelegate: AnyObject {
@@ -520,4 +519,3 @@ public final class TimelineView: UIView {
     return beginningRange ... endRange
   }
 }
-#endif

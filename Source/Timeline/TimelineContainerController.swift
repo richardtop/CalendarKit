@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public final class TimelineContainerController: UIViewController {
@@ -29,4 +28,3 @@ public final class TimelineContainerController: UIViewController {
     }
   }
 }
-#endif

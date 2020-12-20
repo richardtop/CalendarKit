@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public final class SwipeLabelView: UIView, DayViewStateUpdating {
@@ -113,4 +112,3 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     return formatter.string(from: date)
   }
 }
-#endif

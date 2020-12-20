@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public protocol TimelinePagerViewDelegate: AnyObject {
@@ -493,4 +492,3 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     delegate?.timelinePagerDidLongPressEventView(event)
   }
 }
-#endif

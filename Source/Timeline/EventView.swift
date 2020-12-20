@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 open class EventView: UIView {
@@ -162,4 +161,3 @@ open class EventView: UIView {
     }
   }
 }
-#endif
