@@ -378,7 +378,7 @@ public final class TimelineView: UIView {
   }
 
   private func layoutEvents() {
-    if eventViews.isEmpty {return}
+    if eventViews.isEmpty { return }
     
     for (idx, attributes) in regularLayoutAttributes.enumerated() {
       let descriptor = attributes.descriptor
@@ -387,7 +387,7 @@ public final class TimelineView: UIView {
         
       var x: CGFloat
       if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
-          x = 0
+        x = bounds.width - attributes.frame.minX - attributes.frame.width
       } else {
         x = attributes.frame.minX
       }
