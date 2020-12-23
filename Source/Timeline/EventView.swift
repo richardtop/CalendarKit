@@ -115,7 +115,13 @@ open class EventView: UIView {
 
   override open func layoutSubviews() {
     super.layoutSubviews()
-    textView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+    textView.frame = {
+        if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+            return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+        } else {
+            return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+        }
+    }()
     if frame.minY < 0 {
       var textFrame = textView.frame;
       textFrame.origin.y = frame.minY * -1;
