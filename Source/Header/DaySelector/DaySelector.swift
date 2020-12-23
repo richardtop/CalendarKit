@@ -131,11 +131,18 @@ public final class DaySelector: UIView {
     let minX = per / 2
 
     for (i, item) in items.enumerated() {
-      let origin = CGPoint(x: minX + (size.width + per) * CGFloat(i),
+        
+        var x = minX + (size.width + per) * CGFloat(i)
+        
+        if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+            x = parentWidth - x - size.width
+        }
+        
+        let origin = CGPoint(x: x,
                            y: 0)
-      let frame = CGRect(origin: origin,
+        let frame = CGRect(origin: origin,
                          size: size)
-      item.frame = frame
+        item.frame = frame
     }
   }
 
