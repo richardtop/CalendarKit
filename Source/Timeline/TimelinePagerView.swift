@@ -410,8 +410,12 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     func completionHandler(_ completion: Bool) {
       DispatchQueue.main.async {
         // Fix for the UIPageViewController issue: https://stackoverflow.com/questions/12939280/uipageviewcontroller-navigates-to-wrong-page-with-scroll-transition-style
+        
+        let ltr = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .leftToRight
+        let direction: UIPageViewController.NavigationDirection = ltr ? .reverse : .forward
+        
         self.pagingViewController.setViewControllers([newController],
-                                                      direction: .reverse,
+                                                      direction: direction,
                                                       animated: false,
                                                       completion: nil)
               
@@ -422,13 +426,17 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     if newDate < oldDate {
+      let ltr = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .leftToRight
+      let direction: UIPageViewController.NavigationDirection = ltr ? .reverse : .forward
       pagingViewController.setViewControllers([newController],
-                                              direction: .reverse,
+                                              direction: direction,
                                               animated: true,
                                               completion: completionHandler(_:))
     } else if newDate > oldDate {
+      let ltr = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .leftToRight
+      let direction: UIPageViewController.NavigationDirection = ltr ? .forward : .reverse
       pagingViewController.setViewControllers([newController],
-                                              direction: .forward,
+                                              direction: direction,
                                               animated: true,
                                               completion: completionHandler(_:))
     }
