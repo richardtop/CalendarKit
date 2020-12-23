@@ -44,6 +44,9 @@ public final class DaySymbolsView: UIView {
     var weekDays = Array(zip(daySymbols, weekendMask))
 
     weekDays.shift(calendar.firstWeekday - 1)
+    
+    let rtl = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft
+    if rtl { weekDays.reverse() }
 
     for (index, label) in labels.enumerated() {
       label.text = weekDays[index].0
