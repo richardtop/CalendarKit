@@ -384,7 +384,15 @@ public final class TimelineView: UIView {
       let descriptor = attributes.descriptor
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
-      eventView.frame = CGRect(x: attributes.frame.minX,
+        
+      var x: CGFloat
+      if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+          x = 0
+      } else {
+        x = attributes.frame.minX
+      }
+        
+      eventView.frame = CGRect(x: x,
                                y: attributes.frame.minY,
                                width: attributes.frame.width - style.eventGap,
                                height: attributes.frame.height - style.eventGap)
