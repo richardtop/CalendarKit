@@ -323,8 +323,19 @@ public final class TimelineView: UIView {
         if hour == hourToRemoveIndex { continue }
     
         let fontSize = style.font.pointSize
-        let timeRect = CGRect(x: 2, y: hourFloat * style.verticalDiff + style.verticalInset - 7,
-                                width: style.leftInset - 8, height: fontSize + 2)
+        let timeRect: CGRect = {
+            var x: CGFloat
+            if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+                x = bounds.width - 53
+            } else {
+                x = 2
+            }
+            
+            return CGRect(x: x,
+                          y: hourFloat * style.verticalDiff + style.verticalInset - 7,
+                          width: style.leftInset - 8,
+                          height: fontSize + 2)
+        }()
     
         let timeString = NSString(string: time)
         timeString.draw(in: timeRect, withAttributes: attributes)
