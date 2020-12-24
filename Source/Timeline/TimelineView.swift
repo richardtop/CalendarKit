@@ -345,9 +345,19 @@ public final class TimelineView: UIView {
         }
     
         if hour == accentedHour {
-            let timeRect = CGRect(x: 2, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+            
+            var x: CGFloat
+            if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+                x = self.bounds.width - (style.leftInset + 7)
+            } else {
+                x = 2
+            }
+            
+            let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
                                 width: style.leftInset - 8, height: fontSize + 2)
+            
             let timeString = NSString(string: ":\(accentedMinute)")
+            
             timeString.draw(in: timeRect, withAttributes: attributes)
         }
     }
