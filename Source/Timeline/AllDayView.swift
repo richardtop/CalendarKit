@@ -17,6 +17,7 @@ public final class AllDayView: UIView {
   
   private lazy var textLabel: UILabel = {
     let label = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
+    label.translatesAutoresizingMaskIntoConstraints = false
     label.text = localizedString("all-day")
     label.setContentCompressionResistancePriority(.required, for: .horizontal)
     return label
@@ -72,6 +73,13 @@ public final class AllDayView: UIView {
     addSubview(textLabel)
     
     let svLeftConstraint = scrollView.leadingAnchor.constraint(equalTo: textLabel.trailingAnchor, constant: 8)
+    
+    self.addConstraints([
+        NSLayoutConstraint(item: textLabel, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: 8),
+        NSLayoutConstraint(item: textLabel, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 4),
+        NSLayoutConstraint(item: textLabel, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: allDayLabelWidth),
+        NSLayoutConstraint(item: textLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 24)
+    ])
     
     /**
      Why is this constraint 999?
