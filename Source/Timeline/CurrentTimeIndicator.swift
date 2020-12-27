@@ -104,7 +104,8 @@ import UIKit
     line.frame = {
         
         let x: CGFloat
-        if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        if rightToLeft {
             x = 0
         } else {
             x = leadingInset - padding
@@ -116,7 +117,7 @@ import UIKit
     circle.frame = {
         
         let x: CGFloat
-        if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
             x = bounds.width - leadingInset - 10
         } else {
             x = leadingInset + 1
