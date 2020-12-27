@@ -408,11 +408,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     delegate?.timelinePager(timelinePager: self, willMoveTo: newDate)
 
     func completionHandler(_ completion: Bool) {
-      DispatchQueue.main.async {
+      DispatchQueue.main.async { [self] in
         // Fix for the UIPageViewController issue: https://stackoverflow.com/questions/12939280/uipageviewcontroller-navigates-to-wrong-page-with-scroll-transition-style
         
         let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
-        let direction: UIPageViewController.NavigationDirection = ltr ? .reverse : .forward
+        let direction: UIPageViewController.NavigationDirection = leftToRight ? .reverse : .forward
         
         self.pagingViewController.setViewControllers([newController],
                                                       direction: direction,
@@ -427,14 +427,14 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
     if newDate < oldDate {
       let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
-      let direction: UIPageViewController.NavigationDirection = ltr ? .reverse : .forward
+      let direction: UIPageViewController.NavigationDirection = leftToRight ? .reverse : .forward
       pagingViewController.setViewControllers([newController],
                                               direction: direction,
                                               animated: true,
                                               completion: completionHandler(_:))
     } else if newDate > oldDate {
       let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
-      let direction: UIPageViewController.NavigationDirection = ltr ? .forward : .reverse
+      let direction: UIPageViewController.NavigationDirection = leftToRight ? .forward : .reverse
       pagingViewController.setViewControllers([newController],
                                               direction: direction,
                                               animated: true,
