@@ -293,6 +293,8 @@ public final class TimelineView: UIView {
     let offset = 0.5 - center
     
     for (hour, time) in times.enumerated() {
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        
         let hourFloat = CGFloat(hour)
         let context = UIGraphicsGetCurrentContext()
         context!.interpolationQuality = .none
@@ -300,14 +302,14 @@ public final class TimelineView: UIView {
         context?.setStrokeColor(style.separatorColor.cgColor)
         context?.setLineWidth(hourLineHeight)
         let xStart: CGFloat = {
-            if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+            if rightToLeft {
                 return bounds.width - 53
             } else {
                 return 53
             }
         }()
         let xEnd: CGFloat = {
-            if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+            if rightToLeft {
                 return 0
             } else {
                 return bounds.width
@@ -325,7 +327,7 @@ public final class TimelineView: UIView {
         let fontSize = style.font.pointSize
         let timeRect: CGRect = {
             var x: CGFloat
-            if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+            if rightToLeft {
                 x = bounds.width - 53
             } else {
                 x = 2
@@ -347,8 +349,8 @@ public final class TimelineView: UIView {
         if hour == accentedHour {
             
             var x: CGFloat
-            if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
-                x = self.bounds.width - (style.leftInset + 7)
+            if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+                x = bounds.width - (style.leftInset + 7)
             } else {
                 x = 2
             }
@@ -396,7 +398,7 @@ public final class TimelineView: UIView {
       eventView.frame = attributes.frame
         
       var x: CGFloat
-      if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+      if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
         x = bounds.width - attributes.frame.minX - attributes.frame.width
       } else {
         x = attributes.frame.minX

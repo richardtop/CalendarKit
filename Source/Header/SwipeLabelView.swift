@@ -110,8 +110,8 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     
     var direction: AnimationDirection = newDate > oldDate ? .Forward : .Backward
     
-    let rtl = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft
-    if rtl { direction.flip() }
+    let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+    if rightToLeft { direction.flip() }
     
     animate(direction)
   }

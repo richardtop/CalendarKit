@@ -411,7 +411,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       DispatchQueue.main.async {
         // Fix for the UIPageViewController issue: https://stackoverflow.com/questions/12939280/uipageviewcontroller-navigates-to-wrong-page-with-scroll-transition-style
         
-        let ltr = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .leftToRight
+        let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
         let direction: UIPageViewController.NavigationDirection = ltr ? .reverse : .forward
         
         self.pagingViewController.setViewControllers([newController],
@@ -426,14 +426,14 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     if newDate < oldDate {
-      let ltr = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .leftToRight
+      let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
       let direction: UIPageViewController.NavigationDirection = ltr ? .reverse : .forward
       pagingViewController.setViewControllers([newController],
                                               direction: direction,
                                               animated: true,
                                               completion: completionHandler(_:))
     } else if newDate > oldDate {
-      let ltr = UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .leftToRight
+      let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
       let direction: UIPageViewController.NavigationDirection = ltr ? .forward : .reverse
       pagingViewController.setViewControllers([newController],
                                               direction: direction,

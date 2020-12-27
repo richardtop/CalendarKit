@@ -134,7 +134,8 @@ public final class DaySelector: UIView {
         
         var x = minX + (size.width + per) * CGFloat(i)
         
-        if UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft {
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        if rightToLeft {
             x = parentWidth - x - size.width
         }
         
