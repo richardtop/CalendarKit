@@ -185,7 +185,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     (previousViewControllers as? [DaySelectorController])?.forEach{$0.selectedIndex = -1}
   }
 
-  public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+  public func pageViewController(_ pageViewController: UIPageViewController, willlTransitionTo pendingViewControllers: [UIViewController]) {
     (pendingViewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(style.daySelector)}
   }
 }
