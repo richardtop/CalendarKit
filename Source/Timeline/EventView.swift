@@ -49,6 +49,9 @@ open class EventView: UIView {
       textView.textColor = event.textColor
       textView.font = event.font
     }
+    if let lineBreakMode = event.lineBreakMode {
+      textView.textContainer.lineBreakMode = lineBreakMode
+    }
     descriptor = event
     backgroundColor = event.backgroundColor
     color = event.color
