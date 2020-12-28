@@ -98,6 +98,7 @@ class CustomCalendarExampleController: DayViewController {
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
+      event.lineBreakMode = .byTruncatingTail
       
       // Event styles are updated independently from CalendarStyle
       // hence the need to specify exact colors in case of Dark style
