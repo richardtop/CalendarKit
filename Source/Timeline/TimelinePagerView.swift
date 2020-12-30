@@ -218,7 +218,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       let yStart = timeline.dateToY(event.startDate) - offset
       let yEnd = timeline.dateToY(event.endDate) - offset
 
-      let newRect = CGRect(x: timeline.style.leftInset,
+      let newRect = CGRect(x: timeline.style.leadingInset,
                            y: yStart,
                            width: timeline.calendarWidth,
                            height: yEnd - yStart)
@@ -325,7 +325,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         let ytd = yToDate(y: editedEventView.frame.origin.y,
                           timeline: timeline)
         let snapped = timeline.snappingBehavior.nearestDate(to: ytd)
-        let x = style.leftInset
+        let x = style.leadingInset
         
         var eventFrame = editedEventView.frame
         eventFrame.origin.x = x

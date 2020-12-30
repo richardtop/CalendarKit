@@ -91,7 +91,7 @@ public final class TimelineView: UIView {
   }
 
   public var calendarWidth: CGFloat {
-    return bounds.width - style.leftInset
+    return bounds.width - style.leadingInset
   }
     
   public private(set) var is24hClock = true {
@@ -335,7 +335,7 @@ public final class TimelineView: UIView {
             
             return CGRect(x: x,
                           y: hourFloat * style.verticalDiff + style.verticalInset - 7,
-                          width: style.leftInset - 8,
+                          width: style.leadingInset - 8,
                           height: fontSize + 2)
         }()
     
@@ -350,13 +350,13 @@ public final class TimelineView: UIView {
             
             var x: CGFloat
             if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
-                x = bounds.width - (style.leftInset + 7)
+                x = bounds.width - (style.leadingInset + 7)
             } else {
                 x = 2
             }
             
             let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
-                                width: style.leftInset - 8, height: fontSize + 2)
+                                width: style.leadingInset - 8, height: fontSize + 2)
             
             let timeString = NSString(string: ":\(accentedMinute)")
             
@@ -487,7 +487,7 @@ public final class TimelineView: UIView {
         let startY = dateToY(event.descriptor.datePeriod.lowerBound)
         let endY = dateToY(event.descriptor.datePeriod.upperBound)
         let floatIndex = CGFloat(index)
-        let x = style.leftInset + floatIndex / totalCount * calendarWidth
+        let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
