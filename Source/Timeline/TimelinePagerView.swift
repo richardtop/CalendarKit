@@ -218,7 +218,10 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       let yStart = timeline.dateToY(event.startDate) - offset
       let yEnd = timeline.dateToY(event.endDate) - offset
 
-      let newRect = CGRect(x: timeline.style.leadingInset,
+        
+      let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+      let x = rightToLeft ? 0 : timeline.style.leadingInset
+      let newRect = CGRect(x: x,
                            y: yStart,
                            width: timeline.calendarWidth,
                            height: yEnd - yStart)
