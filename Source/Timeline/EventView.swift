@@ -100,9 +100,10 @@ open class EventView: UIView {
     context.interpolationQuality = .none
     context.saveGState()
     context.setStrokeColor(color.cgColor)
-    context.setLineWidth(3)
+    context.setLineWidth(1)
     context.translateBy(x: 0, y: 0.5)
-    let x: CGFloat = frame.width - 3 // 3 is the line width
+    let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
+    let x: CGFloat = leftToRight ? 0 : frame.width - 1  // 1 is the line width
     let y: CGFloat = 0
     context.beginPath()
     context.move(to: CGPoint(x: x, y: y))
