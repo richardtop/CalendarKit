@@ -2,7 +2,7 @@ import UIKit
 
 @objc public final class CurrentTimeIndicator: UIView {
   private let padding : CGFloat = 3
-  private let leftInset: CGFloat = 53
+  private let leadingInset: CGFloat = 53
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
@@ -66,8 +66,8 @@ import UIKit
     //The width of the label is determined by leftInset and padding. 
     //The y position is determined by the line's middle.
     timeLabel.translatesAutoresizingMaskIntoConstraints = false
-    timeLabel.widthAnchor.constraint(equalToConstant: leftInset - (3 * padding)).isActive = true
-    timeLabel.rightAnchor.constraint(equalTo: line.leftAnchor, constant: -padding).isActive = true
+    timeLabel.widthAnchor.constraint(equalToConstant: leadingInset - (3 * padding)).isActive = true
+    timeLabel.trailingAnchor.constraint(equalTo: line.leadingAnchor, constant: -padding).isActive = true
     timeLabel.centerYAnchor.constraint(equalTo: line.centerYAnchor).isActive = true
     timeLabel.baselineAdjustment = .alignCenters
     
@@ -101,9 +101,30 @@ import UIKit
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    line.frame = CGRect(x: leftInset - padding, y: bounds.height / 2, width: bounds.width, height: 1)
+    line.frame = {
+        
+        let x: CGFloat
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        if rightToLeft {
+            x = 0
+        } else {
+            x = leadingInset - padding
+        }
+        
+        return CGRect(x: x, y: bounds.height / 2, width: bounds.width - leadingInset, height: 1)
+    }()
 
-    circle.frame = CGRect(x: leftInset + 1, y: 0, width: 6, height: 6)
+    circle.frame = {
+        
+        let x: CGFloat
+        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+            x = bounds.width - leadingInset - 10
+        } else {
+            x = leadingInset + 1
+        }
+        
+        return CGRect(x: x, y: 0, width: 6, height: 6)
+    }()
     circle.center.y = line.center.y
     circle.layer.cornerRadius = circle.bounds.height / 2
   }

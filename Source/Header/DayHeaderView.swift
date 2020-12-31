@@ -54,7 +54,11 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     let vc = makeSelectorController(startDate: beginningOfWeek(selectedDate))
     vc.selectedDate = selectedDate
     currentWeekdayIndex = vc.selectedIndex
-    pagingViewController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)
+    
+    let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
+    let direction: UIPageViewController.NavigationDirection = leftToRight ? .forward : .reverse
+    
+    pagingViewController.setViewControllers([vc], direction: direction, animated: false, completion: nil)
     pagingViewController.dataSource = self
     pagingViewController.delegate = self
     addSubview(pagingViewController.view!)
@@ -125,15 +129,23 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     let newStartDate = beginningOfWeek(newDate)
 
     let new = makeSelectorController(startDate: newStartDate)
+    
+    let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
 
     if daysFrom < 0 {
       currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
       new.selectedIndex = currentWeekdayIndex
-      pagingViewController.setViewControllers([new], direction: .reverse, animated: true, completion: nil)
+      
+      let direction: UIPageViewController.NavigationDirection = leftToRight ? .reverse : .forward
+        
+      pagingViewController.setViewControllers([new], direction: direction, animated: true, completion: nil)
     } else if daysFrom > daysInWeek - 1 {
       currentWeekdayIndex = daysFrom % daysInWeek
       new.selectedIndex = currentWeekdayIndex
-      pagingViewController.setViewControllers([new], direction: .forward, animated: true, completion: nil)
+      
+      let direction: UIPageViewController.NavigationDirection = leftToRight ? .forward : .reverse
+        
+      pagingViewController.setViewControllers([new], direction: direction, animated: true, completion: nil)
     } else {
       currentWeekdayIndex = daysFrom
       centerView.selectedDate = newDate
@@ -173,7 +185,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     (previousViewControllers as? [DaySelectorController])?.forEach{$0.selectedIndex = -1}
   }
 
-  public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
+    public func pageViewController(_ pageViewController: UIPageViewController, willTransitionTo pendingViewControllers: [UIViewController]) {
     (pendingViewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(style.daySelector)}
   }
 }
