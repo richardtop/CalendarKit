@@ -91,7 +91,7 @@ public final class TimelineView: UIView {
   }
 
   public var calendarWidth: CGFloat {
-    return bounds.width - style.leftInset
+    return bounds.width - style.leadingInset
   }
     
   public private(set) var is24hClock = true {
@@ -293,39 +293,75 @@ public final class TimelineView: UIView {
     let offset = 0.5 - center
     
     for (hour, time) in times.enumerated() {
-      let hourFloat = CGFloat(hour)
-      let context = UIGraphicsGetCurrentContext()
-      context!.interpolationQuality = .none
-      context?.saveGState()
-      context?.setStrokeColor(style.separatorColor.cgColor)
-      context?.setLineWidth(hourLineHeight)
-      let x: CGFloat = 53
-      let y = style.verticalInset + hourFloat * style.verticalDiff + offset
-      context?.beginPath()
-      context?.move(to: CGPoint(x: x, y: y))
-      context?.addLine(to: CGPoint(x: (bounds).width, y: y))
-      context?.strokePath()
-      context?.restoreGState()
-
-      if hour == hourToRemoveIndex { continue }
-
-      let fontSize = style.font.pointSize
-      let timeRect = CGRect(x: 2, y: hourFloat * style.verticalDiff + style.verticalInset - 7,
-                            width: style.leftInset - 8, height: fontSize + 2)
-
-      let timeString = NSString(string: time)
-      timeString.draw(in: timeRect, withAttributes: attributes)
-
-      if accentedMinute == 0 {
-        continue
-      }
-
-      if hour == accentedHour {
-        let timeRect = CGRect(x: 2, y: hourFloat * style.verticalDiff + style.verticalInset - 7 + style.verticalDiff * (CGFloat(accentedMinute) / 60),
-                              width: style.leftInset - 8, height: fontSize + 2)
-        let timeString = NSString(string: ":\(accentedMinute)")
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        
+        let hourFloat = CGFloat(hour)
+        let context = UIGraphicsGetCurrentContext()
+        context!.interpolationQuality = .none
+        context?.saveGState()
+        context?.setStrokeColor(style.separatorColor.cgColor)
+        context?.setLineWidth(hourLineHeight)
+        let xStart: CGFloat = {
+            if rightToLeft {
+                return bounds.width - 53
+            } else {
+                return 53
+            }
+        }()
+        let xEnd: CGFloat = {
+            if rightToLeft {
+                return 0
+            } else {
+                return bounds.width
+            }
+        }()
+        let y = style.verticalInset + hourFloat * style.verticalDiff + offset
+        context?.beginPath()
+        context?.move(to: CGPoint(x: xStart, y: y))
+        context?.addLine(to: CGPoint(x: xEnd, y: y))
+        context?.strokePath()
+        context?.restoreGState()
+    
+        if hour == hourToRemoveIndex { continue }
+    
+        let fontSize = style.font.pointSize
+        let timeRect: CGRect = {
+            var x: CGFloat
+            if rightToLeft {
+                x = bounds.width - 53
+            } else {
+                x = 2
+            }
+            
+            return CGRect(x: x,
+                          y: hourFloat * style.verticalDiff + style.verticalInset - 7,
+                          width: style.leadingInset - 8,
+                          height: fontSize + 2)
+        }()
+    
+        let timeString = NSString(string: time)
         timeString.draw(in: timeRect, withAttributes: attributes)
-      }
+    
+        if accentedMinute == 0 {
+            continue
+        }
+    
+        if hour == accentedHour {
+            
+            var x: CGFloat
+            if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+                x = bounds.width - (style.leadingInset + 7)
+            } else {
+                x = 2
+            }
+            
+            let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+                                width: style.leadingInset - 8, height: fontSize + 2)
+            
+            let timeString = NSString(string: ":\(accentedMinute)")
+            
+            timeString.draw(in: timeRect, withAttributes: attributes)
+        }
     }
   }
   
@@ -354,13 +390,21 @@ public final class TimelineView: UIView {
   }
 
   private func layoutEvents() {
-    if eventViews.isEmpty {return}
+    if eventViews.isEmpty { return }
     
     for (idx, attributes) in regularLayoutAttributes.enumerated() {
       let descriptor = attributes.descriptor
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
-      eventView.frame = CGRect(x: attributes.frame.minX,
+        
+      var x: CGFloat
+      if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+        x = bounds.width - attributes.frame.minX - attributes.frame.width
+      } else {
+        x = attributes.frame.minX
+      }
+        
+      eventView.frame = CGRect(x: x,
                                y: attributes.frame.minY,
                                width: attributes.frame.width - style.eventGap,
                                height: attributes.frame.height - style.eventGap)
@@ -443,7 +487,7 @@ public final class TimelineView: UIView {
         let startY = dateToY(event.descriptor.datePeriod.lowerBound)
         let endY = dateToY(event.descriptor.datePeriod.upperBound)
         let floatIndex = CGFloat(index)
-        let x = style.leftInset + floatIndex / totalCount * calendarWidth
+        let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }

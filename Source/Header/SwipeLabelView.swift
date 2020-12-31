@@ -4,6 +4,15 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
   public enum AnimationDirection {
     case Forward
     case Backward
+    
+    mutating func flip() {
+        switch self {
+        case .Forward:
+            self = .Backward
+        case .Backward:
+            self = .Forward
+        }
+    }
   }
 
   public private(set) var calendar = Calendar.autoupdatingCurrent
@@ -98,7 +107,12 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     guard newDate != oldDate
       else { return }
     labels.last!.text = formattedDate(date: newDate)
-    let direction: AnimationDirection = newDate > oldDate ? .Forward : .Backward
+    
+    var direction: AnimationDirection = newDate > oldDate ? .Forward : .Backward
+    
+    let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+    if rightToLeft { direction.flip() }
+    
     animate(direction)
   }
 

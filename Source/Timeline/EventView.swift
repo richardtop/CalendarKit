@@ -103,9 +103,10 @@ open class EventView: UIView {
     context.interpolationQuality = .none
     context.saveGState()
     context.setStrokeColor(color.cgColor)
-    context.setLineWidth(3)
+    context.setLineWidth(1)
     context.translateBy(x: 0, y: 0.5)
-    let x: CGFloat = 0
+    let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
+    let x: CGFloat = leftToRight ? 0 : frame.width - 1  // 1 is the line width
     let y: CGFloat = 0
     context.beginPath()
     context.move(to: CGPoint(x: x, y: y))
@@ -118,7 +119,13 @@ open class EventView: UIView {
 
   override open func layoutSubviews() {
     super.layoutSubviews()
-    textView.frame = bounds
+    textView.frame = {
+        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+            return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+        } else {
+            return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+        }
+    }()
     if frame.minY < 0 {
       var textFrame = textView.frame;
       textFrame.origin.y = frame.minY * -1;
