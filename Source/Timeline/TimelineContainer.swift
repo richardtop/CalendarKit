@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public final class TimelineContainer: UIScrollView {
@@ -35,11 +34,11 @@ public final class TimelineContainer: UIScrollView {
     timeline.prepareForReuse()
   }
   
-  public func scrollToFirstEvent() {
+  public func scrollToFirstEvent(animated: Bool) {
     let allDayViewHeight = timeline.allDayViewHeight
     let padding = allDayViewHeight + 8
     if let yToScroll = timeline.firstEventYPosition {
-      setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: true)
+      setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
     }
   }
   
@@ -57,4 +56,3 @@ public final class TimelineContainer: UIScrollView {
     setContentOffset(CGPoint(x: offset.x, y: newContentY), animated: animated)
   }
 }
-#endif

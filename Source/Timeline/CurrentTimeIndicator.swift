@@ -1,9 +1,8 @@
-#if os(iOS)
 import UIKit
 
 @objc public final class CurrentTimeIndicator: UIView {
-  private let padding : CGFloat = 5
-  private let leftInset: CGFloat = 53
+  private let padding : CGFloat = 3
+  private let leadingInset: CGFloat = 53
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
@@ -35,6 +34,14 @@ import UIKit
 
   private var style = CurrentTimeIndicatorStyle()
 
+  private lazy var dateFormatter: DateFormatter = {
+    let fmt = DateFormatter()
+    fmt.locale = calendar.locale
+    fmt.timeZone = calendar.timeZone
+
+    return fmt
+  }()
+
   override init(frame: CGRect) {
     super.init(frame: frame)
     configure()
@@ -52,14 +59,15 @@ import UIKit
     
     //Allow label to adjust so that am/pm can be displayed if format is changed.
     timeLabel.numberOfLines = 1
+    timeLabel.textAlignment = .right
     timeLabel.adjustsFontSizeToFitWidth = true
     timeLabel.minimumScaleFactor = 0.5
     
     //The width of the label is determined by leftInset and padding. 
     //The y position is determined by the line's middle.
     timeLabel.translatesAutoresizingMaskIntoConstraints = false
-    timeLabel.widthAnchor.constraint(equalToConstant: leftInset - (3 * padding)).isActive = true
-    timeLabel.rightAnchor.constraint(equalTo: line.leftAnchor, constant: -padding).isActive = true
+    timeLabel.widthAnchor.constraint(equalToConstant: leadingInset - (3 * padding)).isActive = true
+    timeLabel.trailingAnchor.constraint(equalTo: line.leadingAnchor, constant: -padding).isActive = true
     timeLabel.centerYAnchor.constraint(equalTo: line.centerYAnchor).isActive = true
     timeLabel.baselineAdjustment = .alignCenters
     
@@ -84,18 +92,39 @@ import UIKit
   }
     
   private func updateDate() {
-    let dateFormat = is24hClock ? "HH:mm" : "h:mm a"
-    let timezone = calendar.timeZone
-    timeLabel.text = date.format(with: dateFormat, timeZone: timezone)
+    dateFormatter.dateFormat = is24hClock ? "HH:mm" : "h:mm a"
+    timeLabel.text = dateFormatter.string(from: date)
     timeLabel.sizeToFit()
     setNeedsLayout()
     configureTimer()
   }
 
   override public func layoutSubviews() {
-    line.frame = CGRect(x: leftInset - padding, y: bounds.height / 2, width: bounds.width, height: 1)
+    super.layoutSubviews()
+    line.frame = {
+        
+        let x: CGFloat
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        if rightToLeft {
+            x = 0
+        } else {
+            x = leadingInset - padding
+        }
+        
+        return CGRect(x: x, y: bounds.height / 2, width: bounds.width - leadingInset, height: 1)
+    }()
 
-    circle.frame = CGRect(x: leftInset + 1, y: 0, width: 6, height: 6)
+    circle.frame = {
+        
+        let x: CGFloat
+        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+            x = bounds.width - leadingInset - 10
+        } else {
+            x = leadingInset + 1
+        }
+        
+        return CGRect(x: x, y: 0, width: 6, height: 6)
+    }()
     circle.center.y = line.center.y
     circle.layer.cornerRadius = circle.bounds.height / 2
   }
@@ -120,4 +149,3 @@ import UIKit
     }
   }
 }
-#endif

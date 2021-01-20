@@ -1,6 +1,4 @@
-#if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didTapAt date: Date)
@@ -93,7 +91,7 @@ public final class TimelineView: UIView {
   }
 
   public var calendarWidth: CGFloat {
-    return bounds.width - style.leftInset
+    return bounds.width - style.leadingInset
   }
     
   public private(set) var is24hClock = true {
@@ -282,41 +280,88 @@ public final class TimelineView: UIView {
                       NSAttributedString.Key.foregroundColor: self.style.timeColor,
                       NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
 
-    for (i, time) in times.enumerated() {
-      let iFloat = CGFloat(i)
-      let context = UIGraphicsGetCurrentContext()
-      context!.interpolationQuality = .none
-      context?.saveGState()
-      context?.setStrokeColor(self.style.lineColor.cgColor)
-      context?.setLineWidth(onePixel)
-      context?.translateBy(x: 0, y: 0.5)
-      let x: CGFloat = 53
-      let y = style.verticalInset + iFloat * style.verticalDiff
-      context?.beginPath()
-      context?.move(to: CGPoint(x: x, y: y))
-      context?.addLine(to: CGPoint(x: (bounds).width, y: y))
-      context?.strokePath()
-      context?.restoreGState()
+    let scale = UIScreen.main.scale
+    let hourLineHeight = 1 / UIScreen.main.scale
 
-      if i == hourToRemoveIndex { continue }
-
-      let fontSize = style.font.pointSize
-      let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7,
-                            width: style.leftInset - 8, height: fontSize + 2)
-
-      let timeString = NSString(string: time)
-      timeString.draw(in: timeRect, withAttributes: attributes)
-
-      if accentedMinute == 0 {
-        continue
-      }
-
-      if i == accentedHour {
-        let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7 + style.verticalDiff * (CGFloat(accentedMinute) / 60),
-                              width: style.leftInset - 8, height: fontSize + 2)
-        let timeString = NSString(string: ":\(accentedMinute)")
+    let center: CGFloat
+    if Int(scale) % 2 == 0 {
+        center = 1 / (scale * 2)
+    } else {
+        center = 0
+    }
+    
+    let offset = 0.5 - center
+    
+    for (hour, time) in times.enumerated() {
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        
+        let hourFloat = CGFloat(hour)
+        let context = UIGraphicsGetCurrentContext()
+        context!.interpolationQuality = .none
+        context?.saveGState()
+        context?.setStrokeColor(style.separatorColor.cgColor)
+        context?.setLineWidth(hourLineHeight)
+        let xStart: CGFloat = {
+            if rightToLeft {
+                return bounds.width - 53
+            } else {
+                return 53
+            }
+        }()
+        let xEnd: CGFloat = {
+            if rightToLeft {
+                return 0
+            } else {
+                return bounds.width
+            }
+        }()
+        let y = style.verticalInset + hourFloat * style.verticalDiff + offset
+        context?.beginPath()
+        context?.move(to: CGPoint(x: xStart, y: y))
+        context?.addLine(to: CGPoint(x: xEnd, y: y))
+        context?.strokePath()
+        context?.restoreGState()
+    
+        if hour == hourToRemoveIndex { continue }
+    
+        let fontSize = style.font.pointSize
+        let timeRect: CGRect = {
+            var x: CGFloat
+            if rightToLeft {
+                x = bounds.width - 53
+            } else {
+                x = 2
+            }
+            
+            return CGRect(x: x,
+                          y: hourFloat * style.verticalDiff + style.verticalInset - 7,
+                          width: style.leadingInset - 8,
+                          height: fontSize + 2)
+        }()
+    
+        let timeString = NSString(string: time)
         timeString.draw(in: timeRect, withAttributes: attributes)
-      }
+    
+        if accentedMinute == 0 {
+            continue
+        }
+    
+        if hour == accentedHour {
+            
+            var x: CGFloat
+            if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+                x = bounds.width - (style.leadingInset + 7)
+            } else {
+                x = 2
+            }
+            
+            let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+                                width: style.leadingInset - 8, height: fontSize + 2)
+            
+            let timeString = NSString(string: ":\(accentedMinute)")
+            
+            timeString.draw(in: timeRect, withAttributes: attributes)
+        }
     }
   }
   
@@ -345,13 +390,21 @@ public final class TimelineView: UIView {
   }
 
   private func layoutEvents() {
-    if eventViews.isEmpty {return}
+    if eventViews.isEmpty { return }
     
     for (idx, attributes) in regularLayoutAttributes.enumerated() {
       let descriptor = attributes.descriptor
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
-      eventView.frame = CGRect(x: attributes.frame.minX,
+        
+      var x: CGFloat
+      if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+        x = bounds.width - attributes.frame.minX - attributes.frame.width
+      } else {
+        x = attributes.frame.minX
+      }
+        
+      eventView.frame = CGRect(x: x,
                                y: attributes.frame.minY,
                                width: attributes.frame.width - style.eventGap,
                                height: attributes.frame.height - style.eventGap)
@@ -383,7 +436,7 @@ public final class TimelineView: UIView {
     let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
       let start1 = attr1.descriptor.startDate
       let start2 = attr2.descriptor.startDate
-      return start1.isEarlier(than: start2)
+      return start1 < start2
     }
 
     var groupsOfEvents = [[EventLayoutAttributes]]()
@@ -396,8 +449,12 @@ public final class TimelineView: UIView {
       }
 
       let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
-        let period1 = attr1.descriptor.datePeriod.seconds
-        let period2 = attr2.descriptor.datePeriod.seconds
+        var period = attr1.descriptor.datePeriod
+        let period1 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
+
+        period = attr2.descriptor.datePeriod
+        let period2 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
+
         return period1 > period2
         }
         .first!
@@ -405,14 +462,14 @@ public final class TimelineView: UIView {
       if style.eventsWillOverlap {
         guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
         let dateInterval = getDateInterval(date: earliestEvent)
-        if event.descriptor.datePeriod.relation(to: dateInterval) == Relation.startInside {
+        if event.descriptor.datePeriod.contains(dateInterval.lowerBound) {
           overlappingEvents.append(event)
           continue
         }
       } else {
         let lastEvent = overlappingEvents.last!
-        if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
-          lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
+        if (longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (longestEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) ||
+          (lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (lastEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) {
           overlappingEvents.append(event)
           continue
         }
@@ -427,10 +484,10 @@ public final class TimelineView: UIView {
     for overlappingEvents in groupsOfEvents {
       let totalCount = CGFloat(overlappingEvents.count)
       for (index, event) in overlappingEvents.enumerated() {
-        let startY = dateToY(event.descriptor.datePeriod.beginning!)
-        let endY = dateToY(event.descriptor.datePeriod.end!)
+        let startY = dateToY(event.descriptor.datePeriod.lowerBound)
+        let endY = dateToY(event.descriptor.datePeriod.upperBound)
         let floatIndex = CGFloat(index)
-        let x = style.leftInset + floatIndex / totalCount * calendarWidth
+        let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
@@ -456,10 +513,6 @@ public final class TimelineView: UIView {
   }
 
   // MARK: - Helpers
-
-  private var onePixel: CGFloat {
-    return 1 / UIScreen.main.scale
-  }
 
   public func dateToY(_ date: Date) -> CGFloat {
     let provisionedDate = date.dateOnly(calendar: calendar)
@@ -507,14 +560,13 @@ public final class TimelineView: UIView {
     return calendar.component(component, from: date)
   }
   
-  private func getDateInterval(date: Date) -> TimePeriod {
+  private func getDateInterval(date: Date) -> ClosedRange<Date> {
     let earliestEventMintues = component(component: .minute, from: date)
     let splitMinuteInterval = style.splitMinuteInterval
     let minute = component(component: .minute, from: date)
     let minuteRange = (minute / splitMinuteInterval) * splitMinuteInterval
     let beginningRange = calendar.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
-    let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
-    return TimePeriod.init(beginning: beginningRange, end: endRange)
+    let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)!
+    return beginningRange ... endRange
   }
 }
-#endif

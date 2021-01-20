@@ -1,4 +1,3 @@
-#if os(iOS)
 import Foundation
 import UIKit
 
@@ -8,6 +7,7 @@ public protocol EventDescriptor: AnyObject {
   var isAllDay: Bool {get}
   var text: String {get}
   var attributedText: NSAttributedString? {get}
+  var lineBreakMode: NSLineBreakMode? {get}
   var font : UIFont {get}
   var color: UIColor {get}
   var textColor: UIColor {get}
@@ -16,4 +16,3 @@ public protocol EventDescriptor: AnyObject {
   func makeEditable() -> Self
   func commitEditing()
 }
-#endif

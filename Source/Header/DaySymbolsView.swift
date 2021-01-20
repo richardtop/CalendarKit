@@ -1,4 +1,3 @@
-#if os(iOS)
 import UIKit
 
 public final class DaySymbolsView: UIView {
@@ -53,6 +52,9 @@ public final class DaySymbolsView: UIView {
     var weekDays = Array(zip(daySymbols, weekendMask))
 
     weekDays.shift(calendar.firstWeekday - 1)
+    
+    let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+    if rightToLeft { weekDays.reverse() }
 
     for (index, label) in labels.enumerated() {
       label.text = weekDays[index].0
@@ -76,4 +78,3 @@ public final class DaySymbolsView: UIView {
     }
   }
 }
-#endif

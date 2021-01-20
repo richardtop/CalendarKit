@@ -1,6 +1,4 @@
-#if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public protocol DaySelectorItemProtocol: AnyObject {
   var date: Date {get set}
@@ -54,7 +52,7 @@ public final class DaySelector: UIView {
     }
     set(newDate) {
       if let newDate = newDate {
-        selectedIndex = newDate.days(from: startDate, calendar: calendar)
+        selectedIndex = calendar.dateComponents([.day], from: startDate, to: newDate).day!
       }
     }
   }
@@ -107,7 +105,7 @@ public final class DaySelector: UIView {
 
   private func configure() {
     for (increment, label) in items.enumerated() {
-      label.date = startDate.add(TimeChunk.dateComponents(days: increment), calendar: calendar)
+      label.date = calendar.date(byAdding: .day, value: increment, to: startDate)!
     }
   }
 
@@ -133,11 +131,19 @@ public final class DaySelector: UIView {
     let minX = per / 2
 
     for (i, item) in items.enumerated() {
-      let origin = CGPoint(x: minX + (size.width + per) * CGFloat(i),
+        
+        var x = minX + (size.width + per) * CGFloat(i)
+        
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        if rightToLeft {
+            x = parentWidth - x - size.width
+        }
+        
+        let origin = CGPoint(x: x,
                            y: 0)
-      let frame = CGRect(origin: origin,
+        let frame = CGRect(origin: origin,
                          size: size)
-      item.frame = frame
+        item.frame = frame
     }
   }
 
@@ -156,4 +162,3 @@ public final class DaySelector: UIView {
     }
   }
 }
-#endif

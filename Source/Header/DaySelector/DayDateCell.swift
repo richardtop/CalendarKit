@@ -1,6 +1,4 @@
-#if os(iOS)
 import UIKit
-import DateToolsSwift
 
 public final class DayDateCell: UIView, DaySelectorItemProtocol {
 
@@ -109,4 +107,3 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
     updateState()
   }
 }
-#endif

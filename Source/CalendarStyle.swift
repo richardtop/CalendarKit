@@ -1,4 +1,3 @@
-#if os(iOS)
 import Foundation
 import UIKit
 
@@ -62,7 +61,7 @@ public struct TimelineStyle {
   public var allDayStyle = AllDayViewStyle()
   public var timeIndicator = CurrentTimeIndicatorStyle()
   public var timeColor = SystemColors.secondaryLabel
-  public var lineColor = SystemColors.secondaryLabel
+  public var separatorColor = SystemColors.systemSeparator
   public var backgroundColor = SystemColors.systemBackground
   public var font = UIFont.boldSystemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
@@ -71,7 +70,7 @@ public struct TimelineStyle {
   public var splitMinuteInterval: Int = 15
   public var verticalDiff: CGFloat = 50
   public var verticalInset: CGFloat = 10
-  public var leftInset: CGFloat = 53
+  public var leadingInset: CGFloat = 53
   public var eventGap: CGFloat = 0
   public init() {}
 }
@@ -89,4 +88,3 @@ public struct AllDayViewStyle {
   public var allDayColor: UIColor = SystemColors.label
   public init() {}
 }
-#endif
