@@ -6,6 +6,7 @@ public protocol DayViewStateUpdating: AnyObject {
 
 public final class DayViewState {
   public private(set) var calendar: Calendar
+//    willSet {} // TODO: I think this needs to be implemented, cause timezone can change without creating a new state object
   public private(set) var selectedDate: Date
   private var clients = [DayViewStateUpdating]()
 
@@ -17,6 +18,7 @@ public final class DayViewState {
 
   public func move(to date: Date) {
     let date = date.dateOnly(calendar: calendar)
+//    if (date == selectedDate) { return } // TODO: If necessary? Just trying to make sure that willMoveTo not be called if we are already on this page
     notify(clients: clients, moveTo: date)
     selectedDate = date
   }

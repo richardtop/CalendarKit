@@ -22,8 +22,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
-      pagingViewController.viewControllers?.forEach {
+      // changing timezone in loaded pages
+      pagingViewController.children.forEach {
         let vc = $0 as! TimelineContainerController
+        let oldCalendar = vc.timeline.calendar
+        vc.timeline.date = vc.timeline.date.dateOnly(calendar: calendar, oldCalendar: oldCalendar)
         vc.timeline.calendar = calendar
       }
     }
@@ -180,7 +183,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   private func updateTimeline(_ timeline: TimelineView) {
     guard let dataSource = dataSource else {return}
-    let date = timeline.date.dateOnly(calendar: calendar)
+    // I don't know under what circumstances, but I know for sure that
+    // a situation is possible when these calendars have different time
+    // zones. It is in this case that the call below will prevent a bug
+    // that leads to "jumps" after days when you swipe to the left
+    let date = timeline.date.dateOnly(calendar: calendar, oldCalendar: timeline.calendar)
     let events = dataSource.eventsForDate(date)
     let day = TimePeriod(beginning: date,
                          chunk: TimeChunk.dateComponents(days: 1))
@@ -444,7 +451,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   // MARK: UIPageViewControllerDataSource
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-    guard let containerController = viewController as? TimelineContainerController  else {return nil}
+    guard let containerController = viewController as? TimelineContainerController else {return nil}
     let previousDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: -1), calendar: calendar)
     let vc = configureTimelineController(date: previousDate)
     let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
@@ -453,7 +460,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   }
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-    guard let containerController = viewController as? TimelineContainerController  else {return nil}
+    guard let containerController = viewController as? TimelineContainerController else {return nil}
     let nextDate = containerController.timeline.date.add(TimeChunk.dateComponents(days: 1), calendar: calendar)
     let vc = configureTimelineController(date: nextDate)
     let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
@@ -466,7 +473,19 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
     guard completed else {return}
     if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
-      let selectedDate = timelineContainerController.timeline.date
+      // Unfortunately, I cannot explain this change in detail. I fiddled
+      // with a bug in which some days were skipped when swiping, completely
+      // desperate and wrote this. To my surprise, this solved the problem.
+      // I'll do some research on the reasons later.
+      
+      // Попытка пофиксить сбой хедера с перескоком через число
+      var selectedDate = timelineContainerController.timeline.date
+      selectedDate = selectedDate.dateOnly(calendar: self.state!.calendar, oldCalendar: timelineContainerController.container.timeline.calendar)
+      
+      // попытка пофиксить баг с уменьшением и свайпом
+      timelineContainerController.timeline.date = selectedDate // Я хз как и какие последствия оно имеет, но это сработало
+      timelineContainerController.timeline.calendar = self.state!.calendar
+      
       delegate?.timelinePager(timelinePager: self, willMoveTo: selectedDate)
       state?.client(client: self, didMoveTo: selectedDate)
       scrollToFirstEventIfNeeded()

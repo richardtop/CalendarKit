@@ -3,7 +3,15 @@ import UIKit
 
 public final class DaySymbolsView: UIView {
   public private(set) var daysInWeek = 7
-  private var calendar = Calendar.autoupdatingCurrent
+  public var calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      // TODO: I honestly don't know if I should be doing this. Changes to
+      // the timezone should not affect the displayed days of the week,
+      // however, just in case, I am reconfiguring this view
+      configure()
+      setNeedsLayout()
+    }
+  }
   private var labels = [UILabel]()
   private var style: DaySymbolsStyle = DaySymbolsStyle()
 
