@@ -15,7 +15,13 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     }
   }
 
-  public private(set) var calendar = Calendar.autoupdatingCurrent
+  public var calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      // I doubt that someone will use this view without a state, but
+      // I consider it necessary to update text label for such a situation
+      updateLabelText()
+    }
+  }
   public weak var state: DayViewState? {
     willSet(newValue) {
       state?.unsubscribe(client: self)

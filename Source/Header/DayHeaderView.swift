@@ -2,7 +2,13 @@ import UIKit
 
 public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   public private(set) var daysInWeek = 7
-  public let calendar: Calendar
+  public var calendar: Calendar {
+    didSet {
+      daySymbolsView.calendar = calendar
+      swipeLabelView.calendar = calendar
+      configure() // TODO: Should I do it that way or better just to set a new vc without adding subview (like in state#didSet)?
+    }
+  }
 
   private var style = DayHeaderStyle()
   private var currentSizeClass = UIUserInterfaceSizeClass.compact
@@ -14,6 +20,14 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     didSet {
       state?.subscribe(client: self)
       swipeLabelView.state = state
+        
+      // Fixes the "jump" of the pager from today to the selected date. This is noticeable
+      // when we are on a date outside of today's week, and try to change the time zone.
+      let previousSelectedDate = state!.selectedDate // day selected before timezone change
+      let vc = makeSelectorController(startDate: beginningOfWeek(previousSelectedDate))
+      vc.selectedDate = previousSelectedDate
+      currentWeekdayIndex = vc.selectedIndex
+      pagingViewController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)
     }
   }
 

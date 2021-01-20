@@ -49,8 +49,8 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
     }
   }
 
-  public let dayHeaderView: DayHeaderView
-  public let timelinePagerView: TimelinePagerView
+  public private(set) var dayHeaderView: DayHeaderView
+  public private(set) var timelinePagerView: TimelinePagerView
 
   public var state: DayViewState? {
     didSet {
@@ -59,7 +59,23 @@ public final class DayView: UIView, TimelinePagerViewDelegate {
     }
   }
 
-  public var calendar: Calendar = Calendar.autoupdatingCurrent
+  public var calendar: Calendar = Calendar.autoupdatingCurrent {
+    didSet { // TODO: willSet?
+      dayHeaderView.calendar = self.calendar
+      timelinePagerView.calendar = self.calendar
+
+      // recalculate the selectedDate taking into account
+      // the difference between new and old timezones
+      let oldCalendar = state!.calendar
+      let selectedDate = (self.state?.selectedDate ?? Date())
+        .dateOnly(calendar: calendar, oldCalendar: oldCalendar)
+      
+      // setting a new state
+      let newState = DayViewState(date: selectedDate, calendar: calendar)
+      state = newState
+      newState.move(to: selectedDate) // TODO: Why I added this :I?
+    }
+  }
 
   private var style = CalendarStyle()
 

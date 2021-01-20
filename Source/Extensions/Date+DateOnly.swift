@@ -14,4 +14,12 @@ extension Date {
     let returnValue = calendar.date(from: newComponents)
     return returnValue!
   }
+    
+  /// Cuts off the time, leaving the beginning of the day for the new time zone
+  func dateOnly(calendar: Calendar, oldCalendar: Calendar) -> Date {
+    var newDate = self.dateOnly(calendar: oldCalendar)
+    let diff = oldCalendar.timeZone.secondsFromGMT() - calendar.timeZone.secondsFromGMT()
+    newDate.addTimeInterval(TimeInterval(diff))
+    return newDate
+  }
 }
