@@ -16,7 +16,7 @@ Please, use [GitHub Issues](https://github.com/richardtop/CalendarKit/issues) on
 
 
 ## Examples
-[Video](https://streamable.com/zsnu1)
+[Video](https://youtu.be/KR58xW0TkwI)
 
 [Try live in a browser](https://appetize.io/app/k85kqpdr1fp79e59f1c4ar8cx4)
 
