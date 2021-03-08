@@ -12,7 +12,7 @@ public protocol DayViewDelegate: AnyObject {
   func dayView(dayView: DayView, didUpdate event: EventDescriptor)
 }
 
-public final class DayView: UIView, TimelinePagerViewDelegate {
+public class DayView: UIView, TimelinePagerViewDelegate {
   public weak var dataSource: EventDataSource? {
     get {
       return timelinePagerView.dataSource
