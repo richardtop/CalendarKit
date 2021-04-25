@@ -15,7 +15,7 @@ public final class AllDayView: UIView {
   public private(set) var eventViews = [EventView]()
   
   private lazy var textLabel: UILabel = {
-    let label = UILabel(frame: CGRect(x: 8.0, y: 4.0, width: allDayLabelWidth, height: 24.0))
+    let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.text = localizedString("all-day")
     label.setContentCompressionResistancePriority(.required, for: .horizontal)
