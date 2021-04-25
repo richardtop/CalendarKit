@@ -25,5 +25,5 @@ let package = Package(
             path: "Source",
             resources: [.process("Localizations")])
   ],
-  swiftLanguageVersions: [.version("5.3")]
+  swiftLanguageVersions: [.v5]
 )
