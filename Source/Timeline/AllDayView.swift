@@ -4,7 +4,6 @@ import UIKit
 public final class AllDayView: UIView {
   private var style = AllDayViewStyle()
   
-  private let allDayLabelWidth: CGFloat = 53.0
   private let allDayEventHeight: CGFloat = 24.0
   
   public var events: [EventDescriptor] = [] {
@@ -76,10 +75,8 @@ public final class AllDayView: UIView {
     
     addConstraints([
         NSLayoutConstraint(item: textLabel, attribute: .leading, relatedBy: .equal, toItem: self, attribute: .leading, multiplier: 1, constant: 8),
-        
+
         NSLayoutConstraint(item: textLabel, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1, constant: 4),
-        
-        NSLayoutConstraint(item: textLabel, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: allDayLabelWidth),
         
         NSLayoutConstraint(item: textLabel, attribute: .height, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1, constant: 24)
     ])
