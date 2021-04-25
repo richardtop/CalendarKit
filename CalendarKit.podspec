@@ -10,6 +10,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '9.0'
   s.swift_version = '5.3'
   s.requires_arc = true
-  s.source_files = 'Source/**/*'
-  s.ios.resource_bundle = { 'CalendarKit' => ['Localizations/*.lproj'] }
+  s.source_files = 'Source/**/*.swift'
+  s.ios.resource_bundle = { 'CalendarKit' => ['Source/Localizations/*.lproj'] }
 end
