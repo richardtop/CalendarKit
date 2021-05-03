@@ -1,17 +1,18 @@
 import UIKit
-import Neon
-import DateToolsSwift
 
 public protocol DayViewDelegate: AnyObject {
   func dayViewDidSelectEventView(_ eventView: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
-  func dayViewDidLongPressTimelineAtHour(_ hour: Int)
+  func dayView(dayView: DayView, didTapTimelineAt date: Date)
+  func dayView(dayView: DayView, didLongPressTimelineAt date: Date)
+  func dayViewDidBeginDragging(dayView: DayView)
+  func dayViewDidTransitionCancel(dayView: DayView)
   func dayView(dayView: DayView, willMoveTo date: Date)
   func dayView(dayView: DayView, didMoveTo  date: Date)
+  func dayView(dayView: DayView, didUpdate event: EventDescriptor)
 }
 
-public class DayView: UIView {
-
+public class DayView: UIView, TimelinePagerViewDelegate {
   public weak var dataSource: EventDataSource? {
     get {
       return timelinePagerView.dataSource
@@ -36,10 +37,10 @@ public class DayView: UIView {
     return timelinePagerView.timelineScrollOffset
   }
 
-  static let headerVisibleHeight: CGFloat = 88
-  var headerHeight: CGFloat = headerVisibleHeight
+  private static let headerVisibleHeight: CGFloat = 88
+  public var headerHeight: CGFloat = headerVisibleHeight
 
-  open var autoScrollToFirstEvent: Bool {
+  public var autoScrollToFirstEvent: Bool {
     get {
       return timelinePagerView.autoScrollToFirstEvent
     }
@@ -48,8 +49,8 @@ public class DayView: UIView {
     }
   }
 
-  let dayHeaderView = DayHeaderView()
-  let timelinePagerView = TimelinePagerView()
+  public let dayHeaderView: DayHeaderView
+  public let timelinePagerView: TimelinePagerView
 
   public var state: DayViewState? {
     didSet {
@@ -58,36 +59,46 @@ public class DayView: UIView {
     }
   }
 
-  var style = CalendarStyle()
+  public var calendar: Calendar = Calendar.autoupdatingCurrent
 
-  public init(state: DayViewState) {
+  private var style = CalendarStyle()
+
+  public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
+    self.calendar = calendar
+    self.dayHeaderView = DayHeaderView(calendar: calendar)
+    self.timelinePagerView = TimelinePagerView(calendar: calendar)
     super.init(frame: .zero)
-    self.state = state
     configure()
   }
 
   override public init(frame: CGRect) {
+    self.dayHeaderView = DayHeaderView(calendar: calendar)
+    self.timelinePagerView = TimelinePagerView(calendar: calendar)
     super.init(frame: frame)
     configure()
   }
 
   required public init?(coder aDecoder: NSCoder) {
+    self.dayHeaderView = DayHeaderView(calendar: calendar)
+    self.timelinePagerView = TimelinePagerView(calendar: calendar)
     super.init(coder: aDecoder)
     configure()
   }
 
-  func configure() {
+  private func configure() {
     addSubview(timelinePagerView)
     addSubview(dayHeaderView)
     timelinePagerView.delegate = self
 
     if state == nil {
-      state = DayViewState()
+      let newState = DayViewState(date: Date(), calendar: calendar)
+      newState.move(to: Date())
+      state = newState
     }
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
-    style = newStyle.copy() as! CalendarStyle
+    style = newStyle
     dayHeaderView.updateStyle(style.header)
     timelinePagerView.updateStyle(style.timeline)
   }
@@ -96,48 +107,61 @@ public class DayView: UIView {
     timelinePagerView.timelinePanGestureRequire(toFail: gesture)
   }
 
-  public func scrollTo(hour24: Float) {
-    timelinePagerView.scrollTo(hour24: hour24)
+  public func scrollTo(hour24: Float, animated: Bool = true) {
+    timelinePagerView.scrollTo(hour24: hour24, animated: animated)
   }
 
-  public func scrollToFirstEventIfNeeded() {
-    timelinePagerView.scrollToFirstEventIfNeeded()
+  public func scrollToFirstEventIfNeeded(animated: Bool = true) {
+    timelinePagerView.scrollToFirstEventIfNeeded(animated: animated)
   }
 
   public func reloadData() {
     timelinePagerView.reloadData()
   }
+  
+  public func move(to date: Date) {
+    state?.move(to: date)
+  }
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    dayHeaderView.anchorAndFillEdge(.top, xPad: 0, yPad: 0, otherSize: headerHeight)
-    timelinePagerView.alignAndFill(align: .underCentered, relativeTo: dayHeaderView, padding: 0)
+    dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
+                                 size: CGSize(width: bounds.width, height: headerHeight))
+    let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
+    timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
+                                     size: CGSize(width: bounds.width, height: timelinePagerHeight))
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     dayHeaderView.transitionToHorizontalSizeClass(sizeClass)
     updateStyle(style)
   }
-}
 
-extension DayView: EventViewDelegate {
-  public func eventViewDidTap(_ eventView: EventView) {
-    delegate?.dayViewDidSelectEventView(eventView)
+  public func create(event: EventDescriptor, animated: Bool = false) {
+    timelinePagerView.create(event: event, animated: animated)
   }
-  public func eventViewDidLongPress(_ eventview: EventView) {
-    delegate?.dayViewDidLongPressEventView(eventview)
-  }
-}
 
-extension DayView: TimelinePagerViewDelegate {
+  public func beginEditing(event: EventDescriptor, animated: Bool = false) {
+    timelinePagerView.beginEditing(event: event, animated: animated)
+  }
+  
+  public func endEventEditing() {
+    timelinePagerView.endEventEditing()
+  }
+
+  // MARK: TimelinePagerViewDelegate
+
   public func timelinePagerDidSelectEventView(_ eventView: EventView) {
     delegate?.dayViewDidSelectEventView(eventView)
   }
   public func timelinePagerDidLongPressEventView(_ eventView: EventView) {
     delegate?.dayViewDidLongPressEventView(eventView)
   }
-  public func timelinePagerDidLongPressTimelineAtHour(_ hour: Int) {
-    delegate?.dayViewDidLongPressTimelineAtHour(hour)
+  public func timelinePagerDidBeginDragging(timelinePager: TimelinePagerView) {
+    delegate?.dayViewDidBeginDragging(dayView: self)
+  }
+  public func timelinePagerDidTransitionCancel(timelinePager: TimelinePagerView) {
+    delegate?.dayViewDidTransitionCancel(dayView: self)
   }
   public func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date) {
     delegate?.dayView(dayView: self, willMoveTo: date)
@@ -145,10 +169,13 @@ extension DayView: TimelinePagerViewDelegate {
   public func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date) {
     delegate?.dayView(dayView: self, didMoveTo: date)
   }
-}
-
-extension DayView: TimelineViewDelegate {
-  public func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int) {
-    delegate?.dayViewDidLongPressTimelineAtHour(hour)
+  public func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date) {
+    delegate?.dayView(dayView: self, didLongPressTimelineAt: date)
+  }
+  public func timelinePager(timelinePager: TimelinePagerView, didTapTimelineAt date: Date) {
+    delegate?.dayView(dayView: self, didTapTimelineAt: date)
+  }
+  public func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor) {
+    delegate?.dayView(dayView: self, didUpdate: event)
   }
 }

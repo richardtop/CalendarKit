@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    tags:
+      - '*'
+    
+jobs:
+  build:
+
+    runs-on: macOS-latest
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Publish to CocoaPod register
+      env:
+        COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
+      run: |
+        tag_number=$(git describe --tags)
+        fastlane run version_bump_podspec version_number:$tag_number
+        pod trunk push CalendarKit.podspec --skip-import-validation --allow-warnings

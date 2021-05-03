@@ -1,7 +1,7 @@
 import UIKit
 
-class ReusePool<T: UIView> {
-  var storage: [T]
+final class ReusePool<T: UIView> {
+  private var storage: [T]
 
   init() {
     storage = [T]()
