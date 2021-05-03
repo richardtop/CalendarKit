@@ -1,20 +1,14 @@
 import UIKit
-import Neon
-import DateToolsSwift
 
 public protocol TimelineViewDelegate: AnyObject {
-  func timelineView(_ timelineView: TimelineView, didLongPressAt hour: Int)
+  func timelineView(_ timelineView: TimelineView, didTapAt date: Date)
+  func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
+  func timelineView(_ timelineView: TimelineView, didTap event: EventView)
+  func timelineView(_ timelineView: TimelineView, didLongPress event: EventView)
 }
 
-public class TimelineView: UIView, ReusableView {
-
+public final class TimelineView: UIView {
   public weak var delegate: TimelineViewDelegate?
-
-  public weak var eventViewDelegate: EventViewDelegate? {
-    didSet {
-      self.allDayView.eventViewDelegate = eventViewDelegate
-    }
-  }
 
   public var date = Date() {
     didSet {
@@ -22,11 +16,11 @@ public class TimelineView: UIView, ReusableView {
     }
   }
 
-  var currentTime: Date {
+  private var currentTime: Date {
     return Date()
   }
 
-  var eventViews = [EventView]()
+  private var eventViews = [EventView]()
   public private(set) var regularLayoutAttributes = [EventLayoutAttributes]()
   public private(set) var allDayLayoutAttributes = [EventLayoutAttributes]()
   
@@ -57,17 +51,20 @@ public class TimelineView: UIView, ReusableView {
       return allDayLayoutAttributes + regularLayoutAttributes
     }
   }
-  var pool = ReusePool<EventView>()
+  private var pool = ReusePool<EventView>()
 
-  var firstEventYPosition: CGFloat? {
-    return regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}
-      .first?.frame.origin.y
+  public var firstEventYPosition: CGFloat? {
+    let first = regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}.first
+    guard let firstEvent = first else {return nil}
+    let firstEventPosition = firstEvent.frame.origin.y
+    let beginningOfDayPosition = dateToY(date)
+    return max(firstEventPosition, beginningOfDayPosition)
   }
 
-  lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
+  private lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
   
   private var allDayViewTopConstraint: NSLayoutConstraint?
-  lazy var allDayView: AllDayView = {
+  private lazy var allDayView: AllDayView = {
     let allDayView = AllDayView(frame: CGRect.zero)
     
     allDayView.translatesAutoresizingMaskIntoConstraints = false
@@ -87,43 +84,67 @@ public class TimelineView: UIView, ReusableView {
   }
 
   var style = TimelineStyle()
-
-  var horizontalEventInset: CGFloat = 3
+  private var horizontalEventInset: CGFloat = 3
 
   public var fullHeight: CGFloat {
     return style.verticalInset * 2 + style.verticalDiff * 24
   }
 
-  var calendarWidth: CGFloat {
-    return bounds.width - style.leftInset
+  public var calendarWidth: CGFloat {
+    return bounds.width - style.leadingInset
   }
     
-  var is24hClock = true {
+  public private(set) var is24hClock = true {
     didSet {
       setNeedsDisplay()
     }
   }
 
-  init() {
+  public var calendar: Calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      snappingBehavior = snappingBehaviorType.init(calendar)
+      nowLine.calendar = calendar
+      regenerateTimeStrings()
+      setNeedsLayout()
+    }
+  }
+  
+  // TODO: Make a public API
+  public var snappingBehaviorType: EventEditingSnappingBehavior.Type = SnapTo15MinuteIntervals.self
+  lazy var snappingBehavior: EventEditingSnappingBehavior = snappingBehaviorType.init(calendar)
+
+  private var times: [String] {
+    return is24hClock ? _24hTimes : _12hTimes
+  }
+
+  private lazy var _12hTimes: [String] = TimeStringsFactory(calendar).make12hStrings()
+  private lazy var _24hTimes: [String] = TimeStringsFactory(calendar).make24hStrings()
+  
+  private func regenerateTimeStrings() {
+    let factory = TimeStringsFactory(calendar)
+    _12hTimes = factory.make12hStrings()
+    _24hTimes = factory.make24hStrings()
+  }
+  
+  public lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                            action: #selector(longPress(_:)))
+
+  public lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                action: #selector(tap(_:)))
+
+  private var isToday: Bool {
+    return calendar.isDateInToday(date)
+  }
+  
+  // MARK: - Initialization
+  
+  public init() {
     super.init(frame: .zero)
     frame.size.height = fullHeight
     configure()
   }
 
-  var times: [String] {
-    return is24hClock ? _24hTimes : _12hTimes
-  }
-
-  fileprivate lazy var _12hTimes: [String] = Generator.timeStrings12H()
-  fileprivate lazy var _24hTimes: [String] = Generator.timeStrings24H()
-  
-  fileprivate lazy var longPressGestureRecognizer: UILongPressGestureRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
-
-  var isToday: Bool {
-    return date.isToday
-  }
-
-  override init(frame: CGRect) {
+  override public init(frame: CGRect) {
     super.init(frame: frame)
     configure()
   }
@@ -133,7 +154,7 @@ public class TimelineView: UIView, ReusableView {
     configure()
   }
 
-  func configure() {
+  private func configure() {
     contentScaleFactor = 1
     layer.contentsScale = 1
     contentMode = .redraw
@@ -142,49 +163,111 @@ public class TimelineView: UIView, ReusableView {
     
     // Add long press gesture recognizer
     addGestureRecognizer(longPressGestureRecognizer)
+    addGestureRecognizer(tapGestureRecognizer)
   }
   
-  @objc func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
+  // MARK: - Event Handling
+  
+  @objc private func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
     if (gestureRecognizer.state == .began) {
       // Get timeslot of gesture location
       let pressedLocation = gestureRecognizer.location(in: self)
-      let percentOfHeight = (pressedLocation.y - style.verticalInset) / (bounds.height - (style.verticalInset * 2))
-      let pressedAtHour: Int = Int(24 * percentOfHeight)
-      delegate?.timelineView(self, didLongPressAt: pressedAtHour)
+      if let eventView = findEventView(at: pressedLocation) {
+        delegate?.timelineView(self, didLongPress: eventView)
+      } else {
+        delegate?.timelineView(self, didLongPressAt: yToDate(pressedLocation.y))
+      }
     }
   }
+  
+  @objc private func tap(_ sender: UITapGestureRecognizer) {
+    let pressedLocation = sender.location(in: self)
+    if let eventView = findEventView(at: pressedLocation) {
+      delegate?.timelineView(self, didTap: eventView)
+    } else {
+      delegate?.timelineView(self, didTapAt: yToDate(pressedLocation.y))
+    }
+  }
+  
+  private func findEventView(at point: CGPoint) -> EventView? {
+    for eventView in allDayView.eventViews {
+      let frame = eventView.convert(eventView.bounds, to: self)
+      if frame.contains(point) {
+        return eventView
+      }
+    }
+
+    for eventView in eventViews {
+      let frame = eventView.frame
+      if frame.contains(point) {
+        return eventView
+      }
+    }
+    return nil
+  }
+  
+  
+  /**
+   Custom implementation of the hitTest method is needed for the tap gesture recognizers
+   located in the AllDayView to work.
+   Since the AllDayView could be outside of the Timeline's bounds, the touches to the EventViews
+   are ignored.
+   In the custom implementation the method is recursively invoked for all of the subviews,
+   regardless of their position in relation to the Timeline's bounds.
+   */
+  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+    for subview in allDayView.subviews {
+      if let subSubView = subview.hitTest(convert(point, to: subview), with: event) {
+        return subSubView
+      }
+    }
+    return super.hitTest(point, with: event)
+  }
+  
+  // MARK: - Style
 
   public func updateStyle(_ newStyle: TimelineStyle) {
-    style = newStyle.copy() as! TimelineStyle
+    style = newStyle
+    allDayView.updateStyle(style.allDayStyle)
     nowLine.updateStyle(style.timeIndicator)
     
     switch style.dateStyle {
       case .twelveHour:
         is24hClock = false
-        break
       case .twentyFourHour:
         is24hClock = true
-        break
       default:
-        is24hClock = Locale.autoupdatingCurrent.uses24hClock()
-        break
+        is24hClock = calendar.locale?.uses24hClock() ?? Locale.autoupdatingCurrent.uses24hClock()
     }
     
     backgroundColor = style.backgroundColor
     setNeedsDisplay()
   }
+  
+  // MARK: - Background Pattern
+
+  public var accentedDate: Date?
 
   override public func draw(_ rect: CGRect) {
     super.draw(rect)
 
     var hourToRemoveIndex = -1
 
+    var accentedHour = -1
+    var accentedMinute = -1
+
+    if let accentedDate = accentedDate {
+      accentedHour = snappingBehavior.accentedHour(for: accentedDate)
+      accentedMinute = snappingBehavior.accentedMinute(for: accentedDate)
+    }
+
     if isToday {
-      let minute = currentTime.minute
+      let minute = component(component: .minute, from: currentTime)
+      let hour = component(component: .hour, from: currentTime)
       if minute > 39 {
-        hourToRemoveIndex = currentTime.hour + 1
+        hourToRemoveIndex = hour + 1
       } else if minute < 21 {
-        hourToRemoveIndex = currentTime.hour
+        hourToRemoveIndex = hour
       }
     }
 
@@ -192,38 +275,97 @@ public class TimelineView: UIView, ReusableView {
     mutableParagraphStyle.lineBreakMode = .byWordWrapping
     mutableParagraphStyle.alignment = .right
     let paragraphStyle = mutableParagraphStyle.copy() as! NSParagraphStyle
-    
+
     let attributes = [NSAttributedString.Key.paragraphStyle: paragraphStyle,
-					  NSAttributedString.Key.foregroundColor: self.style.timeColor,
-					  NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
+                      NSAttributedString.Key.foregroundColor: self.style.timeColor,
+                      NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
 
-    for (i, time) in times.enumerated() {
-      let iFloat = CGFloat(i)
-      let context = UIGraphicsGetCurrentContext()
-      context!.interpolationQuality = .none
-      context?.saveGState()
-      context?.setStrokeColor(self.style.lineColor.cgColor)
-      context?.setLineWidth(onePixel)
-      context?.translateBy(x: 0, y: 0.5)
-      let x: CGFloat = 53
-      let y = style.verticalInset + iFloat * style.verticalDiff
-      context?.beginPath()
-      context?.move(to: CGPoint(x: x, y: y))
-      context?.addLine(to: CGPoint(x: (bounds).width, y: y))
-      context?.strokePath()
-      context?.restoreGState()
+    let scale = UIScreen.main.scale
+    let hourLineHeight = 1 / UIScreen.main.scale
 
-      if i == hourToRemoveIndex { continue }
+    let center: CGFloat
+    if Int(scale) % 2 == 0 {
+        center = 1 / (scale * 2)
+    } else {
+        center = 0
+    }
+    
+    let offset = 0.5 - center
+    
+    for (hour, time) in times.enumerated() {
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
         
-      let fontSize = style.font.pointSize
-      let timeRect = CGRect(x: 2, y: iFloat * style.verticalDiff + style.verticalInset - 7,
-                            width: style.leftInset - 8, height: fontSize + 2)
-
-      let timeString = NSString(string: time)
-
-      timeString.draw(in: timeRect, withAttributes: attributes)
+        let hourFloat = CGFloat(hour)
+        let context = UIGraphicsGetCurrentContext()
+        context!.interpolationQuality = .none
+        context?.saveGState()
+        context?.setStrokeColor(style.separatorColor.cgColor)
+        context?.setLineWidth(hourLineHeight)
+        let xStart: CGFloat = {
+            if rightToLeft {
+                return bounds.width - 53
+            } else {
+                return 53
+            }
+        }()
+        let xEnd: CGFloat = {
+            if rightToLeft {
+                return 0
+            } else {
+                return bounds.width
+            }
+        }()
+        let y = style.verticalInset + hourFloat * style.verticalDiff + offset
+        context?.beginPath()
+        context?.move(to: CGPoint(x: xStart, y: y))
+        context?.addLine(to: CGPoint(x: xEnd, y: y))
+        context?.strokePath()
+        context?.restoreGState()
+    
+        if hour == hourToRemoveIndex { continue }
+    
+        let fontSize = style.font.pointSize
+        let timeRect: CGRect = {
+            var x: CGFloat
+            if rightToLeft {
+                x = bounds.width - 53
+            } else {
+                x = 2
+            }
+            
+            return CGRect(x: x,
+                          y: hourFloat * style.verticalDiff + style.verticalInset - 7,
+                          width: style.leadingInset - 8,
+                          height: fontSize + 2)
+        }()
+    
+        let timeString = NSString(string: time)
+        timeString.draw(in: timeRect, withAttributes: attributes)
+    
+        if accentedMinute == 0 {
+            continue
+        }
+    
+        if hour == accentedHour {
+            
+            var x: CGFloat
+            if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+                x = bounds.width - (style.leadingInset + 7)
+            } else {
+                x = 2
+            }
+            
+            let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+                                width: style.leadingInset - 8, height: fontSize + 2)
+            
+            let timeString = NSString(string: ":\(accentedMinute)")
+            
+            timeString.draw(in: timeRect, withAttributes: attributes)
+        }
     }
   }
+  
+  // MARK: - Layout
 
   override public func layoutSubviews() {
     super.layoutSubviews()
@@ -233,7 +375,7 @@ public class TimelineView: UIView, ReusableView {
     layoutAllDayEvents()
   }
 
-  func layoutNowLine() {
+  private func layoutNowLine() {
     if !isToday {
       nowLine.alpha = 0
     } else {
@@ -247,21 +389,32 @@ public class TimelineView: UIView, ReusableView {
     }
   }
 
-  func layoutEvents() {
-    if eventViews.isEmpty {return}
+  private func layoutEvents() {
+    if eventViews.isEmpty { return }
     
     for (idx, attributes) in regularLayoutAttributes.enumerated() {
       let descriptor = attributes.descriptor
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
+        
+      var x: CGFloat
+      if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+        x = bounds.width - attributes.frame.minX - attributes.frame.width
+      } else {
+        x = attributes.frame.minX
+      }
+        
+      eventView.frame = CGRect(x: x,
+                               y: attributes.frame.minY,
+                               width: attributes.frame.width - style.eventGap,
+                               height: attributes.frame.height - style.eventGap)
       eventView.updateWithDescriptor(event: descriptor)
     }
   }
   
-  func layoutAllDayEvents() {
-    
+  private func layoutAllDayEvents() {
     //add day view needs to be in front of the nowLine
-	bringSubviewToFront(allDayView)
+    bringSubviewToFront(allDayView)
   }
   
   /**
@@ -270,20 +423,20 @@ public class TimelineView: UIView, ReusableView {
    - parameter yValue: since the superview is a scrollView, `yValue` is the
    `contentOffset.y` of the scroll view
    */
-  func offsetAllDayView(by yValue: CGFloat) {
+  public func offsetAllDayView(by yValue: CGFloat) {
     if let topConstraint = self.allDayViewTopConstraint {
       topConstraint.constant = yValue
       layoutIfNeeded()
     }
   }
 
-  func recalculateEventLayout() {
-    
+  private func recalculateEventLayout() {
+
     // only non allDay events need their frames to be set
     let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
       let start1 = attr1.descriptor.startDate
       let start2 = attr2.descriptor.startDate
-      return start1.isEarlier(than: start2)
+      return start1 < start2
     }
 
     var groupsOfEvents = [[EventLayoutAttributes]]()
@@ -296,29 +449,33 @@ public class TimelineView: UIView, ReusableView {
       }
 
       let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
-        let period1 = attr1.descriptor.datePeriod.seconds
-        let period2 = attr2.descriptor.datePeriod.seconds
+        var period = attr1.descriptor.datePeriod
+        let period1 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
+
+        period = attr2.descriptor.datePeriod
+        let period2 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
+
         return period1 > period2
         }
         .first!
 
-        if style.eventsWillOverlap {
-            guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
-            let dateInterval = getDateInterval(date: earliestEvent)
-            if event.descriptor.datePeriod.relation(to: dateInterval) == Relation.startInside {
-                overlappingEvents.append(event)
-                continue
-            }
-        } else {
-            let lastEvent = overlappingEvents.last!
-            if longestEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) ||
-                lastEvent.descriptor.datePeriod.overlaps(with: event.descriptor.datePeriod) {
-                overlappingEvents.append(event)
-                continue
-            }
+      if style.eventsWillOverlap {
+        guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
+        let dateInterval = getDateInterval(date: earliestEvent)
+        if event.descriptor.datePeriod.contains(dateInterval.lowerBound) {
+          overlappingEvents.append(event)
+          continue
         }
-        groupsOfEvents.append(overlappingEvents)
-        overlappingEvents = [event]
+      } else {
+        let lastEvent = overlappingEvents.last!
+        if (longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (longestEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) ||
+          (lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (lastEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) {
+          overlappingEvents.append(event)
+          continue
+        }
+      }
+      groupsOfEvents.append(overlappingEvents)
+      overlappingEvents = [event]
     }
 
     groupsOfEvents.append(overlappingEvents)
@@ -327,22 +484,21 @@ public class TimelineView: UIView, ReusableView {
     for overlappingEvents in groupsOfEvents {
       let totalCount = CGFloat(overlappingEvents.count)
       for (index, event) in overlappingEvents.enumerated() {
-        let startY = dateToY(event.descriptor.datePeriod.beginning!)
-        let endY = dateToY(event.descriptor.datePeriod.end!)
+        let startY = dateToY(event.descriptor.datePeriod.lowerBound)
+        let endY = dateToY(event.descriptor.datePeriod.upperBound)
         let floatIndex = CGFloat(index)
-        let x = style.leftInset + floatIndex / totalCount * calendarWidth
+        let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
       }
     }
   }
 
-  func prepareEventViews() {
+  private func prepareEventViews() {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
-    for _ in 0...regularLayoutAttributes.endIndex {
+    for _ in regularLayoutAttributes {
       let newView = pool.dequeue()
-      newView.delegate = eventViewDelegate
       if newView.superview == nil {
         addSubview(newView)
       }
@@ -350,7 +506,7 @@ public class TimelineView: UIView, ReusableView {
     }
   }
 
-  func prepareForReuse() {
+  public func prepareForReuse() {
     pool.enqueue(views: eventViews)
     eventViews.removeAll()
     setNeedsDisplay()
@@ -358,30 +514,59 @@ public class TimelineView: UIView, ReusableView {
 
   // MARK: - Helpers
 
-  fileprivate var onePixel: CGFloat {
-    return 1 / UIScreen.main.scale
-  }
-
-  fileprivate func dateToY(_ date: Date) -> CGFloat {
-    if date.dateOnly() > self.date.dateOnly() {
+  public func dateToY(_ date: Date) -> CGFloat {
+    let provisionedDate = date.dateOnly(calendar: calendar)
+    let timelineDate = self.date.dateOnly(calendar: calendar)
+    var dayOffset: CGFloat = 0
+    if provisionedDate > timelineDate {
       // Event ending the next day
-      return 24 * style.verticalDiff + style.verticalInset
-    } else if date.dateOnly() < self.date.dateOnly() {
+      dayOffset += 1
+    } else if provisionedDate < timelineDate {
       // Event starting the previous day
-      return style.verticalInset
-    } else {
-      let hourY = CGFloat(date.hour) * style.verticalDiff + style.verticalInset
-      let minuteY = CGFloat(date.minute) * style.verticalDiff / 60
-      return hourY + minuteY
+      dayOffset -= 1
     }
+    let fullTimelineHeight = 24 * style.verticalDiff
+    let hour = component(component: .hour, from: date)
+    let minute = component(component: .minute, from: date)
+    let hourY = CGFloat(hour) * style.verticalDiff + style.verticalInset
+    let minuteY = CGFloat(minute) * style.verticalDiff / 60
+    return hourY + minuteY + fullTimelineHeight * dayOffset
   }
 
-  fileprivate func getDateInterval(date: Date) -> TimePeriod {
-    let earliestEventMintues = date.minute
+  public func yToDate(_ y: CGFloat) -> Date {
+    let timeValue = y - style.verticalInset
+    var hour = Int(timeValue / style.verticalDiff)
+    let fullHourPoints = CGFloat(hour) * style.verticalDiff
+    let minuteDiff = timeValue - fullHourPoints
+    let minute = Int(minuteDiff / style.verticalDiff * 60)
+    var dayOffset = 0
+    if hour > 23 {
+      dayOffset += 1
+      hour -= 24
+    } else if hour < 0 {
+      dayOffset -= 1
+      hour += 24
+    }
+    let offsetDate = calendar.date(byAdding: DateComponents(day: dayOffset),
+                                   to: date)!
+    let newDate = calendar.date(bySettingHour: hour,
+                                minute: minute.clamped(to: 0...59),
+                                second: 0,
+                                of: offsetDate)
+    return newDate!
+  }
+
+  private func component(component: Calendar.Component, from date: Date) -> Int {
+    return calendar.component(component, from: date)
+  }
+  
+  private func getDateInterval(date: Date) -> ClosedRange<Date> {
+    let earliestEventMintues = component(component: .minute, from: date)
     let splitMinuteInterval = style.splitMinuteInterval
-    let minuteRange = (date.minute / splitMinuteInterval) * splitMinuteInterval
-    let beginningRange = Calendar.current.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
-    let endRange = Calendar.current.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)
-    return TimePeriod.init(beginning: beginningRange, end: endRange)
+    let minute = component(component: .minute, from: date)
+    let minuteRange = (minute / splitMinuteInterval) * splitMinuteInterval
+    let beginningRange = calendar.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
+    let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)!
+    return beginningRange ... endRange
   }
 }

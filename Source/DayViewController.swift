@@ -1,9 +1,30 @@
 import UIKit
-import DateToolsSwift
 
 open class DayViewController: UIViewController, EventDataSource, DayViewDelegate {
-
   public lazy var dayView: DayView = DayView()
+  public var dataSource: EventDataSource? {
+    get {
+      return dayView.dataSource
+    }
+    set(value) {
+      dayView.dataSource = value
+    }
+  }
+
+  public var delegate: DayViewDelegate? {
+    get {
+      return dayView.delegate
+    }
+    set(value) {
+      dayView.delegate = value
+    }
+  }
+
+  public var calendar = Calendar.autoupdatingCurrent {
+    didSet {
+      dayView.calendar = calendar
+    }
+  }
 
   open override func loadView() {
     view = dayView
@@ -12,17 +33,17 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   override open func viewDidLoad() {
     super.viewDidLoad()
     edgesForExtendedLayout = []
-    view.tintColor = UIColor.red
-    dayView.dataSource = self
-    dayView.delegate = self
+    view.tintColor = SystemColors.systemRed
+    dataSource = self
+    delegate = self
     dayView.reloadData()
 
     let sizeClass = traitCollection.horizontalSizeClass
     configureDayViewLayoutForHorizontalSizeClass(sizeClass)
   }
 
-  open override func viewWillAppear(_ animated: Bool) {
-    super.viewWillAppear(animated)
+  open override func viewDidAppear(_ animated: Bool) {
+    super.viewDidAppear(animated)
     dayView.scrollToFirstEventIfNeeded()
   }
 
@@ -31,8 +52,14 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     configureDayViewLayoutForHorizontalSizeClass(newCollection.horizontalSizeClass)
   }
 
-  func configureDayViewLayoutForHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
+  open func configureDayViewLayoutForHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     dayView.transitionToHorizontalSizeClass(sizeClass)
+  }
+  
+  // MARK: - CalendarKit API
+  
+  open func move(to date: Date) {
+    dayView.move(to: date)
   }
 
   open func reloadData() {
@@ -47,7 +74,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     return [Event]()
   }
 
-  // MARK: DayViewDelegate
+  // MARK: - DayViewDelegate
 
   open func dayViewDidSelectEventView(_ eventView: EventView) {
   }
@@ -55,12 +82,38 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open func dayViewDidLongPressEventView(_ eventView: EventView) {
   }
 
-  open func dayViewDidLongPressTimelineAtHour(_ hour: Int) {
+  open func dayView(dayView: DayView, didTapTimelineAt date: Date) {
+  }
+  
+  open func dayViewDidBeginDragging(dayView: DayView) { 
+  }
+  
+  open func dayViewDidTransitionCancel(dayView: DayView) {
   }
 
   open func dayView(dayView: DayView, willMoveTo date: Date) {
   }
 
   open func dayView(dayView: DayView, didMoveTo date: Date) {
+  }
+
+  open func dayView(dayView: DayView, didLongPressTimelineAt date: Date) {
+  }
+
+  open func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
+  }
+  
+  // MARK: - Editing
+  
+  open func create(event: EventDescriptor, animated: Bool = false) {
+    dayView.create(event: event, animated: animated)
+  }
+
+  open func beginEditing(event: EventDescriptor, animated: Bool = false) {
+    dayView.beginEditing(event: event, animated: animated)
+  }
+  
+  open func endEventEditing() {
+    dayView.endEventEditing()
   }
 }

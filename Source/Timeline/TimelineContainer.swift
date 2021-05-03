@@ -1,7 +1,6 @@
 import UIKit
 
-public class TimelineContainer: UIScrollView, ReusableView {
-  
+public final class TimelineContainer: UIScrollView {
   public let timeline: TimelineView
   
   public init(_ timeline: TimelineView) {
@@ -14,7 +13,8 @@ public class TimelineContainer: UIScrollView, ReusableView {
   }
   
   override public func layoutSubviews() {
-    timeline.frame = CGRect(x: 0, y: 0, width: width, height: timeline.fullHeight)
+    super.layoutSubviews()
+    timeline.frame = CGRect(x: 0, y: 0, width: bounds.width, height: timeline.fullHeight)
     timeline.offsetAllDayView(by: contentOffset.y)
     
     
@@ -34,19 +34,19 @@ public class TimelineContainer: UIScrollView, ReusableView {
     timeline.prepareForReuse()
   }
   
-  public func scrollToFirstEvent() {
+  public func scrollToFirstEvent(animated: Bool) {
     let allDayViewHeight = timeline.allDayViewHeight
     let padding = allDayViewHeight + 8
     if let yToScroll = timeline.firstEventYPosition {
-      setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: true)
+      setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
     }
   }
   
-  public func scrollTo(hour24: Float) {
+  public func scrollTo(hour24: Float, animated: Bool = true) {
     let percentToScroll = CGFloat(hour24 / 24)
     let yToScroll = contentSize.height * percentToScroll
     let padding: CGFloat = 8
-    setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: true)
+    setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
   }
 
   private func setTimelineOffset(_ offset: CGPoint, animated: Bool) {

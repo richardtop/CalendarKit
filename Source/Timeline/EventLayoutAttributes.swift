@@ -1,6 +1,7 @@
 import Foundation
+import UIKit
 
-public class EventLayoutAttributes {
+public final class EventLayoutAttributes {
   public let descriptor: EventDescriptor
   public var frame = CGRect.zero
 

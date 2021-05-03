@@ -28,3 +28,7 @@ DerivedData
 
 # CocoaPods
 Pods
+
+# SwiftPM
+Package.resolved
+.swiftpm
