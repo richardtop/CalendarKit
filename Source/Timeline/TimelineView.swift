@@ -450,10 +450,9 @@ public final class TimelineView: UIView {
 
       let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
         var period = attr1.descriptor.datePeriod
-        let period1 = abs(min(Int(period.lowerBound.timeIntervalSince(period.upperBound)), 0))
-
+        let period1 = period.lowerBound.timeIntervalSince(period.upperBound)
         period = attr2.descriptor.datePeriod
-        let period2 = abs(min(Int(period.lowerBound.timeIntervalSince(period.upperBound)), 0))
+        let period2 = period.lowerBound.timeIntervalSince(period.upperBound)
 
         return period1 > period2
         }
