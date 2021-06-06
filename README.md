@@ -121,7 +121,7 @@ dayView.updateStyle(style)
 ## Requirements
 
 - iOS 9.0+, iPadOS 13.0+, macOS 10.15+
-- Swift 4+ (Library is written in Swift 5.3)
+- Swift 4+ (Library is written in Swift 5.4)
 
 ## Contributing
 The list of features currently in development can be viewed on the [issues](https://github.com/richardtop/CalendarKit/issues) page.
