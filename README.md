@@ -11,7 +11,7 @@
 
 ## Tutorials
 [Create iOS Calendar App in Swift with CalendarKit](https://www.youtube.com/watch?v=cvF1D-F_LPw&list=PLqaZLRBv1aCJMLC_DKtzVZv72L0LvBRRA&index=1)
-[Create iOS Calendar App in Swift with CalendarKit](https://www.youtube.com/watch?v=6KHTYsYs12w&list=PLqaZLRBv1aCJMLC_DKtzVZv72L0LvBRRA&index=2)
+[Editing events: iOS Calendar app in Swift with CalendarKit](https://www.youtube.com/watch?v=6KHTYsYs12w&list=PLqaZLRBv1aCJMLC_DKtzVZv72L0LvBRRA&index=2)
 
 ## Need Help?
 If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow with the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag. Check out the [Sample App](https://github.com/richardtop/CalendarApp) for reference.
