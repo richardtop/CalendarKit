@@ -99,16 +99,7 @@ class CustomCalendarExampleController: DayViewController {
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
       event.lineBreakMode = .byTruncatingTail
-      
-      // Event styles are updated independently from CalendarStyle
-      // hence the need to specify exact colors in case of Dark style
-      if #available(iOS 12.0, *) {
-        if traitCollection.userInterfaceStyle == .dark {
-          event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
-          event.backgroundColor = event.color.withAlphaComponent(0.6)
-        }
-      }
-      
+
       events.append(event)
       
       let nextOffset = Int.random(in: 40 ... 250)
@@ -118,12 +109,6 @@ class CustomCalendarExampleController: DayViewController {
 
     print("Events for \(date)")
     return events
-  }
-  
-  private func textColorForEventInDarkTheme(baseColor: UIColor) -> UIColor {
-    var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
-    baseColor.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
-    return UIColor(hue: h, saturation: s * 0.3, brightness: b, alpha: a)
   }
   
   // MARK: DayViewDelegate
@@ -189,15 +174,7 @@ class CustomCalendarExampleController: DayViewController {
     event.text = info.reduce("", {$0 + $1 + "\n"})
     event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
     event.editedEvent = event
-    
-    // Event styles are updated independently from CalendarStyle
-    // hence the need to specify exact colors in case of Dark style
-    if #available(iOS 12.0, *) {
-      if traitCollection.userInterfaceStyle == .dark {
-        event.textColor = textColorForEventInDarkTheme(baseColor: event.color)
-        event.backgroundColor = event.color.withAlphaComponent(0.6)
-      }
-    }
+
     return event
   }
   
