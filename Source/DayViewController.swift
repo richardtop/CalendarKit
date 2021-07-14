@@ -1,6 +1,8 @@
 import UIKit
 
 open class DayViewController: UIViewController, EventDataSource, DayViewDelegate {
+    
+    
   public lazy var dayView: DayView = DayView()
   public var dataSource: EventDataSource? {
     get {
@@ -75,6 +77,14 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   }
 
   // MARK: - DayViewDelegate
+    
+    open func dayView(dayView: DayView, didTapEditButton event: EventView) {
+        
+    }
+    
+    open func dayView(dayView: DayView, didTapCheckMark event: EventView) {
+        
+    }
 
   open func dayViewDidSelectEventView(_ eventView: EventView) {
   }

@@ -5,9 +5,12 @@ public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
   func timelineView(_ timelineView: TimelineView, didTap event: EventView)
   func timelineView(_ timelineView: TimelineView, didLongPress event: EventView)
+  func timelineView(_ timelineView: TimelineView, didTapEdit event: EventView)
+  func timelineView(_ timelineView: TimelineView, didTapCheckMark event: EventView)
 }
 
 public final class TimelineView: UIView {
+    
   public weak var delegate: TimelineViewDelegate?
 
   public var date = Date() {
@@ -165,7 +168,7 @@ public final class TimelineView: UIView {
     addGestureRecognizer(longPressGestureRecognizer)
     addGestureRecognizer(tapGestureRecognizer)
   }
-  
+    
   // MARK: - Event Handling
   
   @objc private func longPress(_ gestureRecognizer: UILongPressGestureRecognizer) {
@@ -407,7 +410,7 @@ public final class TimelineView: UIView {
       eventView.frame = CGRect(x: x,
                                y: attributes.frame.minY,
                                width: attributes.frame.width - style.eventGap,
-                               height: attributes.frame.height - style.eventGap)
+                               height: max(attributes.frame.height - style.eventGap, 37.5))
       eventView.updateWithDescriptor(event: descriptor)
     }
   }
@@ -450,9 +453,10 @@ public final class TimelineView: UIView {
 
       let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
         var period = attr1.descriptor.datePeriod
-        let period1 = period.upperBound.timeIntervalSince(period.lowerBound)
+        let period1 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
+
         period = attr2.descriptor.datePeriod
-        let period2 = period.upperBound.timeIntervalSince(period.lowerBound)
+        let period2 = calendar.dateComponents([.second], from: period.lowerBound, to: period.upperBound).second!
 
         return period1 > period2
         }
@@ -499,6 +503,7 @@ public final class TimelineView: UIView {
     for _ in regularLayoutAttributes {
       let newView = pool.dequeue()
       if newView.superview == nil {
+        newView.delegate = self
         addSubview(newView)
       }
       eventViews.append(newView)
@@ -568,4 +573,14 @@ public final class TimelineView: UIView {
     let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)!
     return beginningRange ... endRange
   }
+}
+
+extension TimelineView: EventViewDelegate {
+    public func didTapCheckMark(_ event: EventView) {
+        delegate?.timelineView(self, didTapCheckMark: event)
+    }
+    
+    public func didTapEdit(_ eventView: EventView) {
+        delegate?.timelineView(self, didTapEdit: eventView)
+    }
 }

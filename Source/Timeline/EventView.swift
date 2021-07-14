@@ -1,9 +1,14 @@
 import UIKit
 
+public protocol EventViewDelegate: AnyObject {
+    func didTapEdit(_ eventView: EventView)
+    func didTapCheckMark(_ event: EventView)
+}
+
 open class EventView: UIView {
   public var descriptor: EventDescriptor?
   public var color = SystemColors.label
-
+  public weak var delegate: EventViewDelegate?
   public var contentHeight: CGFloat {
     return textView.frame.height
   }
@@ -15,7 +20,106 @@ open class EventView: UIView {
     view.isScrollEnabled = false
     return view
   }()
-
+    
+    public lazy var titleTextView: UILabel = {
+       let textView = UILabel()
+        textView.numberOfLines = 1
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.lineBreakMode = .byWordWrapping
+       return textView
+    }()
+    
+    public lazy var subTitleTextView: UILabel = {
+       let textView = UILabel()
+        textView.numberOfLines = 1
+        textView.translatesAutoresizingMaskIntoConstraints = false
+        textView.lineBreakMode = .byTruncatingTail
+       return textView
+    }()
+    
+    public lazy var priorityPill: PillView = PillView(frame: .zero)
+    public lazy var categoryTag: PillView = PillView(frame: .zero)
+    
+    private var priorityWidthConstaint = NSLayoutConstraint()
+    private var priorityMinWidthConstaint = NSLayoutConstraint()
+    private var priorityHeightConstraint = NSLayoutConstraint()
+    
+    private var categoryWidthConstraint = NSLayoutConstraint()
+    private var categoryMinWidthConstraint = NSLayoutConstraint()
+    private var categoryHeightConstraint = NSLayoutConstraint()
+    
+    private var stackLeading = NSLayoutConstraint()
+    private var stackTop = NSLayoutConstraint()
+    private var stackTrailing = NSLayoutConstraint()
+    
+    public lazy var pillStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [priorityPill, categoryTag])
+        stack.axis = .horizontal
+        stack.spacing = 2
+        stack.alignment = .leading
+        stack.distribution = .equalSpacing
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    public lazy var checkMark: CheckmarkButtonView  = {
+        let button = CheckmarkButtonView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    public lazy var actionsButtons: UIButton = {
+        let button = UIButton(frame: .zero)
+        if let image = UIImage(named: "Option.png") {
+            button.setImage(image, for: .normal)
+        }
+        button.addTarget(self, action: #selector(didTapAction), for: .touchUpInside)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
+    @objc public func didTapAction(button: UIButton, forEvent event: UIEvent) {
+        delegate?.didTapEdit(self)
+    }
+    
+    @objc public func didTapCheckmark(button: UIButton, forEvent event: UIEvent) {
+        delegate?.didTapCheckMark(self)
+    }
+    
+    lazy var lowerViewVStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [subTitleTextView, pillStack])
+        stack.axis = .vertical
+        stack.alignment = .top
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    lazy var lowerViewHStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [lowerViewVStack, checkMark])
+        stack.axis = .horizontal
+        stack.alignment = .top
+        stack.distribution = .fillProportionally
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    public lazy var hStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [titleTextView, actionsButtons])
+        stack.axis = .horizontal
+        stack.alignment = .top
+        stack.distribution = .fill
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
+    public lazy var vStack: UIStackView = {
+        let stack = UIStackView(arrangedSubviews: [hStack, lowerViewHStack])
+        stack.axis = .vertical
+        stack.alignment = .top
+        stack.translatesAutoresizingMaskIntoConstraints = false
+        return stack
+    }()
+    
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
   public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
@@ -33,7 +137,39 @@ open class EventView: UIView {
   private func configure() {
     clipsToBounds = false
     color = tintColor
-    addSubview(textView)
+    //addSubview(textView)
+    checkMark.isChecked = true
+    checkMark.setNeedsLayout()
+    addSubview(vStack)
+    priorityWidthConstaint = priorityPill.widthAnchor.constraint(equalToConstant: 0)
+    priorityHeightConstraint = priorityPill.heightAnchor.constraint(equalToConstant: 0)
+    priorityMinWidthConstaint = priorityPill.widthAnchor.constraint(greaterThanOrEqualToConstant: 0)
+    
+    
+    categoryWidthConstraint = categoryTag.widthAnchor.constraint(equalToConstant: 0)
+    categoryMinWidthConstraint = categoryTag.widthAnchor.constraint(greaterThanOrEqualToConstant: 0)
+    categoryHeightConstraint = categoryTag.heightAnchor.constraint(equalToConstant: 0)
+
+    stackTop = vStack.topAnchor.constraint(equalTo: topAnchor, constant: 0)
+    stackLeading = vStack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0)
+    stackTrailing = vStack.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0)
+    NSLayoutConstraint.activate([
+        priorityWidthConstaint,
+        priorityHeightConstraint,
+        categoryWidthConstraint,
+        categoryHeightConstraint,
+        stackTrailing,
+        stackTop,
+        stackLeading,
+        actionsButtons.heightAnchor.constraint(equalToConstant: 20),
+        actionsButtons.widthAnchor.constraint(equalToConstant: 20),
+        titleTextView.heightAnchor.constraint(equalToConstant: 20),
+        titleTextView.widthAnchor.constraint(equalTo: vStack.widthAnchor, constant: -20),
+        subTitleTextView.heightAnchor.constraint(equalToConstant: 13),
+        subTitleTextView.widthAnchor.constraint(equalTo: vStack.widthAnchor),
+        pillStack.heightAnchor.constraint(equalToConstant: 20),
+        lowerViewHStack.trailingAnchor.constraint(lessThanOrEqualTo: vStack.trailingAnchor, constant: -25)
+    ])
     
     for (idx, handle) in eventResizeHandles.enumerated() {
       handle.tag = idx
@@ -43,12 +179,64 @@ open class EventView: UIView {
 
   public func updateWithDescriptor(event: EventDescriptor) {
     if let attributedText = event.attributedText {
-      textView.attributedText = attributedText
+     // textView.attributedText = attributedText
+      titleTextView.attributedText = attributedText
     } else {
+        titleTextView.attributedText = nil
+    }
+    
+    if let subtitleText = event.subtitleText {
+        subTitleTextView.attributedText = subtitleText
+    } else {
+        subTitleTextView.attributedText = nil
+    }
+    
+    if event.taskId == nil {
+        actionsButtons.isHidden = true
+    } else {
+        actionsButtons.isHidden = false
+    }
+    
+    checkMark.isChecked = event.isChecked
+    
+    if let priority = event.priority, let priorityColor = event.priorityColor {
+        priorityPill.text = priority
+        priorityPill.color = priorityColor
+        priorityHeightConstraint.constant = priorityPill.intrinsicContentSize.height
+        priorityWidthConstaint.constant = priorityPill.intrinsicContentSize.width
+        priorityMinWidthConstaint.constant = priorityPill.intrinsicContentSize.width/2
+        priorityPill.isHidden = false
+    } else {
+        priorityPill.text = nil
+        priorityPill.color = nil
+        priorityPill.isHidden = true
+        priorityHeightConstraint.constant = 0
+        priorityWidthConstaint.constant = 0
+        priorityMinWidthConstaint.constant = 0
+    }
+    
+    if let categoryText = event.categoryText {
+        categoryTag.text = categoryText
+        categoryWidthConstraint.constant = categoryTag.intrinsicContentSize.width
+        categoryHeightConstraint.constant = categoryTag.intrinsicContentSize.height
+        categoryMinWidthConstraint.constant = categoryTag.intrinsicContentSize.width/2
+        categoryTag.isHidden = false
+    } else {
+        categoryTag.text = nil
+        categoryWidthConstraint.constant = 0
+        categoryHeightConstraint.constant = 0
+        categoryMinWidthConstraint.constant = 0
+        categoryTag.isHidden = true
+        
+    }
+    NSLayoutConstraint.activate([checkMark.heightAnchor.constraint(equalToConstant: 30),
+                                 checkMark.widthAnchor.constraint(equalToConstant: 30)])
+
+    /*else {
       textView.text = event.text
       textView.textColor = event.textColor
       textView.font = event.font
-    }
+    } */
     if let lineBreakMode = event.lineBreakMode {
       textView.textContainer.lineBreakMode = lineBreakMode
     }
@@ -64,6 +252,7 @@ open class EventView: UIView {
     setNeedsLayout()
   }
   
+    
   public func animateCreation() {
     transform = CGAffineTransform(scaleX: 0.8, y: 0.8)
     func scaleAnimation() {
@@ -95,42 +284,42 @@ open class EventView: UIView {
     return super.hitTest(point, with: event)
   }
 
-  override open func draw(_ rect: CGRect) {
-    super.draw(rect)
-    guard let context = UIGraphicsGetCurrentContext() else {
-      return
-    }
-    context.interpolationQuality = .none
-    context.saveGState()
-    context.setStrokeColor(color.cgColor)
-    context.setLineWidth(3)
-    context.translateBy(x: 0, y: 0.5)
-    let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
-    let x: CGFloat = leftToRight ? 0 : frame.width - 1  // 1 is the line width
-    let y: CGFloat = 0
-    context.beginPath()
-    context.move(to: CGPoint(x: x, y: y))
-    context.addLine(to: CGPoint(x: x, y: (bounds).height))
-    context.strokePath()
-    context.restoreGState()
-  }
-
   private var drawsShadow = false
 
   override open func layoutSubviews() {
     super.layoutSubviews()
-    textView.frame = {
-        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
-            return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
-        } else {
-            return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
-        }
-    }()
-    if frame.minY < 0 {
-      var textFrame = textView.frame;
-      textFrame.origin.y = frame.minY * -1;
-      textFrame.size.height += frame.minY;
-      textView.frame = textFrame;
+   /* print("start")
+    print("\(self.titleTextView.attributedText)")
+    print("\(self.subTitleTextView.attributedText)")
+    print("\(self.priorityPill.text)")
+    print("\(self.categoryTag.text)")
+    print(hStack.frame)
+    print(hStack.isHidden)
+    print(priorityPill.isHidden)
+    print(stackHeight.constant)
+    print(pillStack.frame)
+    print("end")
+    */
+    if descriptor?.priority != nil, descriptor?.priorityColor != nil {
+        priorityPill.isHidden = false
+    } else {
+        priorityPill.isHidden = true
+    }
+    
+    if bounds.height < 60 {
+        pillStack.isHidden = true
+        checkMark.isHidden = true
+        stackTop.constant = 2
+        lowerViewVStack.spacing = 0
+        stackLeading.constant = 6
+        stackTrailing.constant = -6
+    } else {
+        pillStack.isHidden = false
+        checkMark.isHidden = false
+        stackTop.constant = 5
+        lowerViewVStack.spacing = 5
+        stackLeading.constant = 10
+        stackTrailing.constant = -6
     }
     let first = eventResizeHandles.first
     let last = eventResizeHandles.last
@@ -144,30 +333,12 @@ open class EventView: UIView {
     last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
                          size: size)
     
-    if drawsShadow {
-      applySketchShadow(alpha: 0.13,
-                        blur: 10)
-    }
-  }
-
-  private func applySketchShadow(
-    color: UIColor = .black,
-    alpha: Float = 0.5,
-    x: CGFloat = 0,
-    y: CGFloat = 2,
-    blur: CGFloat = 4,
-    spread: CGFloat = 0)
-  {
-    layer.shadowColor = color.cgColor
-    layer.shadowOpacity = alpha
-    layer.shadowOffset = CGSize(width: x, height: y)
-    layer.shadowRadius = blur / 2.0
-    if spread == 0 {
-      layer.shadowPath = nil
-    } else {
-      let dx = -spread
-      let rect = bounds.insetBy(dx: dx, dy: dx)
-      layer.shadowPath = UIBezierPath(rect: rect).cgPath
-    }
+    self.layer.cornerRadius = 10
+    self.layer.masksToBounds = false
+    self.layer.shadowColor = UIColor(hex: 0xA2BFF8).cgColor
+    self.layer.shadowOpacity = 0.5
+    self.layer.shadowOffset = CGSize(width: -1, height: 1)
+    self.layer.shadowRadius = 1
+    layer.shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: 10).cgPath
   }
 }

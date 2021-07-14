@@ -2,6 +2,14 @@ import Foundation
 import UIKit
 
 public protocol EventDescriptor: AnyObject {
+    var priority: NSAttributedString? {get set}
+    var priorityColor: UIColor? {get set}
+    var categoryColor: UIColor? {get set}
+    var categoryText: NSAttributedString? {get set}
+    var subtitleText: NSAttributedString? {get set}
+    var taskId: String? {get set}
+    var id: String {get set}
+    var isChecked: Bool {get set}
   var startDate: Date {get set}
   var endDate: Date {get set}
   var isAllDay: Bool {get}
