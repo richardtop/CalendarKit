@@ -2,6 +2,7 @@ import UIKit
 
 public protocol DayViewDelegate: AnyObject {
   func dayViewDidSelectEventView(_ eventView: EventView)
+  func dayView(dayView: DayView, didTapEditButton event: EventView)
   func dayViewDidLongPressEventView(_ eventView: EventView)
   func dayView(dayView: DayView, didTapTimelineAt date: Date)
   func dayView(dayView: DayView, didLongPressTimelineAt date: Date)
@@ -10,9 +11,14 @@ public protocol DayViewDelegate: AnyObject {
   func dayView(dayView: DayView, willMoveTo date: Date)
   func dayView(dayView: DayView, didMoveTo  date: Date)
   func dayView(dayView: DayView, didUpdate event: EventDescriptor)
+  func dayView(dayView: DayView, didTapCheckMark event: EventView)
+ 
 }
 
-public class DayView: UIView, TimelinePagerViewDelegate {
+public final class DayView: UIView, TimelinePagerViewDelegate {
+   
+    
+    
   public weak var dataSource: EventDataSource? {
     get {
       return timelinePagerView.dataSource
@@ -178,4 +184,13 @@ public class DayView: UIView, TimelinePagerViewDelegate {
   public func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor) {
     delegate?.dayView(dayView: self, didUpdate: event)
   }
+    
+    public func timelinePager(timelinePager: TimelinePagerView, didTapEvent event: EventView) {
+        delegate?.dayView(dayView: self, didTapEditButton: event)
+    }
+    
+    public func timelinePager(timelinePager: TimelinePagerView, didTapCheckMark event: EventView) {
+        delegate?.dayView(dayView: self, didTapCheckMark: event)
+    }
+    
 }

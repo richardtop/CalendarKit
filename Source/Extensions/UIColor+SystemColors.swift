@@ -54,3 +54,14 @@ public enum SystemColors {
                    blue: 200/255, alpha: 1)
   }
 }
+
+extension UIColor {
+    convenience init(hex: UInt, alpha: CGFloat = 1) {
+        self.init(
+            red: CGFloat((hex >> 16) & 0xff) / 255,
+            green: CGFloat((hex >> 08) & 0xff) / 255,
+            blue: CGFloat((hex >> 00) & 0xff) / 255,
+            alpha: alpha
+        )
+    }
+}
