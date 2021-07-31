@@ -24,6 +24,5 @@ let package = Package(
     .target(name: "CalendarKit",
             path: "Source",
             resources: [.process("Localizations")])
-  ],
-  swiftLanguageVersions: [.v5]
+  ]
 )
