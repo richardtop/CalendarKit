@@ -45,7 +45,14 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   private func configure() {
     [daySymbolsView, swipeLabelView].forEach(addSubview)
-    backgroundColor = style.backgroundColor
+    backgroundColor = UIColor.white //style.backgroundColor --base
+    // --
+    layer.shadowOpacity = 0.5
+    layer.shadowColor = UIColor.lightGray.cgColor
+    layer.shadowOffset = CGSize(width: 0, height: 15.0)
+    layer.masksToBounds = false
+    layer.shadowRadius = 10
+    // ---------
     configurePagingViewController()
   }
   
@@ -92,17 +99,33 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     daySymbolsView.updateStyle(style.daySymbols)
     swipeLabelView.updateStyle(style.swipeLabel)
     (pagingViewController.viewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(newStyle.daySelector)}
-    backgroundColor = style.backgroundColor
+    backgroundColor = UIColor.white // style.backgroundColor --base
+    // -- 
+    layer.shadowOpacity = 0.5
+    layer.shadowColor = UIColor.lightGray.cgColor
+    layer.shadowOffset = CGSize(width: 0, height: 15.0)
+    layer.masksToBounds = false
+    layer.shadowRadius = 10
+    // ---------
   }
 
   override public func layoutSubviews() {
     super.layoutSubviews()
+    /*
     daySymbolsView.frame = CGRect(origin: .zero,
                                   size: CGSize(width: bounds.width, height: daySymbolsViewHeight))
     pagingViewController.view?.frame = CGRect(origin: CGPoint(x: 0, y: daySymbolsViewHeight),
                                               size: CGSize(width: bounds.width, height: pagingScrollViewHeight))
     swipeLabelView.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - 10 - swipeLabelViewHeight),
                                   size: CGSize(width: bounds.width, height: swipeLabelViewHeight))
+    */
+    daySymbolsView.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - 15 - daySymbolsViewHeight), // week label (sun,mon,tue)
+                                  size: CGSize(width: bounds.width, height: daySymbolsViewHeight))
+    pagingViewController.view?.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - 60 - daySymbolsViewHeight),
+                                              size: CGSize(width: bounds.width, height: pagingScrollViewHeight)) // day
+    swipeLabelView.frame = CGRect(origin: CGPoint(x: 20, y: bounds.height - swipeLabelViewHeight - 95), // .zero,
+                                  size: CGSize(width: bounds.width, height: swipeLabelViewHeight)) // SELECted date 날짜 LABEl
+    
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
