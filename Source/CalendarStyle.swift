@@ -34,9 +34,9 @@ public struct DaySelectorStyle {
   public var inactiveTextColor = SystemColors.label
   public var inactiveBackgroundColor = UIColor.clear
 
-  public var todayInactiveTextColor = SystemColors.systemRed
+  public var todayInactiveTextColor = UIColor(red: 0.404, green: 0, blue: 1, alpha: 1) // SystemColors.systemRed
   public var todayActiveTextColor = UIColor.white
-  public var todayActiveBackgroundColor = SystemColors.systemRed
+  public var todayActiveBackgroundColor = UIColor(red: 0.404, green: 0, blue: 1, alpha: 1) // SystemColors.systemRed
     
   public var font = UIFont.systemFont(ofSize: 18)
   public var todayFont = UIFont.boldSystemFont(ofSize: 18)
@@ -64,18 +64,18 @@ public struct TimelineStyle {
   public var separatorColor = SystemColors.systemSeparator
   public var backgroundColor = SystemColors.systemBackground
   public var font = UIFont.boldSystemFont(ofSize: 11)
-    public var dateStyle : DateStyle = .twentyFourHour//.system
+  public var dateStyle : DateStyle = .twentyFourHour // .system --base
   public var eventsWillOverlap: Bool = false
   public var minimumEventDurationInMinutesWhileEditing: Int = 30
   public var splitMinuteInterval: Int = 15
-  public var verticalDiff: CGFloat = 90 // 50
+  public var verticalDiff: CGFloat = 90 //50 -- base
   public var verticalInset: CGFloat = 10
   public var leadingInset: CGFloat = 53
   public var eventGap: CGFloat = 0
   public init() {}
 }
 
-public struct CurrentTimeIndicatorStyle {
+public struct CurrentTimeIndicatorStyle { // timeline에 현재시간 표시해주는 빨간 선
   public var color = SystemColors.systemRed
   public var font = UIFont.systemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
