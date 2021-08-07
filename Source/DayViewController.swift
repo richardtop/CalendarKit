@@ -36,7 +36,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     view.tintColor = SystemColors.systemRed
     dataSource = self
     delegate = self
-    dayView.reloadData()
+//    dayView.reloadData()
 
     let sizeClass = traitCollection.horizontalSizeClass
     configureDayViewLayoutForHorizontalSizeClass(sizeClass)
@@ -85,7 +85,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open func dayView(dayView: DayView, didTapTimelineAt date: Date) {
   }
   
-  open func dayViewDidBeginDragging(dayView: DayView) { 
+  open func dayViewDidBeginDragging(dayView: DayView) {
   }
   
   open func dayViewDidTransitionCancel(dayView: DayView) {
@@ -112,7 +112,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   open func beginEditing(event: EventDescriptor, animated: Bool = false) {
     dayView.beginEditing(event: event, animated: animated)
   }
-  
+    
   open func endEventEditing() {
     dayView.endEventEditing()
   }
