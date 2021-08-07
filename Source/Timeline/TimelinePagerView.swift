@@ -9,7 +9,6 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, willMoveTo date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didMoveTo  date: Date)
   func timelinePager(timelinePager: TimelinePagerView, didLongPressTimelineAt date: Date)
-
   // Editing
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
@@ -207,11 +206,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     // layout algo
     if let currentTimeline = currentTimeline {
       
-      for handle in eventView.eventResizeHandles {
-        let panGestureRecognizer = handle.panGestureRecognizer
-        panGestureRecognizer.addTarget(self, action: #selector(handleResizeHandlePanGesture(_:)))
-        panGestureRecognizer.cancelsTouchesInView = true
-      }
+//      for handle in eventView.eventResizeHandles {
+//        let panGestureRecognizer = handle.panGestureRecognizer
+//        panGestureRecognizer.addTarget(self, action: #selector(handleResizeHandlePanGesture(_:)))
+//        panGestureRecognizer.cancelsTouchesInView = true
+//      }
       
       let timeline = currentTimeline.timeline
       let offset = currentTimeline.container.contentOffset.y
@@ -372,7 +371,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   /// Ends editing mode
   public func endEventEditing() {
     prevOffset = .zero
-    editedEventView?.eventResizeHandles.forEach{$0.panGestureRecognizer.removeTarget(self, action: nil)}
+//    editedEventView?.eventResizeHandles.forEach{$0.panGestureRecognizer.removeTarget(self, action: nil)}
     editedEventView?.removeFromSuperview()
     editedEventView = nil
     editedEvent = nil
@@ -507,3 +506,4 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     delegate?.timelinePagerDidLongPressEventView(event)
   }
 }
+
