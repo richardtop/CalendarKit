@@ -61,7 +61,7 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
   private func configure() {
     for _ in 0...1 {
       let label = UILabel()
-      label.textAlignment = .center
+      label.textAlignment = .left//.center
       labels.append(label)
       addSubview(label)
     }
@@ -85,7 +85,7 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     secondLabel.frame = bounds
     secondLabel.frame.origin.x -= CGFloat(shiftRatio * screenWidth * 3) * multiplier
 
-    UIView.animate(withDuration: 0.3, animations: { 
+    UIView.animate(withDuration: 0.3, animations: {
       self.secondLabel.frame = self.bounds
       self.firstLabel.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
       self.secondLabel.alpha = 1
@@ -119,10 +119,13 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
   private func formattedDate(date: Date) -> String {
     let timezone = calendar.timeZone
     let formatter = DateFormatter()
-    formatter.dateStyle = .full
+    
+    formatter.dateStyle = .medium//.full
     formatter.timeStyle = .none
     formatter.timeZone = timezone
-    formatter.locale = Locale.init(identifier: Locale.preferredLanguages[0])
+//    formatter.locale = Locale.init(identifier: Locale.preferredLanguages[0])
+    formatter.dateFormat = "MMMM yyyy"
     return formatter.string(from: date)
   }
 }
+
