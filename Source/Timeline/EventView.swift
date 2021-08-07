@@ -18,7 +18,7 @@ open class EventView: UIView {
 
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
-  public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
+//  public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()] --base
 
   override public init(frame: CGRect) {
     super.init(frame: frame)
@@ -33,12 +33,13 @@ open class EventView: UIView {
   private func configure() {
     clipsToBounds = false
     color = tintColor
+    layer.cornerRadius = 30 // mark yr
     addSubview(textView)
     
-    for (idx, handle) in eventResizeHandles.enumerated() {
-      handle.tag = idx
-      addSubview(handle)
-    }
+//    for (idx, handle) in eventResizeHandles.enumerated() {
+//      handle.tag = idx
+//      addSubview(handle)
+//    }
   }
 
   public func updateWithDescriptor(event: EventDescriptor) {
@@ -46,19 +47,28 @@ open class EventView: UIView {
       textView.attributedText = attributedText
     } else {
       textView.text = event.text
-      textView.textColor = event.textColor
+        if event.startDate < Date() {
+            textView.textColor = UIColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+        }
+        else {
+            textView.textColor = UIColor.white
+        }
+//      textView.textColor = event.textColor // -- base
       textView.font = event.font
     }
     if let lineBreakMode = event.lineBreakMode {
       textView.textContainer.lineBreakMode = lineBreakMode
     }
+    
+    layer.cornerRadius = 40 // -- mark yr
     descriptor = event
     backgroundColor = event.backgroundColor
     color = event.color
-    eventResizeHandles.forEach{
-      $0.borderColor = event.color
-      $0.isHidden = event.editedEvent == nil
-    }
+//    eventResizeHandles.forEach{
+//      $0.borderColor = event.color
+//      $0.isHidden = event.editedEvent == nil
+//      $0.layer.cornerRadius = 40
+//    }
     drawsShadow = event.editedEvent != nil
     setNeedsDisplay()
     setNeedsLayout()
@@ -86,14 +96,15 @@ open class EventView: UIView {
    In the custom implementation the method is recursively invoked for all of the subviews,
    regardless of their position in relation to the Timeline's bounds.
    */
-  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
-    for resizeHandle in eventResizeHandles {
-      if let subSubView = resizeHandle.hitTest(convert(point, to: resizeHandle), with: event) {
-        return subSubView
-      }
-    }
-    return super.hitTest(point, with: event)
-  }
+
+//  public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+//    for resizeHandle in eventResizeHandles {
+//      if let subSubView = resizeHandle.hitTest(convert(point, to: resizeHandle), with: event) {
+//        return subSubView
+//      }
+//    }
+//    return super.hitTest(point, with: event)
+//  }
 
   override open func draw(_ rect: CGRect) {
     super.draw(rect)
@@ -119,6 +130,7 @@ open class EventView: UIView {
 
   override open func layoutSubviews() {
     super.layoutSubviews()
+    layer.cornerRadius = 12 // 추가 --mark yr
     textView.frame = {
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
             return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
@@ -132,17 +144,17 @@ open class EventView: UIView {
       textFrame.size.height += frame.minY;
       textView.frame = textFrame;
     }
-    let first = eventResizeHandles.first
-    let last = eventResizeHandles.last
+//    let first = eventResizeHandles.first
+//    let last = eventResizeHandles.last
     let radius: CGFloat = 40
     let yPad: CGFloat =  -radius / 2
     let width = bounds.width
     let height = bounds.height
     let size = CGSize(width: radius, height: radius)
-    first?.frame = CGRect(origin: CGPoint(x: width - radius - layoutMargins.right, y: yPad),
-                          size: size)
-    last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
-                         size: size)
+//    first?.frame = CGRect(origin: CGPoint(x: width - radius - layoutMargins.right, y: yPad),
+//                          size: size)
+//    last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
+//                         size: size)
     
     if drawsShadow {
       applySketchShadow(alpha: 0.13,
@@ -171,3 +183,6 @@ open class EventView: UIView {
     }
   }
 }
+
+
+
