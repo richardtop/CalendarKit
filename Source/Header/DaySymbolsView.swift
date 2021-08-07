@@ -39,7 +39,7 @@ public final class DaySymbolsView: UIView {
   }
 
   private func configure() {
-    let daySymbols = calendar.veryShortWeekdaySymbols
+    let daySymbols = calendar.shortWeekdaySymbols//veryShortWeekdaySymbols //  sun, mon, tue ...
     let weekendMask = [true] + [Bool](repeating: false, count: 5) + [true]
     var weekDays = Array(zip(daySymbols, weekendMask))
 
@@ -49,23 +49,23 @@ public final class DaySymbolsView: UIView {
     if rightToLeft { weekDays.reverse() }
 
     for (index, label) in labels.enumerated() {
-      label.text = weekDays[index].0
-      label.textColor = weekDays[index].1 ? style.weekendColor : style.weekDayColor
+      label.text = weekDays[index].0.uppercased()
+      label.textColor = style.weekendColor//weekDays[index].1 ? style.weekendColor : style.weekDayColor
       label.font = style.font
     }
   }
 
 
-  override public func layoutSubviews() {
+  override public func layoutSubviews() { // sun, mon, tue ... view
     let labelsCount = CGFloat(labels.count)
 
     var per = bounds.width - bounds.height * labelsCount
     per /= labelsCount
 
-    let minX = per / 2
+    let minX = 0 //per / 2
     for (i, label) in labels.enumerated() {
-      let frame = CGRect(x: minX + (bounds.height + per) * CGFloat(i), y: 0,
-                         width: bounds.height, height: bounds.height)
+        let frame = CGRect(x: CGFloat(minX) + (bounds.height + per) * CGFloat(i), y: 0,
+                         width: bounds.height*3, height: bounds.height)
       label.frame = frame
     }
   }

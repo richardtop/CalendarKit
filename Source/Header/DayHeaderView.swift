@@ -46,7 +46,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   private func configure() {
     [daySymbolsView, swipeLabelView].forEach(addSubview)
     backgroundColor = UIColor.white //style.backgroundColor --base
-    // --
+    // -- yr 추가
     layer.shadowOpacity = 0.5
     layer.shadowColor = UIColor.lightGray.cgColor
     layer.shadowOffset = CGSize(width: 0, height: 15.0)
@@ -100,7 +100,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     swipeLabelView.updateStyle(style.swipeLabel)
     (pagingViewController.viewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(newStyle.daySelector)}
     backgroundColor = UIColor.white // style.backgroundColor --base
-    // -- 
+    // -- yr 추가
     layer.shadowOpacity = 0.5
     layer.shadowColor = UIColor.lightGray.cgColor
     layer.shadowOffset = CGSize(width: 0, height: 15.0)
@@ -159,7 +159,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
       currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
       new.selectedIndex = currentWeekdayIndex
       
-      let direction: UIPageViewController.NavigatsionDirection = leftToRight ? .reverse : .forward
+      let direction: UIPageViewController.NavigationDirection = leftToRight ? .reverse : .forward
         
       pagingViewController.setViewControllers([new], direction: direction, animated: true, completion: nil)
     } else if daysFrom > daysInWeek - 1 {
