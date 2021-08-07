@@ -159,7 +159,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
       currentWeekdayIndex = abs(daysInWeek + daysFrom % daysInWeek) % daysInWeek
       new.selectedIndex = currentWeekdayIndex
       
-      let direction: UIPageViewController.NavigationDirection = leftToRight ? .reverse : .forward
+      let direction: UIPageViewController.NavigatsionDirection = leftToRight ? .reverse : .forward
         
       pagingViewController.setViewControllers([new], direction: direction, animated: true, completion: nil)
     } else if daysFrom > daysInWeek - 1 {
