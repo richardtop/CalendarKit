@@ -64,11 +64,11 @@ public struct TimelineStyle {
   public var separatorColor = SystemColors.systemSeparator
   public var backgroundColor = SystemColors.systemBackground
   public var font = UIFont.boldSystemFont(ofSize: 11)
-  public var dateStyle : DateStyle = .system
+    public var dateStyle : DateStyle = .twentyFourHour//.system
   public var eventsWillOverlap: Bool = false
   public var minimumEventDurationInMinutesWhileEditing: Int = 30
   public var splitMinuteInterval: Int = 15
-  public var verticalDiff: CGFloat = 50
+  public var verticalDiff: CGFloat = 90 // 50
   public var verticalInset: CGFloat = 10
   public var leadingInset: CGFloat = 53
   public var eventGap: CGFloat = 0
