@@ -15,7 +15,7 @@ open class EventView:  UIView {
     view.isUserInteractionEnabled = false
     view.backgroundColor = .clear//.yellow //.clear
     view.isScrollEnabled = false
-    view.layer.cornerRadius = 30
+//    view.layer.cornerRadius = 30
     view.font = UIFont.boldSystemFont(ofSize: 12)
     return view
   }()
@@ -23,9 +23,8 @@ open class EventView:  UIView {
     public lazy var titleView: UILabel = {
       let view = UILabel()
         view.font = UIFont.boldSystemFont(ofSize: 24)
-        view.textColor = UIColor.red
 //      view.isUserInteractionEnabled = false
-        view.backgroundColor = .clear//.green //clear
+        view.backgroundColor = .clear //.green //clear
 //      view.isScrollEnabled = false
         view.lineBreakMode = .byWordWrapping
         view.numberOfLines = 0
@@ -65,18 +64,21 @@ open class EventView:  UIView {
     if let attributedText = event.attributedText {
       textView.attributedText = attributedText
     } else {
-        titleView.text = event.title
+        titleView.text = " "+event.title
         textView.text = event.text
         
+        // Color Handling
         if event.startDate < Date() {
             backgroundColor = UIColor.init(red: 196/255, green: 196/255, blue: 196/255, alpha: 1) //grey
             color = UIColor.init(red: 196/255, green: 196/255, blue: 196/255, alpha: 1) // grey
             textView.textColor = UIColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1) // darkgrey
+            titleView.textColor = UIColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1) // darkgrey
         }
         else {
             backgroundColor = UIColor(red: 0.404, green: 0, blue: 1, alpha: 1) //musePurple
             color = UIColor(red: 0.404, green: 0, blue: 1, alpha: 1) //musePurple
             textView.textColor = UIColor.white
+            titleView.textColor = UIColor.white
         }
 
 //      textView.font = event.font
@@ -160,32 +162,34 @@ open class EventView:  UIView {
     let newSize = titleView.sizeThatFits( CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude))
     
     
-    titleView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: newSize.height)//100)
+    titleView.frame = CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: newSize.height)//100)
     textView.frame = {
-        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
-            return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
-        } else {
-            return CGRect(x: bounds.minX + 6, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
-        }
+//        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+////            return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+//            return CGRect(x: bounds.minX + 3, y: bounds.minY + newSize.height, width: bounds.width - 3, height: bounds.height)
+//        } else {
+//            return CGRect(x: bounds.minX + 6, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+//        }
+        return CGRect(x: bounds.minX + 3, y: bounds.minY + newSize.height, width: bounds.width - 3, height: bounds.height - newSize.height)
     }()
     if frame.minY < 0 {
-        var titleFrame = titleView.frame;
-        titleFrame.origin.y = frame.minY * -1;
-        titleFrame.size.height += frame.minY;
-        titleView.frame = titleFrame;
-        
-      var textFrame = textView.frame;
-      textFrame.origin.y = frame.minY * -5;
-      textFrame.size.height += frame.minY;
-      textView.frame = textFrame;
+//        var titleFrame = titleView.frame;
+//        titleFrame.origin.y = frame.minY * -1;
+//        titleFrame.size.height += frame.minY;
+//        titleView.frame = titleFrame;
+//
+//      var textFrame = textView.frame;
+//      textFrame.origin.y = frame.minY * -5;
+//      textFrame.size.height += frame.minY;
+//      textView.frame = textFrame;
     }
 //    let first = eventResizeHandles.first
 //    let last = eventResizeHandles.last
-    let radius: CGFloat = 40
-    let yPad: CGFloat =  -radius / 2
-    let width = bounds.width
-    let height = bounds.height
-    let size = CGSize(width: radius, height: radius)
+//    let radius: CGFloat = 40
+//    let yPad: CGFloat =  -radius / 2
+//    let width = bounds.width
+//    let height = bounds.height
+//    let size = CGSize(width: radius, height: radius)
 //    first?.frame = CGRect(origin: CGPoint(x: width - radius - layoutMargins.right, y: yPad),
 //                          size: size)
 //    last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
