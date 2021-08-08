@@ -1,6 +1,8 @@
 import UIKit
+import SwiftUI
 
-open class EventView: UIView {
+
+open class EventView:  UIView {
   public var descriptor: EventDescriptor?
   public var color = SystemColors.label
 
@@ -11,10 +13,26 @@ open class EventView: UIView {
   public lazy var textView: UITextView = {
     let view = UITextView()
     view.isUserInteractionEnabled = false
-    view.backgroundColor = .clear
+    view.backgroundColor = .clear//.yellow //.clear
     view.isScrollEnabled = false
+    view.layer.cornerRadius = 30
+    view.font = UIFont.boldSystemFont(ofSize: 12)
     return view
   }()
+  
+    public lazy var titleView: UILabel = {
+      let view = UILabel()
+        view.font = UIFont.boldSystemFont(ofSize: 24)
+        view.textColor = UIColor.red
+//      view.isUserInteractionEnabled = false
+        view.backgroundColor = .clear//.green //clear
+//      view.isScrollEnabled = false
+        view.lineBreakMode = .byWordWrapping
+        view.numberOfLines = 0
+        view.sizeToFit()
+      return view
+    }()
+
 
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
@@ -34,8 +52,9 @@ open class EventView: UIView {
     clipsToBounds = false
     color = tintColor
     layer.cornerRadius = 30 // mark yr
-    addSubview(textView)
     
+    addSubview(titleView)
+    addSubview(textView)
 //    for (idx, handle) in eventResizeHandles.enumerated() {
 //      handle.tag = idx
 //      addSubview(handle)
@@ -46,15 +65,21 @@ open class EventView: UIView {
     if let attributedText = event.attributedText {
       textView.attributedText = attributedText
     } else {
-      textView.text = event.text
+        titleView.text = event.title
+        textView.text = event.text
+        
         if event.startDate < Date() {
-            textView.textColor = UIColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1)
+            backgroundColor = UIColor.init(red: 196/255, green: 196/255, blue: 196/255, alpha: 1) //grey
+            color = UIColor.init(red: 196/255, green: 196/255, blue: 196/255, alpha: 1) // grey
+            textView.textColor = UIColor.init(red: 0.4, green: 0.4, blue: 0.4, alpha: 1) // darkgrey
         }
         else {
+            backgroundColor = UIColor(red: 0.404, green: 0, blue: 1, alpha: 1) //musePurple
+            color = UIColor(red: 0.404, green: 0, blue: 1, alpha: 1) //musePurple
             textView.textColor = UIColor.white
         }
-//      textView.textColor = event.textColor // -- base
-      textView.font = event.font
+
+//      textView.font = event.font
     }
     if let lineBreakMode = event.lineBreakMode {
       textView.textContainer.lineBreakMode = lineBreakMode
@@ -62,14 +87,14 @@ open class EventView: UIView {
     
     layer.cornerRadius = 40 // -- mark yr
     descriptor = event
-    backgroundColor = event.backgroundColor
-    color = event.color
+//    backgroundColor = event.backgroundColor
+//    color = event.color
 //    eventResizeHandles.forEach{
 //      $0.borderColor = event.color
 //      $0.isHidden = event.editedEvent == nil
 //      $0.layer.cornerRadius = 40
 //    }
-    drawsShadow = event.editedEvent != nil
+//    drawsShadow = event.editedEvent != nil
     setNeedsDisplay()
     setNeedsLayout()
   }
@@ -131,16 +156,26 @@ open class EventView: UIView {
   override open func layoutSubviews() {
     super.layoutSubviews()
     layer.cornerRadius = 12 // 추가 --mark yr
+    
+    let newSize = titleView.sizeThatFits( CGSize(width: bounds.width, height: CGFloat.greatestFiniteMagnitude))
+    
+    
+    titleView.frame = CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: newSize.height)//100)
     textView.frame = {
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
-            return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
-        } else {
             return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+        } else {
+            return CGRect(x: bounds.minX + 6, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
         }
     }()
     if frame.minY < 0 {
+        var titleFrame = titleView.frame;
+        titleFrame.origin.y = frame.minY * -1;
+        titleFrame.size.height += frame.minY;
+        titleView.frame = titleFrame;
+        
       var textFrame = textView.frame;
-      textFrame.origin.y = frame.minY * -1;
+      textFrame.origin.y = frame.minY * -5;
       textFrame.size.height += frame.minY;
       textView.frame = textFrame;
     }

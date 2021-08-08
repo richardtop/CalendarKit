@@ -109,11 +109,11 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     dayView.create(event: event, animated: animated)
   }
 
-  open func beginEditing(event: EventDescriptor, animated: Bool = false) {
-    dayView.beginEditing(event: event, animated: animated)
-  }
-    
-  open func endEventEditing() {
-    dayView.endEventEditing()
-  }
+//  open func beginEditing(event: EventDescriptor, animated: Bool = false) {
+//    dayView.beginEditing(event: event, animated: animated)
+//  }
+//    
+//  open func endEventEditing() {
+//    dayView.endEventEditing()
+//  }
 }

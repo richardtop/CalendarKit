@@ -238,13 +238,13 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   /// Puts timeline in the editing mode and highlights a single event as being edited.
   /// - Parameter event: the `EventDescriptor` to be edited. An editable copy of the `EventDescriptor` is created by calling `makeEditable()` method on the passed value
   /// - Parameter animated: if true, CalendarKit animates beginning of the editing
-  public func beginEditing(event: EventDescriptor, animated: Bool = false) {
-    if editedEventView == nil {
-      editedEvent = event
-      let editableCopy = event.makeEditable()
-      create(event: editableCopy, animated: animated)
-    }
-  }
+//  public func beginEditing(event: EventDescriptor, animated: Bool = false) {
+//    if editedEventView == nil {
+//      editedEvent = event
+//      let editableCopy = event.makeEditable()
+//      create(event: editableCopy, animated: animated)
+//    }
+//  }
 
   private var prevOffset: CGPoint = .zero
   @objc func handlePanGesture(_ sender: UIPanGestureRecognizer) {
