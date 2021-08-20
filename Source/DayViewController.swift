@@ -70,7 +70,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
     dayView.updateStyle(newStyle)
   }
 
-  open func eventsForDate(_ date: Date) -> [EventDescriptor] {
+  open func eventsForDate(_ date: Date, presentation: TimelinePresentation) -> [EventDescriptor] {
     return [Event]()
   }
 

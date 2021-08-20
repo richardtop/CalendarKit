@@ -11,8 +11,7 @@ final class AppDelegate: UIResponder, UIApplicationDelegate {
     window?.makeKeyAndVisible()
 
     let dayViewController = CustomCalendarExampleController()
-    let navigationController = UINavigationController(rootViewController: dayViewController)
-    window?.rootViewController = navigationController
+    window?.rootViewController = dayViewController
 
     return true
   }

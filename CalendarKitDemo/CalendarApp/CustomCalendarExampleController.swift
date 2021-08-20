@@ -44,18 +44,18 @@ class CustomCalendarExampleController: DayViewController {
                 UIColor.yellow,
                 UIColor.green,
                 UIColor.red]
-
+  
   private lazy var rangeFormatter: DateIntervalFormatter = {
     let fmt = DateIntervalFormatter()
-    fmt.dateStyle = .none
+    fmt.dateStyle = .short
     fmt.timeStyle = .short
-
+    
     return fmt
   }()
-
+  
   override func loadView() {
     calendar.timeZone = TimeZone(identifier: "Europe/Paris")!
-
+    
     dayView = DayView(calendar: calendar)
     view = dayView
   }
@@ -70,10 +70,19 @@ class CustomCalendarExampleController: DayViewController {
   
   // MARK: EventDataSource
   
-  override func eventsForDate(_ date: Date) -> [EventDescriptor] {
+  override func eventsForDate(_ date: Date, presentation: TimelinePresentation) -> [EventDescriptor] {
     if !alreadyGeneratedSet.contains(date) {
       alreadyGeneratedSet.insert(date)
       generatedEvents.append(contentsOf: generateEventsForDate(date))
+    }
+    if (presentation == .threeDays) {
+      for i in 1...2 {
+        let addedDate = date.addingTimeInterval(60 * 60 * 24 * Double(i))
+        if !alreadyGeneratedSet.contains(addedDate) {
+          alreadyGeneratedSet.insert(addedDate)
+          generatedEvents.append(contentsOf: generateEventsForDate(addedDate))
+        }
+      }
     }
     return generatedEvents
   }
@@ -84,29 +93,29 @@ class CustomCalendarExampleController: DayViewController {
     
     for i in 0...4 {
       let event = Event()
-
+      
       let duration = Int.random(in: 60 ... 160)
       event.startDate = workingDate
       event.endDate = Calendar.current.date(byAdding: .minute, value: duration, to: workingDate)!
-
+      
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
       
       let timezone = dayView.calendar.timeZone
       print(timezone)
-
+      
       info.append(rangeFormatter.string(from: event.startDate, to: event.endDate))
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
       event.lineBreakMode = .byTruncatingTail
-
+      
       events.append(event)
       
       let nextOffset = Int.random(in: 40 ... 250)
       workingDate = Calendar.current.date(byAdding: .minute, value: nextOffset, to: workingDate)!
-      event.userInfo = String(i)
+      event.userInfo = "\(String(i)) - \(info)"
     }
-
+    
     print("Events for \(date)")
     return events
   }
@@ -164,17 +173,17 @@ class CustomCalendarExampleController: DayViewController {
     let duration = Int(arc4random_uniform(160) + 60)
     let startDate = Calendar.current.date(byAdding: .minute, value: -Int(CGFloat(duration) / 2), to: date)!
     let event = Event()
-
+    
     event.startDate = startDate
     event.endDate = Calendar.current.date(byAdding: .minute, value: duration, to: startDate)!
     
     var info = data[Int(arc4random_uniform(UInt32(data.count)))]
-
+    
     info.append(rangeFormatter.string(from: event.startDate, to: event.endDate))
     event.text = info.reduce("", {$0 + $1 + "\n"})
     event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
     event.editedEvent = event
-
+    
     return event
   }
   

@@ -4,7 +4,4 @@
    <FileRef
       location = "group:CalendarApp.xcodeproj">
    </FileRef>
-   <FileRef
-      location = "group:..">
-   </FileRef>
 </Workspace>

@@ -1,8 +1,8 @@
 import UIKit
 
 @objc public final class CurrentTimeIndicator: UIView {
-  private let padding : CGFloat = 3
-  private let leadingInset: CGFloat = 53
+  private let padding : CGFloat = 0
+  private let leadingInset: CGFloat = 60
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
@@ -53,23 +53,23 @@ import UIKit
   }
 
   private func configure() {
-    [timeLabel, circle, line].forEach {
+    [line].forEach {
       addSubview($0)
     }
     
-    //Allow label to adjust so that am/pm can be displayed if format is changed.
-    timeLabel.numberOfLines = 1
-    timeLabel.textAlignment = .right
-    timeLabel.adjustsFontSizeToFitWidth = true
-    timeLabel.minimumScaleFactor = 0.5
-    
-    //The width of the label is determined by leftInset and padding. 
-    //The y position is determined by the line's middle.
-    timeLabel.translatesAutoresizingMaskIntoConstraints = false
-    timeLabel.widthAnchor.constraint(equalToConstant: leadingInset - (3 * padding)).isActive = true
-    timeLabel.trailingAnchor.constraint(equalTo: line.leadingAnchor, constant: -padding).isActive = true
-    timeLabel.centerYAnchor.constraint(equalTo: line.centerYAnchor).isActive = true
-    timeLabel.baselineAdjustment = .alignCenters
+//    //Allow label to adjust so that am/pm can be displayed if format is changed.
+//    timeLabel.numberOfLines = 1
+//    timeLabel.textAlignment = .right
+//    timeLabel.adjustsFontSizeToFitWidth = true
+//    timeLabel.minimumScaleFactor = 0.5
+//
+//    //The width of the label is determined by leftInset and padding.
+//    //The y position is determined by the line's middle.
+//    timeLabel.translatesAutoresizingMaskIntoConstraints = false
+//    timeLabel.widthAnchor.constraint(equalToConstant: leadingInset - (3 * padding)).isActive = true
+//    timeLabel.trailingAnchor.constraint(equalTo: line.leadingAnchor, constant: -padding).isActive = true
+//    timeLabel.centerYAnchor.constraint(equalTo: line.centerYAnchor).isActive = true
+//    timeLabel.baselineAdjustment = .alignCenters
     
     updateStyle(style)
     configureTimer()
