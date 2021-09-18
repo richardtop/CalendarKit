@@ -1,4 +1,4 @@
-![CalendarKit](https://user-images.githubusercontent.com/8013017/115113496-5c26fd00-9f93-11eb-8aa2-1db8807e455f.png)
+![CalendarKit](https://user-images.githubusercontent.com/8013017/133907073-d11b3d15-3ed6-4052-9628-2b93e91710d8.png)
 [![License](https://img.shields.io/github/license/richardtop/calendarkit)](https://swiftpackageindex.com/richardtop/CalendarKit)
 [![SwiftPM compatible](https://img.shields.io/badge/SwiftPM-compatible-orange.svg)](https://swiftpackageindex.com/richardtop/CalendarKit) 
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardtop%2FCalendarKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/richardtop/CalendarKit)
