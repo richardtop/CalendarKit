@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "CalendarKit"
-  s.summary          = "Fully customizable calendar for iOS"
+  s.summary          = "Swift calendar UI library for Apple platforms"
   s.version          = "0.12.3"
   s.homepage         = "https://github.com/richardtop/CalendarKit"
   s.license          = 'MIT'
@@ -10,6 +10,6 @@ Pod::Spec.new do |s|
   s.platform     = :ios, '9.0'
   s.swift_version = '5.3'
   s.requires_arc = true
-  s.source_files = 'Source/**/*.swift'
-  s.ios.resource_bundle = { 'CalendarKit' => ['Source/Localizations/*.lproj'] }
+  s.source_files = 'Sources/**/*.swift'
+  s.ios.resource_bundle = { 'CalendarKit' => ['Sources/Localizations/*.lproj'] }
 end
