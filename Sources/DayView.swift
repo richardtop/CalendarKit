@@ -88,12 +88,32 @@ public class DayView: UIView, TimelinePagerViewDelegate {
   private func configure() {
     addSubview(timelinePagerView)
     addSubview(dayHeaderView)
+    configureLayout()
     timelinePagerView.delegate = self
 
     if state == nil {
       let newState = DayViewState(date: Date(), calendar: calendar)
       newState.move(to: Date())
       state = newState
+    }
+  }
+  
+  private func configureLayout() {
+    if #available(iOS 11.0, *) {
+      dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
+      timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
+      
+      dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+      dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+      dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+      let heightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: headerHeight)
+      heightConstraint.priority = .defaultLow
+      heightConstraint.isActive = true
+      
+      timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
+      timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
   }
 
@@ -125,11 +145,13 @@ public class DayView: UIView, TimelinePagerViewDelegate {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
-                                 size: CGSize(width: bounds.width, height: headerHeight))
-    let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
-    timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
-                                     size: CGSize(width: bounds.width, height: timelinePagerHeight))
+    if #available(iOS 11, *) {} else {
+      dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
+                                   size: CGSize(width: bounds.width, height: headerHeight))
+      let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
+      timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
+                                       size: CGSize(width: bounds.width, height: timelinePagerHeight))
+    }
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
