@@ -1,9 +1,9 @@
 import Foundation
 
 public struct SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
-  private let calendar: Calendar
-
-  public init(_ calendar: Calendar) {
+  public var calendar = Calendar.autoupdatingCurrent
+  
+  public init(_ calendar: Calendar = Calendar.autoupdatingCurrent) {
     self.calendar = calendar
   }
 
