@@ -102,16 +102,18 @@ public final class TimelineView: UIView {
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
-      snappingBehavior = snappingBehaviorType.init(calendar)
+      eventEditingSnappingBehavior.calendar = calendar
       nowLine.calendar = calendar
       regenerateTimeStrings()
       setNeedsLayout()
     }
   }
-  
-  // TODO: Make a public API
-  public var snappingBehaviorType: EventEditingSnappingBehavior.Type = SnapTo15MinuteIntervals.self
-  lazy var snappingBehavior: EventEditingSnappingBehavior = snappingBehaviorType.init(calendar)
+
+  public var eventEditingSnappingBehavior: EventEditingSnappingBehavior = SnapTo15MinuteIntervals() {
+    didSet {
+      eventEditingSnappingBehavior.calendar = calendar
+    }
+  }
 
   private var times: [String] {
     return is24hClock ? _24hTimes : _12hTimes
@@ -257,8 +259,8 @@ public final class TimelineView: UIView {
     var accentedMinute = -1
 
     if let accentedDate = accentedDate {
-      accentedHour = snappingBehavior.accentedHour(for: accentedDate)
-      accentedMinute = snappingBehavior.accentedMinute(for: accentedDate)
+      accentedHour = eventEditingSnappingBehavior.accentedHour(for: accentedDate)
+      accentedMinute = eventEditingSnappingBehavior.accentedMinute(for: accentedDate)
     }
 
     if isToday {
