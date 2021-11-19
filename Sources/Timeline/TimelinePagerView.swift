@@ -20,6 +20,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   public weak var delegate: TimelinePagerViewDelegate?
 
   public private(set) var calendar: Calendar = Calendar.autoupdatingCurrent
+  public var eventEditingSnappingBehavior: EventEditingSnappingBehavior {
+    didSet {
+      updateEventEditingSnappingBehavior()
+    }
+  }
 
   public var timelineScrollOffset: CGPoint {
     // Any view is fine as they are all synchronized
@@ -71,16 +76,19 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public init(calendar: Calendar) {
     self.calendar = calendar
+    self.eventEditingSnappingBehavior = SnapTo15MinuteIntervals(calendar)
     super.init(frame: .zero)
     configure()
   }
 
   override public init(frame: CGRect) {
+    self.eventEditingSnappingBehavior = SnapTo15MinuteIntervals(calendar)
     super.init(frame: frame)
     configure()
   }
 
   required public init?(coder aDecoder: NSCoder) {
+    self.eventEditingSnappingBehavior = SnapTo15MinuteIntervals(calendar)
     super.init(coder: aDecoder)
     configure()
   }
@@ -111,6 +119,14 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     timeline.updateStyle(style)
     container.backgroundColor = style.backgroundColor
   }
+  
+  private func updateEventEditingSnappingBehavior() {
+    pagingViewController.viewControllers?.forEach({ (timelineContainer) in
+      if let controller = timelineContainer as? TimelineContainerController {
+        controller.timeline.eventEditingSnappingBehavior = eventEditingSnappingBehavior
+      }
+    })
+  }
 
   public func timelinePanGestureRequire(toFail gesture: UIGestureRecognizer) {
     for controller in pagingViewController.viewControllers ?? [] {
@@ -135,6 +151,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     timeline.longPressGestureRecognizer.addTarget(self, action: #selector(timelineDidLongPress(_:)))
     timeline.delegate = self
     timeline.calendar = calendar
+    timeline.eventEditingSnappingBehavior = eventEditingSnappingBehavior
     timeline.date = date.dateOnly(calendar: calendar)
     controller.container.delegate = self
     updateTimeline(timeline)
@@ -329,7 +346,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         
         let ytd = yToDate(y: editedEventView.frame.origin.y,
                           timeline: timeline)
-        let snapped = timeline.snappingBehavior.nearestDate(to: ytd)
+        let snapped = timeline.eventEditingSnappingBehavior.nearestDate(to: ytd)
         let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
         let x = leftToRight ? style.leadingInset : 0
         
@@ -342,7 +359,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         } else if resizeHandleTag == 1 {
           let bottomHandleYTD = yToDate(y: editedEventView.frame.origin.y + editedEventView.frame.size.height,
                                         timeline: timeline)
-          let bottomHandleSnappedDate = timeline.snappingBehavior.nearestDate(to: bottomHandleYTD)
+          let bottomHandleSnappedDate = timeline.eventEditingSnappingBehavior.nearestDate(to: bottomHandleYTD)
           eventFrame.size.height = timeline.dateToY(bottomHandleSnappedDate) - timeline.dateToY(snapped)
         }
         
