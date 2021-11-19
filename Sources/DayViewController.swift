@@ -25,6 +25,15 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
       dayView.calendar = calendar
     }
   }
+  
+  public var eventEditingSnappingBehavior: EventEditingSnappingBehavior {
+    get {
+      dayView.eventEditingSnappingBehavior
+    }
+    set {
+      dayView.eventEditingSnappingBehavior = newValue
+    }
+  }
 
   open override func loadView() {
     view = dayView
