@@ -8,44 +8,41 @@ public struct SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
   }
 
   public func nearestDate(to date: Date) -> Date {
-    let unit: Double = (60 / 4) / 2
-    var accHour = Int(accentedHour(for: date))
-    let minute = Double(component(component: .minute, from: date))
+    let unit: Double = 60 / 4 / 2
+    var accentedHour = Int(accentedHour(for: date))
+    let minute = Double(component(.minute, from: date))
     if (60 - unit)...59 ~= minute {
-      accHour += 1
+      accentedHour += 1
     }
 
     var dayOffset = 0
-    if accHour > 23 {
-      accHour -= 24
+    if accentedHour > 23 {
+      accentedHour -= 24
       dayOffset += 1
-    } else if accHour < 0 {
-      accHour += 24
+    } else if accentedHour < 0 {
+      accentedHour += 24
       dayOffset -= 1
     }
     
-    let date = calendar.date(byAdding: DateComponents(day: dayOffset), to: date)!
-    return calendar.date(bySettingHour: accHour,
+    let day = calendar.date(byAdding: DateComponents(day: dayOffset), to: date)!
+    return calendar.date(bySettingHour: accentedHour,
                          minute: accentedMinute(for: date),
                          second: 0,
-                         of: date)!
+                         of: day)!
   }
 
   public func accentedHour(for date: Date) -> Int {
-    return Int(component(component: .hour, from: date))
+    Int(component(.hour, from: date))
   }
 
   public func accentedMinute(for date: Date) -> Int {
-    let accentedMinute = Double(component(component: .minute, from: date))
-    return snapTo15Minute(accentedMinute)
-  }
-  
-  private func snapTo15Minute(_ number: Double) -> Int {
-    let value = 15 * Int(round(number / 15.0))
+    let minute = Double(component(.minute, from: date))
+    let interval = 15
+    let value = interval * Int(round(minute / Double(interval)))
     return value < 60 ? value : 0
   }
   
-  private func component(component: Calendar.Component, from date: Date) -> Int {
-    return calendar.component(component, from: date)
+  private func component(_ component: Calendar.Component, from date: Date) -> Int {
+    calendar.component(component, from: date)
   }
 }
