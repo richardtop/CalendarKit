@@ -61,6 +61,15 @@ public class DayView: UIView, TimelinePagerViewDelegate {
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent
 
+  public var eventEditingSnappingBehavior: EventEditingSnappingBehavior {
+    get {
+      timelinePagerView.eventEditingSnappingBehavior
+    }
+    set {
+      timelinePagerView.eventEditingSnappingBehavior = newValue
+    }
+  }
+
   private var style = CalendarStyle()
 
   public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
