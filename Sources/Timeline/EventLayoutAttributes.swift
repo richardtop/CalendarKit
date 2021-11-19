@@ -1,5 +1,4 @@
-import Foundation
-import UIKit
+import CoreGraphics
 
 public final class EventLayoutAttributes {
   public let descriptor: EventDescriptor
