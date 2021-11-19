@@ -9,7 +9,7 @@ public struct SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
 
   public func nearestDate(to date: Date) -> Date {
     let unit: Double = 60 / 4 / 2
-    var accentedHour = Int(accentedHour(for: date))
+    var accentedHour = Int(self.accentedHour(for: date))
     let minute = Double(component(.minute, from: date))
     if (60 - unit)...59 ~= minute {
       accentedHour += 1
