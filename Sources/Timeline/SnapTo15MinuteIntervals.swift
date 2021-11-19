@@ -1,6 +1,6 @@
 import Foundation
 
-public final class SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
+public struct SnapTo15MinuteIntervals: EventEditingSnappingBehavior {
   private let calendar: Calendar
 
   public init(_ calendar: Calendar) {
