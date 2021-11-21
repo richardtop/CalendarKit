@@ -2,3 +2,6 @@ contact_links:
   - name: Richard's Telegram Channel
     url: https://t.me/richardtop
     about: News about CalendarKit and other projects
+  - name: Video Tutorial
+    url: https://www.youtube.com/watch?v=iC4XxmExqFA
+    about: A complete tutorial of creating a Calendar app for iOS with CalendarKit
