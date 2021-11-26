@@ -436,8 +436,8 @@ public final class TimelineView: UIView {
 
     // only non allDay events need their frames to be set
     let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
-      let start1 = attr1.descriptor.startDate
-      let start2 = attr2.descriptor.startDate
+      let start1 = attr1.descriptor.dateInterval.start
+      let start2 = attr2.descriptor.dateInterval.start
       return start1 < start2
     }
 
@@ -451,26 +451,26 @@ public final class TimelineView: UIView {
       }
 
       let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
-        var period = attr1.descriptor.datePeriod
-        let period1 = period.upperBound.timeIntervalSince(period.lowerBound)
-        period = attr2.descriptor.datePeriod
-        let period2 = period.upperBound.timeIntervalSince(period.lowerBound)
+        var period = attr1.descriptor.dateInterval
+        let period1 = period.end.timeIntervalSince(period.start)
+        period = attr2.descriptor.dateInterval
+        let period2 = period.end.timeIntervalSince(period.start)
 
         return period1 > period2
         }
         .first!
 
       if style.eventsWillOverlap {
-        guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
+        guard let earliestEvent = overlappingEvents.first?.descriptor.dateInterval.start else { continue }
         let dateInterval = getDateInterval(date: earliestEvent)
-        if event.descriptor.datePeriod.contains(dateInterval.lowerBound) {
+        if event.descriptor.dateInterval.contains(dateInterval.start) {
           overlappingEvents.append(event)
           continue
         }
       } else {
         let lastEvent = overlappingEvents.last!
-        if (longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (longestEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) ||
-          (lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (lastEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) {
+        if (longestEvent.descriptor.dateInterval.intersects(event.descriptor.dateInterval) && (longestEvent.descriptor.dateInterval.end != event.descriptor.dateInterval.start || style.eventGap <= 0.0)) ||
+          (lastEvent.descriptor.dateInterval.intersects(event.descriptor.dateInterval) && (lastEvent.descriptor.dateInterval.end != event.descriptor.dateInterval.start || style.eventGap <= 0.0)) {
           overlappingEvents.append(event)
           continue
         }
@@ -485,8 +485,8 @@ public final class TimelineView: UIView {
     for overlappingEvents in groupsOfEvents {
       let totalCount = CGFloat(overlappingEvents.count)
       for (index, event) in overlappingEvents.enumerated() {
-        let startY = dateToY(event.descriptor.datePeriod.lowerBound)
-        let endY = dateToY(event.descriptor.datePeriod.upperBound)
+        let startY = dateToY(event.descriptor.dateInterval.start)
+        let endY = dateToY(event.descriptor.dateInterval.end)
         let floatIndex = CGFloat(index)
         let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
@@ -561,13 +561,13 @@ public final class TimelineView: UIView {
     return calendar.component(component, from: date)
   }
   
-  private func getDateInterval(date: Date) -> ClosedRange<Date> {
+  private func getDateInterval(date: Date) -> DateInterval {
     let earliestEventMintues = component(component: .minute, from: date)
     let splitMinuteInterval = style.splitMinuteInterval
     let minute = component(component: .minute, from: date)
     let minuteRange = (minute / splitMinuteInterval) * splitMinuteInterval
     let beginningRange = calendar.date(byAdding: .minute, value: -(earliestEventMintues - minuteRange), to: date)!
     let endRange = calendar.date(byAdding: .minute, value: splitMinuteInterval, to: beginningRange)!
-    return beginningRange ... endRange
+    return DateInterval(start: beginningRange, end: endRange)
   }
 }

@@ -86,15 +86,14 @@ class CustomCalendarExampleController: DayViewController {
       let event = Event()
 
       let duration = Int.random(in: 60 ... 160)
-      event.startDate = workingDate
-      event.endDate = Calendar.current.date(byAdding: .minute, value: duration, to: workingDate)!
+      event.dateInterval = DateInterval(start: workingDate, duration: TimeInterval(duration * 60))
 
       var info = data[Int(arc4random_uniform(UInt32(data.count)))]
       
       let timezone = dayView.calendar.timeZone
       print(timezone)
 
-      info.append(rangeFormatter.string(from: event.startDate, to: event.endDate))
+      info.append(rangeFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
@@ -164,13 +163,12 @@ class CustomCalendarExampleController: DayViewController {
     let duration = Int(arc4random_uniform(160) + 60)
     let startDate = Calendar.current.date(byAdding: .minute, value: -Int(CGFloat(duration) / 2), to: date)!
     let event = Event()
-
-    event.startDate = startDate
-    event.endDate = Calendar.current.date(byAdding: .minute, value: duration, to: startDate)!
+    
+    event.dateInterval = DateInterval(start: startDate, duration: TimeInterval(duration * 60))
     
     var info = data[Int(arc4random_uniform(UInt32(data.count)))]
 
-    info.append(rangeFormatter.string(from: event.startDate, to: event.endDate))
+    info.append(rangeFormatter.string(from: event.dateInterval)!)
     event.text = info.reduce("", {$0 + $1 + "\n"})
     event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
     event.editedEvent = event
@@ -180,7 +178,7 @@ class CustomCalendarExampleController: DayViewController {
   
   override func dayView(dayView: DayView, didUpdate event: EventDescriptor) {
     print("did finish editing \(event)")
-    print("new startDate: \(event.startDate) new endDate: \(event.endDate)")
+    print("new startDate: \(event.dateInterval.start) new endDate: \(event.dateInterval.end)")
     
     if let _ = event.editedEvent {
       event.commitEditing()

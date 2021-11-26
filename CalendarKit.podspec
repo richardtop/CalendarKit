@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.author           = { "Richard Topchii" => "richardtop@users.noreply.github.com" }
   s.source           = { :git => "https://github.com/richardtop/CalendarKit.git", :tag => s.version.to_s }
   s.social_media_url = 'https://github.com/richardtop'
-  s.platform     = :ios, '9.0'
+  s.platform     = :ios, '10.0'
   s.swift_version = '5.3'
   s.requires_arc = true
   s.source_files = 'Sources/**/*.swift'
