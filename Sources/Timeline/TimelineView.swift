@@ -436,8 +436,8 @@ public final class TimelineView: UIView {
 
     // only non allDay events need their frames to be set
     let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
-      let start1 = attr1.descriptor.startDate
-      let start2 = attr2.descriptor.startDate
+      let start1 = attr1.descriptor.dateInterval.start
+      let start2 = attr2.descriptor.dateInterval.start
       return start1 < start2
     }
 
@@ -461,7 +461,7 @@ public final class TimelineView: UIView {
         .first!
 
       if style.eventsWillOverlap {
-        guard let earliestEvent = overlappingEvents.first?.descriptor.startDate else { continue }
+        guard let earliestEvent = overlappingEvents.first?.descriptor.dateInterval.start else { continue }
         let dateInterval = getDateInterval(date: earliestEvent)
         if event.descriptor.datePeriod.contains(dateInterval.lowerBound) {
           overlappingEvents.append(event)
@@ -469,8 +469,8 @@ public final class TimelineView: UIView {
         }
       } else {
         let lastEvent = overlappingEvents.last!
-        if (longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (longestEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) ||
-          (lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (lastEvent.descriptor.endDate != event.descriptor.startDate || style.eventGap <= 0.0)) {
+        if (longestEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (longestEvent.descriptor.dateInterval.end != event.descriptor.dateInterval.start || style.eventGap <= 0.0)) ||
+          (lastEvent.descriptor.datePeriod.overlaps(event.descriptor.datePeriod) && (lastEvent.descriptor.dateInterval.end != event.descriptor.dateInterval.start || style.eventGap <= 0.0)) {
           overlappingEvents.append(event)
           continue
         }

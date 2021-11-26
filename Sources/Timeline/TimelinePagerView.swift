@@ -233,8 +233,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       let timeline = currentTimeline.timeline
       let offset = currentTimeline.container.contentOffset.y
       // algo needs to be extracted to a separate object
-      let yStart = timeline.dateToY(event.startDate) - offset
-      let yEnd = timeline.dateToY(event.endDate) - offset
+      let yStart = timeline.dateToY(event.dateInterval.start) - offset
+      let yEnd = timeline.dateToY(event.dateInterval.end) - offset
 
         
       let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
@@ -355,7 +355,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         eventFrame.origin.y = timeline.dateToY(snapped) - currentTimeline.container.contentOffset.y
 
         if resizeHandleTag == 0 {
-          eventFrame.size.height = timeline.dateToY(descriptor.endDate) - timeline.dateToY(snapped)
+          eventFrame.size.height = timeline.dateToY(descriptor.dateInterval.end) - timeline.dateToY(snapped)
         } else if resizeHandleTag == 1 {
           let bottomHandleYTD = yToDate(y: editedEventView.frame.origin.y + editedEventView.frame.size.height,
                                         timeline: timeline)
@@ -417,8 +417,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       let endY = converted.maxY
       let beginning = timeline.yToDate(beginningY)
       let end = timeline.yToDate(endY)
-      descriptor.startDate = beginning
-      descriptor.endDate = end
+      descriptor.dateInterval = DateInterval(start: beginning, end: end)
     }
   }
 
