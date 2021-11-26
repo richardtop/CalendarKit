@@ -7,6 +7,6 @@ import Foundation
  */
 extension EventDescriptor {
   var datePeriod: ClosedRange<Date> {
-    return startDate ... endDate
+    return dateInterval.start ... dateInterval.end
   }
 }
