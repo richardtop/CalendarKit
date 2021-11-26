@@ -68,9 +68,8 @@ override func eventsForDate(_ date: Date) -> [EventDescriptor] {
   for model in models {
       // Create new EventView
       let event = Event()
-      // Specify StartDate and EndDate
-      event.startDate = model.startDate
-      event.endDate = model.endDate
+      // Specify DateInterval
+      event.dateInterval = DateInterval(start: model.startDate, end: model.endDate)
       // Add info: event title, subtitle, location to the array of Strings
       var info = [model.title, model.location]
       info.append("\(datePeriod.beginning!.format(with: "HH:mm")) - \(datePeriod.end!.format(with: "HH:mm"))")
@@ -120,7 +119,7 @@ dayView.updateStyle(style)
 
 ## Requirements
 
-- iOS 9.0+, macOS (Catalyst) 10.15+
+- iOS 10.0+, macOS (Catalyst) 10.15+
 - Swift 4+ (Library is written in Swift 5)
 
 ## Contributing
