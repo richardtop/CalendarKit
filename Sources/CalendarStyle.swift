@@ -22,7 +22,8 @@ public struct DayHeaderStyle {
   public var daySymbols = DaySymbolsStyle()
   public var daySelector = DaySelectorStyle()
   public var swipeLabel = SwipeLabelStyle()
-  public var backgroundColor = SystemColors.secondarySystemBackground
+  public var backgroundColor = SystemColors.systemBackground
+  public var separatorColor = SystemColors.systemSeparator
   public init() {}
 }
 

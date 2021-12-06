@@ -28,6 +28,11 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
                                                        navigationOrientation: .horizontal,
                                                        options: nil)
   private let swipeLabelView: SwipeLabelView
+  private lazy var separator: UIView = {
+    let separator = UIView()
+    separator.backgroundColor = SystemColors.systemSeparator
+    return separator
+  }()
 
   public init(calendar: Calendar) {
     self.calendar = calendar
@@ -44,7 +49,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   }
 
   private func configure() {
-    [daySymbolsView, swipeLabelView].forEach(addSubview)
+    [daySymbolsView, swipeLabelView, separator].forEach(addSubview)
     backgroundColor = style.backgroundColor
     configurePagingViewController()
   }
@@ -93,6 +98,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     swipeLabelView.updateStyle(style.swipeLabel)
     (pagingViewController.viewControllers as? [DaySelectorController])?.forEach{$0.updateStyle(newStyle.daySelector)}
     backgroundColor = style.backgroundColor
+    separator.backgroundColor = style.separatorColor
   }
 
   override public func layoutSubviews() {
@@ -103,6 +109,10 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
                                               size: CGSize(width: bounds.width, height: pagingScrollViewHeight))
     swipeLabelView.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - 10 - swipeLabelViewHeight),
                                   size: CGSize(width: bounds.width, height: swipeLabelViewHeight))
+    
+    let separatorHeight = 1 / UIScreen.main.scale
+    separator.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - separatorHeight),
+                             size: CGSize(width: bounds.width, height: separatorHeight))
   }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
