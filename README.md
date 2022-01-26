@@ -7,6 +7,12 @@
 [![Tag](https://img.shields.io/github/v/tag/richardtop/calendarkit)](https://cocoapods.org/pods/CalendarKit)
 [![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](https://cocoapods.org/pods/CalendarKit)
 
+
+[![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCx1gvWpy5zjOd7yZyDwmXEA?style=social)](https://www.youtube.com/channel/UCx1gvWpy5zjOd7yZyDwmXEA)
+[![GitHub followers](https://img.shields.io/github/followers/richardtop?style=social)](https://github.com/richardtop)
+
+[Richard Topchii on Telegram](https://t.me/richardtop)
+
 # CalendarKit
 **CalendarKit** is a Swift calendar UI library for iOS and Mac Catalyst. It looks similar to the Apple Calendar app out-of-the-box, while allowing customization when needed. CalendarKit is composed of multiple modules which can be used together or independently.
 
