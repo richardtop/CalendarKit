@@ -433,8 +433,6 @@ public final class TimelineView: UIView {
           timeString.draw(in: timeRect, withAttributes: attributess)
 
       }
-//      workingHoursRects.append((timeString, timeRect))
-
   }
   
   // MARK: - Layout
