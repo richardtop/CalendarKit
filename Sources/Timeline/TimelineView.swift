@@ -139,9 +139,10 @@ public final class TimelineView: UIView {
   }
   
   // MARK: - Initialization
-  
-  public init() {
+    public var workingHours = 8...20
+  public init(workingHours: Range<Int>) {
     super.init(frame: .zero)
+      
     frame.size.height = fullHeight
     configure()
   }
@@ -208,7 +209,11 @@ public final class TimelineView: UIView {
     return nil
   }
   
-  
+    var workingHoursRect: CGRect?
+    var startWorkingLabelPoint: CGPoint?
+    var stopWorkingLabelPoint: CGPoint?
+    var workingHoursRects: [(NSString, CGRect)] = []
+
   /**
    Custom implementation of the hitTest method is needed for the tap gesture recognizers
    located in the AllDayView to work.
@@ -273,6 +278,9 @@ public final class TimelineView: UIView {
       }
     }
 
+      let minute = component(component: .minute, from: currentTime)
+      let hour = component(component: .hour, from: currentTime)
+
     let mutableParagraphStyle = NSParagraphStyle.default.mutableCopy() as! NSMutableParagraphStyle
     mutableParagraphStyle.lineBreakMode = .byWordWrapping
     mutableParagraphStyle.alignment = .right
@@ -296,10 +304,12 @@ public final class TimelineView: UIView {
     
     for (hour, time) in times.enumerated() {
         let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
-        
+
         let hourFloat = CGFloat(hour)
+
         let context = UIGraphicsGetCurrentContext()
         context!.interpolationQuality = .none
+//        context?.setFillColor(CGColor(red: 250/255, green: 231/255, blue: 255/255, alpha: 1.0))
         context?.saveGState()
         context?.setStrokeColor(style.separatorColor.cgColor)
         context?.setLineWidth(hourLineHeight)
@@ -342,7 +352,29 @@ public final class TimelineView: UIView {
         }()
     
         let timeString = NSString(string: time)
+
+        if workingHours.contains(hour) {
+            workingHoursRects.append((timeString, timeRect))
+        }
+
+        if hour == workingHours.lowerBound {
+            startWorkingLabelPoint = CGPoint(x: timeRect.minX, y: timeRect.minY)
+            workingHoursRects.append((timeString, timeRect))
+
+        } else  if hour == workingHours.upperBound {
+            stopWorkingLabelPoint = CGPoint(x: timeRect.maxX - 30, y: timeRect.maxY)
+            workingHoursRect = CGRect(x: startWorkingLabelPoint!.x, y: startWorkingLabelPoint!.y - 10, width: style.leadingInset, height: stopWorkingLabelPoint!.y - startWorkingLabelPoint!.y + 20)
+
+            workingHoursRects.append((timeString, timeRect))
+//            timeString.draw(in: timeRect, withAttributes: attributes)
+
+        }
+
         timeString.draw(in: timeRect, withAttributes: attributes)
+//        timeString.draw(in: timeRect, withAttributes: attributes)
+
+
+
     
         if accentedMinute == 0 {
             continue
@@ -359,12 +391,50 @@ public final class TimelineView: UIView {
             
             let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
                                 width: style.leadingInset - 8, height: fontSize + 2)
+
             
             let timeString = NSString(string: ":\(accentedMinute)")
-            
+
             timeString.draw(in: timeRect, withAttributes: attributes)
         }
     }
+      let context = UIGraphicsGetCurrentContext()
+
+      // Set the rectangle outerline-width
+      //            context?.setLineWidth( 5.0)
+      context?.setFillColor(CGColor(red: 250/255  , green: 231/255, blue: 255/255, alpha: 0.7))
+      // Set the rectangle outerline-colour
+      //            UIColor.red.set()
+
+
+      let rectFrame: CGRect = workingHoursRect!
+
+      // Create a UIView object which use above CGRect object.
+      let greenView = UIView(frame: rectFrame)
+      greenView.layer.cornerRadius = 15
+      // Set UIView background color.
+
+      greenView.backgroundColor = UIColor(red: 250/255  , green: 231/255, blue: 255/255, alpha: 0.7)
+
+      let clipPath = UIBezierPath(roundedRect: rectFrame, cornerRadius: 10.0).cgPath
+
+      let ctx = UIGraphicsGetCurrentContext()!
+      ctx.addPath(clipPath)
+      ctx.setFillColor(UIColor(red: 250/255  , green: 231/255, blue: 255/255, alpha: 0.7).cgColor)
+
+      ctx.closePath()
+      ctx.fillPath()
+      let attributess = [NSAttributedString.Key.paragraphStyle: paragraphStyle,
+                        NSAttributedString.Key.foregroundColor: self.style.timeColor,
+                        NSAttributedString.Key.font: style.font] as [NSAttributedString.Key : Any]
+
+      for (timeString, timeRect) in workingHoursRects {
+
+          timeString.draw(in: timeRect, withAttributes: attributess)
+
+      }
+//      workingHoursRects.append((timeString, timeRect))
+
   }
   
   // MARK: - Layout
@@ -501,14 +571,17 @@ public final class TimelineView: UIView {
     for _ in regularLayoutAttributes {
       let newView = pool.dequeue()
       if newView.superview == nil {
+
         addSubview(newView)
       }
+
       eventViews.append(newView)
     }
   }
 
   public func prepareForReuse() {
     pool.enqueue(views: eventViews)
+
     eventViews.removeAll()
     setNeedsDisplay()
   }
