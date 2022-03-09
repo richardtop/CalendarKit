@@ -35,7 +35,7 @@ public struct DaySelectorStyle {
   public var inactiveTextColor = SystemColors.label
   public var inactiveBackgroundColor = UIColor.clear
 
-  public var todayInactiveTextColor = SystemColors.systemRed
+  public var todayInactiveTextColor = SystemColors.orange
   public var todayActiveTextColor = UIColor.white
   public var todayActiveBackgroundColor = SystemColors.systemRed
     
@@ -77,7 +77,7 @@ public struct TimelineStyle {
 }
 
 public struct CurrentTimeIndicatorStyle {
-  public var color = SystemColors.systemRed
+  public var color = SystemColors.orange
   public var font = UIFont.systemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
   public init() {}
