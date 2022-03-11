@@ -30,6 +30,7 @@ public class DayView: UIView, TimelinePagerViewDelegate {
       headerHeight = isHeaderViewVisible ? DayView.headerVisibleHeight : 0
       dayHeaderView.isHidden = !isHeaderViewVisible
       setNeedsLayout()
+      configureLayout()
     }
   }
 
