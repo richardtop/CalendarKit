@@ -357,7 +357,7 @@
 			repositoryURL = "https://github.com/richardtop/CalendarKit.git";
 			requirement = {
 				kind = upToNextMinorVersion;
-				minimumVersion = 1.0.9;
+				minimumVersion = 1.1.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
