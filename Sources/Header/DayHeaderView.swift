@@ -44,6 +44,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     configure()
   }
 
+  @available(*, unavailable)
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
