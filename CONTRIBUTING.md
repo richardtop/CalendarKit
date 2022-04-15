@@ -9,12 +9,11 @@ Please, use [GitHub Issues](https://github.com/richardtop/CalendarKit/issues) on
 ## Code Style
 When submitting a pull request, adhering to the code style is recommended, although not compulsory.
 
-This project has the following code style:
+This project has the following code style (Xcode Default):
 
 * Indent with spaces (not tabs)
-* Tab width: 2 spaces
-* Indent with: 2 spaces
-* No file headers
+* Tab width: 4 spaces
+* Indent with: 4 spaces
 * Curly braces open on the same line as the code
 
 ### Examples
