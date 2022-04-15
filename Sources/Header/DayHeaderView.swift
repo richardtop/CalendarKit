@@ -57,27 +57,27 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   
   private func configurePagingViewController() {
     let selectedDate = Date()
-    let vc = makeSelectorController(startDate: beginningOfWeek(selectedDate))
-    vc.selectedDate = selectedDate
-    currentWeekdayIndex = vc.selectedIndex
+    let daySelectorController = makeSelectorController(startDate: beginningOfWeek(selectedDate))
+    daySelectorController.selectedDate = selectedDate
+    currentWeekdayIndex = daySelectorController.selectedIndex
     
     let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
     let direction: UIPageViewController.NavigationDirection = leftToRight ? .forward : .reverse
     
-    pagingViewController.setViewControllers([vc], direction: direction, animated: false, completion: nil)
+    pagingViewController.setViewControllers([daySelectorController], direction: direction, animated: false, completion: nil)
     pagingViewController.dataSource = self
     pagingViewController.delegate = self
     addSubview(pagingViewController.view!)
   }
   
   private func makeSelectorController(startDate: Date) -> DaySelectorController {
-    let new = DaySelectorController()
-    new.calendar = calendar
-    new.transitionToHorizontalSizeClass(currentSizeClass)
-    new.updateStyle(style.daySelector)
-    new.startDate = startDate
-    new.delegate = self
-    return new
+    let daySelectorController = DaySelectorController()
+    daySelectorController.calendar = calendar
+    daySelectorController.transitionToHorizontalSizeClass(currentSizeClass)
+    daySelectorController.updateStyle(style.daySelector)
+    daySelectorController.startDate = startDate
+    daySelectorController.delegate = self
+    return daySelectorController
   }
   
   private func beginningOfWeek(_ date: Date) -> Date {

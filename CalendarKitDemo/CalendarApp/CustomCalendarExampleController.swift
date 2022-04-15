@@ -45,12 +45,12 @@ class CustomCalendarExampleController: DayViewController {
                 UIColor.green,
                 UIColor.red]
 
-  private lazy var rangeFormatter: DateIntervalFormatter = {
-    let fmt = DateIntervalFormatter()
-    fmt.dateStyle = .none
-    fmt.timeStyle = .short
+  private lazy var dateIntervalFormatter: DateIntervalFormatter = {
+    let dateIntervalFormatter = DateIntervalFormatter()
+    dateIntervalFormatter.dateStyle = .none
+    dateIntervalFormatter.timeStyle = .short
 
-    return fmt
+    return dateIntervalFormatter
   }()
 
   override func loadView() {
@@ -93,7 +93,7 @@ class CustomCalendarExampleController: DayViewController {
       let timezone = dayView.calendar.timeZone
       print(timezone)
 
-      info.append(rangeFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
+      info.append(dateIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
       event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
@@ -168,7 +168,7 @@ class CustomCalendarExampleController: DayViewController {
     
     var info = data[Int(arc4random_uniform(UInt32(data.count)))]
 
-    info.append(rangeFormatter.string(from: event.dateInterval)!)
+    info.append(dateIntervalFormatter.string(from: event.dateInterval)!)
     event.text = info.reduce("", {$0 + $1 + "\n"})
     event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
     event.editedEvent = event
