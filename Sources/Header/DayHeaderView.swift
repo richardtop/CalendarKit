@@ -44,6 +44,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
     configure()
   }
 
+  @available(*, unavailable)
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
@@ -89,7 +90,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   }
 
   private func component(component: Calendar.Component, from date: Date) -> Int {
-    return calendar.component(component, from: date)
+    calendar.component(component, from: date)
   }
   
   public func updateStyle(_ newStyle: DayHeaderStyle) {

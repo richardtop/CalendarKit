@@ -8,6 +8,7 @@ public final class TimelineContainer: UIScrollView {
     super.init(frame: .zero)
   }
   
+  @available(*, unavailable)
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }

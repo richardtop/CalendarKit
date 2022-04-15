@@ -15,7 +15,7 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
   }
 
   private var isToday: Bool {
-    return calendar.isDateInToday(date)
+    calendar.isDateInToday(date)
   }
 
   public var selected: Bool = false {
@@ -27,7 +27,7 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
   private var style = DaySelectorStyle()
 
   override public var intrinsicContentSize: CGSize {
-    return CGSize(width: 35, height: 35)
+    CGSize(width: 35, height: 35)
   }
 
   override init(frame: CGRect) {
@@ -67,7 +67,7 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
   }
 
   private func component(component: Calendar.Component, from date: Date) -> Int {
-    return calendar.component(component, from: date)
+    calendar.component(component, from: date)
   }
 
   private func isAWeekend(date: Date) -> Bool {
@@ -84,7 +84,8 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
                       options: .transitionCrossDissolve,
                       animations: {
                         self.updateState()
-    }, completion: nil)
+    },
+                      completion: nil)
   }
 
   override public func layoutSubviews() {

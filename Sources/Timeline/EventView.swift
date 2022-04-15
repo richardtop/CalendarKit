@@ -5,10 +5,10 @@ open class EventView: UIView {
   public var color = SystemColors.label
 
   public var contentHeight: CGFloat {
-    return textView.frame.height
+    textView.frame.height
   }
 
-  public lazy var textView: UITextView = {
+  public private(set) lazy var textView: UITextView = {
     let view = UITextView()
     view.isUserInteractionEnabled = false
     view.backgroundColor = .clear
@@ -18,7 +18,7 @@ open class EventView: UIView {
 
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
-  public lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
+  public private(set) lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
 
   override public init(frame: CGRect) {
     super.init(frame: frame)
