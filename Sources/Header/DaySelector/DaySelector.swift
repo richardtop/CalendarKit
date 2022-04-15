@@ -48,7 +48,7 @@ public final class DaySelector: UIView {
 
   public var selectedDate: Date? {
     get {
-      return items.filter{$0.selected == true}.first?.date as Date?
+      items.filter{$0.selected == true}.first?.date as Date?
     }
     set(newDate) {
       if let newDate = newDate {

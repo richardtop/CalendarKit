@@ -35,11 +35,10 @@ import UIKit
   private var style = CurrentTimeIndicatorStyle()
 
   private lazy var dateFormatter: DateFormatter = {
-    let fmt = DateFormatter()
-    fmt.locale = calendar.locale
-    fmt.timeZone = calendar.timeZone
-
-    return fmt
+    let dateFormatter = DateFormatter()
+    dateFormatter.locale = calendar.locale
+    dateFormatter.timeZone = calendar.timeZone
+    return dateFormatter
   }()
 
   override init(frame: CGRect) {

@@ -4,7 +4,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
   public lazy var dayView: DayView = DayView()
   public var dataSource: EventDataSource? {
     get {
-      return dayView.dataSource
+      dayView.dataSource
     }
     set(value) {
       dayView.dataSource = value
@@ -13,7 +13,7 @@ open class DayViewController: UIViewController, EventDataSource, DayViewDelegate
 
   public var delegate: DayViewDelegate? {
     get {
-      return dayView.delegate
+      dayView.delegate
     }
     set(value) {
       dayView.delegate = value

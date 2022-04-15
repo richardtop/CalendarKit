@@ -5,7 +5,7 @@ public final class DaySelectorController: UIViewController {
   
   public var delegate: DaySelectorDelegate? {
     get {
-      return daySelector.delegate
+      daySelector.delegate
     }
     set {
       daySelector.delegate = newValue
@@ -14,7 +14,7 @@ public final class DaySelectorController: UIViewController {
 
   public var calendar: Calendar {
     get {
-      return daySelector.calendar
+      daySelector.calendar
     }
     set(newValue) {
       daySelector.calendar = newValue
@@ -23,7 +23,7 @@ public final class DaySelectorController: UIViewController {
   
   public var startDate: Date {
     get {
-      return daySelector.startDate!
+      daySelector.startDate!
     }
     set {
       daySelector.startDate = newValue
@@ -32,7 +32,7 @@ public final class DaySelectorController: UIViewController {
   
   public var selectedIndex: Int {
     get {
-      return daySelector.selectedIndex
+      daySelector.selectedIndex
     }
     set {
       daySelector.selectedIndex = newValue
@@ -41,7 +41,7 @@ public final class DaySelectorController: UIViewController {
   
   public var selectedDate: Date? {
     get {
-      return daySelector.selectedDate
+      daySelector.selectedDate
     }
     set {
       daySelector.selectedDate = newValue

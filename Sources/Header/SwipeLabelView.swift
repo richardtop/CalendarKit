@@ -31,11 +31,11 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
   }
 
   private var firstLabel: UILabel {
-    return labels.first!
+    labels.first!
   }
 
   private var secondLabel: UILabel {
-    return labels.last!
+    labels.last!
   }
 
   private var labels = [UILabel]()
@@ -96,7 +96,8 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
   }
 
   override public func layoutSubviews() {
-    for subview in subviews {
+    super.layoutSubviews()
+    subviews.forEach { subview in
       subview.frame = bounds
     }
   }

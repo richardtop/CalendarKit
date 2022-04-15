@@ -17,7 +17,7 @@ public final class TimelineView: UIView {
   }
 
   private var currentTime: Date {
-    return Date()
+    Date()
   }
 
   private var eventViews = [EventView]()
@@ -25,6 +25,9 @@ public final class TimelineView: UIView {
   public private(set) var allDayLayoutAttributes = [EventLayoutAttributes]()
   
   public var layoutAttributes: [EventLayoutAttributes] {
+    get {
+      allDayLayoutAttributes + regularLayoutAttributes
+    }
     set {
       
       // update layout attributes by separating allday from non all day events
@@ -47,9 +50,6 @@ public final class TimelineView: UIView {
       
       setNeedsLayout()
     }
-    get {
-      return allDayLayoutAttributes + regularLayoutAttributes
-    }
   }
   private var pool = ReusePool<EventView>()
 
@@ -70,8 +70,8 @@ public final class TimelineView: UIView {
     allDayView.translatesAutoresizingMaskIntoConstraints = false
     addSubview(allDayView)
 
-    self.allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
-    self.allDayViewTopConstraint?.isActive = true
+    allDayViewTopConstraint = allDayView.topAnchor.constraint(equalTo: topAnchor, constant: 0)
+    allDayViewTopConstraint?.isActive = true
 
     allDayView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 0).isActive = true
     allDayView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: 0).isActive = true
@@ -80,18 +80,18 @@ public final class TimelineView: UIView {
   }()
   
   var allDayViewHeight: CGFloat {
-    return allDayView.bounds.height
+    allDayView.bounds.height
   }
 
   var style = TimelineStyle()
   private var horizontalEventInset: CGFloat = 3
 
   public var fullHeight: CGFloat {
-    return style.verticalInset * 2 + style.verticalDiff * 24
+    style.verticalInset * 2 + style.verticalDiff * 24
   }
 
   public var calendarWidth: CGFloat {
-    return bounds.width - style.leadingInset
+    bounds.width - style.leadingInset
   }
     
   public private(set) var is24hClock = true {
@@ -116,7 +116,7 @@ public final class TimelineView: UIView {
   }
 
   private var times: [String] {
-    return is24hClock ? _24hTimes : _12hTimes
+    is24hClock ? _24hTimes : _12hTimes
   }
 
   private lazy var _12hTimes: [String] = TimeStringsFactory(calendar).make12hStrings()
@@ -128,14 +128,14 @@ public final class TimelineView: UIView {
     _24hTimes = factory.make24hStrings()
   }
   
-  public lazy var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
-                                                                            action: #selector(longPress(_:)))
-
-  public lazy var tapGestureRecognizer = UITapGestureRecognizer(target: self,
-                                                                action: #selector(tap(_:)))
+  public lazy private(set) var longPressGestureRecognizer = UILongPressGestureRecognizer(target: self,
+                                                                                         action: #selector(longPress(_:)))
+  
+  public lazy private(set) var tapGestureRecognizer = UITapGestureRecognizer(target: self,
+                                                                             action: #selector(tap(_:)))
 
   private var isToday: Bool {
-    return calendar.isDateInToday(date)
+    calendar.isDateInToday(date)
   }
   
   // MARK: - Initialization
