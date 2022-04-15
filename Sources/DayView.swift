@@ -15,7 +15,7 @@ public protocol DayViewDelegate: AnyObject {
 public class DayView: UIView, TimelinePagerViewDelegate {
   public weak var dataSource: EventDataSource? {
     get {
-      return timelinePagerView.dataSource
+      timelinePagerView.dataSource
     }
     set(value) {
       timelinePagerView.dataSource = value
@@ -35,7 +35,7 @@ public class DayView: UIView, TimelinePagerViewDelegate {
   }
 
   public var timelineScrollOffset: CGPoint {
-    return timelinePagerView.timelineScrollOffset
+    timelinePagerView.timelineScrollOffset
   }
 
   private static let headerVisibleHeight: CGFloat = 88
@@ -43,7 +43,7 @@ public class DayView: UIView, TimelinePagerViewDelegate {
 
   public var autoScrollToFirstEvent: Bool {
     get {
-      return timelinePagerView.autoScrollToFirstEvent
+      timelinePagerView.autoScrollToFirstEvent
     }
     set (value) {
       timelinePagerView.autoScrollToFirstEvent = value

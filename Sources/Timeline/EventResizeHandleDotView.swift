@@ -4,7 +4,9 @@ import UIKit
 public final class EventResizeHandleDotView: UIView {
   public var borderColor: UIColor? {
     get {
-      guard let cgColor = layer.borderColor else {return nil}
+      guard let cgColor = layer.borderColor else {
+        return nil
+      }
       return UIColor(cgColor: cgColor)
     }
     set(value) {

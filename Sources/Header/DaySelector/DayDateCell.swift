@@ -24,7 +24,7 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
 
   public var selected: Bool {
     get {
-      return dateLabel.selected
+      dateLabel.selected
     }
     set(value) {
       dateLabel.selected = value
@@ -34,7 +34,7 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
   var style = DaySelectorStyle()
 
   override public var intrinsicContentSize: CGSize {
-    return CGSize(width: 75, height: 35)
+    CGSize(width: 75, height: 35)
   }
 
   override init(frame: CGRect) {
