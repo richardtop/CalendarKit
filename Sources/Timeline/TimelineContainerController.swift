@@ -4,8 +4,8 @@ public final class TimelineContainerController: UIViewController {
   /// Content Offset to be set once the view size has been calculated
   public var pendingContentOffset: CGPoint?
   
-  public lazy var timeline = TimelineView()
-  public lazy var container: TimelineContainer = {
+  public private(set) lazy var timeline = TimelineView()
+  public private(set) lazy var container: TimelineContainer = {
     let view = TimelineContainer(timeline)
     view.addSubview(timeline)
     return view

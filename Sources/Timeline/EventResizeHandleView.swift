@@ -2,12 +2,12 @@ import Foundation
 import UIKit
 
 public final class EventResizeHandleView: UIView {
-  public lazy var panGestureRecognizer = UIPanGestureRecognizer()
-  public lazy var dotView = EventResizeHandleDotView()
+  public private(set) lazy var panGestureRecognizer = UIPanGestureRecognizer()
+  public private(set) lazy var dotView = EventResizeHandleDotView()
 
   public var borderColor: UIColor? {
     get {
-      return dotView.borderColor
+      dotView.borderColor
     }
     set(value) {
       dotView.borderColor = value
@@ -19,6 +19,7 @@ public final class EventResizeHandleView: UIView {
     configure()
   }
 
+  @available(*, unavailable)
   required init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }

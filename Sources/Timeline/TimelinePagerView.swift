@@ -33,7 +33,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   }
   
   private var currentTimeline: TimelineContainerController? {
-    return pagingViewController.viewControllers?.first as? TimelineContainerController
+    pagingViewController.viewControllers?.first as? TimelineContainerController
   }
 
   public var autoScrollToFirstEvent = false
@@ -94,8 +94,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   }
 
   private func configure() {
-    let vc = configureTimelineController(date: Date())
-    pagingViewController.setViewControllers([vc], direction: .forward, animated: false, completion: nil)
+    let viewController = configureTimelineController(date: Date())
+    pagingViewController.setViewControllers([viewController], direction: .forward, animated: false, completion: nil)
     pagingViewController.dataSource = self
     pagingViewController.delegate = self
     addSubview(pagingViewController.view!)
