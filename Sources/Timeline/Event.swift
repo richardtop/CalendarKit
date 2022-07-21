@@ -1,6 +1,7 @@
 import UIKit
 
 public final class Event: EventDescriptor {
+  public var border: CAShapeLayer?
   public var dateInterval = DateInterval()
   public var isAllDay = false
   public var text = ""
