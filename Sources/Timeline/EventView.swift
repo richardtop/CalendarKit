@@ -3,6 +3,7 @@ import UIKit
 open class EventView: UIView {
   public var descriptor: EventDescriptor?
   public var color = SystemColors.label
+  public var border: CAShapeLayer?
 
   public var contentHeight: CGFloat {
     textView.frame.height
@@ -118,6 +119,7 @@ open class EventView: UIView {
   private var drawsShadow = false
 
   override open func layoutSubviews() {
+    self.border?.removeFromSuperlayer()
     super.layoutSubviews()
     textView.frame = {
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
@@ -143,10 +145,10 @@ open class EventView: UIView {
                           size: size)
     last?.frame = CGRect(origin: CGPoint(x: layoutMargins.left, y: height - yPad - radius),
                          size: size)
-    
-    if drawsShadow {
-      applySketchShadow(alpha: 0.13,
-                        blur: 10)
+    if let border = descriptor?.border {
+      applyBorder(border: border)
+    } else if drawsShadow {
+      applySketchShadow(alpha: 0.13, blur: 10)
     }
   }
 
@@ -169,5 +171,13 @@ open class EventView: UIView {
       let rect = bounds.insetBy(dx: dx, dy: dx)
       layer.shadowPath = UIBezierPath(rect: rect).cgPath
     }
+  }
+    
+  private func applyBorder(border: CAShapeLayer) {
+    let borderOffset = 3.0
+    let path = CGRect(x: borderOffset, y: borderOffset, width: bounds.width - 2.0 * borderOffset, height: bounds.height - 2.0 * borderOffset)
+    border.path = UIBezierPath(rect: path).cgPath
+    self.border = border
+    layer.addSublayer(border)
   }
 }
