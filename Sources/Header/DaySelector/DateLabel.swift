@@ -63,6 +63,8 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
       font = style.font
       textColor = today ? style.todayInactiveTextColor : notTodayColor
       backgroundColor = style.inactiveBackgroundColor
+        layer.borderWidth = today ? 1 : 0
+        layer.borderColor = style.borderColor.cgColor
     }
   }
 

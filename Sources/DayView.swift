@@ -52,6 +52,11 @@ public class DayView: UIView, TimelinePagerViewDelegate {
 
   public let dayHeaderView: DayHeaderView
   public let timelinePagerView: TimelinePagerView
+    public var tableView: UITableView? {
+        didSet {
+            self.configureTableView()
+        }
+    }
 
   public var state: DayViewState? {
     didSet {
@@ -61,7 +66,7 @@ public class DayView: UIView, TimelinePagerViewDelegate {
   }
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent
-
+    
   public var eventEditingSnappingBehavior: EventEditingSnappingBehavior {
     get {
       timelinePagerView.eventEditingSnappingBehavior
@@ -94,6 +99,21 @@ public class DayView: UIView, TimelinePagerViewDelegate {
     super.init(coder: aDecoder)
     configure()
   }
+    
+    private func configureTableView() {
+        if #available(iOS 11.0, *) {
+            guard let tableView = tableView else { return }
+            tableView.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(tableView)
+            NSLayoutConstraint.activate([
+                tableView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
+                tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+                tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+                
+                tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            ])
+        }
+    }
 
   private func configure() {
     addSubview(timelinePagerView)
@@ -120,10 +140,15 @@ public class DayView: UIView, TimelinePagerViewDelegate {
       heightConstraint.priority = .defaultLow
       heightConstraint.isActive = true
       
-      timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
-      timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+//        tableView?.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+//        tableView?.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+//        tableView?.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
+//        tableView?.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        
+//      timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+//      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+//      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
+//      timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
   }
 

@@ -28,16 +28,18 @@ public struct DayHeaderStyle {
 }
 
 public struct DaySelectorStyle {
-  public var activeTextColor = SystemColors.systemBackground
-  public var selectedBackgroundColor = SystemColors.label
-
+    // TODO: Use colors from WPX palette
+    public var activeTextColor = UIColor.white
+    public var selectedBackgroundColor = UIColor.systemBlue
+    public var borderColor = UIColor.systemBlue
+    
   public var weekendTextColor = SystemColors.secondaryLabel
   public var inactiveTextColor = SystemColors.label
   public var inactiveBackgroundColor = UIColor.clear
 
-  public var todayInactiveTextColor = SystemColors.systemRed
+  public var todayInactiveTextColor = SystemColors.label
   public var todayActiveTextColor = UIColor.white
-  public var todayActiveBackgroundColor = SystemColors.systemRed
+  public var todayActiveBackgroundColor = SystemColors.systemBlue
     
   public var font = UIFont.systemFont(ofSize: 18)
   public var todayFont = UIFont.boldSystemFont(ofSize: 18)

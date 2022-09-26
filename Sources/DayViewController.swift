@@ -1,4 +1,5 @@
 import UIKit
+//@_exported import MailRiver
 
 open class DayViewController: UIViewController, EventDataSource, DayViewDelegate {
   public lazy var dayView: DayView = DayView()
