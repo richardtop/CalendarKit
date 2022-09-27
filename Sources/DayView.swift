@@ -35,6 +35,12 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
       configureLayout()
     }
   }
+    
+    public var horizontalSpacing: CGFloat = 0 {
+        didSet {
+           configureTableView()
+        }
+    }
 
   public var timelineScrollOffset: CGPoint {
     timelinePagerView.timelineScrollOffset
@@ -103,14 +109,15 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   }
     
     private func configureTableView() {
+        tableView?.removeFromSuperview()
         if #available(iOS 11.0, *) {
             guard let tableView = tableView else { return }
             tableView.translatesAutoresizingMaskIntoConstraints = false
             addSubview(tableView)
             NSLayoutConstraint.activate([
                 tableView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
-                tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-                tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+                tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing),
+                tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing),
                 
                 tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
             ])
@@ -143,11 +150,6 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
       heightConstraint.priority = .defaultLow
       heightConstraint.isActive = true
       
-//        tableView?.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-//        tableView?.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-//        tableView?.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
-//        tableView?.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        
 //      timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
 //      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
 //      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
