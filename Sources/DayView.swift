@@ -10,9 +10,11 @@ public protocol DayViewDelegate: AnyObject {
   func dayView(dayView: DayView, willMoveTo date: Date)
   func dayView(dayView: DayView, didMoveTo  date: Date)
   func dayView(dayView: DayView, didUpdate event: EventDescriptor)
+    func didTapOnDate(date: Date)
+    func didMoveHeaderViewToDate(date: Date)
 }
 
-public class DayView: UIView, TimelinePagerViewDelegate {
+public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   public weak var dataSource: EventDataSource? {
     get {
       timelinePagerView.dataSource
@@ -120,6 +122,7 @@ public class DayView: UIView, TimelinePagerViewDelegate {
     addSubview(dayHeaderView)
     configureLayout()
     timelinePagerView.delegate = self
+      dayHeaderView.delegate = self
 
     if state == nil {
       let newState = DayViewState(date: Date(), calendar: calendar)
@@ -235,4 +238,13 @@ public class DayView: UIView, TimelinePagerViewDelegate {
   public func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor) {
     delegate?.dayView(dayView: self, didUpdate: event)
   }
+    
+    // MARK: - DayViewDelegate
+    public func didTapOpDate(date: Date) {
+        delegate?.didTapOnDate(date: date)
+    }
+    
+    public func didMoveHeaderViewToDate(date: Date) {
+        delegate?.didMoveHeaderViewToDate(date: date)
+    }
 }

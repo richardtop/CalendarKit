@@ -1,9 +1,16 @@
 import UIKit
 
+public protocol DayHeaderViewDelegate: AnyObject {
+    func didTapOpDate(date: Date)
+    func didMoveHeaderViewToDate(date: Date)
+}
+
 public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   public private(set) var daysInWeek = 7
   public let calendar: Calendar
 
+    public var delegate: DayHeaderViewDelegate?
+    
   private var style = DayHeaderStyle()
   private var currentSizeClass = UIUserInterfaceSizeClass.compact
 
@@ -126,6 +133,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   public func dateSelectorDidSelectDate(_ date: Date) {
     state?.move(to: date)
+      delegate?.didTapOpDate(date: date)
   }
 
   // MARK: DayViewStateUpdating
@@ -190,6 +198,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
       selector.selectedIndex = currentWeekdayIndex
       if let selectedDate = selector.selectedDate {
         state?.client(client: self, didMoveTo: selectedDate)
+          delegate?.didMoveHeaderViewToDate(date: selectedDate)
       }
     }
     // Deselect all the views but the currently visible one
