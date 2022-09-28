@@ -49,7 +49,8 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
 
   private func configure() {
     clipsToBounds = true
-    [dayLabel, dateLabel].forEach(addSubview(_:))
+//    [dayLabel, dateLabel].forEach(addSubview(_:))
+      addSubview(dateLabel)
   }
 
   public func updateStyle(_ newStyle: DaySelectorStyle) {
@@ -90,17 +91,18 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-    dayLabel.sizeToFit()
-    dayLabel.center.y = center.y
+//    dayLabel.sizeToFit()
+//    dayLabel.center.y = center.y
     let interItemSpacing: CGFloat = selected ? 5 : 3
     dateLabel.center.y = center.y
-    dateLabel.frame.origin.x = dayLabel.frame.maxX + interItemSpacing
+//    dateLabel.frame.origin.x = dayLabel.frame.maxX + interItemSpacing
+      dateLabel.center.x = self.center.x
     dateLabel.frame.size = CGSize(width: 30, height: 30)
 
     let freeSpace = bounds.width - (dateLabel.frame.origin.x + dateLabel.frame.width)
     let padding = freeSpace / 2
-    [dayLabel, dateLabel].forEach { (label) in
-      label.frame.origin.x += padding
+    [dateLabel].forEach { (label) in
+        label.center.x = bounds.midX
     }
   }
   override public func tintColorDidChange() {

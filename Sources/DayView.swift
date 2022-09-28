@@ -60,11 +60,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
 
   public let dayHeaderView: DayHeaderView
   public let timelinePagerView: TimelinePagerView
-    public var tableView: UITableView? {
-        didSet {
-            self.configureTableView()
-        }
-    }
+    public var tableView: UITableView?
 
   public var state: DayViewState? {
     didSet {
@@ -110,18 +106,15 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     
     private func configureTableView() {
         tableView?.removeFromSuperview()
-        if #available(iOS 11.0, *) {
-            guard let tableView = tableView else { return }
-            tableView.translatesAutoresizingMaskIntoConstraints = false
-            addSubview(tableView)
-            NSLayoutConstraint.activate([
-                tableView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
-                tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing),
-                tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing),
-                
-                tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-            ])
-        }
+        guard let tableView = tableView else { return }
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(tableView)
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing),
+            tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
 
   private func configure() {
@@ -139,7 +132,6 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   }
   
   private func configureLayout() {
-    if #available(iOS 11.0, *) {
       dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
       timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
       
@@ -154,7 +146,6 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
 //      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
 //      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
 //      timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-    }
   }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
@@ -183,16 +174,16 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     state?.move(to: date)
   }
 
-  override public func layoutSubviews() {
-    super.layoutSubviews()
-    if #available(iOS 11, *) {} else {
-      dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
-                                   size: CGSize(width: bounds.width, height: headerHeight))
-      let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
-      timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
-                                       size: CGSize(width: bounds.width, height: timelinePagerHeight))
-    }
-  }
+//  override public func layoutSubviews() {
+//    super.layoutSubviews()
+//    if #available(iOS 11, *) {} else {
+//      dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
+//                                   size: CGSize(width: bounds.width, height: headerHeight))
+//      let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
+//      timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
+//                                       size: CGSize(width: bounds.width, height: timelinePagerHeight))
+//    }
+//  }
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     dayHeaderView.transitionToHorizontalSizeClass(sizeClass)
