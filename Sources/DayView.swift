@@ -174,17 +174,6 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     state?.move(to: date)
   }
 
-//  override public func layoutSubviews() {
-//    super.layoutSubviews()
-//    if #available(iOS 11, *) {} else {
-//      dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
-//                                   size: CGSize(width: bounds.width, height: headerHeight))
-//      let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
-//      timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
-//                                       size: CGSize(width: bounds.width, height: timelinePagerHeight))
-//    }
-//  }
-
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     dayHeaderView.transitionToHorizontalSizeClass(sizeClass)
     updateStyle(style)
