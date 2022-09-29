@@ -8,6 +8,7 @@ public protocol DayHeaderViewDelegate: AnyObject {
 public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   public private(set) var daysInWeek = 7
   public let calendar: Calendar
+    public var selectedDate: Date? 
 
     public var delegate: DayHeaderViewDelegate?
     
@@ -134,13 +135,14 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   public func dateSelectorDidSelectDate(_ date: Date) {
     state?.move(to: date)
       delegate?.didTapOpDate(date: date)
+      selectedDate = date
   }
 
   // MARK: DayViewStateUpdating
 
   public func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly(calendar: calendar)
-
+      selectedDate = newDate
     let centerView = pagingViewController.viewControllers![0] as! DaySelectorController
     let startDate = centerView.startDate.dateOnly(calendar: calendar)
 
