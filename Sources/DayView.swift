@@ -1,8 +1,8 @@
 import UIKit
 
 public protocol DayViewDelegate: AnyObject {
-  func dayViewDidSelectEventView(_ eventView: EventView)
-  func dayViewDidLongPressEventView(_ eventView: EventView)
+//  func dayViewDidSelectEventView(_ eventView: EventView)
+//  func dayViewDidLongPressEventView(_ eventView: EventView)
   func dayView(dayView: DayView, didTapTimelineAt date: Date)
   func dayView(dayView: DayView, didLongPressTimelineAt date: Date)
   func dayViewDidBeginDragging(dayView: DayView)
@@ -43,9 +43,16 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     }
   }
     
+    public var isTimelineViewVisibleAtStart = true {
+        didSet {
+            timelinePagerView.isHidden = !isTimelineViewVisibleAtStart
+        }
+    }
+    
     public var horizontalSpacing: CGFloat = 0 {
         didSet {
             layoutTableView()
+            layoutTimelinePagerView()
         }
     }
 
@@ -135,6 +142,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   private func configure() {
     addSubview(timelinePagerView)
     addSubview(dayHeaderView)
+            
     configureLayout()
     timelinePagerView.delegate = self
       dayHeaderView.delegate = self
@@ -148,21 +156,22 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   
   private func configureLayout() {
       dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
-      timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
-      
+     
       dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
       dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
       dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
       let heightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: headerHeight)
       heightConstraint.priority = .defaultLow
       heightConstraint.isActive = true
-    
-      timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
-      timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-      timelinePagerView.isHidden = true
   }
+    
+    private func layoutTimelinePagerView() {
+        timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
+        timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing).isActive = true
+        timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing).isActive = true
+        timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
+        timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+    }
     
     public func switchView() {
         tableView?.isHidden.toggle()
@@ -216,10 +225,10 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   // MARK: TimelinePagerViewDelegate
 
   public func timelinePagerDidSelectEventView(_ eventView: EventView) {
-    delegate?.dayViewDidSelectEventView(eventView)
+//    delegate?.dayViewDidSelectEventView(eventView)
   }
   public func timelinePagerDidLongPressEventView(_ eventView: EventView) {
-    delegate?.dayViewDidLongPressEventView(eventView)
+//    delegate?.dayViewDidLongPressEventView(eventView)
   }
   public func timelinePagerDidBeginDragging(timelinePager: TimelinePagerView) {
     delegate?.dayViewDidBeginDragging(dayView: self)
