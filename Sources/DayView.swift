@@ -1,6 +1,7 @@
 import UIKit
 
 public protocol DayViewDelegate: AnyObject {
+    // TODO: UncommentAfter renaming EventView to AppointmentView
 //  func dayViewDidSelectEventView(_ eventView: EventView)
 //  func dayViewDidLongPressEventView(_ eventView: EventView)
   func dayView(dayView: DayView, didTapTimelineAt date: Date)
@@ -126,18 +127,6 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
         guard let tableView = tableView else { return }
         addSubview(tableView)
     }
-    
-    // TODO: Create global constaints for tableView and set here
-    private func layoutTableView() {
-        guard let tableView = tableView else { return }
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing),
-            tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing),
-            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
-    }
 
   private func configure() {
     addSubview(timelinePagerView)
@@ -157,13 +146,28 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   private func configureLayout() {
       dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
      
-      dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-      dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-      dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
       let heightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: headerHeight)
       heightConstraint.priority = .defaultLow
-      heightConstraint.isActive = true
+      
+      NSLayoutConstraint.activate([
+        dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+        dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+        dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+        heightConstraint
+      ])
   }
+    
+    // TODO: Create global constaints for tableView and set here
+    private func layoutTableView() {
+        guard let tableView = tableView else { return }
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
+            tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing),
+            tableView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+    }
     
     private func layoutTimelinePagerView() {
         timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
@@ -225,9 +229,11 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   // MARK: TimelinePagerViewDelegate
 
   public func timelinePagerDidSelectEventView(_ eventView: EventView) {
+      // TODO:  UncommentAfter renaming EventView to AppointmentView
 //    delegate?.dayViewDidSelectEventView(eventView)
   }
   public func timelinePagerDidLongPressEventView(_ eventView: EventView) {
+      // TODO: UncommentAfter renaming EventView to AppointmentView
 //    delegate?.dayViewDidLongPressEventView(eventView)
   }
   public func timelinePagerDidBeginDragging(timelinePager: TimelinePagerView) {
