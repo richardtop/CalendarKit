@@ -49,7 +49,6 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
 
   private func configure() {
     clipsToBounds = true
-//    [dayLabel, dateLabel].forEach(addSubview(_:))
       addSubview(dateLabel)
   }
 
@@ -91,11 +90,8 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
 
   override public func layoutSubviews() {
     super.layoutSubviews()
-//    dayLabel.sizeToFit()
-//    dayLabel.center.y = center.y
     let interItemSpacing: CGFloat = selected ? 5 : 3
     dateLabel.center.y = center.y
-//    dateLabel.frame.origin.x = dayLabel.frame.maxX + interItemSpacing
       dateLabel.center.x = self.center.x
     dateLabel.frame.size = CGSize(width: 30, height: 30)
 

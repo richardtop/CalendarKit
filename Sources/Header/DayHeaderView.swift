@@ -58,7 +58,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   }
 
   private func configure() {
-    [daySymbolsView, swipeLabelView, separator].forEach(addSubview)
+    [daySymbolsView, separator].forEach(addSubview)
     backgroundColor = style.backgroundColor
     configurePagingViewController()
   }
@@ -116,9 +116,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
                                   size: CGSize(width: bounds.width, height: daySymbolsViewHeight))
     pagingViewController.view?.frame = CGRect(origin: CGPoint(x: 0, y: daySymbolsViewHeight),
                                               size: CGSize(width: bounds.width, height: pagingScrollViewHeight))
-    swipeLabelView.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - 10 - swipeLabelViewHeight),
-                                  size: CGSize(width: bounds.width, height: swipeLabelViewHeight))
-    
+
     let separatorHeight = 1 / UIScreen.main.scale
     separator.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - separatorHeight),
                              size: CGSize(width: bounds.width, height: separatorHeight))
@@ -126,7 +124,6 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     currentSizeClass = sizeClass
-//    daySymbolsView.isHidden = sizeClass == .regular
     (pagingViewController.children as? [DaySelectorController])?.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
   }
 

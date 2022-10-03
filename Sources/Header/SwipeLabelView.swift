@@ -85,7 +85,6 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     secondLabel.frame = bounds
     secondLabel.frame.origin.x -= CGFloat(shiftRatio * screenWidth * 3) * multiplier
 
-//      UIView.animate(withDuration: 0.3, animations: {
     UIView.animate(withDuration: 0, animations: {
       self.secondLabel.frame = self.bounds
       self.firstLabel.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
