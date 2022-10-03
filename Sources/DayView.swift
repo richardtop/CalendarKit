@@ -14,6 +14,11 @@ public protocol DayViewDelegate: AnyObject {
     func didMoveHeaderViewToDate(date: Date)
 }
 
+public enum CalendarMode {
+    case agenda
+    case day
+}
+
 public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   public weak var dataSource: EventDataSource? {
     get {
@@ -25,6 +30,8 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   }
 
   public weak var delegate: DayViewDelegate?
+    
+    public var calendarMode: CalendarMode?
 
   /// Hides or shows header view
   public var isHeaderViewVisible = true {
@@ -150,11 +157,18 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
       heightConstraint.priority = .defaultLow
       heightConstraint.isActive = true
     
-//      timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-//      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-//      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
-//      timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+      timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+      timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+      timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
+      timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+      timelinePagerView.isHidden = true
   }
+    
+    public func switchView() {
+        tableView?.isHidden.toggle()
+        timelinePagerView.isHidden.toggle()
+        calendarMode = timelinePagerView.isHidden ? .agenda : .day
+    }
 
   public func updateStyle(_ newStyle: CalendarStyle) {
     style = newStyle
