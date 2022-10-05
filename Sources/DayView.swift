@@ -32,7 +32,11 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
 
   public weak var delegate: DayViewDelegate?
     
-    public var calendarMode: CalendarMode?
+    public var calendarMode: CalendarMode? {
+        didSet {
+            switchModeTo(calendarMode: calendarMode!)
+        }
+    }
 
   /// Hides or shows header view
   public var isHeaderViewVisible = true {
@@ -43,13 +47,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
       configureLayout()
     }
   }
-    
-    public var isTimelineViewVisibleAtStart = true {
-        didSet {
-            timelinePagerView.isHidden = !isTimelineViewVisibleAtStart
-        }
-    }
-    
+
     public var horizontalSpacing: CGFloat = 0 {
         didSet {
             layoutTableView()
@@ -141,8 +139,23 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
       newState.move(to: Date())
       state = newState
     }
+      
+      if calendarMode == nil {
+          switchModeTo(calendarMode: .agenda)
+      }
   }
   
+    private func switchModeTo(calendarMode: CalendarMode) {
+        switch calendarMode {
+        case .agenda:
+            tableView?.isHidden = false
+            timelinePagerView.isHidden = true
+        case .day:
+            tableView?.isHidden = true
+            timelinePagerView.isHidden = false
+        }
+    }
+    
   private func configureLayout() {
       dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
      
@@ -180,13 +193,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
             timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor)
             ])
     }
-    
-    public func switchView() {
-        tableView?.isHidden.toggle()
-        timelinePagerView.isHidden.toggle()
-        calendarMode = timelinePagerView.isHidden ? .agenda : .day
-    }
-
+  
   public func updateStyle(_ newStyle: CalendarStyle) {
     style = newStyle
     dayHeaderView.updateStyle(style.header)

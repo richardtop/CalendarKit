@@ -21,7 +21,7 @@ open class EventView: UIView {
     
     public private(set) lazy var subjectLabel: UILabel = {
        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.lineBreakMode = .byTruncatingTail
         label.textColor = .black
         label.numberOfLines = 0
