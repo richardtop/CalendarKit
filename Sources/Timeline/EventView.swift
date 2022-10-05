@@ -5,8 +5,40 @@ open class EventView: UIView {
   public var color = SystemColors.label
 
   public var contentHeight: CGFloat {
-    textView.frame.height
+      stackView.frame.height
   }
+        
+    public private(set) lazy var stackView: UIStackView = {
+       let view = UIStackView()
+        view.layoutMargins = UIEdgeInsets(top: 2, left: 1, bottom: 2, right: 0)
+        view.isLayoutMarginsRelativeArrangement = true
+        view.isUserInteractionEnabled = false
+        view.backgroundColor = .clear
+        view.axis = .vertical
+        view.spacing = 5
+        return view
+    }()
+    
+    public private(set) lazy var subjectLabel: UILabel = {
+       let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 17, weight: .medium)
+        label.lineBreakMode = .byTruncatingTail
+        label.textColor = .black
+        label.numberOfLines = 0
+        return label
+    }()
+    
+    public private(set) lazy var locationLabel: UITextView = {
+        let label = UITextView()
+        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
+        label.textContainer.lineBreakMode = .byTruncatingTail
+        label.textContainer.lineFragmentPadding = 0.0
+        label.textContainer.maximumNumberOfLines = 1
+        label.textContainerInset = .zero
+        label.backgroundColor = .clear
+        label.textColor = .darkGray
+        return label
+    }()
 
   public private(set) lazy var textView: UITextView = {
     let view = UITextView()
@@ -33,7 +65,9 @@ open class EventView: UIView {
   private func configure() {
     clipsToBounds = false
     color = tintColor
-    addSubview(textView)
+      stackView.addArrangedSubview(subjectLabel)
+      stackView.addArrangedSubview(locationLabel)
+      addSubview(stackView)
     
     for (idx, handle) in eventResizeHandles.enumerated() {
       handle.tag = idx
@@ -45,9 +79,8 @@ open class EventView: UIView {
     if let attributedText = event.attributedText {
       textView.attributedText = attributedText
     } else {
-      textView.text = event.text
-      textView.textColor = event.textColor
-      textView.font = event.font
+        subjectLabel.text = event.text
+        locationLabel.text = event.location
     }
     if let lineBreakMode = event.lineBreakMode {
       textView.textContainer.lineBreakMode = lineBreakMode
@@ -119,7 +152,7 @@ open class EventView: UIView {
 
   override open func layoutSubviews() {
     super.layoutSubviews()
-    textView.frame = {
+    stackView.frame = {
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
             return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
         } else {
@@ -127,10 +160,10 @@ open class EventView: UIView {
         }
     }()
     if frame.minY < 0 {
-      var textFrame = textView.frame;
+      var textFrame = stackView.frame;
       textFrame.origin.y = frame.minY * -1;
       textFrame.size.height += frame.minY;
-      textView.frame = textFrame;
+        stackView.frame = textFrame;
     }
     let first = eventResizeHandles.first
     let last = eventResizeHandles.last

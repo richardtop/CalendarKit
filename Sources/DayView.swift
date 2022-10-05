@@ -161,6 +161,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     private func layoutTableView() {
         guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
             tableView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing),
@@ -171,10 +172,13 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     
     private func layoutTimelinePagerView() {
         timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
-        timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing).isActive = true
-        timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing).isActive = true
-        timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
-        timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
+        
+        NSLayoutConstraint.activate([
+            timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor, constant: horizontalSpacing),
+            timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor, constant: -horizontalSpacing),
+            timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor),
+            timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor)
+            ])
     }
     
     public func switchView() {
