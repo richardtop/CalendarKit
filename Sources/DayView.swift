@@ -1,9 +1,8 @@
 import UIKit
 
 public protocol DayViewDelegate: AnyObject {
-    // TODO: UncommentAfter renaming EventView to AppointmentView
-//  func dayViewDidSelectEventView(_ eventView: EventView)
-//  func dayViewDidLongPressEventView(_ eventView: EventView)
+  func dayViewDidSelectEventView(_ eventView: AppointmentView)
+  func dayViewDidLongPressEventView(_ eventView: AppointmentView)
   func dayView(dayView: DayView, didTapTimelineAt date: Date)
   func dayView(dayView: DayView, didLongPressTimelineAt date: Date)
   func dayViewDidBeginDragging(dayView: DayView)
@@ -239,13 +238,11 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
 
   // MARK: TimelinePagerViewDelegate
 
-  public func timelinePagerDidSelectEventView(_ eventView: EventView) {
-      // TODO:  UncommentAfter renaming EventView to AppointmentView
-//    delegate?.dayViewDidSelectEventView(eventView)
+  public func timelinePagerDidSelectEventView(_ eventView: AppointmentView) {
+    delegate?.dayViewDidSelectEventView(eventView)
   }
-  public func timelinePagerDidLongPressEventView(_ eventView: EventView) {
-      // TODO: UncommentAfter renaming EventView to AppointmentView
-//    delegate?.dayViewDidLongPressEventView(eventView)
+  public func timelinePagerDidLongPressEventView(_ eventView: AppointmentView) {
+    delegate?.dayViewDidLongPressEventView(eventView)
   }
   public func timelinePagerDidBeginDragging(timelinePager: TimelinePagerView) {
     delegate?.dayViewDidBeginDragging(dayView: self)

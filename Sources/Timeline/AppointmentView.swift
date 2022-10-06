@@ -1,6 +1,6 @@
 import UIKit
 
-open class EventView: UIView {
+open class AppointmentView: UIView {
   public var descriptor: EventDescriptor?
   public var color = SystemColors.label
 
