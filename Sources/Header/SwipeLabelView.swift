@@ -14,12 +14,27 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
         }
         didSet {
             state?.subscribe(client: self)
-            updateLabelText()
+            updateLabelTextWith(date: state!.selectedDate)
         }
     }
     
-    private func updateLabelText() {
-        dateLabel.text = formattedDate(date: state!.selectedDate)
+    private func isToday(date: Date) -> Bool {
+      calendar.isDateInToday(date)
+    }
+    
+    private func updateLabelTextWith(date: Date) {
+        var textColor: UIColor?
+        if isToday(date: date) {
+            textColor = .systemBlue
+        } else if isDateInWeekend(date: date) {
+            textColor = UIColor.secondaryLabel
+        } else {
+            textColor = UIColor.label
+        }
+        
+        dateLabel.textColor = textColor
+        dateLabel.font = UIFont.systemFont(ofSize: 16, weight: isToday(date: date) ? .bold : .medium)
+        dateLabel.text = calendarDateStringWithoutCurrentYear(from: date)
     }
     
     private var style = SwipeLabelStyle()
@@ -43,34 +58,66 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     private func configure() {
         addSubview(dateLabel)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -10),
-            dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -5),
-            dateLabel.heightAnchor.constraint(equalToConstant: 17)
-        ])
+        dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
+        dateLabel.heightAnchor.constraint(equalToConstant: 17).isActive = true
+        
+        if isIPad() {
+            dateLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        } else {
+            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -11).isActive = true
+        }
+        
         updateStyle(style)
     }
     
-    public func updateStyle(_ newStyle: SwipeLabelStyle) {
-        style = newStyle
-        dateLabel.textColor = style.textColor
-        dateLabel.font = style.font
-    }
+    public func updateStyle(_ newStyle: SwipeLabelStyle) {}
     
     // MARK: - DayViewStateUpdating
     public func move(from oldDate: Date, to newDate: Date) {
         guard newDate != oldDate
         else { return }
-        dateLabel.text = formattedDate(date: newDate)
+        
+        updateLabelTextWith(date: newDate)
     }
     
-    private func formattedDate(date: Date) -> String {
-        let timezone = calendar.timeZone
+    // MARK: - DateFormatter
+    private let calendarDateFormatWithoutYear = "EEE, dd MMM"
+
+    private func calendarDateStringWithoutCurrentYear(from date: Date) -> String? {
+        var dateFormatter = calendarDateFormatter()
+        if Date().currentYear() == date.year() {
+            dateFormatter = calendarDateFormatter(calendarDateFormatWithoutYear)
+        }
+        return dateFormatter.string(from: date)
+    }
+    
+    private func calendarDateFormatter(_ template: String = calendarDateFormat) -> DateFormatter {
+        let langCode = Locale.preferredLanguages.first
+        let locale = (langCode == nil) ? Locale.current : Locale(identifier: langCode!)
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        formatter.timeZone = timezone
-        formatter.locale = Locale.init(identifier: Locale.preferredLanguages[0])
-        return formatter.string(from: date)
+        formatter.timeZone = .current
+        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: template, options: 0, locale: locale)
+        return formatter
+    }
+    
+    private func isDateInWeekend(date: Date) -> Bool {
+        let calendar = Calendar.current
+        return calendar.isDateInWeekend(date)
+    }
+}
+
+public func isIPad() -> Bool {
+    return UIDevice.current.userInterfaceIdiom == .pad
+}
+
+fileprivate let calendarDateFormat = "EEE, dd MMM yyyy"
+
+private extension Date {
+    func currentYear() -> Int {
+        return Calendar.current.component(.year, from: Date())
+    }
+    
+    func year() -> Int {
+        return  Calendar.current.component(.year, from: self)
     }
 }
