@@ -23,7 +23,7 @@ open class EventView: UIView {
        let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         label.lineBreakMode = .byTruncatingTail
-        label.textColor = .black
+        label.textColor = .label
         label.numberOfLines = 0
         return label
     }()
@@ -36,7 +36,7 @@ open class EventView: UIView {
         label.textContainer.maximumNumberOfLines = 1
         label.textContainerInset = .zero
         label.backgroundColor = .clear
-        label.textColor = .darkGray
+        label.textColor = .secondaryLabel
         return label
     }()
 

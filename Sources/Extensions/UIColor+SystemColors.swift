@@ -25,6 +25,12 @@ public enum SystemColors {
     }
     return UIColor(white: 247/255, alpha: 1)
   }
+    public static var tertiarySystemBackground: UIColor {
+        if #available(iOS 13, *) {
+            return .tertiarySystemBackground
+        }
+        return .white
+    }
   public static var systemRed: UIColor {
     if #available(iOS 13, *) {
       return .systemRed

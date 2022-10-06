@@ -22,13 +22,12 @@ public struct DayHeaderStyle {
   public var daySymbols = DaySymbolsStyle()
   public var daySelector = DaySelectorStyle()
   public var swipeLabel = SwipeLabelStyle()
-  public var backgroundColor = SystemColors.systemBackground
+  public var backgroundColor = SystemColors.tertiarySystemBackground
   public var separatorColor = SystemColors.systemSeparator
   public init() {}
 }
 
 public struct DaySelectorStyle {
-    // TODO: Use colors from WPX palette
     public var activeTextColor = UIColor.white
     public var selectedBackgroundColor = UIColor.systemBlue
     public var borderColor = UIColor.systemBlue
@@ -65,7 +64,7 @@ public struct TimelineStyle {
   public var timeIndicator = CurrentTimeIndicatorStyle()
   public var timeColor = SystemColors.secondaryLabel
   public var separatorColor = SystemColors.systemSeparator
-  public var backgroundColor = SystemColors.systemBackground
+  public var backgroundColor = SystemColors.tertiarySystemBackground
   public var font = UIFont.boldSystemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
   public var eventsWillOverlap: Bool = false
