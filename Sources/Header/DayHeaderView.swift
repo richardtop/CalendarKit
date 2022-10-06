@@ -56,6 +56,15 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+    
+    public func switchModeTo(calendarMode: CalendarMode) {
+        switch calendarMode {
+        case .agenda:
+            swipeLabelView.isHidden = true
+        case .day:
+            swipeLabelView.isHidden = false
+        }
+    }
 
   private func configure() {
     [daySymbolsView, swipeLabelView, separator].forEach(addSubview)

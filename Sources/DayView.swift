@@ -46,7 +46,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
       configureLayout()
     }
   }
-
+    
     public var horizontalSpacing: CGFloat = 0 {
         didSet {
             layoutTableView()
@@ -57,8 +57,12 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   public var timelineScrollOffset: CGPoint {
     timelinePagerView.timelineScrollOffset
   }
+    
+    var agendaHeightConstraint: NSLayoutConstraint!
+    var dayHeightConstraint: NSLayoutConstraint!
+    
 
-  private static let headerVisibleHeight: CGFloat = 88 // swipe view height 20
+  private static let headerVisibleHeight: CGFloat = 68 // swipe view height 20
   public var headerHeight: CGFloat = headerVisibleHeight
 
   public var autoScrollToFirstEvent: Bool {
@@ -129,6 +133,9 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     addSubview(timelinePagerView)
     addSubview(dayHeaderView)
             
+      agendaHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 68)
+      dayHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 88)
+      
     configureLayout()
     timelinePagerView.delegate = self
       dayHeaderView.delegate = self
@@ -145,29 +152,31 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   }
   
     private func switchModeTo(calendarMode: CalendarMode) {
+        dayHeaderView.switchModeTo(calendarMode: calendarMode)
         switch calendarMode {
         case .agenda:
             tableView?.isHidden = false
             timelinePagerView.isHidden = true
+            NSLayoutConstraint.deactivate([dayHeightConstraint])
+            NSLayoutConstraint.activate([agendaHeightConstraint])
         case .day:
             tableView?.isHidden = true
             timelinePagerView.isHidden = false
+            NSLayoutConstraint.deactivate([agendaHeightConstraint])
+            NSLayoutConstraint.activate([dayHeightConstraint])
         }
     }
     
-  private func configureLayout() {
-      dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
-     
-      let heightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: headerHeight)
-      heightConstraint.priority = .defaultLow
-      
-      NSLayoutConstraint.activate([
-        dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
-        dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
-        dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
-        heightConstraint
-      ])
-  }
+    private func configureLayout() {
+        dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            agendaHeightConstraint
+        ])
+    }
     
     // TODO: Create global constaints for tableView and set here
     private func layoutTableView() {
