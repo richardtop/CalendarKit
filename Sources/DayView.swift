@@ -134,7 +134,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     addSubview(dayHeaderView)
             
       agendaHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 68)
-      dayHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 88)
+      dayHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 100)
       
     configureLayout()
     timelinePagerView.delegate = self

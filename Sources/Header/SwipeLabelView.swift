@@ -4,7 +4,14 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     
     private lazy var dateLabel: UILabel = {
         let label = UILabel()
+        label.backgroundColor = .clear
         return label
+    }()
+    
+    private lazy var separator: UIView = {
+      let separator = UIView()
+      separator.backgroundColor = SystemColors.systemSeparator
+      return separator
     }()
     
     public private(set) var calendar = Calendar.autoupdatingCurrent
@@ -57,20 +64,30 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     
     private func configure() {
         addSubview(dateLabel)
+        addSubview(separator)
+        
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        separator.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        separator.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        separator.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+        
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: 0).isActive = true
-        dateLabel.heightAnchor.constraint(equalToConstant: 17).isActive = true
+        dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         if isIPad() {
             dateLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         } else {
-            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -11).isActive = true
+            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
         }
         
         updateStyle(style)
     }
     
-    public func updateStyle(_ newStyle: SwipeLabelStyle) {}
+    public func updateStyle(_ newStyle: SwipeLabelStyle) {
+        backgroundColor = .tertiarySystemBackground
+    }
     
     // MARK: - DayViewStateUpdating
     public func move(from oldDate: Date, to newDate: Date) {
