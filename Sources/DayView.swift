@@ -51,6 +51,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
         didSet {
             layoutTableView()
             layoutTimelinePagerView()
+            switchModeTo(calendarMode: calendarMode ?? .agenda)
         }
     }
 
