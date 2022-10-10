@@ -25,10 +25,6 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
         }
     }
     
-    private func isToday(date: Date) -> Bool {
-      calendar.isDateInToday(date)
-    }
-    
     private func updateLabelTextWith(date: Date) {
         var textColor: UIColor?
         if isToday(date: date) {
@@ -118,8 +114,11 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
     }
     
     private func isDateInWeekend(date: Date) -> Bool {
-        let calendar = Calendar.current
         return calendar.isDateInWeekend(date)
+    }
+    
+    private func isToday(date: Date) -> Bool {
+      calendar.isDateInToday(date)
     }
 }
 
@@ -129,12 +128,3 @@ public func isIPad() -> Bool {
 
 fileprivate let calendarDateFormat = "EEE, dd MMM yyyy"
 
-private extension Date {
-    func currentYear() -> Int {
-        return Calendar.current.component(.year, from: Date())
-    }
-    
-    func year() -> Int {
-        return  Calendar.current.component(.year, from: self)
-    }
-}

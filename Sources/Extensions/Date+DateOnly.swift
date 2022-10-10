@@ -14,4 +14,12 @@ extension Date {
     let returnValue = calendar.date(from: newComponents)
     return returnValue!
   }
+    
+    func currentYear() -> Int {
+        return Calendar.current.component(.year, from: Date())
+    }
+    
+    func year() -> Int {
+        return  Calendar.current.component(.year, from: self)
+    }
 }
