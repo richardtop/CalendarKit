@@ -3,8 +3,8 @@ import UIKit
 public protocol TimelineViewDelegate: AnyObject {
   func timelineView(_ timelineView: TimelineView, didTapAt date: Date)
   func timelineView(_ timelineView: TimelineView, didLongPressAt date: Date)
-  func timelineView(_ timelineView: TimelineView, didTap event: EventView)
-  func timelineView(_ timelineView: TimelineView, didLongPress event: EventView)
+  func timelineView(_ timelineView: TimelineView, didTap event: AppointmentView)
+  func timelineView(_ timelineView: TimelineView, didLongPress event: AppointmentView)
 }
 
 public final class TimelineView: UIView {
@@ -20,7 +20,7 @@ public final class TimelineView: UIView {
     Date()
   }
 
-  private var eventViews = [EventView]()
+  private var eventViews = [AppointmentView]()
   public private(set) var regularLayoutAttributes = [EventLayoutAttributes]()
   public private(set) var allDayLayoutAttributes = [EventLayoutAttributes]()
   
@@ -51,7 +51,7 @@ public final class TimelineView: UIView {
       setNeedsLayout()
     }
   }
-  private var pool = ReusePool<EventView>()
+  private var pool = ReusePool<AppointmentView>()
 
   public var firstEventYPosition: CGFloat? {
     let first = regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}.first
@@ -191,7 +191,7 @@ public final class TimelineView: UIView {
     }
   }
   
-  private func findEventView(at point: CGPoint) -> EventView? {
+  private func findEventView(at point: CGPoint) -> AppointmentView? {
     for eventView in allDayView.eventViews {
       let frame = eventView.convert(eventView.bounds, to: self)
       if frame.contains(point) {

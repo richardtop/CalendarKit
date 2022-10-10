@@ -63,6 +63,8 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
       font = style.font
       textColor = today ? style.todayInactiveTextColor : notTodayColor
       backgroundColor = style.inactiveBackgroundColor
+        layer.borderWidth = today ? 1 : 0
+        layer.borderColor = style.borderColor.cgColor
     }
   }
 
@@ -80,7 +82,7 @@ public final class DateLabel: UILabel, DaySelectorItemProtocol {
 
   private func animate(){
     UIView.transition(with: self,
-                      duration: 0.4,
+                      duration: 0.07,
                       options: .transitionCrossDissolve,
                       animations: {
                         self.updateState()

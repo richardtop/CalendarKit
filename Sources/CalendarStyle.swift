@@ -22,22 +22,23 @@ public struct DayHeaderStyle {
   public var daySymbols = DaySymbolsStyle()
   public var daySelector = DaySelectorStyle()
   public var swipeLabel = SwipeLabelStyle()
-  public var backgroundColor = SystemColors.systemBackground
+  public var backgroundColor = SystemColors.tertiarySystemBackground
   public var separatorColor = SystemColors.systemSeparator
   public init() {}
 }
 
 public struct DaySelectorStyle {
-  public var activeTextColor = SystemColors.systemBackground
-  public var selectedBackgroundColor = SystemColors.label
-
+    public var activeTextColor = UIColor.white
+    public var selectedBackgroundColor = UIColor.systemBlue
+    public var borderColor = UIColor.systemBlue
+    
   public var weekendTextColor = SystemColors.secondaryLabel
   public var inactiveTextColor = SystemColors.label
   public var inactiveBackgroundColor = UIColor.clear
 
-  public var todayInactiveTextColor = SystemColors.systemRed
+  public var todayInactiveTextColor = SystemColors.label
   public var todayActiveTextColor = UIColor.white
-  public var todayActiveBackgroundColor = SystemColors.systemRed
+  public var todayActiveBackgroundColor = SystemColors.systemBlue
     
   public var font = UIFont.systemFont(ofSize: 18)
   public var todayFont = UIFont.boldSystemFont(ofSize: 18)
@@ -54,7 +55,7 @@ public struct DaySymbolsStyle {
 
 public struct SwipeLabelStyle {
   public var textColor = SystemColors.label
-  public var font = UIFont.systemFont(ofSize: 15)
+    public var font = UIFont.systemFont(ofSize: 16, weight: .medium)
   public init() {}
 }
 
@@ -63,7 +64,7 @@ public struct TimelineStyle {
   public var timeIndicator = CurrentTimeIndicatorStyle()
   public var timeColor = SystemColors.secondaryLabel
   public var separatorColor = SystemColors.systemSeparator
-  public var backgroundColor = SystemColors.systemBackground
+  public var backgroundColor = SystemColors.tertiarySystemBackground
   public var font = UIFont.boldSystemFont(ofSize: 11)
   public var dateStyle : DateStyle = .system
   public var eventsWillOverlap: Bool = false

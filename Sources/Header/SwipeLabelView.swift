@@ -1,129 +1,130 @@
 import UIKit
 
 public final class SwipeLabelView: UIView, DayViewStateUpdating {
-  public enum AnimationDirection {
-    case Forward
-    case Backward
     
-    mutating func flip() {
-        switch self {
-        case .Forward:
-            self = .Backward
-        case .Backward:
-            self = .Forward
+    private lazy var dateLabel: UILabel = {
+        let label = UILabel()
+        label.backgroundColor = .clear
+        return label
+    }()
+    
+    private lazy var separator: UIView = {
+      let separator = UIView()
+      separator.backgroundColor = SystemColors.systemSeparator
+      return separator
+    }()
+    
+    public private(set) var calendar = Calendar.autoupdatingCurrent
+    public weak var state: DayViewState? {
+        willSet(newValue) {
+            state?.unsubscribe(client: self)
+        }
+        didSet {
+            state?.subscribe(client: self)
+            updateLabelTextWith(date: state!.selectedDate)
         }
     }
-  }
-
-  public private(set) var calendar = Calendar.autoupdatingCurrent
-  public weak var state: DayViewState? {
-    willSet(newValue) {
-      state?.unsubscribe(client: self)
-    }
-    didSet {
-      state?.subscribe(client: self)
-      updateLabelText()
-    }
-  }
-
-  private func updateLabelText() {
-    labels.first!.text = formattedDate(date: state!.selectedDate)
-  }
-
-  private var firstLabel: UILabel {
-    labels.first!
-  }
-
-  private var secondLabel: UILabel {
-    labels.last!
-  }
-
-  private var labels = [UILabel]()
-
-  private var style = SwipeLabelStyle()
-
-  public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
-    self.calendar = calendar
-    super.init(frame: .zero)
-    configure()
-  }
-
-  override public init(frame: CGRect) {
-    super.init(frame: frame)
-    configure()
-  }
-
-  required public init?(coder aDecoder: NSCoder) {
-    super.init(coder: aDecoder)
-    configure()
-  }
-
-  private func configure() {
-    for _ in 0...1 {
-      let label = UILabel()
-      label.textAlignment = .center
-      labels.append(label)
-      addSubview(label)
-    }
-    updateStyle(style)
-  }
-
-  public func updateStyle(_ newStyle: SwipeLabelStyle) {
-    style = newStyle
-    labels.forEach { label in
-      label.textColor = style.textColor
-      label.font = style.font
-    }
-  }
-
-  private func animate(_ direction: AnimationDirection) {
-    let multiplier: CGFloat = direction == .Forward ? -1 : 1
-    let shiftRatio: CGFloat = 30/375
-    let screenWidth = bounds.width
-
-    secondLabel.alpha = 0
-    secondLabel.frame = bounds
-    secondLabel.frame.origin.x -= CGFloat(shiftRatio * screenWidth * 3) * multiplier
-
-    UIView.animate(withDuration: 0.3, animations: { 
-      self.secondLabel.frame = self.bounds
-      self.firstLabel.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
-      self.secondLabel.alpha = 1
-      self.firstLabel.alpha = 0
-    }, completion: { _ in
-      self.labels = self.labels.reversed()
-    })
-  }
-
-  override public func layoutSubviews() {
-    super.layoutSubviews()
-    subviews.forEach { subview in
-      subview.frame = bounds
-    }
-  }
-
-  // MARK: DayViewStateUpdating
-
-  public func move(from oldDate: Date, to newDate: Date) {
-    guard newDate != oldDate
-      else { return }
-    labels.last!.text = formattedDate(date: newDate)
     
-    var direction: AnimationDirection = newDate > oldDate ? .Forward : .Backward
+    private func updateLabelTextWith(date: Date) {
+        var textColor: UIColor?
+        if isToday(date: date) {
+            textColor = .systemBlue
+        } else if isDateInWeekend(date: date) {
+            textColor = UIColor.secondaryLabel
+        } else {
+            textColor = UIColor.label
+        }
+        
+        dateLabel.textColor = textColor
+        dateLabel.font = UIFont.systemFont(ofSize: 16, weight: isToday(date: date) ? .bold : .medium)
+        dateLabel.text = calendarDateStringWithoutCurrentYear(from: date)
+    }
     
-    let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
-    if rightToLeft { direction.flip() }
+    private var style = SwipeLabelStyle()
     
-    animate(direction)
-  }
+    public init(calendar: Calendar = Calendar.autoupdatingCurrent) {
+        self.calendar = calendar
+        super.init(frame: .zero)
+        configure()
+    }
+    
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        configure()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        configure()
+    }
+    
+    private func configure() {
+        addSubview(dateLabel)
+        addSubview(separator)
+        
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        separator.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        separator.leadingAnchor.constraint(equalTo: leadingAnchor).isActive = true
+        separator.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
+        separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
+        
+        dateLabel.translatesAutoresizingMaskIntoConstraints = false
+        dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6).isActive = true
+        dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
+        
+        if isIPad() {
+            dateLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        } else {
+            dateLabel.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -12).isActive = true
+        }
+        
+        updateStyle(style)
+    }
+    
+    public func updateStyle(_ newStyle: SwipeLabelStyle) {
+        backgroundColor = .tertiarySystemBackground
+    }
+    
+    // MARK: - DayViewStateUpdating
+    public func move(from oldDate: Date, to newDate: Date) {
+        guard newDate != oldDate
+        else { return }
+        
+        updateLabelTextWith(date: newDate)
+    }
+    
+    // MARK: - DateFormatter
+    private let calendarDateFormatWithoutYear = "EEE, dd MMM"
 
-  private func formattedDate(date: Date) -> String {
-    let timezone = calendar.timeZone
-    let formatter = DateFormatter()
-    formatter.dateStyle = .full
-    formatter.timeStyle = .none
-    formatter.timeZone = timezone
-    formatter.locale = Locale.init(identifier: Locale.preferredLanguages[0])
-    return formatter.string(from: date)
-  }
+    private func calendarDateStringWithoutCurrentYear(from date: Date) -> String? {
+        var dateFormatter = calendarDateFormatter()
+        if Date().currentYear() == date.year() {
+            dateFormatter = calendarDateFormatter(calendarDateFormatWithoutYear)
+        }
+        return dateFormatter.string(from: date)
+    }
+    
+    private func calendarDateFormatter(_ template: String = calendarDateFormat) -> DateFormatter {
+        let langCode = Locale.preferredLanguages.first
+        let locale = (langCode == nil) ? Locale.current : Locale(identifier: langCode!)
+        let formatter = DateFormatter()
+        formatter.timeZone = .current
+        formatter.dateFormat = DateFormatter.dateFormat(fromTemplate: template, options: 0, locale: locale)
+        return formatter
+    }
+    
+    private func isDateInWeekend(date: Date) -> Bool {
+        return calendar.isDateInWeekend(date)
+    }
+    
+    private func isToday(date: Date) -> Bool {
+      calendar.isDateInToday(date)
+    }
 }
+
+public func isIPad() -> Bool {
+    return UIDevice.current.userInterfaceIdiom == .pad
+}
+
+fileprivate let calendarDateFormat = "EEE, dd MMM yyyy"
+

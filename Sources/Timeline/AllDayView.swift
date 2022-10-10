@@ -12,7 +12,7 @@ public final class AllDayView: UIView {
     }
   }
   
-  public private(set) var eventViews = [EventView]()
+  public private(set) var eventViews = [AppointmentView]()
   
   private lazy var textLabel: UILabel = {
     let label = UILabel()
@@ -148,7 +148,7 @@ public final class AllDayView: UIView {
     for (index, anEventDescriptor) in self.events.enumerated() {
       
       // create event
-      let eventView = EventView(frame: CGRect.zero)
+      let eventView = AppointmentView(frame: CGRect.zero)
       eventView.updateWithDescriptor(event: anEventDescriptor)
       eventView.heightAnchor.constraint(equalToConstant: allDayEventHeight).isActive = true
       

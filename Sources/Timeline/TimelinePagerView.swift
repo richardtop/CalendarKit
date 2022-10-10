@@ -1,8 +1,8 @@
 import UIKit
 
 public protocol TimelinePagerViewDelegate: AnyObject {
-  func timelinePagerDidSelectEventView(_ eventView: EventView)
-  func timelinePagerDidLongPressEventView(_ eventView: EventView)
+  func timelinePagerDidSelectEventView(_ eventView: AppointmentView)
+  func timelinePagerDidLongPressEventView(_ eventView: AppointmentView)
   func timelinePager(timelinePager: TimelinePagerView, didTapTimelineAt date: Date)
   func timelinePagerDidBeginDragging(timelinePager: TimelinePagerView)
   func timelinePagerDidTransitionCancel(timelinePager: TimelinePagerView)
@@ -207,7 +207,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   }
 
   /// Event view with editing mode active. Can be either edited or newly created event
-  private var editedEventView: EventView?
+  private var editedEventView: AppointmentView?
   /// The `EventDescriptor` that is being edited. It's editable copy is used by the `editedEventView`
   private var editedEvent: EventDescriptor?
   
@@ -218,7 +218,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   /// - Parameter event: the EventDescriptor based on which an EventView will be placed on the Timeline
   /// - Parameter animated: if true, CalendarKit animates event creation
   public func create(event: EventDescriptor, animated: Bool) {
-    let eventView = EventView()
+    let eventView = AppointmentView()
     eventView.updateWithDescriptor(event: event)
     addSubview(eventView)
     // layout algo
@@ -408,7 +408,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     return date
   }
 
-  private func update(descriptor: EventDescriptor, with eventView: EventView) {
+  private func update(descriptor: EventDescriptor, with eventView: AppointmentView) {
     if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       let eventFrame = eventView.frame
@@ -515,11 +515,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     delegate?.timelinePager(timelinePager: self, didLongPressTimelineAt: date)
   }
   
-  public func timelineView(_ timelineView: TimelineView, didTap event: EventView) {
+  public func timelineView(_ timelineView: TimelineView, didTap event: AppointmentView) {
     delegate?.timelinePagerDidSelectEventView(event)
   }
   
-  public func timelineView(_ timelineView: TimelineView, didLongPress event: EventView) {
+  public func timelineView(_ timelineView: TimelineView, didLongPress event: AppointmentView) {
     delegate?.timelinePagerDidLongPressEventView(event)
   }
 }

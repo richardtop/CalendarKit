@@ -11,7 +11,7 @@ extension Bundle {
       Bundle.main.resourceURL,
       
       // Bundle should be present here when the package is linked into a framework.
-      Bundle(for: DayViewController.self).resourceURL,
+//      Bundle(for: DayViewController.self).resourceURL,
       
       // For command-line tools.
       Bundle.main.bundleURL,

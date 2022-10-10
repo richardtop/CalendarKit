@@ -1,9 +1,17 @@
 import UIKit
 
+public protocol DayHeaderViewDelegate: AnyObject {
+    func didTapOpDate(date: Date)
+    func didMoveHeaderViewToDate(date: Date)
+}
+
 public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate {
   public private(set) var daysInWeek = 7
   public let calendar: Calendar
+    public var selectedDate: Date? 
 
+    public var delegate: DayHeaderViewDelegate?
+    
   private var style = DayHeaderStyle()
   private var currentSizeClass = UIUserInterfaceSizeClass.compact
 
@@ -21,7 +29,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   private var daySymbolsViewHeight: CGFloat = 20
   private var pagingScrollViewHeight: CGFloat = 40
-  private var swipeLabelViewHeight: CGFloat = 20
+  private var swipeLabelViewHeight: CGFloat = 30
 
   private let daySymbolsView: DaySymbolsView
   private var pagingViewController = UIPageViewController(transitionStyle: .scroll,
@@ -48,6 +56,15 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
+    
+    public func switchModeTo(calendarMode: CalendarMode) {
+        switch calendarMode {
+        case .agenda:
+            swipeLabelView.isHidden = true
+        case .day:
+            swipeLabelView.isHidden = false
+        }
+    }
 
   private func configure() {
     [daySymbolsView, swipeLabelView, separator].forEach(addSubview)
@@ -108,9 +125,10 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
                                   size: CGSize(width: bounds.width, height: daySymbolsViewHeight))
     pagingViewController.view?.frame = CGRect(origin: CGPoint(x: 0, y: daySymbolsViewHeight),
                                               size: CGSize(width: bounds.width, height: pagingScrollViewHeight))
-    swipeLabelView.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - 10 - swipeLabelViewHeight),
-                                  size: CGSize(width: bounds.width, height: swipeLabelViewHeight))
-    
+
+      swipeLabelView.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - swipeLabelViewHeight),
+                                    size: CGSize(width: bounds.width, height: swipeLabelViewHeight))
+      
     let separatorHeight = 1 / UIScreen.main.scale
     separator.frame = CGRect(origin: CGPoint(x: 0, y: bounds.height - separatorHeight),
                              size: CGSize(width: bounds.width, height: separatorHeight))
@@ -118,7 +136,6 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {
     currentSizeClass = sizeClass
-    daySymbolsView.isHidden = sizeClass == .regular
     (pagingViewController.children as? [DaySelectorController])?.forEach{$0.transitionToHorizontalSizeClass(sizeClass)}
   }
 
@@ -126,13 +143,15 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   public func dateSelectorDidSelectDate(_ date: Date) {
     state?.move(to: date)
+      delegate?.didTapOpDate(date: date)
+      selectedDate = date
   }
 
   // MARK: DayViewStateUpdating
 
   public func move(from oldDate: Date, to newDate: Date) {
     let newDate = newDate.dateOnly(calendar: calendar)
-
+      selectedDate = newDate
     let centerView = pagingViewController.viewControllers![0] as! DaySelectorController
     let startDate = centerView.startDate.dateOnly(calendar: calendar)
 
@@ -190,6 +209,7 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
       selector.selectedIndex = currentWeekdayIndex
       if let selectedDate = selector.selectedDate {
         state?.client(client: self, didMoveTo: selectedDate)
+          delegate?.didMoveHeaderViewToDate(date: selectedDate)
       }
     }
     // Deselect all the views but the currently visible one
