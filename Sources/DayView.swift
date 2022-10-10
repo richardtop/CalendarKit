@@ -134,7 +134,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     addSubview(dayHeaderView)
             
       agendaHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 68)
-      dayHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 100)
+      dayHeightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: 98)
       
     configureLayout()
     timelinePagerView.delegate = self
@@ -178,7 +178,6 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
         ])
     }
     
-    // TODO: Create global constaints for tableView and set here
     private func layoutTableView() {
         guard let tableView = tableView else { return }
         tableView.translatesAutoresizingMaskIntoConstraints = false

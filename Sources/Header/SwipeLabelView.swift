@@ -69,7 +69,7 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
         separator.heightAnchor.constraint(equalToConstant: 0.5).isActive = true
         
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
-        dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8).isActive = true
+        dateLabel.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -6).isActive = true
         dateLabel.heightAnchor.constraint(equalToConstant: 20).isActive = true
         
         if isIPad() {
