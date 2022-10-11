@@ -88,15 +88,15 @@ class CustomCalendarExampleController: DayViewController {
       let duration = Int.random(in: 60 ... 160)
       event.dateInterval = DateInterval(start: workingDate, duration: TimeInterval(duration * 60))
 
-      var info = data[Int(arc4random_uniform(UInt32(data.count)))]
+      var info = data.randomElement() ?? []
       
       let timezone = dayView.calendar.timeZone
       print(timezone)
 
       info.append(dateIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
       event.text = info.reduce("", {$0 + $1 + "\n"})
-      event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
-      event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
+      event.color = colors.randomElement() ?? .red
+      event.isAllDay = Bool.random()
       event.lineBreakMode = .byTruncatingTail
 
       events.append(event)
@@ -160,13 +160,13 @@ class CustomCalendarExampleController: DayViewController {
   }
   
   private func generateEventNearDate(_ date: Date) -> EventDescriptor {
-    let duration = Int(arc4random_uniform(160) + 60)
+    let duration = (60...220).randomElement()!
     let startDate = Calendar.current.date(byAdding: .minute, value: -Int(CGFloat(duration) / 2), to: date)!
     let event = Event()
     
     event.dateInterval = DateInterval(start: startDate, duration: TimeInterval(duration * 60))
     
-    var info = data[Int(arc4random_uniform(UInt32(data.count)))]
+    var info = data.randomElement()!
 
     info.append(dateIntervalFormatter.string(from: event.dateInterval)!)
     event.text = info.reduce("", {$0 + $1 + "\n"})
