@@ -88,15 +88,15 @@ class CustomCalendarExampleController: DayViewController {
       let duration = Int.random(in: 60 ... 160)
       event.dateInterval = DateInterval(start: workingDate, duration: TimeInterval(duration * 60))
 
-      var info = data[Int(arc4random_uniform(UInt32(data.count)))]
+      var info = data.randomElement() ?? []
       
       let timezone = dayView.calendar.timeZone
       print(timezone)
 
       info.append(dateIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
       event.text = info.reduce("", {$0 + $1 + "\n"})
-      event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
-      event.isAllDay = Int(arc4random_uniform(2)) % 2 == 0
+      event.color = colors.randomElement() ?? .systemRed
+      event.isAllDay = Bool.random()
       event.lineBreakMode = .byTruncatingTail
 
       events.append(event)
