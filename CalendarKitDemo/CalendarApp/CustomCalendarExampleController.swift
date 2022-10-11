@@ -160,13 +160,13 @@ class CustomCalendarExampleController: DayViewController {
   }
   
   private func generateEventNearDate(_ date: Date) -> EventDescriptor {
-    let duration = Int(arc4random_uniform(160) + 60)
+    let duration = (60...220).randomElement()!
     let startDate = Calendar.current.date(byAdding: .minute, value: -Int(CGFloat(duration) / 2), to: date)!
     let event = Event()
     
     event.dateInterval = DateInterval(start: startDate, duration: TimeInterval(duration * 60))
     
-    var info = data[Int(arc4random_uniform(UInt32(data.count)))]
+    var info = data.randomElement()!
 
     info.append(dateIntervalFormatter.string(from: event.dateInterval)!)
     event.text = info.reduce("", {$0 + $1 + "\n"})
