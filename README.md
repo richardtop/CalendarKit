@@ -5,7 +5,7 @@
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardtop%2FCalendarKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/richardtop/CalendarKit)
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardtop%2FCalendarKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/richardtop/CalendarKit)
 [![Tag](https://img.shields.io/github/v/tag/richardtop/calendarkit)](https://cocoapods.org/pods/CalendarKit)
-[![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](https://cocoapods.org/pods/CalendarKit)
+[![Version](https://img.shields.io/cocoapods/v/CalendarKit)](https://cocoapods.org/pods/CalendarKit)
 
 
 [![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCx1gvWpy5zjOd7yZyDwmXEA?style=social)](https://www.youtube.com/channel/UCx1gvWpy5zjOd7yZyDwmXEA?sub_confirmation=1)
