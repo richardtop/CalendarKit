@@ -95,7 +95,7 @@ class CustomCalendarExampleController: DayViewController {
 
       info.append(dateIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
       event.text = info.reduce("", {$0 + $1 + "\n"})
-      event.color = colors.randomElement() ?? .systemRed
+      event.color = colors.randomElement() ?? .red
       event.isAllDay = Bool.random()
       event.lineBreakMode = .byTruncatingTail
 
