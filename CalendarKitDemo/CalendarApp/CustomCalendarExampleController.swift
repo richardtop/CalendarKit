@@ -170,7 +170,7 @@ class CustomCalendarExampleController: DayViewController {
 
     info.append(dateIntervalFormatter.string(from: event.dateInterval)!)
     event.text = info.reduce("", {$0 + $1 + "\n"})
-    event.color = colors[Int(arc4random_uniform(UInt32(colors.count)))]
+    event.color = colors.randomElement()!
     event.editedEvent = event
 
     return event
