@@ -43,7 +43,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
                                                   options: nil)
   private var style = TimelineStyle()
 
-  private lazy var panGestureRecoognizer = UIPanGestureRecognizer(target: self,
+  private lazy var panGestureRecognizer = UIPanGestureRecognizer(target: self,
                                                           action: #selector(handlePanGesture(_:)))
   
   public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
@@ -55,12 +55,12 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   }
 
   public override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-    guard gestureRecognizer == panGestureRecoognizer else {
+    guard gestureRecognizer == panGestureRecognizer else {
       return super.gestureRecognizerShouldBegin(gestureRecognizer)
     }
     guard let pendingEvent = editedEventView else {return true}
     let eventFrame = pendingEvent.frame
-    let position = panGestureRecoognizer.location(in: self)
+    let position = panGestureRecognizer.location(in: self)
     let contains = eventFrame.contains(position)
     return contains
   }
@@ -99,8 +99,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     pagingViewController.dataSource = self
     pagingViewController.delegate = self
     addSubview(pagingViewController.view!)
-    addGestureRecognizer(panGestureRecoognizer)
-    panGestureRecoognizer.delegate = self
+    addGestureRecognizer(panGestureRecognizer)
+    panGestureRecognizer.delegate = self
   }
 
   public func updateStyle(_ newStyle: TimelineStyle) {
