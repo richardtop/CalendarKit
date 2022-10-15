@@ -2,7 +2,7 @@ import Foundation
 
 extension Bundle {
   static var localizationBundle: Bundle {
-    // When installed via the Swift Package Mananger, the bundle name is "CalendarKit_CalendarKit",
+    // When installed via the Swift Package Manager, the bundle name is "CalendarKit_CalendarKit",
     // via CocoaPods - "CalendarKit"
     let bundleNames = ["CalendarKit_CalendarKit", "CalendarKit"]
     
