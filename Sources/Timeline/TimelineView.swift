@@ -30,7 +30,7 @@ public final class TimelineView: UIView {
     }
     set {
       
-      // update layout attributes by separating allday from non all day events
+      // update layout attributes by separating all-day from non-all-day events
       allDayLayoutAttributes.removeAll()
       regularLayoutAttributes.removeAll()
       for anEventLayoutAttribute in newValue {
@@ -420,7 +420,7 @@ public final class TimelineView: UIView {
   }
   
   /**
-   This will keep the allDayView as a staionary view in its superview
+   This will keep the allDayView as a stationary view in its superview
    
    - parameter yValue: since the superview is a scrollView, `yValue` is the
    `contentOffset.y` of the scroll view

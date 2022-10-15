@@ -50,7 +50,7 @@ public final class AllDayView: UIView {
   // MARK: - METHODS
   
   /**
-   scrolls the contentOffset of the scroll view containg the event views to the
+   scrolls the contentOffset of the scroll view containing the event views to the
    bottom
    */
   public func scrollToBottom(animated: Bool = false) {
@@ -84,7 +84,7 @@ public final class AllDayView: UIView {
     /**
      Why is this constraint 999?
      
-     Since AllDayView and its constraints are set to its superview and layed out
+     Since AllDayView and its constraints are set to its superview and laid out
      before the superview's width is updated from 0 to it's computed width (screen width),
      this constraint produces conflicts. Thus, allowing this constraint to be broken
      prevents conflicts trying to layout this view with the superview.width = 0
@@ -102,7 +102,7 @@ public final class AllDayView: UIView {
      }
      ````
      
-     the superview.width is calcuated here:
+     the superview.width is calculated here:
      
      ````
      @@ public class TimelineContainer: UIScrollView, ReusableView {
