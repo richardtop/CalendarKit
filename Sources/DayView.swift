@@ -219,6 +219,10 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   public func scrollToFirstEventIfNeeded(animated: Bool = true) {
     timelinePagerView.scrollToFirstEventIfNeeded(animated: animated)
   }
+    
+    public func scrollToCurrentTime(animated: Bool = true) {
+      timelinePagerView.scrollToCurrentTime(animated: animated)
+    }
 
   public func reloadData() {
     timelinePagerView.reloadData()
@@ -278,6 +282,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     // MARK: - DayViewDelegate
     public func didTapOpDate(date: Date) {
         delegate?.didTapOnDate(date: date)
+//        timelinePagerView.scrollToUserOffSet()
     }
     
     public func didMoveHeaderViewToDate(date: Date) {

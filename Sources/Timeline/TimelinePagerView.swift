@@ -143,6 +143,12 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       controller.container.scrollTo(hour24: hour24, animated: animated)
     }
   }
+    
+    public func scrollToUserOffSet(animated: Bool = false) {
+        if let controller = currentTimeline {
+            controller.container.scrollTo(offSet: userContentOffset!, animated: animated)
+        }
+    }
 
   private func configureTimelineController(date: Date) -> TimelineContainerController {
     let controller = TimelineContainerController()
@@ -205,6 +211,12 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       }
     }
   }
+    
+    public func scrollToCurrentTime(animated: Bool) {
+        if let controller = currentTimeline {
+            controller.container.scroollToCurrentTime(animated: animated)
+        }
+    }
 
   /// Event view with editing mode active. Can be either edited or newly created event
   private var editedEventView: AppointmentView?
@@ -466,21 +478,43 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   }
 
   // MARK: UIPageViewControllerDataSource
-
+    
+    public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
+        if !decelerate {
+//            setContentOffsetForChildren(offset: scrollView.contentOffset)
+        }
+    }
+    
+    public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
+//        setContentOffsetForChildren(offset: scrollView.contentOffset)
+    }
+    
+    private func setContentOffsetForChildren(offset: CGPoint) {
+        pagingViewController.children.forEach({ vc in
+            if let vc = vc as? TimelineContainerController {
+                vc.container.setContentOffset(offset, animated: false)
+                vc.container.setNeedsLayout()
+                print("___ . pendingOffSet did set for vc - ", offset)
+            }
+        })
+    }
+    
+    public var userContentOffset: CGPoint?
+    
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
-    guard let containerController = viewController as? TimelineContainerController  else {return nil}
+    guard let containerController = viewController as? TimelineContainerController else { return nil }
     let previousDate = calendar.date(byAdding: .day, value: -1, to: containerController.timeline.date)!
     let timelineContainerController = configureTimelineController(date: previousDate)
-    let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
+    let offset = containerController.container.contentOffset
     timelineContainerController.pendingContentOffset = offset
     return timelineContainerController
   }
 
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
-    guard let containerController = viewController as? TimelineContainerController  else {return nil}
+    guard let containerController = viewController as? TimelineContainerController else { return nil }
     let nextDate = calendar.date(byAdding: .day, value: 1, to: containerController.timeline.date)!
     let timelineContainerController = configureTimelineController(date: nextDate)
-    let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
+    let offset = containerController.container.contentOffset
     timelineContainerController.pendingContentOffset = offset
     return timelineContainerController
   }
@@ -494,6 +528,9 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
     if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
       let selectedDate = timelineContainerController.timeline.date
+//        if let userContentOffset = userContentOffset {
+//            scrollToUserOffSet()
+//        }
       delegate?.timelinePager(timelinePager: self, willMoveTo: selectedDate)
       state?.client(client: self, didMoveTo: selectedDate)
       scrollToFirstEventIfNeeded(animated: true)

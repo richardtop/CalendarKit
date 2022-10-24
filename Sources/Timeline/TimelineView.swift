@@ -60,6 +60,15 @@ public final class TimelineView: UIView {
     let beginningOfDayPosition = dateToY(date)
     return max(firstEventPosition, beginningOfDayPosition)
   }
+    
+    public var currentTimeYPosition: CGFloat? {
+        if isToday {
+            let yPosition = nowLine.frame.origin.y
+            return yPosition
+        } else {
+            return nil
+        }
+    }
 
   private lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
   
@@ -160,7 +169,9 @@ public final class TimelineView: UIView {
     contentScaleFactor = 1
     layer.contentsScale = 1
     contentMode = .redraw
+//      let colors: [UIColor] = [.red, .blue, .link, .lightGray, .white, .green, .green, .brown, .magenta]
     backgroundColor = .white
+//      backgroundColor = colors.randomElement()
     addSubview(nowLine)
     
     // Add long press gesture recognizer
@@ -428,6 +439,7 @@ public final class TimelineView: UIView {
   public func offsetAllDayView(by yValue: CGFloat) {
     if let topConstraint = self.allDayViewTopConstraint {
       topConstraint.constant = yValue
+        print("___ yValue", yValue)
       layoutIfNeeded()
     }
   }
