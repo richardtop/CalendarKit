@@ -14,11 +14,19 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
+class CKPageViewController: UIPageViewController {
+    
+    var commonOffset: CGPoint?
+    
+}
+
 public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate {
 
   public weak var dataSource: EventDataSource?
   public weak var delegate: TimelinePagerViewDelegate?
 
+    weak var currentPage: UIViewController?
+    
   public private(set) var calendar: Calendar = Calendar.autoupdatingCurrent
   public var eventEditingSnappingBehavior: EventEditingSnappingBehavior {
     didSet {
@@ -38,7 +46,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public var autoScrollToFirstEvent = false
 
-  private var pagingViewController = UIPageViewController(transitionStyle: .scroll,
+  private var pagingViewController = CKPageViewController(transitionStyle: .scroll,
                                                   navigationOrientation: .horizontal,
                                                   options: nil)
   private var style = TimelineStyle()
@@ -481,22 +489,21 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     
     public func scrollViewDidEndDragging(_ scrollView: UIScrollView, willDecelerate decelerate: Bool) {
         if !decelerate {
-//            setContentOffsetForChildren(offset: scrollView.contentOffset)
+            setContentOffsetForChildren(offset: scrollView.contentOffset)
         }
     }
     
     public func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        setContentOffsetForChildren(offset: scrollView.contentOffset)
+        setContentOffsetForChildren(offset: scrollView.contentOffset)
     }
     
     private func setContentOffsetForChildren(offset: CGPoint) {
-        pagingViewController.children.forEach({ vc in
-            if let vc = vc as? TimelineContainerController {
-                vc.container.setContentOffset(offset, animated: false)
-                vc.container.setNeedsLayout()
-                print("___ . pendingOffSet did set for vc - ", offset)
-            }
-        })
+//        if let first = currentPage as? TimelineContainerController{
+            self.pagingViewController.commonOffset = offset
+//        }
+        if self.pagingViewController.children.count == 1 {
+            self.pagingViewController.commonOffset = offset
+        }
     }
     
     public var userContentOffset: CGPoint?
@@ -526,6 +533,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       delegate?.timelinePagerDidTransitionCancel(timelinePager: self)
       return
     }
+      self.currentPage = pageViewController.viewControllers?.first
+      
     if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
       let selectedDate = timelineContainerController.timeline.date
 //        if let userContentOffset = userContentOffset {

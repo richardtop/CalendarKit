@@ -7,22 +7,27 @@ public final class TimelineContainerController: UIViewController {
   public private(set) lazy var timeline = TimelineView()
   public private(set) lazy var container: TimelineContainer = {
     let view = TimelineContainer(timeline)
+      view.parent = self
     view.addSubview(timeline)
     return view
   }()
   
+    public override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        guard let parent = self.parent as? CKPageViewController else { return }
+
+        if let offset = parent.commonOffset {
+            container.setContentOffset(offset, animated: false)
+        } else {
+            if let pendingOffset = self.pendingContentOffset {
+                container.setContentOffset(pendingOffset, animated: false)
+            }
+        }
+    }
+    
   public override func loadView() {
     view = container
-//      container.delegate = self
   }
-  
-//    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        self.parent?.children.forEach({ vc in
-//            if let vc = vc as? TimelineContainerController, vc !== self {
-//                vc.container.setContentOffset(scrollView.contentOffset, animated: false)
-//            }
-//        })
-//    }
     
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()

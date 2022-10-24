@@ -2,6 +2,7 @@ import UIKit
 
 public final class TimelineContainer: UIScrollView {
   public let timeline: TimelineView
+    weak var parent: UIViewController?
   
   public init(_ timeline: TimelineView) {
     self.timeline = timeline
@@ -14,8 +15,22 @@ public final class TimelineContainer: UIScrollView {
   }
     
     public override func setContentOffset(_ contentOffset: CGPoint, animated: Bool) {
-        super.setContentOffset(contentOffset, animated: animated)
-        print("___ self.contentOffset for", contentOffset)
+        
+        guard let parent = parent?.parent as? CKPageViewController else { return }
+        
+        if let offset = parent.commonOffset {
+            super.setContentOffset(offset, animated: animated)
+            
+        }
+        
+        if parent.children.count == 1 {
+            super.setContentOffset(contentOffset, animated: animated)
+        }
+        
+        if parent.children.count != 1,
+           parent.commonOffset == nil {
+            super.setContentOffset(contentOffset, animated: animated)
+        }
     }
     
   override public func layoutSubviews() {
