@@ -2,20 +2,24 @@ import UIKit
 
 public final class TimelineContainerController: UIViewController {
   /// Content Offset to be set once the view size has been calculated
-    public var pendingContentOffset: CGPoint?
+  public var pendingContentOffset: CGPoint?
   
   public private(set) lazy var timeline = TimelineView()
   public private(set) lazy var container: TimelineContainer = {
     let view = TimelineContainer(timeline)
-      view.parent = self
+    view.parent = self
     view.addSubview(timeline)
     return view
   }()
   
+  public override func loadView() {
+    view = container
+  }
+    
     public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         guard let parent = self.parent as? CKPageViewController else { return }
-
+        
         if let offset = parent.commonOffset {
             container.setContentOffset(offset, animated: false)
         } else {
@@ -24,10 +28,6 @@ public final class TimelineContainerController: UIViewController {
             }
         }
     }
-    
-  public override func loadView() {
-    view = container
-  }
     
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()

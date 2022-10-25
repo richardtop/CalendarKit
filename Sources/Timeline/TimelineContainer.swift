@@ -2,7 +2,7 @@ import UIKit
 
 public final class TimelineContainer: UIScrollView {
   public let timeline: TimelineView
-    weak var parent: UIViewController?
+  unowned var parent: UIViewController?
   
   public init(_ timeline: TimelineView) {
     self.timeline = timeline
@@ -15,15 +15,14 @@ public final class TimelineContainer: UIScrollView {
   }
     
     public override func setContentOffset(_ contentOffset: CGPoint, animated: Bool) {
-        
         guard let parent = parent?.parent as? CKPageViewController else { return }
         
         if let offset = parent.commonOffset {
             super.setContentOffset(offset, animated: animated)
-            
         }
         
         if parent.children.count == 1 {
+            parent.commonOffset = contentOffset
             super.setContentOffset(contentOffset, animated: animated)
         }
         
@@ -36,10 +35,7 @@ public final class TimelineContainer: UIScrollView {
   override public func layoutSubviews() {
     super.layoutSubviews()
     timeline.frame = CGRect(x: 0, y: 0, width: bounds.width, height: timeline.fullHeight)
-      print("___ from layoutSubviews", contentOffset.y)
-      if contentOffset.y < 5 {
-          print()
-      }
+
     timeline.offsetAllDayView(by: contentOffset.y)
     
     //adjust the scroll insets
@@ -76,10 +72,6 @@ public final class TimelineContainer: UIScrollView {
     let padding: CGFloat = 8
     setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
   }
-    
-    public func scrollTo(offSet: CGPoint, animated: Bool = false) {
-        setTimelineOffset(offSet, animated: animated)
-    }
 
   private func setTimelineOffset(_ offset: CGPoint, animated: Bool) {
     let yToScroll = offset.y

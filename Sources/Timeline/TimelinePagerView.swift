@@ -15,9 +15,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
 }
 
 class CKPageViewController: UIPageViewController {
-    
     var commonOffset: CGPoint?
-    
 }
 
 public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate {
@@ -47,8 +45,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   public var autoScrollToFirstEvent = false
 
   private var pagingViewController = CKPageViewController(transitionStyle: .scroll,
-                                                  navigationOrientation: .horizontal,
-                                                  options: nil)
+                                                          navigationOrientation: .horizontal,
+                                                          options: nil)
   private var style = TimelineStyle()
 
   private lazy var panGestureRecoognizer = UIPanGestureRecognizer(target: self,
@@ -151,12 +149,6 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       controller.container.scrollTo(hour24: hour24, animated: animated)
     }
   }
-    
-    public func scrollToUserOffSet(animated: Bool = false) {
-        if let controller = currentTimeline {
-            controller.container.scrollTo(offSet: userContentOffset!, animated: animated)
-        }
-    }
 
   private func configureTimelineController(date: Date) -> TimelineContainerController {
     let controller = TimelineContainerController()
@@ -447,7 +439,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     let oldDate = oldDate.dateOnly(calendar: calendar)
     let newDate = newDate.dateOnly(calendar: calendar)
     let newController = configureTimelineController(date: newDate)
-
+    newController.pendingContentOffset = pagingViewController.commonOffset
     delegate?.timelinePager(timelinePager: self, willMoveTo: newDate)
 
     func completionHandler(_ completion: Bool) {
@@ -498,16 +490,13 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
     
     private func setContentOffsetForChildren(offset: CGPoint) {
-//        if let first = currentPage as? TimelineContainerController{
-            self.pagingViewController.commonOffset = offset
-//        }
+        self.pagingViewController.commonOffset = offset
+        
         if self.pagingViewController.children.count == 1 {
             self.pagingViewController.commonOffset = offset
         }
     }
-    
-    public var userContentOffset: CGPoint?
-    
+        
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     guard let containerController = viewController as? TimelineContainerController else { return nil }
     let previousDate = calendar.date(byAdding: .day, value: -1, to: containerController.timeline.date)!
@@ -537,9 +526,6 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       
     if let timelineContainerController = pageViewController.viewControllers?.first as? TimelineContainerController {
       let selectedDate = timelineContainerController.timeline.date
-//        if let userContentOffset = userContentOffset {
-//            scrollToUserOffSet()
-//        }
       delegate?.timelinePager(timelinePager: self, willMoveTo: selectedDate)
       state?.client(client: self, didMoveTo: selectedDate)
       scrollToFirstEventIfNeeded(animated: true)

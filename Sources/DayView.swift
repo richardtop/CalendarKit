@@ -62,8 +62,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     var agendaHeightConstraint: NSLayoutConstraint!
     var dayHeightConstraint: NSLayoutConstraint!
     
-
-  private static let headerVisibleHeight: CGFloat = 68 // swipe view height 20
+  private static let headerVisibleHeight: CGFloat = 68
   public var headerHeight: CGFloat = headerVisibleHeight
 
   public var autoScrollToFirstEvent: Bool {
@@ -282,7 +281,6 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     // MARK: - DayViewDelegate
     public func didTapOpDate(date: Date) {
         delegate?.didTapOnDate(date: date)
-//        timelinePagerView.scrollToUserOffSet()
     }
     
     public func didMoveHeaderViewToDate(date: Date) {
