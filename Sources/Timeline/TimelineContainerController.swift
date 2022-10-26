@@ -22,10 +22,8 @@ public final class TimelineContainerController: UIViewController {
         
         if let offset = parent.commonOffset {
             container.setContentOffset(offset, animated: false)
-        } else {
-            if let pendingOffset = self.pendingContentOffset {
-                container.setContentOffset(pendingOffset, animated: false)
-            }
+        } else if let pendingOffset = self.pendingContentOffset {
+            container.setContentOffset(pendingOffset, animated: false)
         }
     }
     

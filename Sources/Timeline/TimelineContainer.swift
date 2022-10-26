@@ -19,6 +19,7 @@ public final class TimelineContainer: UIScrollView {
         
         if let offset = parent.commonOffset {
             super.setContentOffset(offset, animated: animated)
+            return
         }
         
         if parent.children.count == 1 {

@@ -14,7 +14,7 @@ public protocol TimelinePagerViewDelegate: AnyObject {
   func timelinePager(timelinePager: TimelinePagerView, didUpdate event: EventDescriptor)
 }
 
-class CKPageViewController: UIPageViewController {
+final class CKPageViewController: UIPageViewController {
     var commonOffset: CGPoint?
 }
 
