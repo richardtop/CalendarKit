@@ -2,6 +2,7 @@ import UIKit
 
 public final class TimelineContainer: UIScrollView {
   public let timeline: TimelineView
+  unowned var parent: UIViewController?
   
   public init(_ timeline: TimelineView) {
     self.timeline = timeline
@@ -12,21 +13,36 @@ public final class TimelineContainer: UIScrollView {
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
-  
+    
+    public override func setContentOffset(_ contentOffset: CGPoint, animated: Bool) {
+        guard let parent = parent?.parent as? CKPageViewController else { return }
+        
+        if let offset = parent.commonOffset {
+            super.setContentOffset(offset, animated: animated)
+            return
+        }
+        
+        if parent.children.count == 1 {
+            parent.commonOffset = contentOffset
+            super.setContentOffset(contentOffset, animated: animated)
+        }
+        
+        if parent.children.count != 1,
+           parent.commonOffset == nil {
+            super.setContentOffset(contentOffset, animated: animated)
+        }
+    }
+    
   override public func layoutSubviews() {
     super.layoutSubviews()
     timeline.frame = CGRect(x: 0, y: 0, width: bounds.width, height: timeline.fullHeight)
+
     timeline.offsetAllDayView(by: contentOffset.y)
-    
     
     //adjust the scroll insets
     let allDayViewHeight = timeline.allDayViewHeight
-    let bottomSafeInset: CGFloat
-    if #available(iOS 11.0, *) {
-      bottomSafeInset = window?.safeAreaInsets.bottom ?? 0
-    } else {
-      bottomSafeInset = 0
-    }
+    let bottomSafeInset = window?.safeAreaInsets.bottom ?? 0
+
     scrollIndicatorInsets = UIEdgeInsets(top: allDayViewHeight, left: 0, bottom: bottomSafeInset, right: 0)
     contentInset = UIEdgeInsets(top: allDayViewHeight, left: 0, bottom: bottomSafeInset, right: 0)
   }
@@ -42,6 +58,14 @@ public final class TimelineContainer: UIScrollView {
       setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
     }
   }
+    
+    public func scroollToCurrentTime(animated: Bool) {
+        let allDayViewHeight = timeline.allDayViewHeight
+        let padding = allDayViewHeight + 200
+        if let yToScroll = timeline.currentTimeYPosition {
+            setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
+        }
+    }
   
   public func scrollTo(hour24: Float, animated: Bool = true) {
     let percentToScroll = CGFloat(hour24 / 24)
