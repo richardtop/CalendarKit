@@ -22,4 +22,15 @@ extension Date {
     func year() -> Int {
         return  Calendar.current.component(.year, from: self)
     }
+    
+    func timeOnly() -> Float {
+        let hour = Double(Calendar.current.component(.hour, from: Date()))
+        let minute = Double(Calendar.current.component(.minute, from: Date()))
+        var time = hour
+        let minutesInPercent = minute / 60.0
+        if minutesInPercent < 1 {
+            time = hour + minutesInPercent
+        }
+        return Float(time)
+    }
 }

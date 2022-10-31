@@ -60,23 +60,19 @@ public final class TimelineContainer: UIScrollView {
   }
     
     public func scroollToCurrentTime(animated: Bool) {
-        let allDayViewHeight = timeline.allDayViewHeight
-        let padding = allDayViewHeight + 200
-        if let yToScroll = timeline.currentTimeYPosition {
-            setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
-        }
+        let timeToScroll = Date().timeOnly() - 4
+        scrollTo(hour24: timeToScroll)
     }
   
   public func scrollTo(hour24: Float, animated: Bool = true) {
     let percentToScroll = CGFloat(hour24 / 24)
     let yToScroll = contentSize.height * percentToScroll
-    let padding: CGFloat = 8
-    setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
+    setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll), animated: animated)
   }
 
   private func setTimelineOffset(_ offset: CGPoint, animated: Bool) {
     let yToScroll = offset.y
-    let bottomOfScrollView = contentSize.height - bounds.size.height
+    let bottomOfScrollView = contentSize.height - bounds.size.height + 30
     let newContentY = (yToScroll < bottomOfScrollView) ? yToScroll : bottomOfScrollView
     setContentOffset(CGPoint(x: offset.x, y: newContentY), animated: animated)
   }
