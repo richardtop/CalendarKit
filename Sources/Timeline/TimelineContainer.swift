@@ -61,12 +61,15 @@ public final class TimelineContainer: UIScrollView {
     
     public func scroollToCurrentTime(animated: Bool) {
         let timeToScroll = Date().timeOnly() - 4
-        scrollTo(hour24: timeToScroll)
+        scrollTo(hour24: timeToScroll, animated: animated)
     }
   
   public func scrollTo(hour24: Float, animated: Bool = true) {
     let percentToScroll = CGFloat(hour24 / 24)
     let yToScroll = contentSize.height * percentToScroll
+      if let parent = parent?.parent as? CKPageViewController {
+          parent.commonOffset?.y = yToScroll
+      }
     setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll), animated: animated)
   }
 

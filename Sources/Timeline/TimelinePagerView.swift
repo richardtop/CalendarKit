@@ -212,9 +212,11 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
   }
     
-    public func scrollToCurrentTime(animated: Bool) {
-        if let controller = currentTimeline {
-            controller.container.scroollToCurrentTime(animated: animated)
+    public func scrollToCurrentTimeIfNeeded(needToScroll: Bool, animated: Bool) {
+        if needToScroll {
+            if let controller = currentTimeline {
+                controller.container.scroollToCurrentTime(animated: animated)
+            }
         }
     }
 
@@ -456,6 +458,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
               
         self.pagingViewController.viewControllers?.first?.view.setNeedsLayout()
         self.scrollToFirstEventIfNeeded(animated: true)
+          self.scrollToCurrentTimeIfNeeded(needToScroll: false, animated: true)
         self.delegate?.timelinePager(timelinePager: self, didMoveTo: newDate)
       }
     }
