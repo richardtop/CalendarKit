@@ -47,6 +47,12 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     }
   }
     
+    public var minDate: Date? {
+        didSet {
+            timelinePagerView.minDate = minDate
+        }
+    }
+    
     public var horizontalSpacing: CGFloat = 0 {
         didSet {
             layoutTableView()
