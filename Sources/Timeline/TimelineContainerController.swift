@@ -30,6 +30,13 @@ public final class TimelineContainerController: UIViewController {
   public override func viewDidLayoutSubviews() {
     super.viewDidLayoutSubviews()
     container.contentSize = timeline.frame.size
+      if let parent = self.parent as? CKPageViewController {
+          if parent.isFirstLaunch {
+              container.scroollToCurrentTime(animated: true)
+              parent.isFirstLaunch = false
+          }
+      }
+      
       if let newOffset = self.pendingContentOffset {
       // Apply new offset only once the size has been determined
       if view.bounds != .zero {

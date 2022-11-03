@@ -16,6 +16,8 @@ public protocol TimelinePagerViewDelegate: AnyObject {
 
 final class CKPageViewController: UIPageViewController {
     var commonOffset: CGPoint?
+    var isFirstLaunch = true
+    var timeIntervalBefore: Float = .zero
 }
 
 public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate {
@@ -44,7 +46,15 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
   public var autoScrollToFirstEvent = false
     
+    /// Min date in calendar for swipe
     public var minDate: Date?
+    
+    /// Time interval before current time
+    public var timeIntervalBefore: Float = .zero {
+        didSet {
+            pagingViewController.timeIntervalBefore = timeIntervalBefore
+        }
+    }
 
   private var pagingViewController = CKPageViewController(transitionStyle: .scroll,
                                                           navigationOrientation: .horizontal,
@@ -214,11 +224,9 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
   }
     
-    public func scrollToCurrentTimeIfNeeded(needToScroll: Bool, animated: Bool) {
-        if needToScroll {
-            if let controller = currentTimeline {
-                controller.container.scroollToCurrentTime(animated: animated)
-            }
+    public func scrollToCurrentTime(animated: Bool) {
+        if let controller = currentTimeline {
+            controller.container.scroollToCurrentTime(animated: animated)
         }
     }
 
@@ -459,8 +467,6 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
                                                       completion: nil)
               
         self.pagingViewController.viewControllers?.first?.view.setNeedsLayout()
-        self.scrollToFirstEventIfNeeded(animated: true)
-          self.scrollToCurrentTimeIfNeeded(needToScroll: false, animated: true)
         self.delegate?.timelinePager(timelinePager: self, didMoveTo: newDate)
       }
     }

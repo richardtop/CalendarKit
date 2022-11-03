@@ -23,13 +23,17 @@ extension Date {
         return  Calendar.current.component(.year, from: self)
     }
     
+    /* Returns current time in Float
+     - before point - hours
+     - after point  - percent of minutes in hour
+     */
     func timeOnly() -> Float {
-        let hour = Double(Calendar.current.component(.hour, from: Date()))
-        let minute = Double(Calendar.current.component(.minute, from: Date()))
-        var time = hour
-        let minutesInPercent = minute / 60.0
+        let hours = Double(Calendar.current.component(.hour, from: Date()))
+        let minutes = Double(Calendar.current.component(.minute, from: Date()))
+        var time = hours
+        let minutesInPercent = minutes / 60.0
         if minutesInPercent < 1 {
-            time = hour + minutesInPercent
+            time = hours + minutesInPercent
         }
         return Float(time)
     }
