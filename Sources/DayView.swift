@@ -47,6 +47,12 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
     }
   }
     
+    public var minDate: Date? {
+        didSet {
+            timelinePagerView.minDate = minDate
+        }
+    }
+    
     public var horizontalSpacing: CGFloat = 0 {
         didSet {
             layoutTableView()
@@ -73,6 +79,15 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
       timelinePagerView.autoScrollToFirstEvent = value
     }
   }
+    
+    public var timeIntervalBefore: Float {
+        get {
+            timelinePagerView.timeIntervalBefore
+        }
+        set (value) {
+            timelinePagerView.timeIntervalBefore = value
+        }
+    }
 
   public let dayHeaderView: DayHeaderView
   public let timelinePagerView: TimelinePagerView
@@ -220,7 +235,7 @@ public class DayView: UIView, TimelinePagerViewDelegate, DayHeaderViewDelegate {
   }
     
     public func scrollToCurrentTime(animated: Bool = true) {
-      timelinePagerView.scrollToCurrentTime(animated: animated)
+        timelinePagerView.scrollToCurrentTime(animated: animated)
     }
 
   public func reloadData() {

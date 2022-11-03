@@ -16,6 +16,8 @@ public protocol TimelinePagerViewDelegate: AnyObject {
 
 final class CKPageViewController: UIPageViewController {
     var commonOffset: CGPoint?
+    var isFirstLaunch = true
+    var timeIntervalBefore: Float = .zero
 }
 
 public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScrollViewDelegate, DayViewStateUpdating, UIPageViewControllerDataSource, UIPageViewControllerDelegate, TimelineViewDelegate {
@@ -43,6 +45,16 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   }
 
   public var autoScrollToFirstEvent = false
+    
+    /// Min date in calendar for swipe
+    public var minDate: Date?
+    
+    /// Time interval before current time
+    public var timeIntervalBefore: Float = .zero {
+        didSet {
+            pagingViewController.timeIntervalBefore = timeIntervalBefore
+        }
+    }
 
   private var pagingViewController = CKPageViewController(transitionStyle: .scroll,
                                                           navigationOrientation: .horizontal,
@@ -455,7 +467,6 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
                                                       completion: nil)
               
         self.pagingViewController.viewControllers?.first?.view.setNeedsLayout()
-        self.scrollToFirstEventIfNeeded(animated: true)
         self.delegate?.timelinePager(timelinePager: self, didMoveTo: newDate)
       }
     }
@@ -500,6 +511,9 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
   public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
     guard let containerController = viewController as? TimelineContainerController else { return nil }
     let previousDate = calendar.date(byAdding: .day, value: -1, to: containerController.timeline.date)!
+      if let minDate = minDate {
+          guard previousDate >= minDate else { return nil }
+      }
     let timelineContainerController = configureTimelineController(date: previousDate)
     let offset = containerController.container.contentOffset
     timelineContainerController.pendingContentOffset = offset
