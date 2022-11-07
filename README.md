@@ -21,7 +21,7 @@
 **CalendarKit** is a Swift calendar UI library for iOS and Mac Catalyst. It looks similar to the Apple Calendar app out-of-the-box, while allowing customization when needed. CalendarKit is composed of multiple modules which can be used together or independently.
 
 ## Tutorials
-- [Create iOS Calendar App in Swift with CalendarKit](https://www.youtube.com/watch?v=iC4XxmExqFA)
+- [Create iOS Calendar App in Swift with CalendarKit](https://www.youtube.com/watch?v=cJ63-_z1qg8)
 
 ## Need Help?
 If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow with the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag. Check out the [Sample App](https://github.com/richardtop/CalendarApp) for reference.
