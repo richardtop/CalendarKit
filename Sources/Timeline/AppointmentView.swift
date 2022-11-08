@@ -7,6 +7,28 @@ open class AppointmentView: UIView {
   public var contentHeight: CGFloat {
       stackView.frame.height
   }
+    
+    private typealias Attributes = ([NSAttributedString.Key : NSObject])
+    private let separator = NSAttributedString(string: "\n")
+     
+    private lazy var subjectAttributes: Attributes = {
+        let style = NSMutableParagraphStyle()
+        style.lineBreakMode = .byTruncatingTail
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.label,
+                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .medium),
+                          NSAttributedString.Key.paragraphStyle: style]
+        return attributes
+    }()
+    
+    private lazy var locationAttributes: Attributes = {
+        let style = NSMutableParagraphStyle()
+        style.paragraphSpacingBefore = 5
+        style.lineBreakMode = .byTruncatingTail
+        let attributes = [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel,
+                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .medium),
+                          NSAttributedString.Key.paragraphStyle: style]
+        return attributes
+    }()
         
     public private(set) lazy var stackView: UIStackView = {
        let view = UIStackView()
@@ -15,38 +37,21 @@ open class AppointmentView: UIView {
         view.isUserInteractionEnabled = false
         view.backgroundColor = .clear
         view.axis = .vertical
-        view.spacing = 5
+        view.spacing = .zero
         return view
     }()
     
-    public private(set) lazy var subjectLabel: UILabel = {
+    public private(set) lazy var textLabel: UILabel = {
        let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
-        label.lineBreakMode = .byTruncatingTail
         label.textColor = .label
         label.numberOfLines = 0
         return label
     }()
     
-    public private(set) lazy var locationLabel: UITextView = {
-        let label = UITextView()
-        label.font = UIFont.systemFont(ofSize: 15, weight: .medium)
-        label.textContainer.lineBreakMode = .byTruncatingTail
-        label.textContainer.lineFragmentPadding = 0.0
-        label.textContainer.maximumNumberOfLines = 1
-        label.textContainerInset = .zero
-        label.backgroundColor = .clear
-        label.textColor = .secondaryLabel
-        return label
+    public private(set) lazy var dummyView: UILabel = {
+        return UILabel()
     }()
-
-  public private(set) lazy var textView: UITextView = {
-    let view = UITextView()
-    view.isUserInteractionEnabled = false
-    view.backgroundColor = .clear
-    view.isScrollEnabled = false
-    return view
-  }()
 
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
@@ -65,8 +70,8 @@ open class AppointmentView: UIView {
   private func configure() {
     clipsToBounds = false
     color = tintColor
-      stackView.addArrangedSubview(subjectLabel)
-      stackView.addArrangedSubview(locationLabel)
+      stackView.addArrangedSubview(textLabel)
+      stackView.addArrangedSubview(dummyView)
       addSubview(stackView)
     
     for (idx, handle) in eventResizeHandles.enumerated() {
@@ -76,15 +81,18 @@ open class AppointmentView: UIView {
   }
 
   public func updateWithDescriptor(event: EventDescriptor) {
-    if let attributedText = event.attributedText {
-      textView.attributedText = attributedText
-    } else {
-        subjectLabel.text = event.text
-        locationLabel.text = event.location
-    }
-    if let lineBreakMode = event.lineBreakMode {
-      textView.textContainer.lineBreakMode = lineBreakMode
-    }
+      let attributedText = NSMutableAttributedString()
+      let attributedSubject = NSAttributedString(string: event.text,attributes: subjectAttributes)
+      attributedText.append(attributedSubject)
+      
+      if let location = event.location {
+          let attributedLocation = NSAttributedString(string: location, attributes: locationAttributes)
+          attributedText.append(separator)
+          attributedText.append(attributedLocation)
+      }
+      
+      textLabel.attributedText = attributedText
+      
     descriptor = event
     backgroundColor = event.backgroundColor
     color = event.color
@@ -159,12 +167,14 @@ open class AppointmentView: UIView {
             return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
         }
     }()
+      
     if frame.minY < 0 {
       var textFrame = stackView.frame;
       textFrame.origin.y = frame.minY * -1;
       textFrame.size.height += frame.minY;
         stackView.frame = textFrame;
     }
+      
     let first = eventResizeHandles.first
     let last = eventResizeHandles.last
     let radius: CGFloat = 40

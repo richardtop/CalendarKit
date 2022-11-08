@@ -4,7 +4,7 @@ public final class Event: EventDescriptor {
   public var dateInterval = DateInterval()
   public var isAllDay = false
   public var text = ""
-  public var location = ""
+  public var location: String?
   public var attributedText: NSAttributedString?
   public var lineBreakMode: NSLineBreakMode?
   public var color = SystemColors.systemBlue {
