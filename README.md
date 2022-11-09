@@ -15,8 +15,6 @@
 
 [Richard Topchii on Telegram](https://t.me/richardtop)
 
-[CalendarKit GitLab Mirror](https://gitlab.com/richardtop/calendarkit)
-
 # CalendarKit
 **CalendarKit** is a Swift calendar UI library for iOS and Mac Catalyst. It looks similar to the Apple Calendar app out-of-the-box, while allowing customization when needed. CalendarKit is composed of multiple modules which can be used together or independently.
 
