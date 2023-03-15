@@ -80,14 +80,16 @@ public final class Event: EventDescriptor {
     return UIColor(hue: h, saturation: s, brightness: b * 0.4, alpha: a)
   }
   
-  private func backgroundColorForLightTheme(baseColor: UIColor) -> UIColor {
-    baseColor.withAlphaComponent(0.3)
-  }
+    private func backgroundColorForLightTheme(baseColor: UIColor) -> UIColor {
+        var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
+        color.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
+        return UIColor(hue: h, saturation: s * 0.3, brightness: b * 1.1, alpha: 1)
+    }
   
   private func backgroundColorForDarkTheme(baseColor: UIColor) -> UIColor {
     var h: CGFloat = 0, s: CGFloat = 0, b: CGFloat = 0, a: CGFloat = 0
     color.getHue(&h, saturation: &s, brightness: &b, alpha: &a)
-    return UIColor(hue: h, saturation: s, brightness: b * 0.4, alpha: a * 0.8)
+    return UIColor(hue: h, saturation: s, brightness: b * 0.4, alpha: 1)
   }
   
   private func dynamicColor(light: UIColor, dark: UIColor) -> UIColor {
