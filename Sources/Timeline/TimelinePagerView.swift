@@ -306,7 +306,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
       } else { // Bottom handle
         suggestedEventFrame.size.height += diff.y
       }
-      let minimumMinutesEventDurationWhileEditing = CGFloat(style.minimumEventDurationInMinutesWhileEditing)
+      let minimumMinutesEventDurationWhileEditing = Double(style.minimumEventDurationInMinutesWhileEditing)
       let minimumEventHeight = minimumMinutesEventDurationWhileEditing * style.verticalDiff / 60
       let suggestedEventHeight = suggestedEventFrame.size.height
       
@@ -322,7 +322,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
   }
 
-  private func accentDateForEditedEventView(eventHeight: CGFloat = 0) {
+  private func accentDateForEditedEventView(eventHeight: Double = 0) {
     if let currentTimeline = currentTimeline {
       let timeline = currentTimeline.timeline
       let converted = timeline.convert(CGPoint.zero, from: editedEventView)
@@ -401,7 +401,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
   }
   
-  private func yToDate(y: CGFloat, timeline: TimelineView) -> Date {
+  private func yToDate(y: Double, timeline: TimelineView) -> Date {
     let point = CGPoint(x: 0, y: y)
     let converted = convert(point, to: timeline).y
     let date = timeline.yToDate(converted)

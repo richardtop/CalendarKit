@@ -121,7 +121,7 @@ public final class DaySelector: UIView {
   override public func layoutSubviews() {
     super.layoutSubviews()
 
-    let itemCount = CGFloat(items.count)
+    let itemCount = Double(items.count)
     let size = items.first?.intrinsicContentSize ?? .zero
 
     let parentWidth = bounds.size.width
@@ -132,7 +132,7 @@ public final class DaySelector: UIView {
 
     for (i, item) in items.enumerated() {
         
-        var x = minX + (size.width + per) * CGFloat(i)
+        var x = minX + (size.width + per) * Double(i)
         
         let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
         if rightToLeft {

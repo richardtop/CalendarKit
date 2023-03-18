@@ -69,10 +69,10 @@ public struct TimelineStyle {
   public var eventsWillOverlap: Bool = false
   public var minimumEventDurationInMinutesWhileEditing: Int = 30
   public var splitMinuteInterval: Int = 15
-  public var verticalDiff: CGFloat = 50
-  public var verticalInset: CGFloat = 10
-  public var leadingInset: CGFloat = 53
-  public var eventGap: CGFloat = 0
+  public var verticalDiff: Double = 50
+  public var verticalInset: Double = 10
+  public var leadingInset: Double = 53
+  public var eventGap: Double = 0
   public init() {}
 }
 

@@ -77,17 +77,17 @@ public final class SwipeLabelView: UIView, DayViewStateUpdating {
   }
 
   private func animate(_ direction: AnimationDirection) {
-    let multiplier: CGFloat = direction == .Forward ? -1 : 1
-    let shiftRatio: CGFloat = 30/375
+    let multiplier: Double = direction == .Forward ? -1 : 1
+    let shiftRatio: Double = 30/375
     let screenWidth = bounds.width
 
     secondLabel.alpha = 0
     secondLabel.frame = bounds
-    secondLabel.frame.origin.x -= CGFloat(shiftRatio * screenWidth * 3) * multiplier
+    secondLabel.frame.origin.x -= Double(shiftRatio * screenWidth * 3) * multiplier
 
     UIView.animate(withDuration: 0.3, animations: { 
       self.secondLabel.frame = self.bounds
-      self.firstLabel.frame.origin.x += CGFloat(shiftRatio * screenWidth) * multiplier
+      self.firstLabel.frame.origin.x += Double(shiftRatio * screenWidth) * multiplier
       self.secondLabel.alpha = 1
       self.firstLabel.alpha = 0
     }, completion: { _ in
