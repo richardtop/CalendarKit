@@ -239,7 +239,7 @@ public final class TimelineView: UIView {
       case .twentyFourHour:
         is24hClock = true
       default:
-        is24hClock = calendar.locale?.uses24hClock() ?? Locale.autoupdatingCurrent.uses24hClock()
+        is24hClock = calendar.locale?.uses24hClock ?? Locale.autoupdatingCurrent.uses24hClock
     }
     
     backgroundColor = style.backgroundColor

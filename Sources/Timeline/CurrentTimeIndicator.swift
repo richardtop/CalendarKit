@@ -150,7 +150,7 @@ import UIKit
         is24hClock = true
         break
     default:
-        is24hClock = Locale.autoupdatingCurrent.uses24hClock()
+        is24hClock = Locale.autoupdatingCurrent.uses24hClock
         break
     }
   }
