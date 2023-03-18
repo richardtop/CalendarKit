@@ -1,8 +1,7 @@
 import UIKit
 import CalendarKit
 
-class CustomCalendarExampleController: DayViewController {
-  
+final class CustomCalendarExampleController: DayViewController {
   var data = [["Breakfast at Tiffany's",
                "New York, 5th avenue"],
               
