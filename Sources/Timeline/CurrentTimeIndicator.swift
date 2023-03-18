@@ -1,8 +1,8 @@
 import UIKit
 
 @objc public final class CurrentTimeIndicator: UIView {
-  private let padding : CGFloat = 3
-  private let leadingInset: CGFloat = 53
+  private let padding : Double = 3
+  private let leadingInset: Double = 53
 
   public var calendar: Calendar = Calendar.autoupdatingCurrent {
     didSet {
@@ -109,7 +109,7 @@ import UIKit
     super.layoutSubviews()
     line.frame = {
         
-        let x: CGFloat
+        let x: Double
         let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
         if rightToLeft {
             x = 0
@@ -122,7 +122,7 @@ import UIKit
 
     circle.frame = {
         
-        let x: CGFloat
+        let x: Double
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
             x = bounds.width - leadingInset - 10
         } else {

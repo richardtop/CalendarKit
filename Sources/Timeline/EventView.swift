@@ -4,7 +4,7 @@ open class EventView: UIView {
   public var descriptor: EventDescriptor?
   public var color = SystemColors.label
 
-  public var contentHeight: CGFloat {
+  public var contentHeight: Double {
     textView.frame.height
   }
 
@@ -106,8 +106,8 @@ open class EventView: UIView {
     context.setLineWidth(3)
     context.translateBy(x: 0, y: 0.5)
     let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
-    let x: CGFloat = leftToRight ? 0 : frame.width - 1  // 1 is the line width
-    let y: CGFloat = 0
+    let x: Double = leftToRight ? 0 : frame.width - 1.0  // 1 is the line width
+    let y: Double = 0
     context.beginPath()
     context.move(to: CGPoint(x: x, y: y))
     context.addLine(to: CGPoint(x: x, y: (bounds).height))
@@ -134,8 +134,8 @@ open class EventView: UIView {
     }
     let first = eventResizeHandles.first
     let last = eventResizeHandles.last
-    let radius: CGFloat = 40
-    let yPad: CGFloat =  -radius / 2
+    let radius: Double = 40
+    let yPad: Double =  -radius / 2
     let width = bounds.width
     let height = bounds.height
     let size = CGSize(width: radius, height: radius)
@@ -153,10 +153,10 @@ open class EventView: UIView {
   private func applySketchShadow(
     color: UIColor = .black,
     alpha: Float = 0.5,
-    x: CGFloat = 0,
-    y: CGFloat = 2,
-    blur: CGFloat = 4,
-    spread: CGFloat = 0)
+    x: Double = 0,
+    y: Double = 2,
+    blur: Double = 4,
+    spread: Double = 0)
   {
     layer.shadowColor = color.cgColor
     layer.shadowOpacity = alpha

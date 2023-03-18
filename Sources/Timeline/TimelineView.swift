@@ -53,7 +53,7 @@ public final class TimelineView: UIView {
   }
   private var pool = ReusePool<EventView>()
 
-  public var firstEventYPosition: CGFloat? {
+  public var firstEventYPosition: Double? {
     let first = regularLayoutAttributes.sorted{$0.frame.origin.y < $1.frame.origin.y}.first
     guard let firstEvent = first else {return nil}
     let firstEventPosition = firstEvent.frame.origin.y
@@ -79,18 +79,18 @@ public final class TimelineView: UIView {
     return allDayView
   }()
   
-  var allDayViewHeight: CGFloat {
+  var allDayViewHeight: Double {
     allDayView.bounds.height
   }
 
   var style = TimelineStyle()
-  private var horizontalEventInset: CGFloat = 3
+  private var horizontalEventInset: Double = 3
 
-  public var fullHeight: CGFloat {
+  public var fullHeight: Double {
     style.verticalInset * 2 + style.verticalDiff * 24
   }
 
-  public var calendarWidth: CGFloat {
+  public var calendarWidth: Double {
     bounds.width - style.leadingInset
   }
     
@@ -285,7 +285,7 @@ public final class TimelineView: UIView {
     let scale = UIScreen.main.scale
     let hourLineHeight = 1 / UIScreen.main.scale
 
-    let center: CGFloat
+    let center: Double
     if Int(scale) % 2 == 0 {
         center = 1 / (scale * 2)
     } else {
@@ -297,20 +297,20 @@ public final class TimelineView: UIView {
     for (hour, time) in times.enumerated() {
         let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
         
-        let hourFloat = CGFloat(hour)
+        let hourFloat = Double(hour)
         let context = UIGraphicsGetCurrentContext()
         context!.interpolationQuality = .none
         context?.saveGState()
         context?.setStrokeColor(style.separatorColor.cgColor)
         context?.setLineWidth(hourLineHeight)
-        let xStart: CGFloat = {
+        let xStart: Double = {
             if rightToLeft {
                 return bounds.width - 53
             } else {
                 return 53
             }
         }()
-        let xEnd: CGFloat = {
+        let xEnd: Double = {
             if rightToLeft {
                 return 0
             } else {
@@ -328,7 +328,7 @@ public final class TimelineView: UIView {
     
         let fontSize = style.font.pointSize
         let timeRect: CGRect = {
-            var x: CGFloat
+            var x: Double
             if rightToLeft {
                 x = bounds.width - 53
             } else {
@@ -350,14 +350,14 @@ public final class TimelineView: UIView {
     
         if hour == accentedHour {
             
-            var x: CGFloat
+            var x: Double
             if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
                 x = bounds.width - (style.leadingInset + 7)
             } else {
                 x = 2
             }
             
-            let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (CGFloat(accentedMinute) / 60),
+            let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (Double(accentedMinute) / 60),
                                 width: style.leadingInset - 8, height: fontSize + 2)
             
             let timeString = NSString(string: ":\(accentedMinute)")
@@ -399,7 +399,7 @@ public final class TimelineView: UIView {
       let eventView = eventViews[idx]
       eventView.frame = attributes.frame
         
-      var x: CGFloat
+      var x: Double
       if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
         x = bounds.width - attributes.frame.minX - attributes.frame.width
       } else {
@@ -425,7 +425,7 @@ public final class TimelineView: UIView {
    - parameter yValue: since the superview is a scrollView, `yValue` is the
    `contentOffset.y` of the scroll view
    */
-  public func offsetAllDayView(by yValue: CGFloat) {
+  public func offsetAllDayView(by yValue: Double) {
     if let topConstraint = self.allDayViewTopConstraint {
       topConstraint.constant = yValue
       layoutIfNeeded()
@@ -483,11 +483,11 @@ public final class TimelineView: UIView {
     overlappingEvents.removeAll()
 
     for overlappingEvents in groupsOfEvents {
-      let totalCount = CGFloat(overlappingEvents.count)
+      let totalCount = Double(overlappingEvents.count)
       for (index, event) in overlappingEvents.enumerated() {
         let startY = dateToY(event.descriptor.dateInterval.start)
         let endY = dateToY(event.descriptor.dateInterval.end)
-        let floatIndex = CGFloat(index)
+        let floatIndex = Double(index)
         let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
         event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
@@ -515,10 +515,10 @@ public final class TimelineView: UIView {
 
   // MARK: - Helpers
 
-  public func dateToY(_ date: Date) -> CGFloat {
+  public func dateToY(_ date: Date) -> Double {
     let provisionedDate = date.dateOnly(calendar: calendar)
     let timelineDate = self.date.dateOnly(calendar: calendar)
-    var dayOffset: CGFloat = 0
+    var dayOffset: Double = 0
     if provisionedDate > timelineDate {
       // Event ending the next day
       dayOffset += 1
@@ -529,15 +529,15 @@ public final class TimelineView: UIView {
     let fullTimelineHeight = 24 * style.verticalDiff
     let hour = component(component: .hour, from: date)
     let minute = component(component: .minute, from: date)
-    let hourY = CGFloat(hour) * style.verticalDiff + style.verticalInset
-    let minuteY = CGFloat(minute) * style.verticalDiff / 60
+    let hourY = Double(hour) * style.verticalDiff + style.verticalInset
+    let minuteY = Double(minute) * style.verticalDiff / 60
     return hourY + minuteY + fullTimelineHeight * dayOffset
   }
 
-  public func yToDate(_ y: CGFloat) -> Date {
+  public func yToDate(_ y: Double) -> Date {
     let timeValue = y - style.verticalInset
     var hour = Int(timeValue / style.verticalDiff)
-    let fullHourPoints = CGFloat(hour) * style.verticalDiff
+    let fullHourPoints = Double(hour) * style.verticalDiff
     let minuteDiff = timeValue - fullHourPoints
     let minute = Int(minuteDiff / style.verticalDiff * 60)
     var dayOffset = 0

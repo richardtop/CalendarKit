@@ -57,14 +57,14 @@ public final class DaySymbolsView: UIView {
 
 
   override public func layoutSubviews() {
-    let labelsCount = CGFloat(labels.count)
+    let labelsCount = Double(labels.count)
 
     var per = bounds.width - bounds.height * labelsCount
     per /= labelsCount
 
     let minX = per / 2
     for (i, label) in labels.enumerated() {
-      let frame = CGRect(x: minX + (bounds.height + per) * CGFloat(i), y: 0,
+      let frame = CGRect(x: minX + (bounds.height + per) * Double(i), y: 0,
                          width: bounds.height, height: bounds.height)
       label.frame = frame
     }

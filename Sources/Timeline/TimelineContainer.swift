@@ -21,9 +21,9 @@ public final class TimelineContainer: UIScrollView {
     
     //adjust the scroll insets
     let allDayViewHeight = timeline.allDayViewHeight
-    let bottomSafeInset: CGFloat
+    let bottomSafeInset: Double
     if #available(iOS 11.0, *) {
-      bottomSafeInset = window?.safeAreaInsets.bottom ?? 0
+      bottomSafeInset = Double(window?.safeAreaInsets.bottom ?? 0.0)
     } else {
       bottomSafeInset = 0
     }
@@ -44,9 +44,9 @@ public final class TimelineContainer: UIScrollView {
   }
   
   public func scrollTo(hour24: Float, animated: Bool = true) {
-    let percentToScroll = CGFloat(hour24 / 24)
+    let percentToScroll = Double(hour24 / 24)
     let yToScroll = contentSize.height * percentToScroll
-    let padding: CGFloat = 8
+    let padding: Double = 8
     setTimelineOffset(CGPoint(x: contentOffset.x, y: yToScroll - padding), animated: animated)
   }
 

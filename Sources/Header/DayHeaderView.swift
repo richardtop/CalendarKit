@@ -19,9 +19,9 @@ public final class DayHeaderView: UIView, DaySelectorDelegate, DayViewStateUpdat
 
   private var currentWeekdayIndex = -1
 
-  private var daySymbolsViewHeight: CGFloat = 20
-  private var pagingScrollViewHeight: CGFloat = 40
-  private var swipeLabelViewHeight: CGFloat = 20
+  private var daySymbolsViewHeight: Double = 20
+  private var pagingScrollViewHeight: Double = 40
+  private var swipeLabelViewHeight: Double = 20
 
   private let daySymbolsView: DaySymbolsView
   private var pagingViewController = UIPageViewController(transitionStyle: .scroll,

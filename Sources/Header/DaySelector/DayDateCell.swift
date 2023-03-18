@@ -5,7 +5,7 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
   private let dateLabel = DateLabel()
   private let dayLabel = UILabel()
 
-  private var regularSizeClassFontSize: CGFloat = 16
+  private var regularSizeClassFontSize: Double = 16
 
   public var date = Date() {
     didSet {
@@ -92,7 +92,7 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
     super.layoutSubviews()
     dayLabel.sizeToFit()
     dayLabel.center.y = center.y
-    let interItemSpacing: CGFloat = selected ? 5 : 3
+    let interItemSpacing: Double = selected ? 5 : 3
     dateLabel.center.y = center.y
     dateLabel.frame.origin.x = dayLabel.frame.maxX + interItemSpacing
     dateLabel.frame.size = CGSize(width: 30, height: 30)
