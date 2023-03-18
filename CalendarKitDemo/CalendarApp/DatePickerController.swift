@@ -4,7 +4,7 @@ protocol DatePickerControllerDelegate: AnyObject {
   func datePicker(controller: DatePickerController, didSelect date: Date?)
 }
 
-class DatePickerController: UIViewController {
+final class DatePickerController: UIViewController {
 
   weak var delegate: DatePickerControllerDelegate?
 
