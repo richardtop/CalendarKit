@@ -37,7 +37,7 @@ public final class DayViewState {
   }
 
   private func allClientsWithout(client: DayViewStateUpdating) -> [DayViewStateUpdating] {
-    return clients.filter{$0 !== client}
+    clients.filter{$0 !== client}
   }
 
   private func notify(clients: [DayViewStateUpdating], moveTo date: Date) {
