@@ -558,7 +558,7 @@ public final class TimelineView: UIView {
   }
 
   private func component(component: Calendar.Component, from date: Date) -> Int {
-    return calendar.component(component, from: date)
+    calendar.component(component, from: date)
   }
   
   private func getDateInterval(date: Date) -> DateInterval {
