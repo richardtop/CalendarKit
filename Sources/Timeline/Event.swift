@@ -39,7 +39,7 @@ public final class Event: EventDescriptor {
   }
 
   public func commitEditing() {
-    guard let edited = editedEvent else {return}
+    guard let edited = editedEvent else { return }
     edited.dateInterval = dateInterval
   }
 
