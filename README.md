@@ -126,7 +126,7 @@ dayView.updateStyle(style)
 
 ## Requirements
 
-- iOS 10.0+, macOS (Catalyst) 10.15+
+- iOS 11.0+, macOS (Catalyst) 10.15+
 - Swift 5.7+
 
 ## Contributing
