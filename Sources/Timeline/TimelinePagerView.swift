@@ -188,7 +188,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     private func updateTimeline(_ timeline: TimelineView) {
-        guard let dataSource = dataSource else {return}
+        guard let dataSource else {return}
         let date = timeline.date.dateOnly(calendar: calendar)
         let events = dataSource.eventsForDate(date)
 
@@ -222,7 +222,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         eventView.updateWithDescriptor(event: event)
         addSubview(eventView)
         // layout algo
-        if let currentTimeline = currentTimeline {
+        if let currentTimeline {
 
             for handle in eventView.eventResizeHandles {
                 let panGestureRecognizer = handle.panGestureRecognizer
@@ -323,7 +323,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     private func accentDateForEditedEventView(eventHeight: Double = 0) {
-        if let currentTimeline = currentTimeline {
+        if let currentTimeline {
             let timeline = currentTimeline.timeline
             let converted = timeline.convert(CGPoint.zero, from: editedEventView)
             let date = timeline.yToDate(converted.y + eventHeight)
@@ -333,14 +333,14 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     private func commitEditing() {
-        if let currentTimeline = currentTimeline {
+        if let currentTimeline {
             let timeline = currentTimeline.timeline
             timeline.accentedDate = nil
             setNeedsDisplay()
 
             // TODO: Animate cancellation
 
-            if let editedEventView = editedEventView,
+            if let editedEventView,
                let descriptor = editedEventView.descriptor {
                 update(descriptor: descriptor, with: editedEventView)
 
@@ -409,7 +409,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     private func update(descriptor: EventDescriptor, with eventView: EventView) {
-        if let currentTimeline = currentTimeline {
+        if let currentTimeline {
             let timeline = currentTimeline.timeline
             let eventFrame = eventView.frame
             let converted = convert(eventFrame, to: timeline)

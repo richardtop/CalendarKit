@@ -51,7 +51,7 @@ public final class DaySelector: UIView {
             items.filter{$0.selected == true}.first?.date as Date?
         }
         set(newDate) {
-            if let newDate = newDate {
+            if let newDate {
                 selectedIndex = calendar.dateComponents([.day], from: startDate, to: newDate).day!
             }
         }
