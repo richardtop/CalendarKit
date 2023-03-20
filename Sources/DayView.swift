@@ -109,22 +109,20 @@ public class DayView: UIView, TimelinePagerViewDelegate {
     }
     
     private func configureLayout() {
-        if #available(iOS 11.0, *) {
-            dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
-            timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
-            
-            dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-            dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-            dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
-            let heightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: headerHeight)
-            heightConstraint.priority = .defaultLow
-            heightConstraint.isActive = true
-            
-            timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
-            timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
-            timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
-            timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        }
+        dayHeaderView.translatesAutoresizingMaskIntoConstraints = false
+        timelinePagerView.translatesAutoresizingMaskIntoConstraints = false
+
+        dayHeaderView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+        dayHeaderView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+        dayHeaderView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor).isActive = true
+        let heightConstraint = dayHeaderView.heightAnchor.constraint(equalToConstant: headerHeight)
+        heightConstraint.priority = .defaultLow
+        heightConstraint.isActive = true
+
+        timelinePagerView.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor).isActive = true
+        timelinePagerView.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor).isActive = true
+        timelinePagerView.topAnchor.constraint(equalTo: dayHeaderView.bottomAnchor).isActive = true
+        timelinePagerView.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
     }
     
     public func updateStyle(_ newStyle: CalendarStyle) {
@@ -151,17 +149,6 @@ public class DayView: UIView, TimelinePagerViewDelegate {
     
     public func move(to date: Date) {
         state?.move(to: date)
-    }
-    
-    override public func layoutSubviews() {
-        super.layoutSubviews()
-        if #available(iOS 11, *) {} else {
-            dayHeaderView.frame = CGRect(origin: CGPoint(x: 0, y: layoutMargins.top),
-                                         size: CGSize(width: bounds.width, height: headerHeight))
-            let timelinePagerHeight = bounds.height - dayHeaderView.frame.maxY
-            timelinePagerView.frame = CGRect(origin: CGPoint(x: 0, y: dayHeaderView.frame.maxY),
-                                             size: CGSize(width: bounds.width, height: timelinePagerHeight))
-        }
     }
     
     public func transitionToHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) {

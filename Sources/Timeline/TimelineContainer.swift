@@ -21,12 +21,7 @@ public final class TimelineContainer: UIScrollView {
         
         //adjust the scroll insets
         let allDayViewHeight = timeline.allDayViewHeight
-        let bottomSafeInset: Double
-        if #available(iOS 11.0, *) {
-            bottomSafeInset = Double(window?.safeAreaInsets.bottom ?? 0.0)
-        } else {
-            bottomSafeInset = 0
-        }
+        let bottomSafeInset = Double(window?.safeAreaInsets.bottom ?? 0.0)
         scrollIndicatorInsets = UIEdgeInsets(top: allDayViewHeight, left: 0, bottom: bottomSafeInset, right: 0)
         contentInset = UIEdgeInsets(top: allDayViewHeight, left: 0, bottom: bottomSafeInset, right: 0)
     }
