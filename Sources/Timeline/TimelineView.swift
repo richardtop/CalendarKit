@@ -258,7 +258,7 @@ public final class TimelineView: UIView {
         var accentedHour = -1
         var accentedMinute = -1
 
-        if let accentedDate = accentedDate {
+        if let accentedDate {
             accentedHour = eventEditingSnappingBehavior.accentedHour(for: accentedDate)
             accentedMinute = eventEditingSnappingBehavior.accentedMinute(for: accentedDate)
         }
