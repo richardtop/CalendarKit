@@ -43,18 +43,18 @@ final class CustomCalendarExampleController: DayViewController {
                 UIColor.yellow,
                 UIColor.green,
                 UIColor.red]
-
+  
   private lazy var dateIntervalFormatter: DateIntervalFormatter = {
     let dateIntervalFormatter = DateIntervalFormatter()
     dateIntervalFormatter.dateStyle = .none
     dateIntervalFormatter.timeStyle = .short
-
+    
     return dateIntervalFormatter
   }()
-
+  
   override func loadView() {
     calendar.timeZone = TimeZone(identifier: "Europe/Paris")!
-
+    
     dayView = DayView(calendar: calendar)
     view = dayView
   }
@@ -83,28 +83,28 @@ final class CustomCalendarExampleController: DayViewController {
     
     for i in 0...4 {
       let event = Event()
-
+      
       let duration = Int.random(in: 60 ... 160)
       event.dateInterval = DateInterval(start: workingDate, duration: TimeInterval(duration * 60))
-
+      
       var info = data.randomElement() ?? []
       
       let timezone = dayView.calendar.timeZone
       print(timezone)
-
+      
       info.append(dateIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
       event.text = info.reduce("", {$0 + $1 + "\n"})
       event.color = colors.randomElement() ?? .red
       event.isAllDay = Bool.random()
       event.lineBreakMode = .byTruncatingTail
-
+      
       events.append(event)
       
       let nextOffset = Int.random(in: 40 ... 250)
       workingDate = Calendar.current.date(byAdding: .minute, value: nextOffset, to: workingDate)!
       event.userInfo = String(i)
     }
-
+    
     print("Events for \(date)")
     return events
   }
@@ -166,12 +166,12 @@ final class CustomCalendarExampleController: DayViewController {
     event.dateInterval = DateInterval(start: startDate, duration: TimeInterval(duration * 60))
     
     var info = data.randomElement()!
-
+    
     info.append(dateIntervalFormatter.string(from: event.dateInterval)!)
     event.text = info.reduce("", {$0 + $1 + "\n"})
     event.color = colors.randomElement()!
     event.editedEvent = event
-
+    
     return event
   }
   
