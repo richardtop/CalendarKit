@@ -89,7 +89,7 @@ public final class Event: EventDescriptor {
     }
 
     private func dynamicColor(light: UIColor, dark: UIColor) -> UIColor {
-        if #available(iOS 13.0, *) {
+        if #available(iOS 13, tvOS 13, *) {
             return UIColor { traitCollection in
                 let interfaceStyle = traitCollection.userInterfaceStyle
                 switch interfaceStyle {
