@@ -497,9 +497,14 @@ public final class TimelineView: UIView {
         let startY = dateToY(event.descriptor.dateInterval.start)
         let endY = dateToY(event.descriptor.dateInterval.end)
         let floatIndex = CGFloat(index)
+          var height = endY - startY
+          // если событие менее 15 минут - отображать высоту view как для 15 минут
+          if height < style.verticalDiff / 4 {
+              height = style.verticalDiff / 4
+          }
         let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
-        event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
+        event.frame = CGRect(x: x, y: startY, width: equalWidth, height: height)
       }
     }
   }

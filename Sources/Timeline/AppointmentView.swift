@@ -10,12 +10,13 @@ open class AppointmentView: UIView {
     
     private typealias Attributes = ([NSAttributedString.Key : NSObject])
     private let separator = NSAttributedString(string: "\n")
-     
+    private let lockImageSize: CGFloat = 12 
+    
     private lazy var subjectAttributes: Attributes = {
         let style = NSMutableParagraphStyle()
         style.lineBreakMode = .byTruncatingTail
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.label,
-                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 16, weight: .medium),
+                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .medium),
                           NSAttributedString.Key.paragraphStyle: style]
         return attributes
     }()
@@ -25,14 +26,14 @@ open class AppointmentView: UIView {
         style.paragraphSpacingBefore = 5
         style.lineBreakMode = .byTruncatingTail
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel,
-                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 15, weight: .medium),
+                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .medium),
                           NSAttributedString.Key.paragraphStyle: style]
         return attributes
     }()
         
     public private(set) lazy var stackView: UIStackView = {
        let view = UIStackView()
-        view.layoutMargins = UIEdgeInsets(top: 2, left: 1, bottom: 2, right: 0)
+        view.layoutMargins = UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 0)
         view.isLayoutMarginsRelativeArrangement = true
         view.isUserInteractionEnabled = false
         view.backgroundColor = .clear
@@ -51,6 +52,13 @@ open class AppointmentView: UIView {
     
     public private(set) lazy var dummyView: UILabel = {
         return UILabel()
+    }()
+    
+    private lazy var lockImageView: UIImageView = {
+        let lockImage = UIImage(systemName: "lock.fill")
+        let imageView = UIImageView(image: lockImage)
+        imageView.tintColor = .label
+        return imageView
     }()
 
   /// Resize Handle views showing up when editing the event.
@@ -73,6 +81,7 @@ open class AppointmentView: UIView {
       stackView.addArrangedSubview(textLabel)
       stackView.addArrangedSubview(dummyView)
       addSubview(stackView)
+      addSubview(lockImageView)
     
     for (idx, handle) in eventResizeHandles.enumerated() {
       handle.tag = idx
@@ -162,9 +171,9 @@ open class AppointmentView: UIView {
     super.layoutSubviews()
     stackView.frame = {
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
-            return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+            return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - lockImageSize - 5, height: bounds.height)
         } else {
-            return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+            return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - lockImageSize - 5, height: bounds.height)
         }
     }()
       
@@ -174,6 +183,24 @@ open class AppointmentView: UIView {
       textFrame.size.height += frame.minY;
         stackView.frame = textFrame;
     }
+      
+      lockImageView.frame = {
+          if stackView.bounds.height <= lockImageSize {
+              return CGRect(x: bounds.maxX - lockImageSize - 3,
+                            y: bounds.maxY - lockImageSize,
+                            width: lockImageSize,
+                            height: lockImageSize)
+          } else {
+              return CGRect(x: bounds.maxX - lockImageSize - 3,
+                            y: bounds.maxY - lockImageSize - 3,
+                            width: lockImageSize,
+                            height: lockImageSize)
+          } 
+      }() 
+      
+      guard let descriptor else { return }
+      // Не показывать иконку замка для частных событий длительностью менее 15 мин (900 сек)
+      lockImageView.isHidden = ((descriptor.dateInterval.duration) < TimeInterval(900.0)) || !(descriptor.isPrivate)
       
     let first = eventResizeHandles.first
     let last = eventResizeHandles.last
