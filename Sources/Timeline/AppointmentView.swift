@@ -4,19 +4,20 @@ open class AppointmentView: UIView {
   public var descriptor: EventDescriptor?
   public var color = SystemColors.label
 
-  public var contentHeight: CGFloat {
-      stackView.frame.height
-  }
+    private var isZeroDuration: Bool {
+        return descriptor?.dateInterval.duration == Double(0.0)
+    }
     
     private typealias Attributes = ([NSAttributedString.Key : NSObject])
     private let separator = NSAttributedString(string: "\n")
-    private let lockImageSize: CGFloat = 12 
+    private let lockImageSize: CGFloat = 14 
+    private let pointSize: CGFloat = 10
     
     private lazy var subjectAttributes: Attributes = {
         let style = NSMutableParagraphStyle()
         style.lineBreakMode = .byTruncatingTail
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.label,
-                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 14, weight: .medium),
+                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .medium),
                           NSAttributedString.Key.paragraphStyle: style]
         return attributes
     }()
@@ -26,12 +27,12 @@ open class AppointmentView: UIView {
         style.paragraphSpacingBefore = 5
         style.lineBreakMode = .byTruncatingTail
         let attributes = [NSAttributedString.Key.foregroundColor: UIColor.secondaryLabel,
-                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 13, weight: .medium),
+                          NSAttributedString.Key.font: UIFont.systemFont(ofSize: 12, weight: .medium),
                           NSAttributedString.Key.paragraphStyle: style]
         return attributes
     }()
         
-    public private(set) lazy var stackView: UIStackView = {
+    private lazy var stackView: UIStackView = {
        let view = UIStackView()
         view.layoutMargins = UIEdgeInsets(top: 0, left: 1, bottom: 0, right: 0)
         view.isLayoutMarginsRelativeArrangement = true
@@ -42,15 +43,15 @@ open class AppointmentView: UIView {
         return view
     }()
     
-    public private(set) lazy var textLabel: UILabel = {
+    private lazy var stactTextLabel: UILabel = {
        let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 16, weight: .medium)
+        label.font = UIFont.systemFont(ofSize: 13, weight: .medium)
         label.textColor = .label
         label.numberOfLines = 0
         return label
     }()
     
-    public private(set) lazy var dummyView: UILabel = {
+    private lazy var dummyView: UILabel = {
         return UILabel()
     }()
     
@@ -60,7 +61,27 @@ open class AppointmentView: UIView {
         imageView.tintColor = .label
         return imageView
     }()
-
+   
+    // MARK: - Props for zero duration view
+    private lazy var containerView: UIView = {
+        let view = UIView()
+        view.backgroundColor = .clear
+        return view
+    }()
+    
+    private lazy var containerTextLabel: UILabel = {
+        let label = UILabel()
+        label.font = UIFont.systemFont(ofSize: 13, weight: .medium)
+        label.textColor = .label
+        label.lineBreakMode = .byTruncatingTail
+        return label  
+    }()
+    
+    private lazy var pointView: UIView = {
+       let view = UIView()
+        return view
+    }()
+   
   /// Resize Handle views showing up when editing the event.
   /// The top handle has a tag of `0` and the bottom has a tag of `1`
   public private(set) lazy var eventResizeHandles = [EventResizeHandleView(), EventResizeHandleView()]
@@ -78,11 +99,15 @@ open class AppointmentView: UIView {
   private func configure() {
     clipsToBounds = false
     color = tintColor
-      stackView.addArrangedSubview(textLabel)
+      stackView.addArrangedSubview(stactTextLabel)
       stackView.addArrangedSubview(dummyView)
       addSubview(stackView)
       addSubview(lockImageView)
-    
+      
+      containerView.addSubview(pointView)
+      containerView.addSubview(containerTextLabel)
+      self.addSubview(containerView)
+      
     for (idx, handle) in eventResizeHandles.enumerated() {
       handle.tag = idx
       addSubview(handle)
@@ -100,11 +125,14 @@ open class AppointmentView: UIView {
           attributedText.append(attributedLocation)
       }
       
-      textLabel.attributedText = attributedText
+      stactTextLabel.attributedText = attributedText
+      containerTextLabel.text = event.text
+      descriptor = event
+      backgroundColor = isZeroDuration ? .clear : event.backgroundColor
+      pointView.backgroundColor = event.color
+
+      color = isZeroDuration ? .clear : event.color
       
-    descriptor = event
-    backgroundColor = event.backgroundColor
-    color = event.color
     eventResizeHandles.forEach{
       $0.borderColor = event.color
       $0.isHidden = event.editedEvent == nil
@@ -166,10 +194,42 @@ open class AppointmentView: UIView {
   }
 
   private var drawsShadow = false
-
-  override open func layoutSubviews() {
-    super.layoutSubviews()
-    stackView.frame = {
+    
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        containerView.isHidden = true
+        pointView.isHidden = true
+        containerTextLabel.isHidden = true
+        stackView.isHidden = false
+        
+        // Не показывать stackView для событий с длительностью 0. Вместо него использовать containerView 
+        if isZeroDuration {
+            stackView.isHidden = true
+            containerView.isHidden = false
+            pointView.isHidden = false
+            containerTextLabel.isHidden = false
+            
+            containerView.frame = CGRect(x: bounds.minX,
+                                         y: bounds.minY,
+                                         width: bounds.width,
+                                         height: bounds.height)
+            
+            pointView.frame = CGRect(x: containerView.frame.minX + 3,
+                                     y: containerView.frame.height/2 - pointSize/2,
+                                     width: pointSize,
+                                     height: pointSize)
+            
+            pointView.layer.cornerRadius = pointSize/2
+            
+            containerTextLabel.frame = CGRect(x: pointView.frame.maxX + 5, 
+                                     y: 0, 
+                                     width: containerView.bounds.width - pointSize * 2, 
+                                     height: containerView.frame.height)
+            
+        }
+        
+        
+        stackView.frame = {
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
             return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - lockImageSize - 5, height: bounds.height)
         } else {
@@ -197,7 +257,7 @@ open class AppointmentView: UIView {
                             height: lockImageSize)
           } 
       }() 
-      
+          
       guard let descriptor else { return }
       // Не показывать иконку замка для частных событий длительностью менее 15 мин (900 сек)
       lockImageView.isHidden = ((descriptor.dateInterval.duration) < TimeInterval(900.0)) || !(descriptor.isPrivate)
