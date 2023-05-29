@@ -494,12 +494,23 @@ public final class TimelineView: UIView {
     for overlappingEvents in groupsOfEvents {
       let totalCount = CGFloat(overlappingEvents.count)
       for (index, event) in overlappingEvents.enumerated() {
-        let startY = dateToY(event.descriptor.dateInterval.start)
+        var startY = dateToY(event.descriptor.dateInterval.start)
         let endY = dateToY(event.descriptor.dateInterval.end)
         let floatIndex = CGFloat(index)
+          var height = endY - startY
+          // если событие менее 15 минут - отображать высоту view как для 15 минут
+          if height < style.verticalDiff / 4 {
+              height = style.verticalDiff / 4
+          }
+          
+          // если событие длительностью 0 минут - смещаем начало события на половину высоты appointmentZeroView
+          if event.descriptor.dateInterval.duration == 0 {
+              startY = (startY - height / 2) + style.eventGap  
+          }
+
         let x = style.leadingInset + floatIndex / totalCount * calendarWidth
         let equalWidth = calendarWidth / totalCount
-        event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
+        event.frame = CGRect(x: x, y: startY, width: equalWidth, height: height)
       }
     }
   }

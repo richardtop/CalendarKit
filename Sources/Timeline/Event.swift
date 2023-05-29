@@ -3,6 +3,7 @@ import UIKit
 public final class Event: EventDescriptor {
   public var dateInterval = DateInterval()
   public var isAllDay = false
+  public var isPrivate = false
   public var text = ""
   public var location: String?
   public var attributedText: NSAttributedString?
@@ -28,6 +29,7 @@ public final class Event: EventDescriptor {
     let cloned = Event()
     cloned.dateInterval = dateInterval
     cloned.isAllDay = isAllDay
+    cloned.isPrivate = isPrivate
     cloned.text = text
     cloned.location = location
     cloned.attributedText = attributedText
