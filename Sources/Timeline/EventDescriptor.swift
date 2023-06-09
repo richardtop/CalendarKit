@@ -14,6 +14,17 @@ public protocol EventDescriptor: AnyObject {
   var textColor: UIColor {get}
   var backgroundColor: UIColor {get}
   var editedEvent: EventDescriptor? {get set}
+  var responseType: Int { get }
+  var isCancelledAppointment: Bool { get }
   func makeEditable() -> Self
   func commitEditing()
+}
+
+public enum CalendarResponse: Int {
+    case unknown
+    case organizer
+    case tentative
+    case accept
+    case decline
+    case noResponseReceived
 }

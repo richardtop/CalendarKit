@@ -1,6 +1,9 @@
 import UIKit
 
 public final class Event: EventDescriptor {
+  public var responseType: Int = 0
+  public var isCancelledAppointment: Bool = false
+    
   public var dateInterval = DateInterval()
   public var isAllDay = false
   public var isPrivate = false
