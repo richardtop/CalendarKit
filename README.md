@@ -5,21 +5,21 @@
 [![Swift Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardtop%2FCalendarKit%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/richardtop/CalendarKit)
 [![Platform Compatibility](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Frichardtop%2FCalendarKit%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/richardtop/CalendarKit)
 [![Tag](https://img.shields.io/github/v/tag/richardtop/calendarkit)](https://cocoapods.org/pods/CalendarKit)
-[![Version](https://img.shields.io/cocoapods/v/CalendarKit.svg?style=flat)](https://cocoapods.org/pods/CalendarKit)
+[![Version](https://img.shields.io/cocoapods/v/CalendarKit)](https://cocoapods.org/pods/CalendarKit)
 
 
 [![YouTube Channel Subscribers](https://img.shields.io/youtube/channel/subscribers/UCx1gvWpy5zjOd7yZyDwmXEA?style=social)](https://www.youtube.com/channel/UCx1gvWpy5zjOd7yZyDwmXEA?sub_confirmation=1)
+[![Twitter](https://img.shields.io/twitter/follow/richardtop_ios?style=social)](https://twitter.com/richardtop_ios)
 [![GitHub followers](https://img.shields.io/github/followers/richardtop?style=social)](https://github.com/richardtop)
 
-[Richard Topchii on Telegram](https://t.me/richardtop)
 
-[CalendarKit GitLab Mirror](https://gitlab.com/richardtop/calendarkit)
+[Richard Topchii on Telegram](https://t.me/richardtop)
 
 # CalendarKit
 **CalendarKit** is a Swift calendar UI library for iOS and Mac Catalyst. It looks similar to the Apple Calendar app out-of-the-box, while allowing customization when needed. CalendarKit is composed of multiple modules which can be used together or independently.
 
 ## Tutorials
-- [Create iOS Calendar App in Swift with CalendarKit](https://www.youtube.com/watch?v=iC4XxmExqFA)
+- [Create iOS Calendar App in Swift with CalendarKit](https://www.youtube.com/watch?v=cJ63-_z1qg8)
 
 ## Need Help?
 If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow with the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag. Check out the [Sample App](https://github.com/richardtop/CalendarApp) for reference.
@@ -126,8 +126,8 @@ dayView.updateStyle(style)
 
 ## Requirements
 
-- iOS 10.0+, macOS (Catalyst) 10.15+
-- Swift 4+ (Library is written in Swift 5)
+- iOS 11.0+, macOS (Catalyst) 10.15+
+- Swift 5.7+
 
 ## Contributing
 The list of features currently in development can be viewed on the [issues](https://github.com/richardtop/CalendarKit/issues) page.

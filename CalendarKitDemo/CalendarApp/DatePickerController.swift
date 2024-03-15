@@ -1,49 +1,49 @@
 import UIKit
 
 protocol DatePickerControllerDelegate: AnyObject {
-  func datePicker(controller: DatePickerController, didSelect date: Date?)
+    func datePicker(controller: DatePickerController, didSelect date: Date?)
 }
 
-class DatePickerController: UIViewController {
+final class DatePickerController: UIViewController {
 
-  weak var delegate: DatePickerControllerDelegate?
+    weak var delegate: DatePickerControllerDelegate?
 
-  var date: Date {
-    get {
-      return datePicker.date
+    var date: Date {
+        get {
+            datePicker.date
+        }
+        set(value) {
+            datePicker.setDate(value, animated: false)
+        }
     }
-    set(value) {
-      datePicker.setDate(value, animated: false)
+
+    lazy var datePicker: UIDatePicker = {
+        let v = UIDatePicker()
+        v.datePickerMode = .date
+        return v
+    }()
+
+    override func loadView() {
+        view = datePicker
     }
-  }
 
-  lazy var datePicker: UIDatePicker = {
-    let v = UIDatePicker()
-    v.datePickerMode = .date
-    return v
-  }()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .white
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
+                                                            target: self,
+                                                            action: #selector(DatePickerController.doneButtonDidTap))
 
-  override func loadView() {
-    view = datePicker
-  }
+        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
+                                                           target: self,
+                                                           action: #selector(DatePickerController.cancelButtonDidTap))
+    }
 
-  override func viewDidLoad() {
-    super.viewDidLoad()
-    view.backgroundColor = .white
-    navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done,
-                                                        target: self,
-                                                        action: #selector(DatePickerController.doneButtonDidTap))
+    @objc func doneButtonDidTap() {
+        delegate?.datePicker(controller: self, didSelect: date)
+    }
 
-    navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
-                                                       target: self,
-                                                       action: #selector(DatePickerController.cancelButtonDidTap))
-  }
-
-  @objc func doneButtonDidTap() {
-    delegate?.datePicker(controller: self, didSelect: date)
-  }
-
-  @objc func cancelButtonDidTap() {
-    delegate?.datePicker(controller: self, didSelect: nil)
-  }
+    @objc func cancelButtonDidTap() {
+        delegate?.datePicker(controller: self, didSelect: nil)
+    }
 }
