@@ -1,8 +1,11 @@
 CalendarKit actively accepts contributions in a form of pull requests (code changes) and issues (bug reports and feature requests). If you wish to submit a pull request, feel free to raise an issue first to discuss the implementation details and your approach.
 
-If you have a **programming question** about how to use CalendarKit in your application, ask it on StackOverflow with the [CalendarKit](https://stackoverflow.com/questions/tagged/calendarkit) tag.
+## Need Help?
+If you have a **programming question** about how to use CalendarKit in your application, [Create a new GitHub Issue with the question tag](https://github.com/richardtop/CalendarKit/issues/new?assignees=&labels=question&projects=&template=question.md&title=).
 
-Please, use [GitHub Issues](https://github.com/richardtop/CalendarKit/issues) only for reporting a bug or requesting a new feature.
+Check out the [Sample App](https://github.com/richardtop/CalendarApp) for reference.
+
+[Create a new Issue from template](https://github.com/richardtop/CalendarKit/issues/new/choose) to report a bug or request a new feature.
 
 
 
