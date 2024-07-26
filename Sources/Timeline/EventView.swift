@@ -13,6 +13,7 @@ open class EventView: UIView {
         view.isUserInteractionEnabled = false
         view.backgroundColor = .clear
         view.isScrollEnabled = false
+        view.clipsToBounds = true
         return view
     }()
     
@@ -44,6 +45,7 @@ open class EventView: UIView {
     public func updateWithDescriptor(event: EventDescriptor) {
         if let attributedText = event.attributedText {
             textView.attributedText = attributedText
+            textView.setNeedsLayout()
         } else {
             textView.text = event.text
             textView.textColor = event.textColor
@@ -53,7 +55,9 @@ open class EventView: UIView {
             textView.textContainer.lineBreakMode = lineBreakMode
         }
         descriptor = event
-        backgroundColor = event.backgroundColor
+        backgroundColor = .clear
+        layer.backgroundColor = event.backgroundColor.cgColor
+        layer.cornerRadius = 5
         color = event.color
         eventResizeHandles.forEach{
             $0.borderColor = event.color
@@ -104,13 +108,16 @@ open class EventView: UIView {
         context.saveGState()
         context.setStrokeColor(color.cgColor)
         context.setLineWidth(3)
+        context.setLineCap(.round)
         context.translateBy(x: 0, y: 0.5)
         let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
         let x: Double = leftToRight ? 0 : frame.width - 1.0  // 1 is the line width
         let y: Double = 0
+        let hOffset: Double = 3
+        let vOffset: Double = 5
         context.beginPath()
-        context.move(to: CGPoint(x: x, y: y))
-        context.addLine(to: CGPoint(x: x, y: (bounds).height))
+        context.move(to: CGPoint(x: x + 2 * hOffset, y: y + vOffset))
+        context.addLine(to: CGPoint(x: x + 2 * hOffset, y: (bounds).height - vOffset))
         context.strokePath()
         context.restoreGState()
     }
@@ -123,7 +130,7 @@ open class EventView: UIView {
             if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
                 return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
             } else {
-                return CGRect(x: bounds.minX + 3, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+                return CGRect(x: bounds.minX + 8, y: bounds.minY, width: bounds.width - 6, height: bounds.height)
             }
         }()
         if frame.minY < 0 {
