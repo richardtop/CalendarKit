@@ -87,14 +87,53 @@ final class CustomCalendarExampleController: DayViewController {
             let duration = Int.random(in: 60 ... 160)
             event.dateInterval = DateInterval(start: workingDate, duration: TimeInterval(duration * 60))
 
-            var info = data.randomElement() ?? []
+            let info = data.randomElement() ?? []
+            let attributedInfo = NSMutableAttributedString(
+              string: info.reduce("", { $0 + $1 + "\n" }),
+              attributes: [.font: UIFont.systemFont(ofSize: 12, weight: .semibold)]
+            )
 
             let timezone = dayView.calendar.timeZone
             print(timezone)
 
-            info.append(dateIntervalFormatter.string(from: event.dateInterval.start, to: event.dateInterval.end))
-            event.text = info.reduce("", {$0 + $1 + "\n"})
-            event.color = colors.randomElement() ?? .red
+            let durationText = dateIntervalFormatter.string(
+              from: event.dateInterval.start,
+              to: event.dateInterval.end
+            )
+          
+            let color = colors.randomElement() ?? .red
+          
+            let durationAttributedText: NSMutableAttributedString = {
+              var attributedString: NSMutableAttributedString!
+              if #available(iOS 13.0, *) {
+                let clockIcon = NSTextAttachment()
+                let config = UIImage.SymbolConfiguration(pointSize: 12, weight: .thin, scale: .small)
+                let image = UIImage(systemName: "clock", withConfiguration: config)
+                clockIcon.image = image
+                let text = NSMutableAttributedString(attachment: clockIcon)
+                attributedString = text
+              } else {
+                attributedString = NSMutableAttributedString(string: "")
+              }
+              attributedString.addAttribute(
+                .paragraphStyle,
+                value: {
+                  let paragraphStyle = NSMutableParagraphStyle()
+                  paragraphStyle.paragraphSpacingBefore = 5
+                  return paragraphStyle
+                }(),
+                range: NSRange(location: 0, length: attributedString.string.count)
+              )
+              return attributedString
+            }()
+            let attributedDuration = NSAttributedString(
+              string: String(format: " %@", durationText),
+              attributes: [.font: UIFont.systemFont(ofSize: 11, weight: .light)]
+            )
+            durationAttributedText.append(attributedDuration)
+            attributedInfo.append(durationAttributedText)
+            event.attributedText = attributedInfo
+            event.color = color
             event.isAllDay = Bool.random()
             event.lineBreakMode = .byTruncatingTail
 
