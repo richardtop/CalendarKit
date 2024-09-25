@@ -18,6 +18,7 @@ public final class AllDayView: UIView {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = localizedString("")
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
+        label.isHidden = true
         return label
     }()
 
