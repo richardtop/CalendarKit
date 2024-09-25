@@ -16,7 +16,7 @@ public final class AllDayView: UIView {
     private lazy var textLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = localizedString("all-day")
+        label.text = localizedString("")
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
         return label
     }()
