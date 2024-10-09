@@ -35,7 +35,8 @@ open class EventView: UIView {
         clipsToBounds = false
         color = tintColor
         addSubview(textView)
-        
+        layer.cornerRadius = 6
+        layer.masksToBounds = true
         for (idx, handle) in eventResizeHandles.enumerated() {
             handle.tag = idx
             addSubview(handle)
