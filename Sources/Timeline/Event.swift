@@ -5,6 +5,7 @@ public final class Event: EventDescriptor {
     public var isAllDay = false
     public var text = ""
     public var attributedText: NSAttributedString?
+    public var topRightLabel: NSAttributedString?
     public var lineBreakMode: NSLineBreakMode?
     public var color = SystemColors.systemBlue {
         didSet {
