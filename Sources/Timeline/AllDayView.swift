@@ -3,7 +3,7 @@ import UIKit
 public final class AllDayView: UIView {
     private var style = AllDayViewStyle()
 
-    private let allDayEventHeight: Double = 24.0
+    private let allDayEventHeight: Double = 30.0
 
     public var events: [EventDescriptor] = [] {
         didSet {
@@ -120,7 +120,7 @@ public final class AllDayView: UIView {
         scrollView.trailingAnchor.constraint(equalTo: trailingAnchor).isActive = true
         bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 2).isActive = true
 
-        let maxAllDayViewHeight = allDayEventHeight * 2 + allDayEventHeight * 0.5
+        let maxAllDayViewHeight = allDayEventHeight * 4 + allDayEventHeight * 0.5
         heightAnchor.constraint(lessThanOrEqualToConstant: maxAllDayViewHeight).isActive = true
 
         updateStyle(style)
@@ -141,37 +141,30 @@ public final class AllDayView: UIView {
         // create vertical stack view
         let verticalStackView = UIStackView(
             distribution: .fillEqually,
-            spacing: 1.0
+            spacing: 5.0
         )
-        var horizontalStackView: UIStackView! = nil
 
-        for (index, anEventDescriptor) in self.events.enumerated() {
-
+        for anEventDescriptor in self.events {
+            
             // create event
             let eventView = EventView(frame: CGRect.zero)
             eventView.updateWithDescriptor(event: anEventDescriptor)
             eventView.heightAnchor.constraint(equalToConstant: allDayEventHeight).isActive = true
-
-            // create horz stack view if index % 2 == 0
-            if index % 2 == 0 {
-                horizontalStackView = UIStackView(
-                    axis: .horizontal,
-                    distribution: .fillEqually,
-                    spacing: 1.0
-                )
-                horizontalStackView.translatesAutoresizingMaskIntoConstraints = false
-                verticalStackView.addArrangedSubview(horizontalStackView)
-            }
-
-            // add eventView to horz. stack view
-            horizontalStackView.addArrangedSubview(eventView)
-            eventViews.append(eventView)
+            eventView.layer.cornerRadius = 6.0
+            eventView.layer.masksToBounds = true
+            
+            // Add the event view to the vertical stack
+            verticalStackView.addArrangedSubview(eventView)
         }
 
-        // add vert. stack view inside, pin vert. stack view, update content view by the number of horz. stack views
+        // add vert. stack view inside, pin vert. stack view
         verticalStackView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(verticalStackView)
-
+        
+        // Enable margins for better spacing within the vertical stack view
+        verticalStackView.isLayoutMarginsRelativeArrangement = true
+        verticalStackView.layoutMargins = UIEdgeInsets(top:10, left: 0, bottom: 0, right: 10)
+        
         verticalStackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: 0).isActive = true
         verticalStackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 0).isActive = true
         verticalStackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 0).isActive = true
