@@ -108,14 +108,14 @@ open class EventView: UIView {
         context.interpolationQuality = .none
         context.saveGState()
         context.setStrokeColor(color.cgColor)
-        context.setLineWidth(3)
+        context.setLineWidth(8.0)
         context.setLineCap(.round)
         context.translateBy(x: 0, y: 0.5)
         let leftToRight = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .leftToRight
         let x: Double = leftToRight ? 0 : frame.width - 1.0  // 1 is the line width
         let y: Double = 0
-        let hOffset: Double = 3
-        let vOffset: Double = 5
+        let hOffset: Double = 0
+        let vOffset: Double = 0
         context.beginPath()
         context.move(to: CGPoint(x: x + 2 * hOffset, y: y + vOffset))
         context.addLine(to: CGPoint(x: x + 2 * hOffset, y: (bounds).height - vOffset))
