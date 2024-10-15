@@ -155,6 +155,7 @@ public final class AllDayView: UIView {
             
             // Add the event view to the vertical stack
             verticalStackView.addArrangedSubview(eventView)
+            eventViews.append(eventView)
         }
 
         // add vert. stack view inside, pin vert. stack view
