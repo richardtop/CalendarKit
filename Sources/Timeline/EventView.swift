@@ -147,15 +147,7 @@ open class EventView: UIView {
             }
         }()
         
-        let rightLabelPadding: CGFloat = 10
-        let rightLabelWidth: CGFloat = 90
-        let rightLabelHeight: CGFloat = 20
-        let rightLabelYPositionOffset: CGFloat = 5
-        
-        topRightLabel.frame = CGRect(x: bounds.maxX - rightLabelWidth - rightLabelPadding,
-                                     y: bounds.minY + rightLabelYPositionOffset,
-                                     width: rightLabelWidth,
-                                     height: rightLabelHeight)
+        showTrailingLabelIfFits()
 
         if frame.minY < 0 {
             var textFrame = textView.frame;
@@ -199,6 +191,25 @@ open class EventView: UIView {
             let dx = -spread
             let rect = bounds.insetBy(dx: dx, dy: dx)
             layer.shadowPath = UIBezierPath(rect: rect).cgPath
+        }
+    }
+    
+    private func showTrailingLabelIfFits() {
+        let rightLabelPadding: CGFloat = 10
+        let rightLabelWidth: CGFloat = 90
+        let rightLabelHeight: CGFloat = 20
+        let rightLabelYPositionOffset: CGFloat = 5
+        let eventWidth = superview?.bounds.width ?? 410
+        let smallerEventWidth = eventWidth/2
+        
+        if bounds.width >= smallerEventWidth {
+            topRightLabel.isHidden = false
+            topRightLabel.frame = CGRect(x: bounds.maxX - rightLabelWidth - rightLabelPadding,
+                                         y: bounds.minY + rightLabelYPositionOffset,
+                                         width: rightLabelWidth,
+                                         height: rightLabelHeight)
+        } else {
+            topRightLabel.isHidden = true
         }
     }
 }
