@@ -376,6 +376,7 @@ public final class TimelineView: UIView {
         layoutEvents()
         layoutNowLine()
         layoutAllDayEvents()
+        allDaySeparator()
     }
 
     private func layoutNowLine() {
@@ -580,5 +581,20 @@ public final class TimelineView: UIView {
             let newEndDate = calendar.date(byAdding: .minute, value: 20, to: eventDescriptor.dateInterval.start)
             eventDescriptor.dateInterval = DateInterval(start: eventDescriptor.dateInterval.start, end: newEndDate!)
         }
+    }
+    
+    private func allDaySeparator() {
+        let bottomLine = UIView()
+        bottomLine.translatesAutoresizingMaskIntoConstraints = false
+        bottomLine.backgroundColor = UIColor.gray.withAlphaComponent(0.5)
+
+        allDayView.addSubview(bottomLine)
+
+        NSLayoutConstraint.activate([
+            bottomLine.heightAnchor.constraint(equalToConstant: 2),
+            bottomLine.leadingAnchor.constraint(equalTo: allDayView.leadingAnchor),
+            bottomLine.trailingAnchor.constraint(equalTo: allDayView.trailingAnchor),
+            bottomLine.bottomAnchor.constraint(equalTo: allDayView.bottomAnchor),
+        ])
     }
 }
