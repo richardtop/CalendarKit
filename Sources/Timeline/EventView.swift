@@ -214,4 +214,32 @@ open class EventView: UIView {
             topRightLabel.isHidden = true
         }
     }
+    
+    //MARK: On clcik effect on event.
+    override open func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesBegan(touches, with: event)
+        dimEvent()
+    }
+    
+    override open func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesEnded(touches, with: event)
+        resetDim()
+    }
+
+    override open func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent?) {
+        super.touchesCancelled(touches, with: event)
+        resetDim()
+    }
+
+    private func dimEvent() {
+        UIView.animate(withDuration: 0.1) {
+            self.alpha = 0.7
+        }
+    }
+
+    private func resetDim() {
+        UIView.animate(withDuration: 0.1) {
+            self.alpha = 1.0
+        }
+    }
 }
