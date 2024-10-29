@@ -69,7 +69,7 @@ public struct TimelineStyle {
     public var eventsWillOverlap: Bool = false
     public var minimumEventDurationInMinutesWhileEditing: Int = 30
     public var splitMinuteInterval: Int = 15
-    public var verticalDiff: Double = 50
+    public var verticalDiff: Double = TimelineLayoutAttributes.shared.veticalDifferenceBetweenHours
     public var verticalInset: Double = 10
     public var leadingInset: Double = 53
     public var eventGap: Double = 0
@@ -88,4 +88,10 @@ public struct AllDayViewStyle {
     public var allDayFont = UIFont.systemFont(ofSize: 12.0)
     public var allDayColor: UIColor = SystemColors.label
     public init() {}
+}
+
+public struct TimelineLayoutAttributes {
+    public static let shared = TimelineLayoutAttributes()
+    public var veticalDifferenceBetweenHours: CGFloat = 60.0
+    private init(){}
 }

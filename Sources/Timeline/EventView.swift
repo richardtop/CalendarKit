@@ -20,6 +20,8 @@ open class EventView: UIView {
         view.backgroundColor = .clear
         view.isScrollEnabled = false
         view.clipsToBounds = true
+        // Set custom edge insets to reduce excessive padding around the text content
+        view.textContainerInset = UIEdgeInsets(top: 4, left: 0, bottom: 0, right: 0)
         return view
     }()
     
