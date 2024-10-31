@@ -37,7 +37,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     public var autoScrollToFirstEvent = false
-
+    /// Saving scroll offset so we maintain it on previous or next day timeline.
+    private var savedScrollOffset: CGPoint = .zero
     private var pagingViewController = UIPageViewController(transitionStyle: .scroll,
                                                             navigationOrientation: .horizontal,
                                                             options: nil)
@@ -164,6 +165,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     }
 
     public func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        savedScrollOffset = scrollView.contentOffset
         let offset = scrollView.contentOffset
         let diff = offset.y - initialContentOffset.y
         if let event = editedEventView {
@@ -427,7 +429,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         let oldDate = oldDate.dateOnly(calendar: calendar)
         let newDate = newDate.dateOnly(calendar: calendar)
         let newController = configureTimelineController(date: newDate)
-
+        newController.pendingContentOffset = savedScrollOffset
+        
         delegate?.timelinePager(timelinePager: self, willMoveTo: newDate)
 
         func completionHandler(_ completion: Bool) {
@@ -472,7 +475,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         let previousDate = calendar.date(byAdding: .day, value: -1, to: containerController.timeline.date)!
         let timelineContainerController = configureTimelineController(date: previousDate)
         let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
-        timelineContainerController.pendingContentOffset = offset
+        timelineContainerController.pendingContentOffset = savedScrollOffset
         return timelineContainerController
     }
 
@@ -481,7 +484,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         let nextDate = calendar.date(byAdding: .day, value: 1, to: containerController.timeline.date)!
         let timelineContainerController = configureTimelineController(date: nextDate)
         let offset = (pageViewController.viewControllers?.first as? TimelineContainerController)?.container.contentOffset
-        timelineContainerController.pendingContentOffset = offset
+        timelineContainerController.pendingContentOffset = savedScrollOffset
         return timelineContainerController
     }
 
