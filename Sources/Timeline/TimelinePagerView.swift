@@ -96,7 +96,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     private func configure() {
         let viewController = configureTimelineController(date: Date())
         pagingViewController.setViewControllers([viewController], direction: .forward, animated: false, completion: nil)
-        pagingViewController.dataSource = nil
+        pagingViewController.dataSource = self
         pagingViewController.delegate = self
         addSubview(pagingViewController.view!)
         addGestureRecognizer(panGestureRecognizer)
