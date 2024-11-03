@@ -34,11 +34,6 @@ Check out the [Sample App](https://github.com/richardtop/CalendarApp) for refere
 
 [Sample App](https://github.com/richardtop/CalendarApp)
 
-To try CalendarKit with CocoaPods issue the following command in the Terminal:
-```ruby
-pod try CalendarKit
-```
-
 ## Installation
 CalendarKit can be installed with Swift Package Manager or with CocoaPods.
 ### Swift Package Manager (Xcode 12 or higher)
@@ -53,6 +48,7 @@ The preferred way of installing CalendarKit is via the [Swift Package Manager](h
 [Adding Package Dependencies to Your App](https://developer.apple.com/documentation/swift_packages/adding_package_dependencies_to_your_app)
 
 ### CocoaPods
+⚠️ Warning: CocoaPods support is deprecated and will be removed at a later date. It's recommended to migrate your installation of CalendarKit to using Swift Package Manager.
 
 To install it, add the following line to your Podfile:
 
