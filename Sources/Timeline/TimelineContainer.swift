@@ -51,4 +51,19 @@ public final class TimelineContainer: UIScrollView {
         let newContentY = (yToScroll < bottomOfScrollView) ? yToScroll : bottomOfScrollView
         setContentOffset(CGPoint(x: offset.x, y: newContentY), animated: animated)
     }
+    
+    public override func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        
+        let scrollPoint = timeline.allDayView.scrollView.convert(point, from: self)
+
+        // Check if the touch point is within the scroll view’s bounds
+        if timeline.allDayView.scrollView.bounds.contains(scrollPoint) {
+            self.bounces = false
+            self.isScrollEnabled = false
+            return timeline.allDayView.scrollView // Forward touch events directly to the scroll view
+        }
+        self.bounces = true
+        self.isScrollEnabled = true
+        return super.hitTest(point, with: event)
+    }
 }
