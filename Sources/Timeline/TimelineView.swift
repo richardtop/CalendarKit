@@ -65,7 +65,7 @@ public final class TimelineView: UIView {
     private lazy var nowLine: CurrentTimeIndicator = CurrentTimeIndicator()
 
     private var allDayViewTopConstraint: NSLayoutConstraint?
-    private lazy var allDayView: AllDayView = {
+    public lazy var allDayView: AllDayView = {
         let allDayView = AllDayView(frame: CGRect.zero)
 
         allDayView.translatesAutoresizingMaskIntoConstraints = false
