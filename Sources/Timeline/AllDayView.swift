@@ -26,7 +26,7 @@ public final class AllDayView: UIView {
      vertical scroll view that contains the all day events in rows with only 2
      columns at most
      */
-    private(set) lazy var scrollView: UIScrollView = {
+    public(set) lazy var scrollView: UIScrollView = {
         let sv = UIScrollView()
         sv.translatesAutoresizingMaskIntoConstraints = false
         sv.isScrollEnabled = true
