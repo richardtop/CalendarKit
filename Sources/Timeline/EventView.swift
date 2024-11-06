@@ -158,7 +158,6 @@ open class EventView: UIView {
             }
         }()
         
-        
         if frame.minY < 0 {
             var textFrame = textView.frame;
             textFrame.origin.y = frame.minY * -1;
