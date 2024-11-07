@@ -141,16 +141,23 @@ open class EventView: UIView {
     
     override open func layoutSubviews() {
         super.layoutSubviews()
-        textView.frame = {
-            if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
-                return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - 3, height: bounds.height)
+        showTrailingLabelIfFits()
+        let rightSpacing = {
+            if topRightLabel.isHidden {
+                return 8.0
             } else {
-                return CGRect(x: bounds.minX + 8, y: bounds.minY, width: bounds.width - 6, height: bounds.height)
+                return topRightLabel.frame.width + 8.0
             }
         }()
         
-        showTrailingLabelIfFits()
-
+        textView.frame = {
+            if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+                return CGRect(x: bounds.minX, y: bounds.minY, width: bounds.width - rightSpacing, height: bounds.height)
+            } else {
+                return CGRect(x: bounds.minX + 8, y: bounds.minY, width: bounds.width - rightSpacing, height: bounds.height)
+            }
+        }()
+        
         if frame.minY < 0 {
             var textFrame = textView.frame;
             textFrame.origin.y = frame.minY * -1;
