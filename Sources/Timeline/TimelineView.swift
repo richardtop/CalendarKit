@@ -263,8 +263,8 @@ public final class TimelineView: UIView {
             accentedHour = eventEditingSnappingBehavior.accentedHour(for: accentedDate)
             accentedMinute = eventEditingSnappingBehavior.accentedMinute(for: accentedDate)
         }
-
-        if isToday {
+        let removeHourCloseToNowLine = false
+        if isToday && removeHourCloseToNowLine {
             let minute = component(component: .minute, from: currentTime)
             let hour = component(component: .hour, from: currentTime)
             if minute > 39 {
