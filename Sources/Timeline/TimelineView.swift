@@ -508,6 +508,56 @@ public final class TimelineView: UIView {
         }
     }
 
+    func decidePositionOfOverlappingEvents() {
+        let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
+            let start1 = attr1.descriptor.dateInterval.start
+            let start2 = attr2.descriptor.dateInterval.start
+            return start1 < start2
+        }
+        
+        var groupsOfEvents = findOverlappingGroups5(events: sortedEvents)
+        for overlappingEvents in groupsOfEvents {
+            let totalCount = Double(overlappingEvents.count)
+            for (index, event) in overlappingEvents.enumerated() {
+                let startY = dateToY(event.descriptor.dateInterval.start)
+                let endY = dateToY(event.descriptor.dateInterval.end)
+                let floatIndex = Double(index)
+                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
+                let equalWidth = calendarWidth / totalCount
+                event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
+            }
+        }
+    }
+    
+    func findOverlappingGroups5(events: [EventLayoutAttributes]) -> [[EventLayoutAttributes]] {
+        var result: [[EventLayoutAttributes]] = []
+        for i in 0..<events.count {
+            var group : [EventLayoutAttributes] = [events[i]]
+            for j in 0..<events.count {
+                if i != j {
+                    if events[i].overlaps(with: events[j]) {
+                        group.append(events[j])
+                    }
+                }
+            }
+            if group.count > 0 {
+                let sortedGroup = group.sorted{ (attr1, attr2) -> Bool in
+                    let start1 = attr1.descriptor.dateInterval.start
+                    let start2 = attr2.descriptor.dateInterval.start
+                    return start1 < start2
+                }
+                
+                result.append(sortedGroup)
+            }
+        }
+        var sortedResult = result.sorted { group1, group2 -> Bool in
+            let start1 = group1[0].descriptor.dateInterval.start
+            let start2 = group2[0].descriptor.dateInterval.start
+            return start1 < start2
+        }
+        return sortedResult
+    }
+    
     private func removeSeconds(from date: Date) -> Date {
         let calendar = Calendar.current
         return calendar.date(bySettingHour: calendar.component(.hour, from: date),
@@ -617,3 +667,11 @@ public final class TimelineView: UIView {
         ])
     }
 }
+
+extension EventLayoutAttributes {
+    func overlaps(with other: EventLayoutAttributes) -> Bool {
+        return self.descriptor.dateInterval.intersects(other.descriptor.dateInterval)
+    }
+}
+
+
