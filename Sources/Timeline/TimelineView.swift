@@ -471,8 +471,19 @@ public final class TimelineView: UIView {
                 }
             } else {
                 let lastEvent = overlappingEvents.last!
-                if (longestEvent.descriptor.dateInterval.intersects(event.descriptor.dateInterval) && (longestEvent.descriptor.dateInterval.end != event.descriptor.dateInterval.start || style.eventGap <= 0.0)) ||
-                    (lastEvent.descriptor.dateInterval.intersects(event.descriptor.dateInterval) && (lastEvent.descriptor.dateInterval.end != event.descriptor.dateInterval.start || style.eventGap <= 0.0)) {
+                
+                // Create new intervals without seconds
+                let longestEventInterval = DateInterval(start: removeSeconds(from: longestEvent.descriptor.dateInterval.start),
+                                                        end: removeSeconds(from: longestEvent.descriptor.dateInterval.end))
+                let eventInterval = DateInterval(start: removeSeconds(from: event.descriptor.dateInterval.start),
+                                                 end: removeSeconds(from: event.descriptor.dateInterval.end))
+                let lastEventInterval = DateInterval(start: removeSeconds(from: lastEvent.descriptor.dateInterval.start),
+                                                     end: removeSeconds(from: lastEvent.descriptor.dateInterval.end))
+                
+                if (longestEventInterval.intersects(eventInterval) &&
+                    (longestEventInterval.end != eventInterval.start || style.eventGap <= 0.0)) ||
+                    (lastEventInterval.intersects(eventInterval) &&
+                     (lastEventInterval.end != eventInterval.start || style.eventGap <= 0.0)) {
                     overlappingEvents.append(event)
                     continue
                 }
@@ -497,6 +508,14 @@ public final class TimelineView: UIView {
         }
     }
 
+    private func removeSeconds(from date: Date) -> Date {
+        let calendar = Calendar.current
+        return calendar.date(bySettingHour: calendar.component(.hour, from: date),
+                             minute: calendar.component(.minute, from: date),
+                             second: 0,
+                             of: date) ?? date
+    }
+    
     private func prepareEventViews() {
         pool.enqueue(views: eventViews)
         eventViews.removeAll()
