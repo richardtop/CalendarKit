@@ -572,6 +572,10 @@ public final class TimelineView: UIView {
                 .min(by: { abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
                 print("Closest later date to \(nodeEvent) is \(closestLaterOverLappingEvent)")
             } else {
+                var endX = nastyGroup[0].startXs.min { lhs, rhs in
+                    return lhs.maxX > rhs.maxX
+                }!
+                maxX = endX.maxX
                 print("No later date found.")
             }
             //
