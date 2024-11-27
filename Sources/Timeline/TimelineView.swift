@@ -43,7 +43,8 @@ public final class TimelineView: UIView {
                 }
             }
 
-            recalculateEventLayout()
+           // recalculateEventLayout()
+          //  decidePositionOfOverlappingEvents()
             prepareEventViews()
             allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
             allDayView.isHidden = allDayLayoutAttributes.count == 0
@@ -372,7 +373,8 @@ public final class TimelineView: UIView {
 
     override public func layoutSubviews() {
         super.layoutSubviews()
-        recalculateEventLayout()
+       // recalculateEventLayout()
+        decidePositionOfOverlappingEvents()
         layoutEvents()
         layoutNowLine()
         layoutAllDayEvents()
@@ -516,17 +518,54 @@ public final class TimelineView: UIView {
         }
         
         var groupsOfEvents = findOverlappingGroups5(events: sortedEvents)
+        
+        var mapper : (HorizontalPosition)-> CGFloat = { (horizontalPosition :HorizontalPosition) in
+            return horizontalPosition.x
+        }
+        
+        for overlappingEvents in groupsOfEvents {
+            print("Overlapping events: \(overlappingEvents)")
+            let totalCount = Double(overlappingEvents.count)
+            for (index, event) in overlappingEvents.enumerated() {
+                let floatIndex = Double(index)
+                let equalWidth = calendarWidth / totalCount
+                
+                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
+                var startX = HorizontalPosition(x: x, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
+                
+                event.startXs.append(startX)
+            }
+        }
+        
         for overlappingEvents in groupsOfEvents {
             let totalCount = Double(overlappingEvents.count)
             for (index, event) in overlappingEvents.enumerated() {
-                let startY = dateToY(event.descriptor.dateInterval.start)
-                let endY = dateToY(event.descriptor.dateInterval.end)
+                event.startY = dateToY(event.descriptor.dateInterval.start)
+                event.endY = dateToY(event.descriptor.dateInterval.end)
+                
                 let floatIndex = Double(index)
-                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
                 let equalWidth = calendarWidth / totalCount
-                event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
+                
+                var endX = HorizontalPosition(x: 0, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
+                
+                if index == overlappingEvents.count - 1 {
+                    endX.x = bounds.width
+                } else {
+                    endX.x = (equalWidth * (floatIndex + 1))
+                }
+                event.endXs.append(endX)
             }
         }
+        
+        for event in sortedEvents {
+            var startX = findOptimalStartX(from: event.startXs)!
+            var endX = findOptimalEndX(from: event.endXs)!
+            event.frame = CGRect(x: startX.x, y: event.startY, width: 60.0/*endX.x - startX.x*/, height: event.endY - event.startY)
+        }
+      
+        ///
+
+        ///
     }
     
     func findOverlappingGroups5(events: [EventLayoutAttributes]) -> [[EventLayoutAttributes]] {
@@ -553,7 +592,7 @@ public final class TimelineView: UIView {
         var sortedResult = result.sorted { group1, group2 -> Bool in
             let start1 = group1[0].descriptor.dateInterval.start
             let start2 = group2[0].descriptor.dateInterval.start
-            return start1 < start2
+            return group2.count < group1.count
         }
         return sortedResult
     }
@@ -674,4 +713,23 @@ extension EventLayoutAttributes {
     }
 }
 
+extension Array where Element == CGFloat {
+    /// Returns the median value of the array, or `nil` if the array is empty.
+    func median() -> CGFloat? {
+        guard !self.isEmpty else { return nil }
+        
+        let sortedArray = self.sorted()
+        let count = sortedArray.count
+        
+        if count % 2 == 1 {
+            // Odd count: return the middle element
+            return sortedArray[count / 2]
+        } else {
+            // Even count: return the average of the two middle elements
+            let mid1 = sortedArray[count / 2 - 1]
+            let mid2 = sortedArray[count / 2]
+            return (mid1 + mid2) / 2
+        }
+    }
+}
 
