@@ -516,6 +516,7 @@ public final class TimelineView: UIView {
             let start1 = attr1.descriptor.dateInterval.start
             let start2 = attr2.descriptor.dateInterval.start
             if (start1 == start2) {
+                return attr1.descriptor.dateInterval > attr2.descriptor.dateInterval
                 print("How to break the nasty tie? for \(attr1) and \(attr2) ?")
             }
             return start1 < start2
@@ -526,12 +527,12 @@ public final class TimelineView: UIView {
         
         for overlappingEvents in groupsOfEvents {
             print("Overlapping events: \(overlappingEvents)")
-
+            
             let totalCount = Double(overlappingEvents.count)
             for (index, event) in overlappingEvents.enumerated() {
                 event.startY = dateToY(event.descriptor.dateInterval.start)
                 event.endY = dateToY(event.descriptor.dateInterval.end)
-               
+                
                 let floatIndex = Double(index)
                 let equalWidth = calendarWidth / totalCount
                 
@@ -542,7 +543,7 @@ public final class TimelineView: UIView {
                 event.startXs.append(startX)
             }
         }
-
+        
         //USE VALUES DYNAMICALLY BASED ON THE closestEarlierOverlappingEvent
         let nastyOverlappingEvents = findOverlappingGroups5(events: sortedEvents)
         nastyOverlappingEvents.forEach { nastyGroup in
@@ -550,19 +551,44 @@ public final class TimelineView: UIView {
             var minX = 0.0
             var maxX = 0.0
             
-            if let closestEarlierOverlappingEvent = nastyGroup.filter({ $0.descriptor.dateInterval.start < nodeEvent.descriptor.dateInterval.start })
+            if let closestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.descriptor.dateInterval.start <= nodeEvent.descriptor.dateInterval.start })
                 .min(by: {
                     abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
                 print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
-                var startX = closestEarlierOverlappingEvent.startXs.min { lhs, rhs in
-                    return lhs.maxX < rhs.maxX
-                }!
-                
-                var endX = nodeEvent.startXs.min { lhs, rhs in
-                    return lhs.maxX < rhs.maxX
-                }!
-                minX = startX.maxX
-                maxX = endX.maxX
+                //
+                var visited = false
+                if(nodeEvent.descriptor.dateInterval.start == closestEarlierOverlappingEvent.descriptor.dateInterval.start && nodeEvent.descriptor.dateInterval > closestEarlierOverlappingEvent.descriptor.dateInterval) {
+                    print("Nasty problem \(nodeEvent) is \(closestEarlierOverlappingEvent)")
+                    ///
+                    if let secondClosestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.descriptor.dateInterval.start < nodeEvent.descriptor.dateInterval.start })
+                        .min(by: {
+                            abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+                        print("Nasty problem attempted fix \(nodeEvent) is \(secondClosestEarlierOverlappingEvent)")
+                        
+                        var startX = secondClosestEarlierOverlappingEvent.startXs.min { lhs, rhs in
+                            return lhs.maxX < rhs.maxX
+                        }!
+                        
+                        var endX = nodeEvent.startXs.min { lhs, rhs in
+                            return lhs.maxX < rhs.maxX
+                        }!
+                        minX = startX.maxX
+                        maxX = endX.maxX
+                        visited = true
+                    }
+                    ///
+                }
+                if !visited {
+                    var startX = closestEarlierOverlappingEvent.startXs.min { lhs, rhs in
+                        return lhs.maxX < rhs.maxX
+                    }!
+                    
+                    var endX = nodeEvent.startXs.min { lhs, rhs in
+                        return lhs.maxX < rhs.maxX
+                    }!
+                    minX = startX.maxX
+                    maxX = endX.maxX
+                }
             } else {
                 var startX = nastyGroup[0].startXs.min { lhs, rhs in
                     return lhs.x < rhs.x
@@ -571,6 +597,7 @@ public final class TimelineView: UIView {
                 maxX = startX.maxX
                 print("Nasty No earlier date found.")
             }
+            
             //
             // Find the closest later overlapping date
             if let closestLaterOverLappingEvent = nastyGroup.filter({ $0.descriptor.dateInterval.start > nodeEvent.descriptor.dateInterval.start })
