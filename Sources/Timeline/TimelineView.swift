@@ -570,7 +570,7 @@ public final class TimelineView: UIView {
             // Find the closest later overlapping date
             if let closestLaterOverLappingEvent = nastyGroup.filter({ $0.descriptor.dateInterval.start > nodeEvent.descriptor.dateInterval.start })
                 .min(by: { abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
-                print("Closest later date to \(nodeEvent) is \(closestLaterOverLappingEvent)")
+                print("Nasty Closest later date to \(nodeEvent) is \(closestLaterOverLappingEvent)")
             } else {
                 var endX = nastyGroup[0].startXs.min { lhs, rhs in
                     return lhs.maxX > rhs.maxX
@@ -639,14 +639,6 @@ public final class TimelineView: UIView {
         }
         
         return sortedResult
-    }
-    
-    private func removeSeconds(from date: Date) -> Date {
-        let calendar = Calendar.current
-        return calendar.date(bySettingHour: calendar.component(.hour, from: date),
-                             minute: calendar.component(.minute, from: date),
-                             second: 0,
-                             of: date) ?? date
     }
     
     private func prepareEventViews() {
@@ -752,9 +744,19 @@ public final class TimelineView: UIView {
 }
 
 extension EventLayoutAttributes {
+    //ExcludingBounds
     func overlaps(with other: EventLayoutAttributes) -> Bool {
-        return self.descriptor.dateInterval.intersects(other.descriptor.dateInterval)
+        return self.descriptor.dateInterval.start < other.descriptor.dateInterval.end && self.descriptor.dateInterval.end > other.descriptor.dateInterval.start &&
+        self.descriptor.dateInterval.start != other.descriptor.dateInterval.end && self.descriptor.dateInterval.end != other.descriptor.dateInterval.start
     }
+/*
+func overlaps(with other: EventLayoutAttributes) -> Bool {
+        self.descriptor.dateInterval.start =  removeSeconds(from:self.descriptor.dateInterval.start)
+        self.descriptor.dateInterval.end =  removeSeconds(from:self.descriptor.dateInterval.end)
+        other.descriptor.dateInterval.start =  removeSeconds(from:other.descriptor.dateInterval.start)
+        other.descriptor.dateInterval.end =  removeSeconds(from:other.descriptor.dateInterval.end)
+        return self.descriptor.dateInterval.intersects(other.descriptor.dateInterval)
+    }*/
 }
 
 extension Array where Element == CGFloat {
@@ -777,3 +779,17 @@ extension Array where Element == CGFloat {
     }
 }
 
+private func removeSeconds(from date: Date) -> Date {
+    let calendar = Calendar.current
+    return calendar.date(bySettingHour: calendar.component(.hour, from: date),
+                         minute: calendar.component(.minute, from: date),
+                         second: 0,
+                         of: date) ?? date
+}
+
+
+func doIntervalsOverlapExcludingBounds(_ interval1: DateInterval, _ interval2: DateInterval) -> Bool {
+    // Check if intervals overlap excluding start and end
+    return interval1.start < interval2.end && interval1.end > interval2.start &&
+           interval1.start != interval2.end && interval1.end != interval2.start
+}
