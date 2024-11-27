@@ -20,7 +20,6 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     public var startY : CGFloat = 0.0
     public var endY : CGFloat = 0.0
     public var startXs : [HorizontalPosition] = []
-    public var endXs : [ HorizontalPosition] = []
     public init(_ descriptor: EventDescriptor) {
         self.descriptor = descriptor
     }
@@ -33,33 +32,154 @@ public final class EventLayoutAttributes : CustomStringConvertible {
 
 public struct HorizontalPosition {
     var x : CGFloat
+    var maxX : CGFloat
+    var width : CGFloat
     var overlappingCount : Int
     var positionInOverlappingGroup : Int
     func overlappingCountDividedPosition() -> Double { return Double(overlappingCount) / Double(positionInOverlappingGroup)}
-    //smallest index in the longest group
-    // smallest positionInOverlappingGroup with the biggest overlappingCount
+    func positionDividedOverlappingCount() -> Double { return Double(positionInOverlappingGroup) / Double(overlappingCount)}
 }
-
-func findOptimalStartX(from positions: [HorizontalPosition]) -> HorizontalPosition? {
-    return positions.min { lhs, rhs in
-        // Primary comparison: highest overlappingCount
-        if lhs.overlappingCount != rhs.overlappingCount {
+func findOptimalWidth(from positions: [HorizontalPosition]) -> HorizontalPosition? {
+    
+     let appearancesWhereItsonTheBeginningInOverlappingGroup = positions.filter { h in
+         h.positionInOverlappingGroup == 1
+      }
+     
+     return appearancesWhereItsonTheBeginningInOverlappingGroup.min { lhs, rhs in
             return lhs.overlappingCount > rhs.overlappingCount
-        }
-        // Secondary comparison: lowest positionInOverlappingGroup
-        return lhs.positionInOverlappingGroup < rhs.positionInOverlappingGroup
     }
 }
+func findOptimalStartX(index: Int, sortedEvents: [EventLayoutAttributes]) -> HorizontalPosition? {
+    if index == 0 {
+        return sortedEvents[0].startXs.min { lhs, rhs in
+            return lhs.x < rhs.x
+        }
+    }
+    
+    return sortedEvents[index - 1].startXs.min { lhs, rhs in
+        return lhs.maxX >= rhs.maxX
+    }
+    
+    /*let appearancesWhereTheresMoreToTheRightInOverlappingGroup = positions.filter { h in
+        h.positionInOverlappingGroup < h.overlappingCount
+     }
+     
+     let appearancesWhereItsonTheBeginningInOverlappingGroup = positions.filter { h in
+         h.positionInOverlappingGroup == 1
+      }
+     
+     let appearancesWhereItsonTheMiddleInOverlappingGroup = positions.filter { h in
+         h.positionInOverlappingGroup != 1 && h.positionInOverlappingGroup != h.overlappingCount
+      }
+     
+     let appearancesWhereItsonTheEndInOverlappingGroup = positions.filter { h in
+        h.positionInOverlappingGroup == h.overlappingCount
+      }
+     
+     
+    let appearedAtTheBeginning = !appearancesWhereItsonTheBeginningInOverlappingGroup.isEmpty
+    if appearedAtTheBeginning {
+        return positions.min { lhs, rhs in
+            lhs.x > rhs.x
+        }
+    }
+    
+     let appearedAtTheMiddle = !appearancesWhereItsonTheMiddleInOverlappingGroup.isEmpty
+     if appearedAtTheMiddle {
+         return positions.min { lhs, rhs in
+             lhs.overlappingCountDividedPosition() > rhs.overlappingCountDividedPosition()
+         }
+     }
+     
+    let appearedAtTheEnd = !appearancesWhereItsonTheEndInOverlappingGroup.isEmpty
+    if appearedAtTheEnd {
+        return appearancesWhereItsonTheEndInOverlappingGroup.min { lhs, rhs in
+            lhs.maxX > rhs.maxX
+        }
+    }*/
+   
+     ///NOTUSED
+}
 
+
+
+
+//lowest position in the longest overlapping
 func findOptimalEndX(from positions: [HorizontalPosition]) -> HorizontalPosition? {
-    return positions.max { lhs, rhs in
-        // Primary comparison: highest overlappingCount
-        if lhs.overlappingCount != rhs.overlappingCount {
-            return lhs.overlappingCount > rhs.overlappingCount
-        }
-        // Secondary comparison: lowest positionInOverlappingGroup
-        return lhs.positionInOverlappingGroup < rhs.positionInOverlappingGroup
+    
+   let appearancesWhereTheresMoreToTheRightInOverlappingGroup = positions.filter { h in
+       h.positionInOverlappingGroup < h.overlappingCount
     }
+    
+    let appearancesWhereItsonTheBeginningInOverlappingGroup = positions.filter { h in
+        h.positionInOverlappingGroup == 1
+     }
+    
+    let appearancesWhereItsonTheMiddleInOverlappingGroup = positions.filter { h in
+        h.positionInOverlappingGroup != 1 && h.positionInOverlappingGroup != h.overlappingCount
+     }
+    
+    let appearancesWhereItsonTheEndInOverlappingGroup = positions.filter { h in
+       h.positionInOverlappingGroup == h.overlappingCount
+     }
+    
+    
+    let appearedAtTheEnd = !appearancesWhereItsonTheEndInOverlappingGroup.isEmpty
+    if appearedAtTheEnd {
+        return positions.min { lhs, rhs in
+            lhs.maxX > rhs.maxX
+        }
+    }
+  
+    let appearedAtTheMiddle = !appearancesWhereItsonTheMiddleInOverlappingGroup.isEmpty
+    if appearedAtTheMiddle {
+        return positions.min { lhs, rhs in
+            lhs.overlappingCountDividedPosition() > rhs.overlappingCountDividedPosition()
+        }
+    }
+    
+    let appearedAtTheBeginning = !appearancesWhereItsonTheBeginningInOverlappingGroup.isEmpty
+    if appearedAtTheBeginning {
+        return appearancesWhereItsonTheBeginningInOverlappingGroup.min { lhs, rhs in
+            lhs.overlappingCount > rhs.overlappingCount
+        }
+    }
+    
+    
+    ////////////////NOTUSED//////////
+    let appearsOnlyAtTheEnd = !appearancesWhereItsonTheEndInOverlappingGroup.isEmpty && appearancesWhereItsonTheMiddleInOverlappingGroup.isEmpty && appearancesWhereItsonTheBeginningInOverlappingGroup.isEmpty
+    
+    /*if appearsOnlyAtTheEnd {
+        return appearancesWhereItsonTheEndInOverlappingGroup.min { lhs, rhs in
+            lhs.maxX < rhs.maxX
+        }
+    }*/
+    
+    let appearsOnlyAtTheBeginning = !appearancesWhereItsonTheBeginningInOverlappingGroup.isEmpty && appearancesWhereItsonTheMiddleInOverlappingGroup.isEmpty && appearancesWhereItsonTheEndInOverlappingGroup.isEmpty
+    
+   
+    
+    /*if appearsOnlyAtTheBeginning {
+        return appearancesWhereItsonTheBeginningInOverlappingGroup.min { lhs, rhs in
+            lhs.overlappingCount > rhs.overlappingCount
+        }
+    }*/
+    
+    if !appearancesWhereItsonTheBeginningInOverlappingGroup.isEmpty {
+        return appearancesWhereItsonTheBeginningInOverlappingGroup.min { lhs, rhs in
+            lhs.overlappingCount > rhs.overlappingCount
+        }
+    }
+    if appearancesWhereTheresMoreToTheRightInOverlappingGroup.isEmpty {
+        return positions.min { lhs, rhs in
+            lhs.maxX < rhs.maxX
+        }
+    } else {
+        return appearancesWhereTheresMoreToTheRightInOverlappingGroup.min { lhs, rhs in
+            lhs.overlappingCountDividedPosition() > rhs.overlappingCountDividedPosition()
+        }
+    }
+    return nil
 }
 
 extension Date {

@@ -517,57 +517,96 @@ public final class TimelineView: UIView {
             return start1 < start2
         }
         
-        var groupsOfEvents = findOverlappingGroups5(events: sortedEvents)
-        
-        var mapper : (HorizontalPosition)-> CGFloat = { (horizontalPosition :HorizontalPosition) in
-            return horizontalPosition.x
-        }
+        //FILL VALUES
+        var groupsOfEvents = findOverlappingGroups6(events: sortedEvents)
         
         for overlappingEvents in groupsOfEvents {
             print("Overlapping events: \(overlappingEvents)")
-            let totalCount = Double(overlappingEvents.count)
-            for (index, event) in overlappingEvents.enumerated() {
-                let floatIndex = Double(index)
-                let equalWidth = calendarWidth / totalCount
-                
-                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
-                var startX = HorizontalPosition(x: x, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
-                
-                event.startXs.append(startX)
-            }
-        }
-        
-        for overlappingEvents in groupsOfEvents {
+
             let totalCount = Double(overlappingEvents.count)
             for (index, event) in overlappingEvents.enumerated() {
                 event.startY = dateToY(event.descriptor.dateInterval.start)
                 event.endY = dateToY(event.descriptor.dateInterval.end)
-                
+               
                 let floatIndex = Double(index)
                 let equalWidth = calendarWidth / totalCount
                 
-                var endX = HorizontalPosition(x: 0, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
+                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
                 
-                if index == overlappingEvents.count - 1 {
-                    endX.x = bounds.width
-                } else {
-                    endX.x = (equalWidth * (floatIndex + 1))
-                }
-                event.endXs.append(endX)
+                var startX = HorizontalPosition(x: x, maxX: x + equalWidth, width: equalWidth, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
+                
+                event.startXs.append(startX)
             }
         }
-        
-        for event in sortedEvents {
-            var startX = findOptimalStartX(from: event.startXs)!
-            var endX = findOptimalEndX(from: event.endXs)!
-            event.frame = CGRect(x: startX.x, y: event.startY, width: 60.0/*endX.x - startX.x*/, height: event.endY - event.startY)
-        }
-      
-        ///
 
-        ///
+        //USE VALUES DYNAMICALLY BASED ON THE closestEarlierOverlappingEvent
+        let nastyOverlappingEvents = findOverlappingGroups5(events: sortedEvents)
+        nastyOverlappingEvents.forEach { nastyGroup in
+            let nodeEvent = nastyGroup.first!
+            var minX = 0.0
+            var maxX = 0.0
+            
+            if let closestEarlierOverlappingEvent = nastyGroup.filter({ $0.descriptor.dateInterval.start < nodeEvent.descriptor.dateInterval.start })
+                .min(by: { abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+                print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
+                var startX = closestEarlierOverlappingEvent.startXs.min { lhs, rhs in
+                    return lhs.maxX < rhs.maxX
+                }!
+                
+                var endX = nodeEvent.startXs.min { lhs, rhs in
+                    return lhs.maxX < rhs.maxX
+                }!
+                minX = startX.maxX
+                maxX = endX.maxX
+            } else {
+                var startX = nastyGroup[0].startXs.min { lhs, rhs in
+                    return lhs.x < rhs.x
+                }!
+                minX = startX.x
+                maxX = startX.maxX
+                print("Nasty No earlier date found.")
+            }
+            //
+            // Find the closest later overlapping date
+            if let closestLaterOverLappingEvent = nastyGroup.filter({ $0.descriptor.dateInterval.start > nodeEvent.descriptor.dateInterval.start })
+                .min(by: { abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+                print("Closest later date to \(nodeEvent) is \(closestLaterOverLappingEvent)")
+            } else {
+                print("No later date found.")
+            }
+            //
+            nodeEvent.frame = CGRect(x: minX, y: nodeEvent.startY, width: maxX - minX, height: nodeEvent.endY - nodeEvent.startY)
+            print("Nasty overlapping events: \(String(describing: nastyGroup))")
+        }
     }
-    
+
+    func findOverlappingGroups6(events: [EventLayoutAttributes]) -> [[EventLayoutAttributes]] {
+        var result: [[EventLayoutAttributes]] = []
+        for i in 0..<events.count {
+            var group : [EventLayoutAttributes] = [events[i]]
+            for j in 0..<events.count {
+                if i != j {
+                    if events[i].overlaps(with: events[j]) {
+                        group.append(events[j])
+                    }
+                }
+            }
+            if group.count > 0 {
+                var sortedGroup = group.sorted{ (attr1, attr2) -> Bool in
+                    let start1 = attr1.descriptor.dateInterval.start
+                    let start2 = attr2.descriptor.dateInterval.start
+                    return start1 < start2
+                }
+                result.append(sortedGroup)
+            }
+        }
+        var sortedResult = result.sorted { group1, group2 -> Bool in
+            return group1.count > group2.count
+        }
+        
+        return sortedResult
+    }
+    //with nodes on top
     func findOverlappingGroups5(events: [EventLayoutAttributes]) -> [[EventLayoutAttributes]] {
         var result: [[EventLayoutAttributes]] = []
         for i in 0..<events.count {
@@ -580,20 +619,21 @@ public final class TimelineView: UIView {
                 }
             }
             if group.count > 0 {
-                let sortedGroup = group.sorted{ (attr1, attr2) -> Bool in
+                var sortedGroup = group.dropFirst().sorted{ (attr1, attr2) -> Bool in
                     let start1 = attr1.descriptor.dateInterval.start
                     let start2 = attr2.descriptor.dateInterval.start
                     return start1 < start2
                 }
-                
+                sortedGroup.insert(group.first!, at: 0)
                 result.append(sortedGroup)
             }
         }
         var sortedResult = result.sorted { group1, group2 -> Bool in
             let start1 = group1[0].descriptor.dateInterval.start
             let start2 = group2[0].descriptor.dateInterval.start
-            return group2.count < group1.count
+            return start1 < start2
         }
+        
         return sortedResult
     }
     
