@@ -442,6 +442,7 @@ public final class TimelineView: UIView {
         let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
             let start1 = attr1.descriptor.dateInterval.start
             let start2 = attr2.descriptor.dateInterval.start
+          
             return start1 < start2
         }
 
@@ -514,6 +515,9 @@ public final class TimelineView: UIView {
         let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
             let start1 = attr1.descriptor.dateInterval.start
             let start2 = attr2.descriptor.dateInterval.start
+            if (start1 == start2) {
+                print("How to break the nasty tie? for \(attr1) and \(attr2) ?")
+            }
             return start1 < start2
         }
         
@@ -547,7 +551,8 @@ public final class TimelineView: UIView {
             var maxX = 0.0
             
             if let closestEarlierOverlappingEvent = nastyGroup.filter({ $0.descriptor.dateInterval.start < nodeEvent.descriptor.dateInterval.start })
-                .min(by: { abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+                .min(by: {
+                    abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
                 print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
                 var startX = closestEarlierOverlappingEvent.startXs.min { lhs, rhs in
                     return lhs.maxX < rhs.maxX
