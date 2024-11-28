@@ -548,9 +548,22 @@ public final class TimelineView: UIView {
                 let endY = dateToY(node.value.descriptor.dateInterval.end)
                 let floatIndex = Double(node.indexInLongestBranch)
                
-                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
+                var startX = 0.0
+                var endX = 0.0
+                if node.parent != nil {
+                    startX = node.parent!.value.frame.maxX
+                } else {
+                    startX = style.leadingInset + floatIndex / totalCount * calendarWidth
+                }
+                
                 let equalWidth = calendarWidth / totalCount
-                node.value.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
+                if node.children.isEmpty {
+                    endX = bounds.width
+                } else {
+                    endX = startX + equalWidth
+                }
+                
+                node.value.frame = CGRect(x: startX, y: startY, width: endX - startX, height: endY - startY)
             }
         }
     }
