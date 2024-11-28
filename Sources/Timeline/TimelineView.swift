@@ -586,7 +586,7 @@ public final class TimelineView: UIView {
                 }!
                 minX = startX.startX
                 maxX = startX.endX
-                print("Nasty No earlier date found.")
+                print("Nasty No earlier event found before \(nodeEvent).")
             }
             
             //
@@ -602,7 +602,7 @@ public final class TimelineView: UIView {
                 if !visited {
                     maxX = endX.endX
                 }
-                print("No later date found.")
+                print("No later overlapping event found for \(nodeEvent)")
             }
             //
             nodeEvent.frame = CGRect(x: minX, y: nodeEvent.startY, width: maxX - minX, height: nodeEvent.endY - nodeEvent.startY)
@@ -612,12 +612,12 @@ public final class TimelineView: UIView {
     func findClosestEarlierOverlappingEvent(nastyGroup:[EventLayoutAttributes]) -> EventLayoutAttributes? {
        // if nastyGroup.isEmpty || nastyGroup.count == 1 { return nil }
         let nodeEvent = nastyGroup.first!
-        if let closestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.descriptor.dateInterval.start <= nodeEvent.descriptor.dateInterval.start })
+        if let closestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.dio.start <= nodeEvent.dio.start })
             .min(by: {
-                abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+                abs($0.dio.start.timeIntervalSince(nodeEvent.dio.start)) < abs($1.dio.start.timeIntervalSince(nodeEvent.dio.start)) }) {
             print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
             //
-            if(nodeEvent.descriptor.dateInterval.start == closestEarlierOverlappingEvent.descriptor.dateInterval.start && nodeEvent.descriptor.dateInterval > closestEarlierOverlappingEvent.descriptor.dateInterval) {
+            if(nodeEvent.dio.start == closestEarlierOverlappingEvent.dio.start && nodeEvent.dio > closestEarlierOverlappingEvent.dio) {
                 return findClosestEarlierOverlappingEvent(nastyGroup: Array(nastyGroup.dropFirst()))
             }
             return closestEarlierOverlappingEvent
