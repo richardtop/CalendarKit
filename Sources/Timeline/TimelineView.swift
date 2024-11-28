@@ -522,6 +522,15 @@ public final class TimelineView: UIView {
             return start1 < start2
         }
         
+        guard !sortedEvents.isEmpty else {
+            return
+        }
+        for i in 1..<sortedEvents.count {
+            if sortedEvents[i].descriptor.dateInterval.start <= sortedEvents[i - 1].descriptor.dateInterval.start {
+                // Break start date collisions.
+                sortedEvents[i].descriptor.dateInterval.start = sortedEvents[i - 1].descriptor.dateInterval.start.addingTimeInterval(1)
+            }
+        }
         //FILL VALUES
         var groupsOfEvents = findOverlappingGroups6(events: sortedEvents)
         
