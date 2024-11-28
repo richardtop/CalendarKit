@@ -15,41 +15,16 @@ public final class EventLayoutAttributes : CustomStringConvertible {
             }
         }
     }
-    
-    public var startY : CGFloat = 0.0
-    public var endY : CGFloat = 0.0
-    public var xAxisCandidates : [horizontalBounds] = []
-    public var electedStartX : CGFloat = 0.0
-    public var electedEndX : CGFloat = 0.0
-    public var electedWidth : CGFloat = 0.0
-        
-    public var dio: DateInterval
     public init(_ descriptor: EventDescriptor) {
         self.descriptor = descriptor
-        self.dio = DateInterval(start: descriptor.dateInterval.start, end: descriptor.dateInterval.end)
     }
-    
-    // User-friendly description
     public var description: String {
-        return "\(dio.start.toHourMinuteString())|\(dio.end.toHourMinuteString())"
-    }
-    public var maxDepth : Int = 0
-    public var indexInPath : Int = 0
-}
-
-public struct horizontalBounds : CustomStringConvertible {
-    var startX : CGFloat
-    var endX : CGFloat
-    var numberOfSegments = 0
-    
-    // User-friendly description
-    public var description: String {
-        return "\(startX) -> \(endX) * \(numberOfSegments)"
+        return "\(descriptor.dateInterval.start.toHourMinuteSecondString())|\(descriptor.dateInterval.end.toHourMinuteSecondString())"
     }
 }
 
 private extension Date {
-    func toHourMinuteString() -> String {
+    func toHourMinuteSecondString() -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm:ss"
         formatter.timeZone = TimeZone.current

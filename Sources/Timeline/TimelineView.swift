@@ -448,15 +448,6 @@ public final class TimelineView: UIView {
             }
             return start1 < start2
         }
-        
-        //Break start date collisions by adding one second to a date interval place holder
-        for i in 1..<sortedEvents.count {
-            if sortedEvents[i].dio.start <= sortedEvents[i - 1].dio.start {
-                sortedEvents[i].dio.start = sortedEvents[i - 1].dio.start.addingTimeInterval(1)
-                sortedEvents[i].dio.end = sortedEvents[i].descriptor.dateInterval.end
-            }
-        }
-        
         // Build tress
         let forest = buildEventsForest(sortedEvents: sortedEvents)
         
@@ -597,11 +588,6 @@ extension EventLayoutAttributes {
     func overlaps(with other: EventLayoutAttributes) -> Bool {
         return self.descriptor.dateInterval.start < other.descriptor.dateInterval.end && self.descriptor.dateInterval.end > other.descriptor.dateInterval.start &&
         self.descriptor.dateInterval.start != other.descriptor.dateInterval.end && self.descriptor.dateInterval.end != other.descriptor.dateInterval.start
-    }
-    
-    func diooverlaps(with other: EventLayoutAttributes) -> Bool {
-        return self.dio.start < other.dio.end && self.dio.end > other.dio.start &&
-        self.dio.start != other.dio.end && self.dio.end != other.dio.start
     }
 }
 
