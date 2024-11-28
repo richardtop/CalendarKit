@@ -1,7 +1,6 @@
 import CoreGraphics
 import Foundation
 public final class EventLayoutAttributes : CustomStringConvertible {
-    
     public let descriptor: EventDescriptor
     
     /// Ensures that events with very short time intervals are given a minimum height.
@@ -19,7 +18,7 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     
     public var startY : CGFloat = 0.0
     public var endY : CGFloat = 0.0
-    public var startXs : [HorizontalPosition] = []
+    public var xAxisCandidates : [HorizontalPosition] = []
     public init(_ descriptor: EventDescriptor) {
         self.descriptor = descriptor
     }
@@ -51,12 +50,12 @@ func findOptimalWidth(from positions: [HorizontalPosition]) -> HorizontalPositio
 }
 func findOptimalStartX(index: Int, sortedEvents: [EventLayoutAttributes]) -> HorizontalPosition? {
     if index == 0 {
-        return sortedEvents[0].startXs.min { lhs, rhs in
+        return sortedEvents[0].xAxisCandidates.min { lhs, rhs in
             return lhs.x < rhs.x
         }
     }
     
-    return sortedEvents[index - 1].startXs.min { lhs, rhs in
+    return sortedEvents[index - 1].xAxisCandidates.min { lhs, rhs in
         return lhs.maxX >= rhs.maxX
     }
     

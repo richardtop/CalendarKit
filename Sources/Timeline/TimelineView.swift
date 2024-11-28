@@ -549,7 +549,7 @@ public final class TimelineView: UIView {
                 
                 var startX = HorizontalPosition(x: x, maxX: x + equalWidth, width: equalWidth, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
                 
-                event.startXs.append(startX)
+                event.xAxisCandidates.append(startX)
             }
         }
         
@@ -565,18 +565,18 @@ public final class TimelineView: UIView {
             if let closestEarlierOverlappingEvent = findClosestEarlierOverlappingEvent(nastyGroup: nastyGroup) {
                 print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
                 if !visited {
-                    var startX = closestEarlierOverlappingEvent.startXs.min { lhs, rhs in
+                    var startX = closestEarlierOverlappingEvent.xAxisCandidates.min { lhs, rhs in
                         return lhs.maxX < rhs.maxX
                     }!
                     
-                    var endX = nodeEvent.startXs.min { lhs, rhs in
+                    var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
                         return lhs.maxX < rhs.maxX
                     }!
                     minX = startX.maxX
                     maxX = endX.maxX
                 }
             } else {
-                var startX = nastyGroup[0].startXs.min { lhs, rhs in
+                var startX = nastyGroup[0].xAxisCandidates.min { lhs, rhs in
                     return lhs.x < rhs.x
                 }!
                 minX = startX.x
@@ -590,7 +590,7 @@ public final class TimelineView: UIView {
                 .min(by: { abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
                 print("Nasty Closest later date to \(nodeEvent) is \(closestLaterOverLappingEvent)")
             } else {
-                var endX = nastyGroup[0].startXs.min { lhs, rhs in
+                var endX = nastyGroup[0].xAxisCandidates.min { lhs, rhs in
                     return lhs.maxX > rhs.maxX
                 }!
                 //xyz
