@@ -550,13 +550,12 @@ public final class TimelineView: UIView {
             let nodeEvent = nastyGroup.first!
             var minX = 0.0
             var maxX = 0.0
-            
+            var visited = false
             if let closestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.descriptor.dateInterval.start <= nodeEvent.descriptor.dateInterval.start })
                 .min(by: {
                     abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
                 print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
                 //
-                var visited = false
                 if(nodeEvent.descriptor.dateInterval.start == closestEarlierOverlappingEvent.descriptor.dateInterval.start && nodeEvent.descriptor.dateInterval > closestEarlierOverlappingEvent.descriptor.dateInterval) {
                     print("Nasty problem \(nodeEvent) is \(closestEarlierOverlappingEvent)")
                     ///
@@ -575,6 +574,15 @@ public final class TimelineView: UIView {
                         minX = startX.maxX
                         maxX = endX.maxX
                         visited = true
+                    } else {
+                        //starts at the same time and both are at the most left
+                        var startX = nastyGroup[0].startXs.min { lhs, rhs in
+                            return lhs.x < rhs.x
+                        }!
+                        minX = startX.x
+                        maxX = startX.maxX
+                        visited = true
+                        print("Nasty problem No earlier date found.")
                     }
                     ///
                 }
@@ -607,7 +615,10 @@ public final class TimelineView: UIView {
                 var endX = nastyGroup[0].startXs.min { lhs, rhs in
                     return lhs.maxX > rhs.maxX
                 }!
-                maxX = endX.maxX
+                //xyz
+                if !visited {
+                    maxX = endX.maxX
+                }
                 print("No later date found.")
             }
             //
@@ -628,9 +639,13 @@ public final class TimelineView: UIView {
                 }
             }
             if group.count > 0 {
-                var sortedGroup = group.sorted{ (attr1, attr2) -> Bool in
+                var sortedGroup = group.sorted { (attr1, attr2) -> Bool in
                     let start1 = attr1.descriptor.dateInterval.start
                     let start2 = attr2.descriptor.dateInterval.start
+                    if(start1 == start2) {
+                        ///xyz
+                       // return attr1.descriptor.dateInterval < attr2.descriptor.dateInterval
+                    }
                     return start1 < start2
                 }
                 result.append(sortedGroup)
@@ -658,6 +673,9 @@ public final class TimelineView: UIView {
                 var sortedGroup = group.dropFirst().sorted{ (attr1, attr2) -> Bool in
                     let start1 = attr1.descriptor.dateInterval.start
                     let start2 = attr2.descriptor.dateInterval.start
+                    if start1 == start2 {
+                        return attr1.descriptor.dateInterval < attr2.descriptor.dateInterval
+                    }
                     return start1 < start2
                 }
                 sortedGroup.insert(group.first!, at: 0)
