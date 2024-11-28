@@ -573,17 +573,20 @@ public final class TimelineView: UIView {
                 nodeEvent.electedEndX = endX.endX
             } else {
                 print("bino Nasty No earlier event found before \(nodeEvent).")
-                var startX = nodeEvent.xAxisCandidates.min { lhs, rhs in
+                var mostOptimalX = nodeEvent.xAxisCandidates.min { lhs, rhs in
+                    if lhs.startX == rhs.startX {
+                        return lhs.numberOfSegments > rhs.numberOfSegments
+                    }
                     return lhs.startX < rhs.startX
                 }!
-                nodeEvent.electedStartX = startX.startX
-                
-                var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
-                    return lhs.numberOfSegments > rhs.numberOfSegments
-                }!
-                nodeEvent.electedEndX = endX.endX
+                nodeEvent.electedStartX = mostOptimalX.startX
+                nodeEvent.electedEndX = mostOptimalX.endX
             }
-            
+        }
+        
+        nastyOverlappingEvents.forEach { nastyGroup in
+            let nodeEvent = nastyGroup.first!
+           
             // Find the closest later overlapping date
             if let closestLaterOverLappingEvent = findClosestLaterOverlappingEvent(nastyGroup: nastyGroup) {
                 print("bino Nasty Closest later event to \(nodeEvent) is \(closestLaterOverLappingEvent)")
