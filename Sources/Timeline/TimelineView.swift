@@ -551,41 +551,10 @@ public final class TimelineView: UIView {
             var minX = 0.0
             var maxX = 0.0
             var visited = false
-            if let closestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.descriptor.dateInterval.start <= nodeEvent.descriptor.dateInterval.start })
-                .min(by: {
-                    abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+            
+            
+            if let closestEarlierOverlappingEvent = findClosestEarlierOverlappingEvent(nastyGroup: nastyGroup) {
                 print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
-                //
-                if(nodeEvent.descriptor.dateInterval.start == closestEarlierOverlappingEvent.descriptor.dateInterval.start && nodeEvent.descriptor.dateInterval > closestEarlierOverlappingEvent.descriptor.dateInterval) {
-                    print("Nasty problem \(nodeEvent) is \(closestEarlierOverlappingEvent)")
-                    ///
-                    if let secondClosestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.descriptor.dateInterval.start < nodeEvent.descriptor.dateInterval.start })
-                        .min(by: {
-                            abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
-                        print("Nasty problem attempted fix \(nodeEvent) is \(secondClosestEarlierOverlappingEvent)")
-                        
-                        var startX = secondClosestEarlierOverlappingEvent.startXs.min { lhs, rhs in
-                            return lhs.maxX < rhs.maxX
-                        }!
-                        
-                        var endX = nodeEvent.startXs.min { lhs, rhs in
-                            return lhs.maxX < rhs.maxX
-                        }!
-                        minX = startX.maxX
-                        maxX = endX.maxX
-                        visited = true
-                    } else {
-                        //starts at the same time and both are at the most left
-                        var startX = nastyGroup[0].startXs.min { lhs, rhs in
-                            return lhs.x < rhs.x
-                        }!
-                        minX = startX.x
-                        maxX = startX.maxX
-                        visited = true
-                        print("Nasty problem No earlier date found.")
-                    }
-                    ///
-                }
                 if !visited {
                     var startX = closestEarlierOverlappingEvent.startXs.min { lhs, rhs in
                         return lhs.maxX < rhs.maxX
@@ -627,6 +596,22 @@ public final class TimelineView: UIView {
         }
     }
 
+    func findClosestEarlierOverlappingEvent(nastyGroup:[EventLayoutAttributes]) -> EventLayoutAttributes? {
+       // if nastyGroup.isEmpty || nastyGroup.count == 1 { return nil }
+        let nodeEvent = nastyGroup.first!
+        if let closestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.descriptor.dateInterval.start <= nodeEvent.descriptor.dateInterval.start })
+            .min(by: {
+                abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+            print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
+            //
+            if(nodeEvent.descriptor.dateInterval.start == closestEarlierOverlappingEvent.descriptor.dateInterval.start && nodeEvent.descriptor.dateInterval > closestEarlierOverlappingEvent.descriptor.dateInterval) {
+                return findClosestEarlierOverlappingEvent(nastyGroup: Array(nastyGroup.dropFirst()))
+            }
+            return closestEarlierOverlappingEvent
+        }
+        return nil
+    }
+    
     func findOverlappingGroups6(events: [EventLayoutAttributes]) -> [[EventLayoutAttributes]] {
         var result: [[EventLayoutAttributes]] = []
         for i in 0..<events.count {
