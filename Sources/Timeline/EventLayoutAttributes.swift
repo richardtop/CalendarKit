@@ -19,8 +19,11 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     public var startY : CGFloat = 0.0
     public var endY : CGFloat = 0.0
     public var xAxisCandidates : [horizontalBounds] = []
+    
+    public var dio: DateInterval
     public init(_ descriptor: EventDescriptor) {
         self.descriptor = descriptor
+        self.dio = DateInterval(start: descriptor.dateInterval.start, end: descriptor.dateInterval.end)
     }
     
     // User-friendly description
@@ -37,7 +40,7 @@ public struct horizontalBounds {
 private extension Date {
     func toHourMinuteString() -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
+        formatter.dateFormat = "HH:mm:ss"
         formatter.timeZone = TimeZone.current
         return formatter.string(from: self)
     }
