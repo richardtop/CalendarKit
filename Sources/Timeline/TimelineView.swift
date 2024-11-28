@@ -512,19 +512,21 @@ public final class TimelineView: UIView {
     }
 
     func decidePositionOfOverlappingEvents() {
-        let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
-            let start1 = attr1.descriptor.dateInterval.start
-            let start2 = attr2.descriptor.dateInterval.start
+        guard !regularLayoutAttributes.isEmpty else {
+            return
+        }
+        
+        //Sort events by startDateTime. When equal then longest comes first
+        let sortedEvents = self.regularLayoutAttributes.sorted { (e1, e2) -> Bool in
+            let start1 = e1.descriptor.dateInterval.start
+            let start2 = e2.descriptor.dateInterval.start
             if (start1 == start2) {
-                return attr1.descriptor.dateInterval > attr2.descriptor.dateInterval
-                print("How to break the nasty tie? for \(attr1) and \(attr2) ?")
+                print("\(e1) starts at the same time as \(e2) ?")
+                return e1.descriptor.dateInterval > e2.descriptor.dateInterval
             }
             return start1 < start2
         }
         
-        guard !sortedEvents.isEmpty else {
-            return
-        }
         for i in 1..<sortedEvents.count {
             if sortedEvents[i].descriptor.dateInterval.start <= sortedEvents[i - 1].descriptor.dateInterval.start {
                 // Break start date collisions.
