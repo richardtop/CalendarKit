@@ -547,7 +547,7 @@ public final class TimelineView: UIView {
                 
                 let x = style.leadingInset + floatIndex / totalCount * calendarWidth
                 
-                var startX = HorizontalPosition(startX: x, endX: x + equalWidth)
+                var startX = horizontalBounds(startX: x, endX: x + equalWidth)
                 
                 event.xAxisCandidates.append(startX)
             }

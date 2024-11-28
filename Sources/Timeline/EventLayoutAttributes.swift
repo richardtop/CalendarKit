@@ -18,7 +18,7 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     
     public var startY : CGFloat = 0.0
     public var endY : CGFloat = 0.0
-    public var xAxisCandidates : [HorizontalPosition] = []
+    public var xAxisCandidates : [horizontalBounds] = []
     public init(_ descriptor: EventDescriptor) {
         self.descriptor = descriptor
     }
@@ -29,7 +29,7 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     }
 }
 
-public struct HorizontalPosition {
+public struct horizontalBounds {
     var startX : CGFloat
     var endX : CGFloat
 }
