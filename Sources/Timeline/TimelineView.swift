@@ -43,8 +43,7 @@ public final class TimelineView: UIView {
                 }
             }
 
-           // recalculateEventLayout()
-          //  decidePositionOfOverlappingEvents()
+            decidePositionOfOverlappingEvents()
             prepareEventViews()
             allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
             allDayView.isHidden = allDayLayoutAttributes.count == 0
@@ -373,7 +372,6 @@ public final class TimelineView: UIView {
 
     override public func layoutSubviews() {
         super.layoutSubviews()
-       // recalculateEventLayout()
         decidePositionOfOverlappingEvents()
         layoutEvents()
         layoutNowLine()
@@ -436,81 +434,6 @@ public final class TimelineView: UIView {
         }
     }
 
-    private func recalculateEventLayout() {
-
-        // only non allDay events need their frames to be set
-        let sortedEvents = self.regularLayoutAttributes.sorted { (attr1, attr2) -> Bool in
-            let start1 = attr1.descriptor.dateInterval.start
-            let start2 = attr2.descriptor.dateInterval.start
-          
-            return start1 < start2
-        }
-
-        var groupsOfEvents = [[EventLayoutAttributes]]()
-        var overlappingEvents = [EventLayoutAttributes]()
-
-        for event in sortedEvents {
-            if overlappingEvents.isEmpty {
-                overlappingEvents.append(event)
-                continue
-            }
-
-            let longestEvent = overlappingEvents.sorted { (attr1, attr2) -> Bool in
-                var period = attr1.descriptor.dateInterval
-                let period1 = period.end.timeIntervalSince(period.start)
-                period = attr2.descriptor.dateInterval
-                let period2 = period.end.timeIntervalSince(period.start)
-
-                return period1 > period2
-            }
-                .first!
-
-            if style.eventsWillOverlap {
-                guard let earliestEvent = overlappingEvents.first?.descriptor.dateInterval.start else { continue }
-                let dateInterval = getDateInterval(date: earliestEvent)
-                if event.descriptor.dateInterval.contains(dateInterval.start) {
-                    overlappingEvents.append(event)
-                    continue
-                }
-            } else {
-                let lastEvent = overlappingEvents.last!
-                
-                // Create new intervals without seconds
-                let longestEventInterval = DateInterval(start: removeSeconds(from: longestEvent.descriptor.dateInterval.start),
-                                                        end: removeSeconds(from: longestEvent.descriptor.dateInterval.end))
-                let eventInterval = DateInterval(start: removeSeconds(from: event.descriptor.dateInterval.start),
-                                                 end: removeSeconds(from: event.descriptor.dateInterval.end))
-                let lastEventInterval = DateInterval(start: removeSeconds(from: lastEvent.descriptor.dateInterval.start),
-                                                     end: removeSeconds(from: lastEvent.descriptor.dateInterval.end))
-                
-                if (longestEventInterval.intersects(eventInterval) &&
-                    (longestEventInterval.end != eventInterval.start || style.eventGap <= 0.0)) ||
-                    (lastEventInterval.intersects(eventInterval) &&
-                     (lastEventInterval.end != eventInterval.start || style.eventGap <= 0.0)) {
-                    overlappingEvents.append(event)
-                    continue
-                }
-            }
-            groupsOfEvents.append(overlappingEvents)
-            overlappingEvents = [event]
-        }
-
-        groupsOfEvents.append(overlappingEvents)
-        overlappingEvents.removeAll()
-
-        for overlappingEvents in groupsOfEvents {
-            let totalCount = Double(overlappingEvents.count)
-            for (index, event) in overlappingEvents.enumerated() {
-                let startY = dateToY(event.descriptor.dateInterval.start)
-                let endY = dateToY(event.descriptor.dateInterval.end)
-                let floatIndex = Double(index)
-                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
-                let equalWidth = calendarWidth / totalCount
-                event.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
-            }
-        }
-    }
-
     func decidePositionOfOverlappingEvents() {
         guard !regularLayoutAttributes.isEmpty else {
             return
@@ -529,21 +452,20 @@ public final class TimelineView: UIView {
         //Break start date collisions by adding one second to a date interval place holder
         for i in 1..<sortedEvents.count {
             if sortedEvents[i].dio.start <= sortedEvents[i - 1].dio.start {
-                // Break start date collisions.
                 sortedEvents[i].dio.start = sortedEvents[i - 1].dio.start.addingTimeInterval(1)
                 sortedEvents[i].dio.end = sortedEvents[i].descriptor.dateInterval.end
             }
         }
         
+        // Build tress
         let forest = buildEventsForest(sortedEvents: sortedEvents)
         
         for tree in forest {
             printTree(tree)
             assignIndexInLongestBranch(tree, longestPath: [])
-            assignLongestBranchLengths(node: tree, parentBranchLength: 0)
             printNodeIndexes(tree)
             traverseTree(tree) { node in
-                let totalCount = Double(node.xyz())
+                let totalCount = Double(node.calculateLongestBranchDepth())
                 let startY = dateToY(node.value.descriptor.dateInterval.start)
                 let endY = dateToY(node.value.descriptor.dateInterval.end)
                 let floatIndex = Double(node.indexInLongestBranch)
@@ -567,97 +489,6 @@ public final class TimelineView: UIView {
             }
         }
     }
-
-    func findClosestEarlierOverlappingEvent(nastyGroup:[EventLayoutAttributes]) -> EventLayoutAttributes? {
-        // if nastyGroup.isEmpty || nastyGroup.count == 1 { return nil }
-        let nodeEvent = nastyGroup.first!
-        if let closestEarlierOverlappingEvent = nastyGroup.dropFirst().filter({ $0.dio.start <= nodeEvent.dio.start })
-            .min(by: {
-                abs($0.dio.start.timeIntervalSince(nodeEvent.dio.start)) < abs($1.dio.start.timeIntervalSince(nodeEvent.dio.start)) }) {
-            if(nodeEvent.dio.start == closestEarlierOverlappingEvent.dio.start && nodeEvent.dio > closestEarlierOverlappingEvent.dio) {
-                return findClosestEarlierOverlappingEvent(nastyGroup: Array(nastyGroup.dropFirst()))
-            }
-            return closestEarlierOverlappingEvent
-        }
-        return nil
-    }
-    
-    func findClosestLaterOverlappingEvent(nastyGroup:[EventLayoutAttributes]) -> EventLayoutAttributes? {
-        let nodeEvent = nastyGroup.first!
-        if let closestLaterOverlappingEvent = nastyGroup.filter({ $0.dio.start > nodeEvent.dio.start })
-            .min(by: {
-                abs($0.dio.start.timeIntervalSince(nodeEvent.dio.start)) < abs($1.dio.start.timeIntervalSince(nodeEvent.dio.start)) }) {
-            if(nodeEvent.dio.start == closestLaterOverlappingEvent.dio.start && nodeEvent.dio < closestLaterOverlappingEvent.dio) {
-                return findClosestLaterOverlappingEvent(nastyGroup: Array(nastyGroup.dropFirst()))
-            }
-            return closestLaterOverlappingEvent
-        }
-        return nil
-    }
-    
-    func findOverlappingGroups6(events: [EventLayoutAttributes]) -> [[EventLayoutAttributes]] {
-        var result: [[EventLayoutAttributes]] = []
-        for i in 0..<events.count {
-            var group : [EventLayoutAttributes] = [events[i]]
-            for j in 0..<events.count {
-                if i != j {
-                    if events[i].overlaps(with: events[j]) {
-                        group.append(events[j])
-                    }
-                }
-            }
-            if group.count > 0 {
-                var sortedGroup = group.sorted { (attr1, attr2) -> Bool in
-                    let start1 = attr1.descriptor.dateInterval.start
-                    let start2 = attr2.descriptor.dateInterval.start
-                    if(start1 == start2) {
-                        ///xyz
-                       // return attr1.descriptor.dateInterval < attr2.descriptor.dateInterval
-                    }
-                    return start1 < start2
-                }
-                result.append(sortedGroup)
-            }
-        }
-        var sortedResult = result.sorted { group1, group2 -> Bool in
-            return group1.count > group2.count
-        }
-        
-        return sortedResult
-    }
-    //with nodes on top
-    func findOverlappingGroups5(events: [EventLayoutAttributes]) -> [[EventLayoutAttributes]] {
-        var result: [[EventLayoutAttributes]] = []
-        for i in 0..<events.count {
-            var group : [EventLayoutAttributes] = [events[i]]
-            for j in 0..<events.count {
-                if i != j {
-                    if events[i].overlaps(with: events[j]) {
-                        group.append(events[j])
-                    }
-                }
-            }
-            if group.count > 0 {
-                var sortedGroup = group.dropFirst().sorted{ (attr1, attr2) -> Bool in
-                    let start1 = attr1.dio.start
-                    let start2 = attr2.dio.start
-                    if start1 == start2 {
-                        return attr1.descriptor.dateInterval < attr2.descriptor.dateInterval
-                    }
-                    return start1 < start2
-                }
-                sortedGroup.insert(group.first!, at: 0)
-                result.append(sortedGroup)
-            }
-        }
-        var sortedResult = result.sorted { group1, group2 -> Bool in
-            let start1 = group1[0].descriptor.dateInterval.start
-            let start2 = group2[0].descriptor.dateInterval.start
-            return start1 < start2
-        }
-        
-        return sortedResult
-    }
     
     private func prepareEventViews() {
         pool.enqueue(views: eventViews)
@@ -670,7 +501,7 @@ public final class TimelineView: UIView {
             eventViews.append(newView)
         }
     }
-
+    
     public func prepareForReuse() {
         pool.enqueue(views: eventViews)
         eventViews.removeAll()
@@ -772,34 +603,6 @@ extension EventLayoutAttributes {
         return self.dio.start < other.dio.end && self.dio.end > other.dio.start &&
         self.dio.start != other.dio.end && self.dio.end != other.dio.start
     }
-/*
-func overlaps(with other: EventLayoutAttributes) -> Bool {
-        self.descriptor.dateInterval.start =  removeSeconds(from:self.descriptor.dateInterval.start)
-        self.descriptor.dateInterval.end =  removeSeconds(from:self.descriptor.dateInterval.end)
-        other.descriptor.dateInterval.start =  removeSeconds(from:other.descriptor.dateInterval.start)
-        other.descriptor.dateInterval.end =  removeSeconds(from:other.descriptor.dateInterval.end)
-        return self.descriptor.dateInterval.intersects(other.descriptor.dateInterval)
-    }*/
-}
-
-extension Array where Element == CGFloat {
-    /// Returns the median value of the array, or `nil` if the array is empty.
-    func median() -> CGFloat? {
-        guard !self.isEmpty else { return nil }
-        
-        let sortedArray = self.sorted()
-        let count = sortedArray.count
-        
-        if count % 2 == 1 {
-            // Odd count: return the middle element
-            return sortedArray[count / 2]
-        } else {
-            // Even count: return the average of the two middle elements
-            let mid1 = sortedArray[count / 2 - 1]
-            let mid2 = sortedArray[count / 2]
-            return (mid1 + mid2) / 2
-        }
-    }
 }
 
 private func removeSeconds(from date: Date) -> Date {
@@ -817,8 +620,6 @@ func doIntervalsOverlapExcludingBounds(_ interval1: DateInterval, _ interval2: D
            interval1.start != interval2.end && interval1.end != interval2.start
 }
 
-
-
 class TreeNode<EventLayoutAttributes> {
     var value: EventLayoutAttributes
     var children: [TreeNode] = []
@@ -835,8 +636,8 @@ class TreeNode<EventLayoutAttributes> {
         child.parent = self
     }
     
-    func xyz() -> Int {
-        self.longestBranchDepth =  distanceToRoot() + calculateMaxOverlaps()
+    func calculateLongestBranchDepth() -> Int {
+        self.longestBranchDepth =  distanceToRoot() + longestChildBranch()
         return longestBranchDepth
     }
    
@@ -852,18 +653,17 @@ class TreeNode<EventLayoutAttributes> {
         return distance
     }
     
-    func calculateMaxOverlaps() -> Int {
+    func longestChildBranch() -> Int {
         if children.isEmpty {
             return 1
         }
         var maxChildOverlap = 0
         for child in children {
-            maxChildOverlap = max(maxChildOverlap, child.calculateMaxOverlaps())
+            maxChildOverlap = max(maxChildOverlap, child.longestChildBranch())
         }
         return 1 + maxChildOverlap
     }
 }
-
 
 private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventLayoutAttributes>] {
     var forest: [TreeNode<EventLayoutAttributes>] = []
@@ -888,7 +688,7 @@ private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNo
     return forest
 }
 
-func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, level: Int = 0) {
+private func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, level: Int = 0) {
     let indent = String(repeating: "  ", count: level)
     print("\(indent)- \(node.value)")
     
@@ -897,15 +697,15 @@ func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, l
     }
 }
 
-func traverseTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, depth: Int = 0, index: Int = 0, calculatePosition: (TreeNode<EventLayoutAttributes>) -> Void) {
+private func traverseTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, depth: Int = 0, index: Int = 0, calculatePosition: (TreeNode<EventLayoutAttributes>) -> Void) {
     calculatePosition(node)
-    print("Value: \(node.value), Depthoflongestbranch: \(node.xyz()), Indexinlongestbranch: \(node.indexInLongestBranch)")
+    print("Value: \(node.value), Depthoflongestbranch: \(node.calculateLongestBranchDepth()), Indexinlongestbranch: \(node.indexInLongestBranch)")
     for (childIndex, child) in node.children.enumerated() {
         traverseTree(child, depth: depth + 1, index: childIndex, calculatePosition: calculatePosition)
     }
 }
 
-func assignIndexInLongestBranch<T>(_ node: TreeNode<T>, longestPath: [TreeNode<T>]) {
+private func assignIndexInLongestBranch<T>(_ node: TreeNode<T>, longestPath: [TreeNode<T>]) {
     node.indexInLongestBranch = longestPath.count
     var currentLongestPath = longestPath
     currentLongestPath.append(node)
@@ -917,31 +717,10 @@ func assignIndexInLongestBranch<T>(_ node: TreeNode<T>, longestPath: [TreeNode<T
     }
 }
 
-func printNodeIndexes<T>(_ node: TreeNode<T>) {
+private func printNodeIndexes<T>(_ node: TreeNode<T>) {
     print("Node \(node.value) is at index \(String(describing: node.indexInLongestBranch)) in the longest branch of depth \(node.longestBranchDepth)")
     for child in node.children {
         printNodeIndexes(child)
     }
-}
-
-
-func assignLongestBranchLengths<T>(node: TreeNode<T>?, parentBranchLength: Int) -> Int {
-    guard let node = node else { return 0 }
-    
-    if node.children.isEmpty {
-        node.longestBranchDepth = parentBranchLength
-        return 1
-    }
-    
-    var maxChildBranchLength = 0
-    
-    for child in node.children {
-        let childBranchLength = assignLongestBranchLengths(node: child, parentBranchLength: parentBranchLength + 1)
-        maxChildBranchLength = max(maxChildBranchLength, childBranchLength)
-    }
-    
-    node.longestBranchDepth = max(parentBranchLength, maxChildBranchLength)
-    // Add 1 for the current node itself
-    return 1 + maxChildBranchLength
 }
 
