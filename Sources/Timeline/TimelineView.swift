@@ -535,87 +535,23 @@ public final class TimelineView: UIView {
             }
         }
         
-        //
         let forest = buildEventForest(sortedEvents: sortedEvents)
         
         for tree in forest {
             printTree(tree)
             assignIndexInLongestBranch(tree, longestPath: [])
-            assignDepthOfLongestBranch(tree, currentPath: [])
+            assignLongestBranchLengths(node: tree, parentBranchLength: 0)
             printNodeIndexes(tree)
             traverseTree(tree) { node in
-                
-            }
-        }
-        //
-     
-        
-        //FILL VALUES
-        var groupsOfEvents = findOverlappingGroups6(events: sortedEvents)
-        
-        for overlappingEvents in groupsOfEvents {
-            print("Overlapping events mike2: \(overlappingEvents)")
-            
-            let totalCount = Double(overlappingEvents.count)
-            for (index, event) in overlappingEvents.enumerated() {
-                event.startY = dateToY(event.descriptor.dateInterval.start)
-                event.endY = dateToY(event.descriptor.dateInterval.end)
-                
-                let floatIndex = Double(index)
-                let equalWidth = calendarWidth / totalCount
-                
-                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
-                
-                var startX = horizontalBounds(startX: x, endX: x + equalWidth, numberOfSegments: Int(calendarWidth / equalWidth))
-                
-                event.xAxisCandidates.append(startX)
-            }
-        }
-        
-        //USE VALUES DYNAMICALLY BASED ON THE closestEarlierOverlappingEvent
-        let nastyOverlappingEvents = findOverlappingGroups5(events: sortedEvents)
-        nastyOverlappingEvents.forEach { nastyGroup in
-            print("Overlapping events mike: \(nastyGroup)")
-            let nodeEvent = nastyGroup.first!
-            
-            if let closestEarlierOverlappingEvent = findClosestEarlierOverlappingEvent(nastyGroup: nastyGroup) {
-                print("bino Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
-                nodeEvent.electedStartX = closestEarlierOverlappingEvent.electedEndX
-                
-                //
-                var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
-                    if lhs.endX == rhs.endX {
-                        return lhs.numberOfSegments < rhs.numberOfSegments
-                    }
-                    return lhs.endX < rhs.endX
-                }!
-                nodeEvent.electedEndX = endX.endX
-                //
-            } else {
-                print("No earlier event found before \(nodeEvent).")
+                let totalCount = Double(node.calculateMaxOverlaps() + distanceToRoot(node: node))
+                let startY = dateToY(node.value.descriptor.dateInterval.start)
+                let endY = dateToY(node.value.descriptor.dateInterval.end)
+                let floatIndex = Double(node.indexInLongestBranch)
                
-                nodeEvent.electedStartX = style.leadingInset
-                nodeEvent.electedWidth = calendarWidth / Double(nastyGroup.count)
-                nodeEvent.electedEndX = nodeEvent.electedStartX + nodeEvent.electedWidth
+                let x = style.leadingInset + floatIndex / totalCount * calendarWidth
+                let equalWidth = calendarWidth / totalCount
+                node.value.frame = CGRect(x: x, y: startY, width: equalWidth, height: endY - startY)
             }
-        }
-        
-        nastyOverlappingEvents.forEach { nastyGroup in
-            let nodeEvent = nastyGroup.first!
-           
-            // Find the closest later overlapping date
-            if let closestLaterOverLappingEvent = findClosestLaterOverlappingEvent(nastyGroup: nastyGroup) {
-                print("bino Nasty Closest later event to \(nodeEvent) is \(closestLaterOverLappingEvent)")
-               // nodeEvent.electedEndX = closestLaterOverLappingEvent.electedStartX
-            } else {
-                print("bino No later overlapping event found for \(nodeEvent)")
-                var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
-                    return lhs.endX > rhs.endX
-                }!
-                nodeEvent.electedEndX = endX.endX
-            }
-            
-            nodeEvent.frame = CGRect(x: nodeEvent.electedStartX, y: nodeEvent.startY, width: nodeEvent.electedEndX - nodeEvent.electedStartX, height: nodeEvent.endY - nodeEvent.startY)
         }
     }
 
@@ -873,15 +809,58 @@ func doIntervalsOverlapExcludingBounds(_ interval1: DateInterval, _ interval2: D
 class TreeNode<EventLayoutAttributes> {
     var value: EventLayoutAttributes
     var children: [TreeNode] = []
+    var parent: TreeNode?
     var indexInLongestBranch = 0
     var longestBranchDepth = 0
-   
+    
     init(value: EventLayoutAttributes) {
         self.value = value
     }
-
+    
     func addChild(_ child: TreeNode) {
         children.append(child)
+        child.parent = self
+    }
+    
+    func calculateMaxOverlaps() -> Int {
+        // If the event has no children, it has no overlaps
+        if children.isEmpty {
+            return 1
+        }
+        
+        // Otherwise, calculate the maximum depth of the subtrees
+        var maxChildOverlap = 0
+        for child in children {
+            maxChildOverlap = max(maxChildOverlap, child.calculateMaxOverlaps())
+        }
+        
+        // Set the max overlaps for this node
+        self.longestBranchDepth = 1 + maxChildOverlap
+        
+        return self.longestBranchDepth
+    }
+    
+    // Method to calculate the distance from the root (i.e., depth of the node)
+    func distanceFromRoot() -> Int {
+        return distanceFromRootHelper(depth: 0)
+    }
+    
+    // Helper method to recursively calculate the distance from the root
+    private func distanceFromRootHelper(depth: Int) -> Int {
+        // Base case: If it's the root, return the depth (which is 0)
+        if children.isEmpty {
+            return depth
+        }
+        
+        var maxDepth = depth
+        
+        // Recursively calculate the depth for all children
+        for child in children {
+            let childDepth = child.distanceFromRootHelper(depth: depth + 1)
+            maxDepth = max(maxDepth, childDepth)
+        }
+        
+        return maxDepth
     }
 }
 
@@ -927,7 +906,7 @@ func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, l
 
 func traverseTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, depth: Int = 0, index: Int = 0, calculatePosition: (TreeNode<EventLayoutAttributes>) -> Void) {
     calculatePosition(node)
-    print("Value: \(node.value), Depthoflongestbranch: \(node.longestBranchDepth), Indexinlongestbranch: \(node.indexInLongestBranch)")
+    print("Value: \(node.value), Depthoflongestbranch: \(node.distanceFromRoot()), Indexinlongestbranch: \(node.indexInLongestBranch)")
     for (childIndex, child) in node.children.enumerated() {
         traverseTree(child, depth: depth + 1, index: childIndex, calculatePosition: calculatePosition)
     }
@@ -964,3 +943,36 @@ func printNodeIndexes<T>(_ node: TreeNode<T>) {
     }
 }
 
+
+func assignLongestBranchLengths<T>(node: TreeNode<T>?, parentBranchLength: Int) -> Int {
+    guard let node = node else { return 0 }
+    
+    if node.children.isEmpty {
+        node.longestBranchDepth = parentBranchLength
+        return 1
+    }
+    
+    var maxChildBranchLength = 0
+    
+    for child in node.children {
+        let childBranchLength = assignLongestBranchLengths(node: child, parentBranchLength: parentBranchLength + 1)
+        maxChildBranchLength = max(maxChildBranchLength, childBranchLength)
+    }
+    
+    node.longestBranchDepth = max(parentBranchLength, maxChildBranchLength)
+    // Add 1 for the current node itself
+    return 1 + maxChildBranchLength
+}
+
+
+func distanceToRoot<T>(node: TreeNode<T>) -> Int {
+    var distance = 0
+    var currentNode = node
+    
+    while let parent = currentNode.parent {
+        currentNode = parent
+        distance += 1
+    }
+    
+    return distance
+}
