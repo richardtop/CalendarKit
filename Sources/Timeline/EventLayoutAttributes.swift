@@ -30,9 +30,8 @@ public final class EventLayoutAttributes : CustomStringConvertible {
 }
 
 public struct HorizontalPosition {
-    var x : CGFloat
-    var maxX : CGFloat
-    var width : CGFloat
+    var startX : CGFloat
+    var endX : CGFloat
     var overlappingCount : Int
     var positionInOverlappingGroup : Int
     func overlappingCountDividedPosition() -> Double { return Double(overlappingCount) / Double(positionInOverlappingGroup)}
@@ -51,12 +50,12 @@ func findOptimalWidth(from positions: [HorizontalPosition]) -> HorizontalPositio
 func findOptimalStartX(index: Int, sortedEvents: [EventLayoutAttributes]) -> HorizontalPosition? {
     if index == 0 {
         return sortedEvents[0].xAxisCandidates.min { lhs, rhs in
-            return lhs.x < rhs.x
+            return lhs.startX < rhs.startX
         }
     }
     
     return sortedEvents[index - 1].xAxisCandidates.min { lhs, rhs in
-        return lhs.maxX >= rhs.maxX
+        return lhs.endX >= rhs.endX
     }
     
     /*let appearancesWhereTheresMoreToTheRightInOverlappingGroup = positions.filter { h in
@@ -126,7 +125,7 @@ func findOptimalEndX(from positions: [HorizontalPosition]) -> HorizontalPosition
     let appearedAtTheEnd = !appearancesWhereItsonTheEndInOverlappingGroup.isEmpty
     if appearedAtTheEnd {
         return positions.min { lhs, rhs in
-            lhs.maxX > rhs.maxX
+            lhs.endX > rhs.endX
         }
     }
   
@@ -171,7 +170,7 @@ func findOptimalEndX(from positions: [HorizontalPosition]) -> HorizontalPosition
     }
     if appearancesWhereTheresMoreToTheRightInOverlappingGroup.isEmpty {
         return positions.min { lhs, rhs in
-            lhs.maxX < rhs.maxX
+            lhs.endX < rhs.endX
         }
     } else {
         return appearancesWhereTheresMoreToTheRightInOverlappingGroup.min { lhs, rhs in

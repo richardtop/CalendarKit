@@ -547,7 +547,7 @@ public final class TimelineView: UIView {
                 
                 let x = style.leadingInset + floatIndex / totalCount * calendarWidth
                 
-                var startX = HorizontalPosition(x: x, maxX: x + equalWidth, width: equalWidth, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
+                var startX = HorizontalPosition(startX: x, endX: x + equalWidth, overlappingCount: overlappingEvents.count, positionInOverlappingGroup: index + 1)
                 
                 event.xAxisCandidates.append(startX)
             }
@@ -566,21 +566,21 @@ public final class TimelineView: UIView {
                 print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
                 if !visited {
                     var startX = closestEarlierOverlappingEvent.xAxisCandidates.min { lhs, rhs in
-                        return lhs.maxX < rhs.maxX
+                        return lhs.endX < rhs.endX
                     }!
                     
                     var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
-                        return lhs.maxX < rhs.maxX
+                        return lhs.endX < rhs.endX
                     }!
-                    minX = startX.maxX
-                    maxX = endX.maxX
+                    minX = startX.endX
+                    maxX = endX.endX
                 }
             } else {
                 var startX = nastyGroup[0].xAxisCandidates.min { lhs, rhs in
-                    return lhs.x < rhs.x
+                    return lhs.startX < rhs.startX
                 }!
-                minX = startX.x
-                maxX = startX.maxX
+                minX = startX.startX
+                maxX = startX.endX
                 print("Nasty No earlier date found.")
             }
             
@@ -591,11 +591,11 @@ public final class TimelineView: UIView {
                 print("Nasty Closest later date to \(nodeEvent) is \(closestLaterOverLappingEvent)")
             } else {
                 var endX = nastyGroup[0].xAxisCandidates.min { lhs, rhs in
-                    return lhs.maxX > rhs.maxX
+                    return lhs.endX > rhs.endX
                 }!
                 //xyz
                 if !visited {
-                    maxX = endX.maxX
+                    maxX = endX.endX
                 }
                 print("No later date found.")
             }
