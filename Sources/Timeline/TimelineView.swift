@@ -591,8 +591,8 @@ public final class TimelineView: UIView {
             
             //
             // Find the closest later overlapping date
-            if let closestLaterOverLappingEvent = nastyGroup.filter({ $0.descriptor.dateInterval.start > nodeEvent.descriptor.dateInterval.start })
-                .min(by: { abs($0.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) < abs($1.descriptor.dateInterval.start.timeIntervalSince(nodeEvent.descriptor.dateInterval.start)) }) {
+            if let closestLaterOverLappingEvent = nastyGroup.filter({ $0.dio.start > nodeEvent.dio.start })
+                .min(by: { abs($0.dio.start.timeIntervalSince(nodeEvent.dio.start)) < abs($1.dio.start.timeIntervalSince(nodeEvent.dio.start)) }) {
                 print("Nasty Closest later date to \(nodeEvent) is \(closestLaterOverLappingEvent)")
             } else {
                 var endX = nastyGroup[0].xAxisCandidates.min { lhs, rhs in
