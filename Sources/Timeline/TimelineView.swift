@@ -535,7 +535,7 @@ public final class TimelineView: UIView {
             }
         }
         
-        let forest = buildEventForest(sortedEvents: sortedEvents)
+        let forest = buildEventsForest(sortedEvents: sortedEvents)
         
         for tree in forest {
             printTree(tree)
@@ -543,7 +543,7 @@ public final class TimelineView: UIView {
             assignLongestBranchLengths(node: tree, parentBranchLength: 0)
             printNodeIndexes(tree)
             traverseTree(tree) { node in
-                let totalCount = Double(node.calculateMaxOverlaps() + distanceToRoot(node: node))
+                let totalCount = Double(node.xyz())
                 let startY = dateToY(node.value.descriptor.dateInterval.start)
                 let endY = dateToY(node.value.descriptor.dateInterval.end)
                 let floatIndex = Double(node.indexInLongestBranch)
@@ -822,59 +822,42 @@ class TreeNode<EventLayoutAttributes> {
         child.parent = self
     }
     
+    func xyz() -> Int {
+        self.longestBranchDepth =  distanceToRoot() + calculateMaxOverlaps()
+        return longestBranchDepth
+    }
+   
+    func distanceToRoot() -> Int {
+        var distance = 0
+        var currentNode = self
+        
+        while let parent = currentNode.parent {
+            currentNode = parent
+            distance += 1
+        }
+        
+        return distance
+    }
+    
     func calculateMaxOverlaps() -> Int {
-        // If the event has no children, it has no overlaps
         if children.isEmpty {
             return 1
         }
-        
-        // Otherwise, calculate the maximum depth of the subtrees
         var maxChildOverlap = 0
         for child in children {
             maxChildOverlap = max(maxChildOverlap, child.calculateMaxOverlaps())
         }
-        
-        // Set the max overlaps for this node
-        self.longestBranchDepth = 1 + maxChildOverlap
-        
-        return self.longestBranchDepth
-    }
-    
-    // Method to calculate the distance from the root (i.e., depth of the node)
-    func distanceFromRoot() -> Int {
-        return distanceFromRootHelper(depth: 0)
-    }
-    
-    // Helper method to recursively calculate the distance from the root
-    private func distanceFromRootHelper(depth: Int) -> Int {
-        // Base case: If it's the root, return the depth (which is 0)
-        if children.isEmpty {
-            return depth
-        }
-        
-        var maxDepth = depth
-        
-        // Recursively calculate the depth for all children
-        for child in children {
-            let childDepth = child.distanceFromRootHelper(depth: depth + 1)
-            maxDepth = max(maxDepth, childDepth)
-        }
-        
-        return maxDepth
+        return 1 + maxChildOverlap
     }
 }
 
 
-// Convert events to tree
-func buildEventForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventLayoutAttributes>] {
-    var roots: [TreeNode<EventLayoutAttributes>] = []
-    // Add event to the tree
+private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventLayoutAttributes>] {
+    var forest: [TreeNode<EventLayoutAttributes>] = []
     func addEventToTree(_ event: EventLayoutAttributes, to nodes: [TreeNode<EventLayoutAttributes>]) -> Bool {
         for node in nodes {
             if event.overlaps(with: node.value) {
-                // Try to add the event to one of the children
                 if !addEventToTree(event, to: node.children) {
-                    // If it doesn't fit in any child, add it directly to the current node
                     node.addChild(TreeNode(value: event))
                 }
                 return true // Event has been successfully added
@@ -882,23 +865,20 @@ func buildEventForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventL
         }
         return false // Event did not overlap with any nodes
     }
-
-    // Process each event
+    
     for event in sortedEvents {
-        if !addEventToTree(event, to: roots) {
-            roots.append(TreeNode(value: event))
+        if !addEventToTree(event, to: forest) {
+            forest.append(TreeNode(value: event))
         }
     }
-
-    return roots
+    
+    return forest
 }
 
 func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, level: Int = 0) {
-    // Indentation to visually represent depth
     let indent = String(repeating: "  ", count: level)
     print("\(indent)- \(node.value)")
     
-    // Recursively print each child
     for child in node.children {
         printTree(child, level: level + 1)
     }
@@ -906,7 +886,7 @@ func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, l
 
 func traverseTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, depth: Int = 0, index: Int = 0, calculatePosition: (TreeNode<EventLayoutAttributes>) -> Void) {
     calculatePosition(node)
-    print("Value: \(node.value), Depthoflongestbranch: \(node.distanceFromRoot()), Indexinlongestbranch: \(node.indexInLongestBranch)")
+    print("Value: \(node.value), Depthoflongestbranch: \(node.xyz()), Indexinlongestbranch: \(node.indexInLongestBranch)")
     for (childIndex, child) in node.children.enumerated() {
         traverseTree(child, depth: depth + 1, index: childIndex, calculatePosition: calculatePosition)
     }
@@ -921,18 +901,6 @@ func assignIndexInLongestBranch<T>(_ node: TreeNode<T>, longestPath: [TreeNode<T
     }
     for child in node.children {
         assignIndexInLongestBranch(child, longestPath: currentLongestPath)
-    }
-}
-
-func assignDepthOfLongestBranch<T>(_ node: TreeNode<T>, currentPath: [TreeNode<T>]) {
-    var currentLongestPath = currentPath
-    currentLongestPath.append(node)
-    node.longestBranchDepth = currentLongestPath.count
-    if node.children.isEmpty {
-        return
-    }
-    for child in node.children {
-        assignDepthOfLongestBranch(child, currentPath: currentLongestPath)
     }
 }
 
@@ -964,15 +932,3 @@ func assignLongestBranchLengths<T>(node: TreeNode<T>?, parentBranchLength: Int) 
     return 1 + maxChildBranchLength
 }
 
-
-func distanceToRoot<T>(node: TreeNode<T>) -> Int {
-    var distance = 0
-    var currentNode = node
-    
-    while let parent = currentNode.parent {
-        currentNode = parent
-        distance += 1
-    }
-    
-    return distance
-}
