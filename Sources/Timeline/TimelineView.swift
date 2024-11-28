@@ -551,7 +551,7 @@ public final class TimelineView: UIView {
                 
                 let x = style.leadingInset + floatIndex / totalCount * calendarWidth
                 
-                var startX = horizontalBounds(startX: x, endX: x + equalWidth)
+                var startX = horizontalBounds(startX: x, endX: x + equalWidth, numberOfSegments: Int(calendarWidth / equalWidth))
                 
                 event.xAxisCandidates.append(startX)
             }
@@ -564,50 +564,40 @@ public final class TimelineView: UIView {
             let nodeEvent = nastyGroup.first!
             var minX = 0.0
             var maxX = 0.0
-            var visited = false
-            
             
             if let closestEarlierOverlappingEvent = findClosestEarlierOverlappingEvent(nastyGroup: nastyGroup) {
-                print("Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
-                if !visited {
-                    var startX = closestEarlierOverlappingEvent.xAxisCandidates.min { lhs, rhs in
-                        return lhs.endX < rhs.endX
-                    }!
-                    
-                    var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
-                        return lhs.endX < rhs.endX
-                    }!
-                    minX = startX.endX
-                    maxX = endX.endX
-                }
-            } else {
-                var startX = nastyGroup[0].xAxisCandidates.min { lhs, rhs in
-                    return lhs.startX < rhs.startX
-                }!
-                minX = startX.startX
-                maxX = startX.endX
-                print("Nasty No earlier event found before \(nodeEvent).")
-            }
-            
-            //
-            // Find the closest later overlapping date
-            //
-            
-            //
-            if let closestLaterOverLappingEvent = findClosestLaterOverlappingEvent(nastyGroup: nastyGroup) {
-                print("Nasty Closest later event to \(nodeEvent) is \(closestLaterOverLappingEvent)")
-            } else {
-                var endX = nastyGroup[0].xAxisCandidates.min { lhs, rhs in
+                print("bino Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
+                var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
                     return lhs.endX > rhs.endX
                 }!
-                //xyz
-                if !visited {
-                    maxX = endX.endX
-                }
-                print("No later overlapping event found for \(nodeEvent)")
+                nodeEvent.electedEndX = endX.endX
+                nodeEvent.electedStartX = closestEarlierOverlappingEvent.electedEndX
+            } else {
+                print("bino Nasty No earlier event found before \(nodeEvent).")
+                var startX = nodeEvent.xAxisCandidates.min { lhs, rhs in
+                    return lhs.startX < rhs.startX
+                }!
+                nodeEvent.electedStartX = startX.startX
+                
+                var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
+                    return lhs.numberOfSegments > rhs.numberOfSegments
+                }!
+                nodeEvent.electedEndX = endX.endX
             }
-            //
-            nodeEvent.frame = CGRect(x: minX, y: nodeEvent.startY, width: maxX - minX, height: nodeEvent.endY - nodeEvent.startY)
+            
+            // Find the closest later overlapping date
+            if let closestLaterOverLappingEvent = findClosestLaterOverlappingEvent(nastyGroup: nastyGroup) {
+                print("bino Nasty Closest later event to \(nodeEvent) is \(closestLaterOverLappingEvent)")
+               // nodeEvent.electedEndX = closestLaterOverLappingEvent.electedStartX
+            } else {
+                print("bino No later overlapping event found for \(nodeEvent)")
+                var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
+                    return lhs.endX > rhs.endX
+                }!
+                nodeEvent.electedEndX = endX.endX
+            }
+            
+            nodeEvent.frame = CGRect(x: nodeEvent.electedStartX, y: nodeEvent.startY, width: nodeEvent.electedEndX - nodeEvent.electedStartX, height: nodeEvent.endY - nodeEvent.startY)
         }
     }
 

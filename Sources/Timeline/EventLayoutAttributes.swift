@@ -19,6 +19,8 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     public var startY : CGFloat = 0.0
     public var endY : CGFloat = 0.0
     public var xAxisCandidates : [horizontalBounds] = []
+    public var electedStartX : CGFloat = 0.0
+    public var electedEndX : CGFloat = 0.0
     
     public var dio: DateInterval
     public init(_ descriptor: EventDescriptor) {
@@ -32,9 +34,15 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     }
 }
 
-public struct horizontalBounds {
+public struct horizontalBounds : CustomStringConvertible {
     var startX : CGFloat
     var endX : CGFloat
+    var numberOfSegments = 0
+    
+    // User-friendly description
+    public var description: String {
+        return "\(startX) -> \(endX) * \(numberOfSegments)"
+    }
 }
 
 private extension Date {
