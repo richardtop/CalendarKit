@@ -21,7 +21,8 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     public var xAxisCandidates : [horizontalBounds] = []
     public var electedStartX : CGFloat = 0.0
     public var electedEndX : CGFloat = 0.0
-    
+    public var electedWidth : CGFloat = 0.0
+        
     public var dio: DateInterval
     public init(_ descriptor: EventDescriptor) {
         self.descriptor = descriptor
@@ -32,6 +33,8 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     public var description: String {
         return "\(dio.start.toHourMinuteString())|\(dio.end.toHourMinuteString())"
     }
+    public var maxDepth : Int = 0
+    public var indexInPath : Int = 0
 }
 
 public struct horizontalBounds : CustomStringConvertible {

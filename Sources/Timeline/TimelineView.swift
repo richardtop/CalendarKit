@@ -515,7 +515,6 @@ public final class TimelineView: UIView {
         guard !regularLayoutAttributes.isEmpty else {
             return
         }
-        
         //Sort events by startDateTime. When equal then longest comes first
         let sortedEvents = self.regularLayoutAttributes.sorted { (e1, e2) -> Bool in
             let start1 = e1.descriptor.dateInterval.start
@@ -535,6 +534,22 @@ public final class TimelineView: UIView {
                 sortedEvents[i].dio.end = sortedEvents[i].descriptor.dateInterval.end
             }
         }
+        
+        //
+        let forest = buildEventForest(sortedEvents: sortedEvents)
+        
+        for tree in forest {
+            printTree(tree)
+            assignIndexInLongestBranch(tree, longestPath: [])
+            assignDepthOfLongestBranch(tree, currentPath: [])
+            printNodeIndexes(tree)
+            traverseTree(tree) { node in
+                
+            }
+        }
+        //
+     
+        
         //FILL VALUES
         var groupsOfEvents = findOverlappingGroups6(events: sortedEvents)
         
@@ -567,20 +582,21 @@ public final class TimelineView: UIView {
                 print("bino Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
                 nodeEvent.electedStartX = closestEarlierOverlappingEvent.electedEndX
                 
+                //
                 var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
-                    return lhs.endX > rhs.endX
+                    if lhs.endX == rhs.endX {
+                        return lhs.numberOfSegments < rhs.numberOfSegments
+                    }
+                    return lhs.endX < rhs.endX
                 }!
                 nodeEvent.electedEndX = endX.endX
+                //
             } else {
-                print("bino Nasty No earlier event found before \(nodeEvent).")
-                var mostOptimalX = nodeEvent.xAxisCandidates.min { lhs, rhs in
-                    if lhs.startX == rhs.startX {
-                        return lhs.numberOfSegments > rhs.numberOfSegments
-                    }
-                    return lhs.startX < rhs.startX
-                }!
-                nodeEvent.electedStartX = mostOptimalX.startX
-                nodeEvent.electedEndX = mostOptimalX.endX
+                print("No earlier event found before \(nodeEvent).")
+               
+                nodeEvent.electedStartX = style.leadingInset
+                nodeEvent.electedWidth = calendarWidth / Double(nastyGroup.count)
+                nodeEvent.electedEndX = nodeEvent.electedStartX + nodeEvent.electedWidth
             }
         }
         
@@ -851,3 +867,100 @@ func doIntervalsOverlapExcludingBounds(_ interval1: DateInterval, _ interval2: D
     return interval1.start < interval2.end && interval1.end > interval2.start &&
            interval1.start != interval2.end && interval1.end != interval2.start
 }
+
+
+
+class TreeNode<EventLayoutAttributes> {
+    var value: EventLayoutAttributes
+    var children: [TreeNode] = []
+    var indexInLongestBranch = 0
+    var longestBranchDepth = 0
+   
+    init(value: EventLayoutAttributes) {
+        self.value = value
+    }
+
+    func addChild(_ child: TreeNode) {
+        children.append(child)
+    }
+}
+
+
+// Convert events to tree
+func buildEventForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventLayoutAttributes>] {
+    var roots: [TreeNode<EventLayoutAttributes>] = []
+    // Add event to the tree
+    func addEventToTree(_ event: EventLayoutAttributes, to nodes: [TreeNode<EventLayoutAttributes>]) -> Bool {
+        for node in nodes {
+            if event.overlaps(with: node.value) {
+                // Try to add the event to one of the children
+                if !addEventToTree(event, to: node.children) {
+                    // If it doesn't fit in any child, add it directly to the current node
+                    node.addChild(TreeNode(value: event))
+                }
+                return true // Event has been successfully added
+            }
+        }
+        return false // Event did not overlap with any nodes
+    }
+
+    // Process each event
+    for event in sortedEvents {
+        if !addEventToTree(event, to: roots) {
+            roots.append(TreeNode(value: event))
+        }
+    }
+
+    return roots
+}
+
+func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, level: Int = 0) {
+    // Indentation to visually represent depth
+    let indent = String(repeating: "  ", count: level)
+    print("\(indent)- \(node.value)")
+    
+    // Recursively print each child
+    for child in node.children {
+        printTree(child, level: level + 1)
+    }
+}
+
+func traverseTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, depth: Int = 0, index: Int = 0, calculatePosition: (TreeNode<EventLayoutAttributes>) -> Void) {
+    calculatePosition(node)
+    print("Value: \(node.value), Depthoflongestbranch: \(node.longestBranchDepth), Indexinlongestbranch: \(node.indexInLongestBranch)")
+    for (childIndex, child) in node.children.enumerated() {
+        traverseTree(child, depth: depth + 1, index: childIndex, calculatePosition: calculatePosition)
+    }
+}
+
+func assignIndexInLongestBranch<T>(_ node: TreeNode<T>, longestPath: [TreeNode<T>]) {
+    node.indexInLongestBranch = longestPath.count
+    var currentLongestPath = longestPath
+    currentLongestPath.append(node)
+    if node.children.isEmpty {
+        return
+    }
+    for child in node.children {
+        assignIndexInLongestBranch(child, longestPath: currentLongestPath)
+    }
+}
+
+func assignDepthOfLongestBranch<T>(_ node: TreeNode<T>, currentPath: [TreeNode<T>]) {
+    var currentLongestPath = currentPath
+    currentLongestPath.append(node)
+    node.longestBranchDepth = currentLongestPath.count
+    if node.children.isEmpty {
+        return
+    }
+    for child in node.children {
+        assignDepthOfLongestBranch(child, currentPath: currentLongestPath)
+    }
+}
+
+func printNodeIndexes<T>(_ node: TreeNode<T>) {
+    print("Node \(node.value) is at index \(String(describing: node.indexInLongestBranch)) in the longest branch of depth \(node.longestBranchDepth)")
+    for child in node.children {
+        printNodeIndexes(child)
+    }
+}
+
