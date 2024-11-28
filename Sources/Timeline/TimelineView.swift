@@ -562,16 +562,15 @@ public final class TimelineView: UIView {
         nastyOverlappingEvents.forEach { nastyGroup in
             print("Overlapping events mike: \(nastyGroup)")
             let nodeEvent = nastyGroup.first!
-            var minX = 0.0
-            var maxX = 0.0
             
             if let closestEarlierOverlappingEvent = findClosestEarlierOverlappingEvent(nastyGroup: nastyGroup) {
                 print("bino Nasty Closest earlier event to \(nodeEvent) is \(closestEarlierOverlappingEvent)")
+                nodeEvent.electedStartX = closestEarlierOverlappingEvent.electedEndX
+                
                 var endX = nodeEvent.xAxisCandidates.min { lhs, rhs in
                     return lhs.endX > rhs.endX
                 }!
                 nodeEvent.electedEndX = endX.endX
-                nodeEvent.electedStartX = closestEarlierOverlappingEvent.electedEndX
             } else {
                 print("bino Nasty No earlier event found before \(nodeEvent).")
                 var startX = nodeEvent.xAxisCandidates.min { lhs, rhs in
