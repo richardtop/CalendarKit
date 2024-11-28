@@ -28,7 +28,7 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     
     // User-friendly description
     public var description: String {
-        return "\(descriptor.dateInterval.start.toHourMinuteString())|\(descriptor.dateInterval.end.toHourMinuteString())"
+        return "\(dio.start.toHourMinuteString())|\(dio.end.toHourMinuteString())"
     }
 }
 

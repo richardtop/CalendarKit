@@ -527,10 +527,12 @@ public final class TimelineView: UIView {
             return start1 < start2
         }
         
+        //Break start date collisions by adding one second to a date interval place holder
         for i in 1..<sortedEvents.count {
-            if sortedEvents[i].descriptor.dateInterval.start <= sortedEvents[i - 1].descriptor.dateInterval.start {
+            if sortedEvents[i].dio.start <= sortedEvents[i - 1].dio.start {
                 // Break start date collisions.
-                sortedEvents[i].descriptor.dateInterval.start = sortedEvents[i - 1].descriptor.dateInterval.start.addingTimeInterval(1)
+                sortedEvents[i].dio.start = sortedEvents[i - 1].dio.start.addingTimeInterval(1)
+                sortedEvents[i].dio.end = sortedEvents[i].descriptor.dateInterval.end
             }
         }
         //FILL VALUES
