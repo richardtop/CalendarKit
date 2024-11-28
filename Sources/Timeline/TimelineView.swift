@@ -539,7 +539,7 @@ public final class TimelineView: UIView {
         var groupsOfEvents = findOverlappingGroups6(events: sortedEvents)
         
         for overlappingEvents in groupsOfEvents {
-            print("Overlapping events: \(overlappingEvents)")
+            print("Overlapping events mike2: \(overlappingEvents)")
             
             let totalCount = Double(overlappingEvents.count)
             for (index, event) in overlappingEvents.enumerated() {
@@ -560,6 +560,7 @@ public final class TimelineView: UIView {
         //USE VALUES DYNAMICALLY BASED ON THE closestEarlierOverlappingEvent
         let nastyOverlappingEvents = findOverlappingGroups5(events: sortedEvents)
         nastyOverlappingEvents.forEach { nastyGroup in
+            print("Overlapping events mike: \(nastyGroup)")
             let nodeEvent = nastyGroup.first!
             var minX = 0.0
             var maxX = 0.0
@@ -605,7 +606,6 @@ public final class TimelineView: UIView {
             }
             //
             nodeEvent.frame = CGRect(x: minX, y: nodeEvent.startY, width: maxX - minX, height: nodeEvent.endY - nodeEvent.startY)
-            print("Nasty overlapping events: \(String(describing: nastyGroup))")
         }
     }
 
@@ -669,8 +669,8 @@ public final class TimelineView: UIView {
             }
             if group.count > 0 {
                 var sortedGroup = group.dropFirst().sorted{ (attr1, attr2) -> Bool in
-                    let start1 = attr1.descriptor.dateInterval.start
-                    let start2 = attr2.descriptor.dateInterval.start
+                    let start1 = attr1.dio.start
+                    let start2 = attr2.dio.start
                     if start1 == start2 {
                         return attr1.descriptor.dateInterval < attr2.descriptor.dateInterval
                     }
@@ -796,6 +796,11 @@ extension EventLayoutAttributes {
     func overlaps(with other: EventLayoutAttributes) -> Bool {
         return self.descriptor.dateInterval.start < other.descriptor.dateInterval.end && self.descriptor.dateInterval.end > other.descriptor.dateInterval.start &&
         self.descriptor.dateInterval.start != other.descriptor.dateInterval.end && self.descriptor.dateInterval.end != other.descriptor.dateInterval.start
+    }
+    
+    func diooverlaps(with other: EventLayoutAttributes) -> Bool {
+        return self.dio.start < other.dio.end && self.dio.end > other.dio.start &&
+        self.dio.start != other.dio.end && self.dio.end != other.dio.start
     }
 /*
 func overlaps(with other: EventLayoutAttributes) -> Bool {
