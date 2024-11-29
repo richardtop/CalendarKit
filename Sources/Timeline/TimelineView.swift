@@ -511,31 +511,39 @@ public final class TimelineView: UIView {
             }
             return start1 < start2
         }
-        // Build tress
+        // Build trees Where each branch reprsents overlapping events
         let forest = buildEventsForest(sortedEvents: sortedEvents)
         
         for tree in forest {
+            //for debugging purposes
             printTree(tree)
+            //Traverse the tree and assign for each node it's index in the longest branch it appears on. This value will be used to decide startX
             assignIndexInLongestBranch(tree, longestPath: [])
+            //for debugging purposes
             printNodeIndexes(tree)
+            
             traverseTree(tree) { node in
-                let totalCount = Double(node.calculateLongestBranchDepth())
                 let startY = dateToY(node.value.descriptor.dateInterval.start)
                 let endY = dateToY(node.value.descriptor.dateInterval.end)
                 let floatIndex = Double(node.indexInLongestBranch)
-               
+                
                 var startX = 0.0
                 var endX = 0.0
-                if node.parent != nil {
-                    startX = node.parent!.value.frame.maxX
+                if node.parent == nil {
+                    //if earliest node and on the most left then make It's startX at the very beginning.
+                    startX = style.leadingInset
                 } else {
-                    startX = style.leadingInset + floatIndex / totalCount * calendarWidth
+                    //Make node's startX same as the nearest earlier overlapping event's endX
+                    startX = node.parent!.value.frame.maxX
                 }
                 
-                let equalWidth = calendarWidth / totalCount
+                //The width should be all available width divided the count of direct overlaps
+                let equalWidth = calendarWidth / Double(node.calculateLongestBranchDepth())
+                //If the event is a leaf node then it means that it has no overlaps that it's later than it. Let it expand to the most right.
                 if node.children.isEmpty {
                     endX = bounds.width
                 } else {
+                    //If the event has later overlapping events, then it should leave space for them.
                     endX = startX + equalWidth
                 }
                 
@@ -748,7 +756,7 @@ private func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttrib
 
 private func traverseTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, depth: Int = 0, index: Int = 0, calculatePosition: (TreeNode<EventLayoutAttributes>) -> Void) {
     calculatePosition(node)
-    print("Value: \(node.value), Depthoflongestbranch: \(node.calculateLongestBranchDepth()), Indexinlongestbranch: \(node.indexInLongestBranch)")
+  
     for (childIndex, child) in node.children.enumerated() {
         traverseTree(child, depth: depth + 1, index: childIndex, calculatePosition: calculatePosition)
     }
