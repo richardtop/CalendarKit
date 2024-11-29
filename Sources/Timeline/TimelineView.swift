@@ -43,7 +43,7 @@ public final class TimelineView: UIView {
                 }
             }
 
-            decidePositionOfOverlappingEvents()
+            //decidePositionOfOverlappingEvents()
             prepareEventViews()
             allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
             allDayView.isHidden = allDayLayoutAttributes.count == 0
@@ -720,23 +720,48 @@ class TreeNode<EventLayoutAttributes> {
         }
         return 1 + maxChildOverlap
     }
+    
+    func traversePostOrder(visitedEnough: inout Bool, visit: (TreeNode) -> Bool) -> Bool {
+        // Traverse all child nodes first
+            for child in children {
+                child.traversePostOrder(visitedEnough: &visitedEnough, visit: visit)
+            }
+            if visitedEnough {
+                return visitedEnough
+            }
+            visitedEnough = visit(self)
+        
+        print("visited enought -> \(visitedEnough)")
+        // Visit the current node
+        
+        return visitedEnough
+    }
 }
 
 private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventLayoutAttributes>] {
     var forest: [TreeNode<EventLayoutAttributes>] = []
+    
+    guard !sortedEvents.isEmpty else {
+        return forest
+    }
+    forest.append(TreeNode(value: sortedEvents[0]))
+  
     func addEventToTree(_ event: EventLayoutAttributes, to nodes: [TreeNode<EventLayoutAttributes>]) -> Bool {
+        var added = false
         for node in nodes {
-            if event.overlaps(with: node.value) {
-                if !addEventToTree(event, to: node.children) {
+            added = node.traversePostOrder(visitedEnough: &added) { node in
+                var overlaps = false
+                if event.overlaps(with: node.value) {
                     node.addChild(TreeNode(value: event))
+                    overlaps = true
                 }
-                return true // Event has been successfully added
+                return overlaps
             }
         }
-        return false // Event did not overlap with any nodes
+        return added
     }
     
-    for event in sortedEvents {
+    for event in sortedEvents[1...] {
         if !addEventToTree(event, to: forest) {
             forest.append(TreeNode(value: event))
         }
