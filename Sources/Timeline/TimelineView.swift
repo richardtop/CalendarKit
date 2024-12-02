@@ -43,7 +43,7 @@ public final class TimelineView: UIView {
                 }
             }
 
-            recalculateEventLayout()
+            //decidePositionOfOverlappingEvents()
             prepareEventViews()
             allDayView.events = allDayLayoutAttributes.map { $0.descriptor }
             allDayView.isHidden = allDayLayoutAttributes.count == 0
@@ -372,7 +372,7 @@ public final class TimelineView: UIView {
 
     override public func layoutSubviews() {
         super.layoutSubviews()
-        recalculateEventLayout()
+        decidePositionOfOverlappingEvents()
         layoutEvents()
         layoutNowLine()
         layoutAllDayEvents()
@@ -497,6 +497,61 @@ public final class TimelineView: UIView {
         }
     }
 
+    func decidePositionOfOverlappingEvents() {
+        guard !regularLayoutAttributes.isEmpty else {
+            return
+        }
+        //Sort events by startDateTime. When equal then longest comes first
+        let sortedEvents = self.regularLayoutAttributes.sorted { (e1, e2) -> Bool in
+            let start1 = e1.descriptor.dateInterval.start
+            let start2 = e2.descriptor.dateInterval.start
+            if (start1 == start2) {
+                print("\(e1) starts at the same time as \(e2) ?")
+                return e1.descriptor.dateInterval > e2.descriptor.dateInterval
+            }
+            return start1 < start2
+        }
+        // Build trees Where each branch reprsents overlapping events
+        let forest = buildEventsForest(sortedEvents: sortedEvents)
+        
+        for tree in forest {
+            //for debugging purposes
+            printTree(tree)
+            //Traverse the tree and assign for each node it's index in the longest branch it appears on. This value will be used to decide startX
+            assignIndexInLongestBranch(tree, longestPath: [])
+            //for debugging purposes
+            printNodeIndexes(tree)
+            
+            traverseTree(tree) { node in
+                let startY = dateToY(node.value.descriptor.dateInterval.start)
+                let endY = dateToY(node.value.descriptor.dateInterval.end)
+                let floatIndex = Double(node.indexInLongestBranch)
+                
+                var startX = 0.0
+                var endX = 0.0
+                if node.parent == nil {
+                    //if earliest node and on the most left then make It's startX at the very beginning.
+                    startX = style.leadingInset
+                } else {
+                    //Make node's startX same as the nearest earlier overlapping event's endX
+                    startX = node.parent!.value.frame.maxX
+                }
+                
+                //The width should be all available width divided the count of direct overlaps
+                let equalWidth = calendarWidth / Double(node.calculateLongestBranchDepth())
+                //If the event is a leaf node then it means that it has no overlaps that it's later than it. Let it expand to the most right.
+                if node.children.isEmpty {
+                    endX = bounds.width
+                } else {
+                    //If the event has later overlapping events, then it should leave space for them.
+                    endX = startX + equalWidth
+                }
+                
+                node.value.frame = CGRect(x: startX, y: startY, width: endX - startX, height: endY - startY)
+            }
+        }
+    }
+    
     private func prepareEventViews() {
         pool.enqueue(views: eventViews)
         eventViews.removeAll()
@@ -508,7 +563,7 @@ public final class TimelineView: UIView {
             eventViews.append(newView)
         }
     }
-
+    
     public func prepareForReuse() {
         pool.enqueue(views: eventViews)
         eventViews.removeAll()
@@ -598,3 +653,136 @@ public final class TimelineView: UIView {
         ])
     }
 }
+
+private class TreeNode<EventLayoutAttributes> {
+    var value: EventLayoutAttributes
+    var children: [TreeNode] = []
+    var parent: TreeNode?
+    var indexInLongestBranch = 0
+    var longestBranchDepth = 0
+    
+    init(value: EventLayoutAttributes) {
+        self.value = value
+    }
+    
+    func addChild(_ child: TreeNode) {
+        children.append(child)
+        child.parent = self
+    }
+    
+    func calculateLongestBranchDepth() -> Int {
+        self.longestBranchDepth =  distanceToRoot() + longestChildBranch()
+        return longestBranchDepth
+    }
+    
+    func distanceToRoot() -> Int {
+        var distance = 0
+        var currentNode = self
+        
+        while let parent = currentNode.parent {
+            currentNode = parent
+            distance += 1
+        }
+        
+        return distance
+    }
+    
+    func longestChildBranch() -> Int {
+        if children.isEmpty {
+            return 1
+        }
+        var maxChildOverlap = 0
+        for child in children {
+            maxChildOverlap = max(maxChildOverlap, child.longestChildBranch())
+        }
+        return 1 + maxChildOverlap
+    }
+    
+    func traversePostOrder(visitedEnough: inout Bool, visit: (TreeNode) -> Bool) -> Bool {
+        // Traverse all child nodes first
+        for child in children {
+            child.traversePostOrder(visitedEnough: &visitedEnough, visit: visit)
+        }
+        // Visit the current node
+        if visitedEnough {
+            return visitedEnough
+        }
+        visitedEnough = visit(self)
+        
+        return visitedEnough
+    }
+}
+
+private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventLayoutAttributes>] {
+    //Create an empty forest.
+    var forest: [TreeNode<EventLayoutAttributes>] = []
+    
+    //If not events then return early on.
+    guard !sortedEvents.isEmpty else {
+        return forest
+    }
+    //Add the earliest event as the first tree.
+    forest.append(TreeNode(value: sortedEvents[0]))
+  
+    //loop on sorted events and figure out where should they be added in the tree based on overlapping. Otherwise make them plant their own tree.
+    for event in sortedEvents[1...] {
+        if !addEventToTree(event, to: forest) {
+            forest.append(TreeNode(value: event))
+        }
+    }
+    
+    //A method used to decide where should an event be added in a tree.
+    func addEventToTree(_ event: EventLayoutAttributes, to nodes: [TreeNode<EventLayoutAttributes>]) -> Bool {
+        var added = false
+        for node in nodes {
+            added = node.traversePostOrder(visitedEnough: &added) { node in
+                var overlaps = false
+                if event.overlaps(with: node.value) {
+                    node.addChild(TreeNode(value: event))
+                    overlaps = true
+                }
+                return overlaps
+            }
+        }
+        return added
+    }
+    
+    return forest
+}
+
+private func printTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, level: Int = 0) {
+    let indent = String(repeating: "  ", count: level)
+    print("\(indent)- \(node.value)")
+    
+    for child in node.children {
+        printTree(child, level: level + 1)
+    }
+}
+
+private func traverseTree<EventLayoutAttributes>(_ node: TreeNode<EventLayoutAttributes>, depth: Int = 0, index: Int = 0, calculatePosition: (TreeNode<EventLayoutAttributes>) -> Void) {
+    calculatePosition(node)
+  
+    for (childIndex, child) in node.children.enumerated() {
+        traverseTree(child, depth: depth + 1, index: childIndex, calculatePosition: calculatePosition)
+    }
+}
+
+private func assignIndexInLongestBranch<T>(_ node: TreeNode<T>, longestPath: [TreeNode<T>]) {
+    node.indexInLongestBranch = longestPath.count
+    var currentLongestPath = longestPath
+    currentLongestPath.append(node)
+    if node.children.isEmpty {
+        return
+    }
+    for child in node.children {
+        assignIndexInLongestBranch(child, longestPath: currentLongestPath)
+    }
+}
+
+private func printNodeIndexes<T>(_ node: TreeNode<T>) {
+    print("Node \(node.value) is at index \(String(describing: node.indexInLongestBranch)) in the longest branch of depth \(node.longestBranchDepth)")
+    for child in node.children {
+        printNodeIndexes(child)
+    }
+}
+
