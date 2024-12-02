@@ -654,9 +654,6 @@ public final class TimelineView: UIView {
     }
 }
 
-extension EventLayoutAttributes {
-}
-
 private class TreeNode<EventLayoutAttributes> {
     var value: EventLayoutAttributes
     var children: [TreeNode] = []
@@ -717,13 +714,24 @@ private class TreeNode<EventLayoutAttributes> {
 }
 
 private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNode<EventLayoutAttributes>] {
+    //Create an empty forest.
     var forest: [TreeNode<EventLayoutAttributes>] = []
     
+    //If not events then return early on.
     guard !sortedEvents.isEmpty else {
         return forest
     }
+    //Add the earliest event as the first tree.
     forest.append(TreeNode(value: sortedEvents[0]))
   
+    //loop on sorted events and figure out where should they be added in the tree based on overlapping. Otherwise make them plant their own tree.
+    for event in sortedEvents[1...] {
+        if !addEventToTree(event, to: forest) {
+            forest.append(TreeNode(value: event))
+        }
+    }
+    
+    //A method used to decide where should an event be added in a tree.
     func addEventToTree(_ event: EventLayoutAttributes, to nodes: [TreeNode<EventLayoutAttributes>]) -> Bool {
         var added = false
         for node in nodes {
@@ -737,12 +745,6 @@ private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNo
             }
         }
         return added
-    }
-    
-    for event in sortedEvents[1...] {
-        if !addEventToTree(event, to: forest) {
-            forest.append(TreeNode(value: event))
-        }
     }
     
     return forest
