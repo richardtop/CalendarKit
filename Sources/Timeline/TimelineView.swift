@@ -677,7 +677,7 @@ private class TreeNode<EventLayoutAttributes> {
         self.longestBranchDepth =  distanceToRoot() + longestChildBranch()
         return longestBranchDepth
     }
-   
+    
     func distanceToRoot() -> Int {
         var distance = 0
         var currentNode = self
@@ -703,16 +703,14 @@ private class TreeNode<EventLayoutAttributes> {
     
     func traversePostOrder(visitedEnough: inout Bool, visit: (TreeNode) -> Bool) -> Bool {
         // Traverse all child nodes first
-            for child in children {
-                child.traversePostOrder(visitedEnough: &visitedEnough, visit: visit)
-            }
-            if visitedEnough {
-                return visitedEnough
-            }
-            visitedEnough = visit(self)
-        
-        print("visited enought -> \(visitedEnough)")
+        for child in children {
+            child.traversePostOrder(visitedEnough: &visitedEnough, visit: visit)
+        }
         // Visit the current node
+        if visitedEnough {
+            return visitedEnough
+        }
+        visitedEnough = visit(self)
         
         return visitedEnough
     }
