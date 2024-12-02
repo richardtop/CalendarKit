@@ -655,29 +655,9 @@ public final class TimelineView: UIView {
 }
 
 extension EventLayoutAttributes {
-    //ExcludingBounds
-    func overlaps(with other: EventLayoutAttributes) -> Bool {
-        return self.descriptor.dateInterval.start < other.descriptor.dateInterval.end && self.descriptor.dateInterval.end > other.descriptor.dateInterval.start &&
-        self.descriptor.dateInterval.start != other.descriptor.dateInterval.end && self.descriptor.dateInterval.end != other.descriptor.dateInterval.start
-    }
 }
 
-private func removeSeconds(from date: Date) -> Date {
-    let calendar = Calendar.current
-    return calendar.date(bySettingHour: calendar.component(.hour, from: date),
-                         minute: calendar.component(.minute, from: date),
-                         second: 0,
-                         of: date) ?? date
-}
-
-
-func doIntervalsOverlapExcludingBounds(_ interval1: DateInterval, _ interval2: DateInterval) -> Bool {
-    // Check if intervals overlap excluding start and end
-    return interval1.start < interval2.end && interval1.end > interval2.start &&
-           interval1.start != interval2.end && interval1.end != interval2.start
-}
-
-class TreeNode<EventLayoutAttributes> {
+private class TreeNode<EventLayoutAttributes> {
     var value: EventLayoutAttributes
     var children: [TreeNode] = []
     var parent: TreeNode?

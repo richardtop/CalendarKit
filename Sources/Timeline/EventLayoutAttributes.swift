@@ -21,6 +21,12 @@ public final class EventLayoutAttributes : CustomStringConvertible {
     public var description: String {
         return "\(descriptor.dateInterval.start.toHourMinuteSecondString())|\(descriptor.dateInterval.end.toHourMinuteSecondString())"
     }
+    
+    //ExcludingBounds
+    func overlaps(with other: EventLayoutAttributes) -> Bool {
+        return self.descriptor.dateInterval.start < other.descriptor.dateInterval.end && self.descriptor.dateInterval.end > other.descriptor.dateInterval.start &&
+        self.descriptor.dateInterval.start != other.descriptor.dateInterval.end && self.descriptor.dateInterval.end != other.descriptor.dateInterval.start
+    }
 }
 
 private extension Date {
