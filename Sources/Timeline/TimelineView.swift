@@ -698,18 +698,18 @@ private class TreeNode<EventLayoutAttributes> {
         return 1 + maxChildOverlap
     }
     
-    func traversePostOrder(visitedEnough: inout Bool, visit: (TreeNode) -> Bool) -> Bool {
+    func traversePostOrder(visitedEnough: inout Bool, visit: (TreeNode) -> Bool) {
         // Traverse all child nodes first
         for child in children {
             child.traversePostOrder(visitedEnough: &visitedEnough, visit: visit)
         }
         // Visit the current node
         if visitedEnough {
-            return visitedEnough
+            return
         }
         visitedEnough = visit(self)
         
-        return visitedEnough
+        return
     }
 }
 
@@ -735,7 +735,7 @@ private func buildEventsForest(sortedEvents: [EventLayoutAttributes]) -> [TreeNo
     func addEventToTree(_ event: EventLayoutAttributes, to nodes: [TreeNode<EventLayoutAttributes>]) -> Bool {
         var added = false
         for node in nodes {
-            added = node.traversePostOrder(visitedEnough: &added) { node in
+            node.traversePostOrder(visitedEnough: &added) { node in
                 var overlaps = false
                 if event.overlaps(with: node.value) {
                     node.addChild(TreeNode(value: event))
