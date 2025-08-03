@@ -45,11 +45,18 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
     private lazy var panGestureRecognizer = UIPanGestureRecognizer(target: self,
                                                                    action: #selector(handlePanGesture(_:)))
+    
+    private lazy var pinchRecognizer = UIPinchGestureRecognizer(target: self,
+                                                               action: #selector(handlePinch(_:)))
 
     public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer,
                                   shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         if otherGestureRecognizer.view is EventResizeHandleView {
             return false
+        }
+        if gestureRecognizer == pinchRecognizer ||
+           otherGestureRecognizer is UIPanGestureRecognizer {
+            return true
         }
         return true
     }
@@ -92,6 +99,10 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         super.init(coder: aDecoder)
         configure()
     }
+    
+    deinit {
+        displayLink?.invalidate()
+    }
 
     private func configure() {
         let viewController = configureTimelineController(date: Date())
@@ -101,6 +112,8 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         addSubview(pagingViewController.view!)
         addGestureRecognizer(panGestureRecognizer)
         panGestureRecognizer.delegate = self
+        addGestureRecognizer(pinchRecognizer)
+        pinchRecognizer.delegate = self
     }
 
     public func updateStyle(_ newStyle: TimelineStyle) {
@@ -148,6 +161,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         let controller = TimelineContainerController()
         updateStyleOfTimelineContainer(controller: controller)
         let timeline = controller.timeline
+        timeline.style.pointsPerMinute = style.pointsPerMinute
         timeline.longPressGestureRecognizer.addTarget(self, action: #selector(timelineDidLongPress(_:)))
         timeline.delegate = self
         timeline.calendar = calendar
@@ -213,6 +227,15 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
     /// Tag of the last used resize handle
     private var resizeHandleTag: Int?
+
+    /// Pinch to zoom management
+    private var initialPointsPerMinute: CGFloat = 0
+    private var anchorDate: Date = .init()
+    private var anchorScreenY: CGFloat = 0
+    private var displayLink: CADisplayLink?
+    private var relayoutPending = false          // ← add
+    private var pinchActive     = false          // ← add
+    private var pendingScaleChange: CGFloat = 1  // ← accumulate scale changes
 
     /// Creates an EventView and places it on the Timeline
     /// - Parameter event: the EventDescriptor based on which an EventView will be placed on the Timeline
@@ -307,7 +330,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
                 suggestedEventFrame.size.height += diff.y
             }
             let minimumMinutesEventDurationWhileEditing = Double(style.minimumEventDurationInMinutesWhileEditing)
-            let minimumEventHeight = minimumMinutesEventDurationWhileEditing * style.verticalDiff / 60
+            let minimumEventHeight = minimumMinutesEventDurationWhileEditing * Double(style.pointsPerMinute)
             let suggestedEventHeight = suggestedEventFrame.size.height
 
             if suggestedEventHeight > minimumEventHeight {
@@ -521,5 +544,102 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
     public func timelineView(_ timelineView: TimelineView, didLongPress event: EventView) {
         delegate?.timelinePagerDidLongPressEventView(event)
+    }
+    
+    // MARK: - Pinch to Zoom Implementation
+    @objc private func handlePinch(_ r: UIPinchGestureRecognizer) {
+        guard let tl = currentTimeline?.timeline, let state else { return }
+
+        switch r.state {
+
+        case .began:
+            pinchActive = true
+            setAllTimelines(disableAnimations: true)
+            startDisplayLink()
+            initialPointsPerMinute = style.pointsPerMinute
+            anchorScreenY = r.location(in: tl).y
+            anchorDate = tl.yToDate(anchorScreenY)
+            pendingScaleChange = 1
+
+        case .changed:
+            guard r.numberOfTouches == 2 else { return }
+
+            let scaleChange = r.scale
+            guard abs(scaleChange - 1) > 0.001 else { return }
+            r.scale = 1
+
+            pendingScaleChange *= scaleChange
+            relayoutPending = true
+
+        default:
+            pinchActive = false
+            stopDisplayLink()
+            if relayoutPending {
+                relayoutVisibleTimelines()
+                relayoutPending = false
+            }
+            setAllTimelines(disableAnimations: false)
+            r.scale = 1
+        }
+    }
+    
+    private func relayoutVisibleTimelines() {
+        pagingViewController.children.forEach { vc in
+            guard let c = vc as? TimelineContainerController else { return }
+            c.timeline.style.pointsPerMinute = style.pointsPerMinute
+            c.timeline.setNeedsLayout()
+            c.timeline.layoutIfNeeded()
+            c.container.contentSize.height = c.timeline.fullHeight
+        }
+    }
+    
+    private func setAllTimelines(disableAnimations: Bool) {
+        CATransaction.setDisableActions(disableAnimations)
+        pagingViewController.children
+            .compactMap { $0 as? TimelineContainerController }
+            .forEach { $0.timeline.layer.actions = disableAnimations ? ["position": NSNull()] : [:] }
+        CATransaction.commit()
+    }
+    
+    // MARK: - CADisplayLink Management
+    @objc private func displayLinkTick() {
+        guard relayoutPending else { return }
+        relayoutPending = false
+
+        guard let tl = currentTimeline?.timeline,
+              let container = currentTimeline?.container,
+              let state else { return }
+        
+        // Ensure timeline is always at least as tall as the scroll view
+        // This prevents zooming out so far that there's empty space below the timeline
+        let containerHeight = max(container.bounds.height, 100)  // Safety minimum
+        let minimumPPMForContainer = containerHeight / (24 * 60)  // 24 hours * 60 minutes
+        let effectiveMinimum = max(style.minimumPointsPerMinute, minimumPPMForContainer)
+        
+        let newPPM = (style.pointsPerMinute * pendingScaleChange)
+                      .clamped(to: effectiveMinimum...style.maximumPointsPerMinute)
+        pendingScaleChange = 1                 // reset
+
+        guard newPPM != style.pointsPerMinute else { return }
+
+        let yBefore = tl.dateToY(anchorDate)
+
+        style.pointsPerMinute = newPPM
+        state.pointsPerMinute = newPPM
+        relayoutVisibleTimelines()             // *all* pages, single frame
+
+        let yAfter = tl.dateToY(anchorDate)
+        currentTimeline?.container.contentOffset.y += (yAfter - yBefore)
+    }
+    
+    private func startDisplayLink() {
+        guard displayLink == nil else { return }
+        displayLink = CADisplayLink(target: self, selector: #selector(displayLinkTick))
+        displayLink?.add(to: .main, forMode: .common)   // .common keeps it ticking during gestures
+    }
+    
+    private func stopDisplayLink() {
+        displayLink?.invalidate()
+        displayLink = nil
     }
 }
