@@ -69,7 +69,18 @@ public struct TimelineStyle {
     public var eventsWillOverlap: Bool = false
     public var minimumEventDurationInMinutesWhileEditing: Int = 30
     public var splitMinuteInterval: Int = 15
-    public var verticalDiff: Double = 50
+    
+    /// Points per one minute of time. Mutated by pinch zoom.
+    public var pointsPerMinute: CGFloat = 50.0 / 60.0
+    public var minimumPointsPerMinute: CGFloat = 0.25
+    public var maximumPointsPerMinute: CGFloat = 5.0
+    
+    @available(*, deprecated, message: "Use pointsPerMinute instead")
+    public var verticalDiff: Double { 
+        get { pointsPerMinute * 60 }
+        set { pointsPerMinute = newValue / 60 }
+    }
+    
     public var verticalInset: Double = 10
     public var leadingInset: Double = 53
     public var eventGap: Double = 0
