@@ -630,6 +630,31 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
         let yAfter = tl.dateToY(anchorDate)
         currentTimeline?.container.contentOffset.y += (yAfter - yBefore)
+
+        updateEditedEventViewForZoom()
+    }
+
+    private func updateEditedEventViewForZoom() {
+        guard let editedEventView = editedEventView,
+              let descriptor = editedEventView.descriptor,
+              let currentTimeline = currentTimeline else { return }
+        
+        let timeline = currentTimeline.timeline
+        let container = currentTimeline.container
+        let offset = container.contentOffset.y
+        
+        let yStart = timeline.dateToY(descriptor.dateInterval.start) - offset
+        let yEnd = timeline.dateToY(descriptor.dateInterval.end) - offset
+        
+        let rightToLeft = UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft
+        let x = rightToLeft ? 0 : timeline.style.leadingInset
+        
+        let newFrame = CGRect(x: x,
+                             y: yStart,
+                             width: timeline.calendarWidth,
+                             height: yEnd - yStart)
+        
+        editedEventView.frame = newFrame
     }
     
     private func startDisplayLink() {
