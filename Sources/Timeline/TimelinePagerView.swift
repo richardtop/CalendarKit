@@ -233,9 +233,9 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     private var anchorDate: Date = .init()
     private var anchorScreenY: CGFloat = 0
     private var displayLink: CADisplayLink?
-    private var relayoutPending = false          // ← add
-    private var pinchActive     = false          // ← add
-    private var pendingScaleChange: CGFloat = 1  // ← accumulate scale changes
+    private var relayoutPending = false
+    private var pinchActive = false
+    private var pendingScaleChange: CGFloat = 1
 
     /// Creates an EventView and places it on the Timeline
     /// - Parameter event: the EventDescriptor based on which an EventView will be placed on the Timeline
