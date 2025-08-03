@@ -562,6 +562,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
             pendingScaleChange = 1
 
         case .changed:
+            // This can be == 1 for in a pinch to zoom gesture
             guard r.numberOfTouches == 2 else { return }
 
             let scaleChange = r.scale
@@ -601,7 +602,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
         CATransaction.commit()
     }
     
-    // MARK: - CADisplayLink Management
+    // MARK: - Update zoom level
     @objc private func displayLinkTick() {
         guard relayoutPending else { return }
         relayoutPending = false
@@ -611,14 +612,13 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
               let state else { return }
         
         // Ensure timeline is always at least as tall as the scroll view
-        // This prevents zooming out so far that there's empty space below the timeline
-        let containerHeight = max(container.bounds.height, 100)  // Safety minimum
-        let minimumPPMForContainer = containerHeight / (24 * 60)  // 24 hours * 60 minutes
+        let containerHeight = max(container.bounds.height, 100)
+        let minimumPPMForContainer = containerHeight / (24 * 60)
         let effectiveMinimum = max(style.minimumPointsPerMinute, minimumPPMForContainer)
         
         let newPPM = (style.pointsPerMinute * pendingScaleChange)
                       .clamped(to: effectiveMinimum...style.maximumPointsPerMinute)
-        pendingScaleChange = 1                 // reset
+        pendingScaleChange = 1
 
         guard newPPM != style.pointsPerMinute else { return }
 
@@ -626,7 +626,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
 
         style.pointsPerMinute = newPPM
         state.pointsPerMinute = newPPM
-        relayoutVisibleTimelines()             // *all* pages, single frame
+        relayoutVisibleTimelines()
 
         let yAfter = tl.dateToY(anchorDate)
         currentTimeline?.container.contentOffset.y += (yAfter - yBefore)
@@ -635,7 +635,7 @@ public final class TimelinePagerView: UIView, UIGestureRecognizerDelegate, UIScr
     private func startDisplayLink() {
         guard displayLink == nil else { return }
         displayLink = CADisplayLink(target: self, selector: #selector(displayLinkTick))
-        displayLink?.add(to: .main, forMode: .common)   // .common keeps it ticking during gestures
+        displayLink?.add(to: .main, forMode: .common)
     }
     
     private func stopDisplayLink() {
