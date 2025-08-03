@@ -87,7 +87,7 @@ public final class TimelineView: UIView {
     private var horizontalEventInset: Double = 3
 
     public var fullHeight: Double {
-        style.verticalInset * 2 + style.verticalDiff * 24
+        style.verticalInset * 2 + Double(style.pointsPerMinute) * 24 * 60
     }
 
     public var calendarWidth: Double {
@@ -317,7 +317,7 @@ public final class TimelineView: UIView {
                     return bounds.width
                 }
             }()
-            let y = style.verticalInset + hourFloat * style.verticalDiff + offset
+            let y = style.verticalInset + hourFloat * Double(style.pointsPerMinute) * 60 + offset
             context?.beginPath()
             context?.move(to: CGPoint(x: xStart, y: y))
             context?.addLine(to: CGPoint(x: xEnd, y: y))
@@ -336,7 +336,7 @@ public final class TimelineView: UIView {
                 }
 
                 return CGRect(x: x,
-                              y: hourFloat * style.verticalDiff + style.verticalInset - 7,
+                              y: hourFloat * Double(style.pointsPerMinute) * 60 + style.verticalInset - 7,
                               width: style.leadingInset - 8,
                               height: fontSize + 2)
             }()
@@ -357,7 +357,7 @@ public final class TimelineView: UIView {
                     x = 2
                 }
 
-                let timeRect = CGRect(x: x, y: hourFloat * style.verticalDiff + style.verticalInset - 7     + style.verticalDiff * (Double(accentedMinute) / 60),
+                let timeRect = CGRect(x: x, y: hourFloat * Double(style.pointsPerMinute) * 60 + style.verticalInset - 7 + Double(style.pointsPerMinute) * Double(accentedMinute),
                                       width: style.leadingInset - 8, height: fontSize + 2)
 
                 let timeString = NSString(string: ":\(accentedMinute)")
@@ -526,20 +526,21 @@ public final class TimelineView: UIView {
             // Event starting the previous day
             dayOffset -= 1
         }
-        let fullTimelineHeight = 24 * style.verticalDiff
+        let fullTimelineHeight = 24 * Double(style.pointsPerMinute) * 60
         let hour = component(component: .hour, from: date)
         let minute = component(component: .minute, from: date)
-        let hourY = Double(hour) * style.verticalDiff + style.verticalInset
-        let minuteY = Double(minute) * style.verticalDiff / 60
+        let hourY = Double(hour) * Double(style.pointsPerMinute) * 60 + style.verticalInset
+        let minuteY = Double(minute) * Double(style.pointsPerMinute)
         return hourY + minuteY + fullTimelineHeight * dayOffset
     }
 
     public func yToDate(_ y: Double) -> Date {
         let timeValue = y - style.verticalInset
-        var hour = Int(timeValue / style.verticalDiff)
-        let fullHourPoints = Double(hour) * style.verticalDiff
+        let hourHeight = Double(style.pointsPerMinute) * 60
+        var hour = Int(timeValue / hourHeight)
+        let fullHourPoints = Double(hour) * hourHeight
         let minuteDiff = timeValue - fullHourPoints
-        let minute = Int(minuteDiff / style.verticalDiff * 60)
+        let minute = Int(minuteDiff / Double(style.pointsPerMinute))
         var dayOffset = 0
         if hour > 23 {
             dayOffset += 1
