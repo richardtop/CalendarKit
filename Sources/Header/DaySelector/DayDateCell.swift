@@ -93,9 +93,10 @@ public final class DayDateCell: UIView, DaySelectorItemProtocol {
         dayLabel.sizeToFit()
         dayLabel.center.y = center.y
         let interItemSpacing: Double = selected ? 5 : 3
+        dateLabel.frame.size = CGSize(width: 30, height: 30)
         dateLabel.center.y = center.y
         dateLabel.frame.origin.x = dayLabel.frame.maxX + interItemSpacing
-        dateLabel.frame.size = CGSize(width: 30, height: 30)
+        
         
         let freeSpace = bounds.width - (dateLabel.frame.origin.x + dateLabel.frame.width)
         let padding = freeSpace / 2
