@@ -8,6 +8,8 @@ public final class DayViewState {
     public private(set) var calendar: Calendar
     public private(set) var selectedDate: Date
     private var clients = [DayViewStateUpdating]()
+    
+    public var pointsPerMinute: CGFloat = 50.0 / 60.0
 
     public init(date: Date = Date(), calendar: Calendar = Calendar.autoupdatingCurrent) {
         let date = date.dateOnly(calendar: calendar)
